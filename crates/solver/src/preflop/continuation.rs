@@ -1,6 +1,7 @@
 //! Diagnostics of existing terminal pricing, not a replacement value model.
-use super::{PreflopSolver, KIND_POT_SHARE, NUM_CLASSES};
 use serde::Serialize;
+
+use super::{PreflopSolver, KIND_POT_SHARE, NUM_CLASSES};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct ContinuationPlayerValue {
@@ -34,59 +35,116 @@ impl PreflopSolver {
     /// `best_response` optimizes only the acting player's later decisions;
     /// opponents keep their saved policies. Useful for unused branches where
     /// the hero's average continuation may be poorly accumulated.
-    pub fn diagnostic_action_evs(&self, path: &[usize], best_response: bool) -> Result<Vec<Vec<f64>>, String> {
+    pub fn diagnostic_action_evs(
+        &self,
+        path: &[usize],
+        best_response: bool,
+    ) -> Result<Vec<Vec<f64>>, String> {
         let (node, mut reaches) = self.walk(path)?;
         let nd = &self.nodes[node];
-        if nd.kind != super::KIND_ACTION { return Err("expected an action node".into()); }
-        if self.stop_requested() { return Err("evaluation cancelled".into()); }
+        if nd.kind != super::KIND_ACTION {
+            return Err("expected an action node".into());
+        }
+        if self.stop_requested() {
+            return Err("evaluation cancelled".into());
+        }
         let p = nd.actor as usize;
         for r in &mut reaches {
             let mass: f32 = r.iter().sum();
-            if !mass.is_finite() || mass <= 0.0 { return Err("unreachable node".into()); }
-            for v in r { *v /= mass; }
+            if !mass.is_finite() || mass <= 0.0 {
+                return Err("unreachable node".into());
+            }
+            for v in r {
+                *v /= mass;
+            }
         }
-        let mass: f64 = reaches.iter().enumerate().filter(|(q,_)| *q != p)
-            .map(|(_,r)| r.iter().sum::<f32>() as f64).product();
+        let mass: f64 = reaches
+            .iter()
+            .enumerate()
+            .filter(|(q, _)| *q != p)
+            .map(|(_, r)| r.iter().sum::<f32>() as f64)
+            .product();
         let mut result = Vec::new();
         for a in 0..nd.actions.len() {
-            let values = self.traverse(self.child(node,a),p,&mut reaches.clone(),if best_response {2} else {1},0);
-            if self.stop_requested() { return Err("evaluation cancelled".into()); }
-            result.push(values.into_iter().map(|v| v as f64 / mass + nd.invested[p]).collect());
+            let values = self.traverse(
+                self.child(node, a),
+                p,
+                &mut reaches.clone(),
+                if best_response { 2 } else { 1 },
+                0,
+            );
+            if self.stop_requested() {
+                return Err("evaluation cancelled".into());
+            }
+            result.push(
+                values
+                    .into_iter()
+                    .map(|v| v as f64 / mass + nd.invested[p])
+                    .collect(),
+            );
         }
         Ok(result)
     }
 
     pub(super) fn continuation_estimate(
-        &self, node: usize, reaches: &[Vec<f32>],
+        &self,
+        node: usize,
+        reaches: &[Vec<f32>],
     ) -> Option<ContinuationEstimate> {
         let nd = &self.nodes[node];
-        if nd.kind != KIND_POT_SHARE || nd.live.count_ones() != 2 { return None; }
+        if nd.kind != KIND_POT_SHARE || nd.live.count_ones() != 2 {
+            return None;
+        }
         // Normalize every seat, including folded seats, to remove path mass
         // without dividing by a potentially tiny product of path probabilities.
         // terminal_value remains the single source of the pricing formula.
         let mut normalized = Vec::with_capacity(self.n);
         for reach in reaches {
             let mass: f32 = reach.iter().sum();
-            if !mass.is_finite() || mass <= 0.0 { return None; }
+            if !mass.is_finite() || mass <= 0.0 {
+                return None;
+            }
             normalized.push(reach.iter().map(|v| v / mass).collect::<Vec<_>>());
         }
         let live: Vec<usize> = (0..self.n).filter(|p| nd.live & (1 << p) != 0).collect();
-        let left = live.iter().map(|&p| self.cfg.left(p, nd.invested[p]))
-            .fold(f64::INFINITY, f64::min).max(0.0);
+        let left = live
+            .iter()
+            .map(|&p| self.cfg.left(p, nd.invested[p]))
+            .fold(f64::INFINITY, f64::min)
+            .max(0.0);
         let all_in = left / nd.pot <= 1e-9;
         let calibrated = self.fit.is_some() && !all_in && self.cfg.realization == "calibrated";
-        let model = if all_in { "all_in_equity" } else if calibrated { "calibrated" }
-            else if self.leaf_correction(node, (0..self.n).find(|q| nd.live & (1 << q) != 0)?).is_some() { "leafnet" }
-            else if super::balanced_family(&self.cfg.realization) { "balanced" }
-            else if self.cfg.realization == "raw" { "raw" } else { "static" };
+        let model = if all_in {
+            "all_in_equity"
+        } else if calibrated {
+            "calibrated"
+        } else if self
+            .leaf_correction(node, (0..self.n).find(|q| nd.live & (1 << q) != 0)?)
+            .is_some()
+        {
+            "leafnet"
+        } else if super::balanced_family(&self.cfg.realization) {
+            "balanced"
+        } else if self.cfg.realization == "raw" {
+            "raw"
+        } else {
+            "static"
+        };
         let mut players = Vec::with_capacity(2);
         for p in live {
             let mut values = [0.0; NUM_CLASSES];
             self.terminal_value(node, p, &normalized, &mut values);
-            let probability: f64 = normalized.iter().enumerate().filter(|(q, _)| *q != p)
-                .map(|(_, r)| r.iter().sum::<f32>() as f64).product();
-            let net: f64 = normalized[p].iter().zip(values)
-                .map(|(&w, v)| w as f64 * v as f64 / probability).sum();
+            let probability: f64 = normalized
+                .iter()
+                .enumerate()
+                .filter(|(q, _)| *q != p)
+                .map(|(_, r)| r.iter().sum::<f32>() as f64)
+                .product();
+            let net: f64 = normalized[p]
+                .iter()
+                .zip(values)
+                .map(|(&w, v)| w as f64 * v as f64 / probability)
+                .sum();
             let own_mass = normalized[p].iter().map(|&w| w as f64).sum::<f64>();
             players.push(ContinuationPlayerValue {
                 position: self.cfg.positions[p].clone(),
@@ -106,7 +164,10 @@ impl PreflopSolver {
             "This approximation deducts the requested rake on the starting pot. It does not model how future betting changes rake; positional adjustments and equity sampling can also affect the total. Send to postflop setup for a selected-board solve."
         };
         Some(ContinuationEstimate {
-            model: model.into(), players, pot_bb: nd.pot, total_value_bb,
+            model: model.into(),
+            players,
+            pot_bb: nd.pot,
+            total_value_bb,
             unallocated_bb: nd.pot - total_value_bb,
             requested_rake_pct: self.cfg.rake_pct,
             requested_rake_cap_bb: self.cfg.rake_cap,

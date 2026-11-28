@@ -116,7 +116,11 @@ pub fn combo_from_index(idx: usize) -> (Card, Card) {
 pub fn combo_to_string(c1: Card, c2: Card) -> String {
     let (hi, lo) = if c1 > c2 { (c1, c2) } else { (c2, c1) };
     // Display higher rank first; on equal ranks higher suit first.
-    let (a, b) = if rank(hi) >= rank(lo) { (hi, lo) } else { (lo, hi) };
+    let (a, b) = if rank(hi) >= rank(lo) {
+        (hi, lo)
+    } else {
+        (lo, hi)
+    };
     format!("{}{}", card_to_string(a), card_to_string(b))
 }
 

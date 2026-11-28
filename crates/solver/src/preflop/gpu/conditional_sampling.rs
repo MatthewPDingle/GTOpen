@@ -1,7 +1,8 @@
 //! Fixed-current-policy sampling diagnostics. No learning or persistent state.
+use serde_json::{json, Value};
+
 use super::*;
 use crate::preflop::convergence_research::Experiment;
-use serde_json::{json, Value};
 
 impl PreflopSolver {
     // This workspace never escapes into a solve or a saved game. Positive raw

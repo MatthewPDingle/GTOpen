@@ -24,9 +24,9 @@
 //!   GTOPEN_GPU_TURN=0        let GPU solves of several solve-cli processes overlap
 //!                            (default: they take turns on a card, see gpu_turn.rs)
 
+use std::sync::{atomic::AtomicBool, Arc};
+
 use solver::{Algorithm, RunOptions, Solver, Spot, SpotConfig, Storage};
-use std::sync::atomic::AtomicBool;
-use std::sync::Arc;
 
 #[path = "../datagen_cli.rs"]
 mod datagen_cli;
@@ -76,7 +76,13 @@ impl EnvOpts {
             Ok(v) => (v != "0", true),
             Err(_) => (true, false),
         };
-        EnvOpts { storage, algo, algo_explicit, iso, iso_explicit }
+        EnvOpts {
+            storage,
+            algo,
+            algo_explicit,
+            iso,
+            iso_explicit,
+        }
     }
 
     /// The GPU engine needs full-precision arenas; otherwise the env choice.
@@ -175,7 +181,9 @@ fn main() {
         }
     };
 
-    let use_gpu = std::env::var("SOLVER_GPU").map(|v| v == "1").unwrap_or(false);
+    let use_gpu = std::env::var("SOLVER_GPU")
+        .map(|v| v == "1")
+        .unwrap_or(false);
     let storage = env.storage_for(use_gpu);
 
     // A save rebuilds its spot from the header config; a JSON config builds
@@ -357,7 +365,11 @@ fn parse(rest: &[String]) -> Result<Opts, String> {
         (Mode::Config(first.to_string()), 1)
     };
     let resuming = matches!(mode, Mode::Resume(_));
-    let iters_label = if resuming { "iteration delta" } else { "max_iterations" };
+    let iters_label = if resuming {
+        "iteration delta"
+    } else {
+        "max_iterations"
+    };
     let iterations: u32 = match positional.get(next) {
         None => 300,
         Some(text) => count(text, iters_label)?,
@@ -390,7 +402,12 @@ fn parse(rest: &[String]) -> Result<Opts, String> {
     if !extra.is_empty() {
         return Err(format!("too many positional arguments: {extra:?}\n{USAGE}"));
     }
-    Ok(Opts { mode, iterations, target_exploit_pct, save })
+    Ok(Opts {
+        mode,
+        iterations,
+        target_exploit_pct,
+        save,
+    })
 }
 
 fn need<'a>(rest: &'a [String], i: usize, flag: &str) -> Result<&'a str, String> {
@@ -478,12 +495,18 @@ fn run_batch(rest: &[String], env: &EnvOpts) {
         std::process::exit(1);
     }
     if rest.len() < 2 {
-        eprintln!("usage: solve-cli batch <config.json> <boards-file|b1,b2,..> [max_iterations] [target]");
+        eprintln!(
+            "usage: solve-cli batch <config.json> <boards-file|b1,b2,..> [max_iterations] [target]"
+        );
         std::process::exit(1);
     }
     let use_gpu = cfg!(feature = "gpu")
-        && std::env::var("SOLVER_GPU").map(|v| v == "1").unwrap_or(true);
-    let save_each = std::env::var("SOLVER_BATCH_SAVE").map(|v| v == "1").unwrap_or(false);
+        && std::env::var("SOLVER_GPU")
+            .map(|v| v == "1")
+            .unwrap_or(true);
+    let save_each = std::env::var("SOLVER_BATCH_SAVE")
+        .map(|v| v == "1")
+        .unwrap_or(false);
     let config_text = std::fs::read_to_string(&rest[0]).expect("cannot read config");
     let base: SpotConfig = serde_json::from_str(&config_text).expect("invalid config JSON");
     let boards: Vec<String> = match std::fs::read_to_string(&rest[1]) {
@@ -606,7 +629,9 @@ fn run_realization(rest: &[String], env: &EnvOpts) {
     }
     use std::io::Write;
     let use_gpu = cfg!(feature = "gpu")
-        && std::env::var("SOLVER_GPU").map(|v| v == "1").unwrap_or(true);
+        && std::env::var("SOLVER_GPU")
+            .map(|v| v == "1")
+            .unwrap_or(true);
     let config_text = std::fs::read_to_string(&rest[0]).expect("cannot read config");
     let base: SpotConfig = serde_json::from_str(&config_text).expect("invalid config JSON");
     let boards: Vec<String> = match std::fs::read_to_string(&rest[1]) {
@@ -721,7 +746,9 @@ fn solve_quiet(solver: &mut Solver, max_iterations: u32, target: f64, use_gpu: b
             gpu.iterate().expect("gpu iterate failed");
             let check = gpu.iteration % 20 == 0 || gpu.iteration >= max_iterations;
             if check {
-                let e = gpu.exploitability(solver).expect("gpu exploitability failed");
+                let e = gpu
+                    .exploitability(solver)
+                    .expect("gpu exploitability failed");
                 let pct = e / pot * 100.0;
                 if pct <= target || gpu.iteration >= max_iterations {
                     gpu.sync_to_cpu(solver).expect("gpu sync failed");
@@ -762,7 +789,10 @@ fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
     };
     let start_iteration = gpu.iteration;
 
-    if std::env::var("SOLVER_GPU_PROFILE").map(|v| v == "1").unwrap_or(false) {
+    if std::env::var("SOLVER_GPU_PROFILE")
+        .map(|v| v == "1")
+        .unwrap_or(false)
+    {
         // warm up (JIT + caches), then profile a few iterations
         for _ in 0..3 {
             gpu.iterate().expect("gpu iterate failed");
@@ -802,12 +832,14 @@ fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
         gpu.iterate().expect("gpu iterate failed");
         gpu.synchronize().expect("gpu sync failed");
         gpu_secs += t.elapsed().as_secs_f64();
-        let check = gpu.iteration % opts.check_every.max(1) == 0
-            || gpu.iteration >= opts.max_iterations;
+        let check =
+            gpu.iteration % opts.check_every.max(1) == 0 || gpu.iteration >= opts.max_iterations;
         if check {
             // best response runs on the GPU too — no arena download needed
             let tchk = std::time::Instant::now();
-            let e = gpu.exploitability(solver).expect("gpu exploitability failed");
+            let e = gpu
+                .exploitability(solver)
+                .expect("gpu exploitability failed");
             let chk_ms = tchk.elapsed().as_secs_f64() * 1e3;
             if std::env::var("SOLVER_GPU_TIMECHK").is_ok() {
                 println!("   check took {chk_ms:.0} ms");
@@ -958,7 +990,10 @@ mod tests {
     fn save_value_that_looks_like_an_option_is_rejected() {
         let err = parse_args(&["spot.json", "--save", "--oops"]).unwrap_err();
         assert!(err.contains("looks like an option"), "{err}");
-        assert!(err.contains("./--oops"), "should suggest the literal form: {err}");
+        assert!(
+            err.contains("./--oops"),
+            "should suggest the literal form: {err}"
+        );
         let err = parse_args(&["spot.json", "--save", ""]).unwrap_err();
         assert!(err.contains("non-empty path"), "{err}");
     }
@@ -987,9 +1022,16 @@ mod tests {
             assert!(err.contains("finite"), "{bad}: {err}");
         }
         // 0 is the established "never stop early" value.
-        assert_eq!(parse_args(&["spot.json", "10", "0"]).unwrap().target_exploit_pct, 0.0);
         assert_eq!(
-            parse_args(&["spot.json", "10", "1e6"]).unwrap().target_exploit_pct,
+            parse_args(&["spot.json", "10", "0"])
+                .unwrap()
+                .target_exploit_pct,
+            0.0
+        );
+        assert_eq!(
+            parse_args(&["spot.json", "10", "1e6"])
+                .unwrap()
+                .target_exploit_pct,
             1e6
         );
     }

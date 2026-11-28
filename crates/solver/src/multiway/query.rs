@@ -2,13 +2,20 @@
 //! summarize the node for the Browse page in the same shape the heads-up
 //! solver answers with (`crate::query::NodeView`), for three players.
 
-use super::eval::{compatible_mass, showdown_equity};
-use super::solver::{Dealt, MwSolver};
-use super::tree::{MwNode, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, NP};
-use crate::cards::*;
-use crate::query::{ActionView, ExploitHandView, ExploitView, HandView, HistoryStep, PathStep, PlayerView};
-use crate::tree::{Action, SENTINEL};
 use serde::Serialize;
+
+use super::{
+    eval::{compatible_mass, showdown_equity},
+    solver::{Dealt, MwSolver},
+    tree::{MwNode, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, NP},
+};
+use crate::{
+    cards::*,
+    query::{
+        ActionView, ExploitHandView, ExploitView, HandView, HistoryStep, PathStep, PlayerView,
+    },
+    tree::{Action, SENTINEL},
+};
 
 /// A node of a three-player solve, shaped like the heads-up `NodeView`.
 #[derive(Debug, Clone, Serialize)]
@@ -41,7 +48,10 @@ const EV_MAX_ENTRIES: u64 = 400_000_000;
 /// Index 0..169 of a combo's hand class: pairs on the diagonal, suited above
 /// (row = higher rank), offsuit below; row 0 = aces.
 pub fn class_index(c1: Card, c2: Card) -> usize {
-    let (r1, r2) = (12 - rank(c1).max(rank(c2)) as usize, 12 - rank(c1).min(rank(c2)) as usize);
+    let (r1, r2) = (
+        12 - rank(c1).max(rank(c2)) as usize,
+        12 - rank(c1).min(rank(c2)) as usize,
+    );
     if r1 == r2 {
         r1 * 13 + r1
     } else if suit(c1) == suit(c2) {
@@ -102,7 +112,12 @@ pub fn walk(s: &MwSolver, path: &[PathStep]) -> Result<(u32, [Vec<f32>; NP], Dea
                 dealt = dealt.push(c);
                 idx = ch;
             }
-            _ => return Err(format!("step {i} does not match the node (kind {})", node.kind)),
+            _ => {
+                return Err(format!(
+                    "step {i} does not match the node (kind {})",
+                    node.kind
+                ))
+            }
         }
     }
     Ok((idx, reach, dealt))
@@ -133,7 +148,8 @@ fn action_views(s: &MwSolver, node_idx: u32) -> Vec<ActionView> {
         .map(|a| {
             let action = spot.tree.node_actions(node)[a];
             let child = &spot.tree.nodes[spot.tree.child(node, a) as usize];
-            let all_in = action.is_aggressive() && child.put[k] as f64 >= spot.tree.root_put() + cfg.stacks[k] - 1e-6;
+            let all_in = action.is_aggressive()
+                && child.put[k] as f64 >= spot.tree.root_put() + cfg.stacks[k] - 1e-6;
             ActionView {
                 label: action.label(pot, all_in),
                 kind: match action {
@@ -158,7 +174,8 @@ fn action_views(s: &MwSolver, node_idx: u32) -> Vec<ActionView> {
 fn build_history(s: &MwSolver, path: &[PathStep]) -> Result<Vec<HistoryStep>, String> {
     let spot = &*s.spot;
     let cfg = &spot.tree.config;
-    let stack_of = |node: &MwNode, p: usize| cfg.stacks[p] - (node.put[p] as f64 - spot.tree.root_put());
+    let stack_of =
+        |node: &MwNode, p: usize| cfg.stacks[p] - (node.put[p] as f64 - spot.tree.root_put());
     let pot_of = |node: &MwNode| node.put.iter().map(|&x| x as f64).sum::<f64>();
     let mut history = Vec::with_capacity(path.len() + 1);
     let mut idx = 0u32;
@@ -205,7 +222,11 @@ fn build_history(s: &MwSolver, path: &[PathStep]) -> Result<Vec<HistoryStep>, St
         }
         .to_string(),
         player: actor.then_some(node.player),
-        stack: if actor { stack_of(node, node.player as usize) } else { 0.0 },
+        stack: if actor {
+            stack_of(node, node.player as usize)
+        } else {
+            0.0
+        },
         pot: pot_of(node),
         street: node.street,
         actions: action_views(s, idx),
@@ -220,8 +241,8 @@ fn build_history(s: &MwSolver, path: &[PathStep]) -> Result<Vec<HistoryStep>, St
 /// third of an iteration's work each.
 fn ev_budget(s: &MwSolver, node: &MwNode) -> (bool, bool) {
     let tree = &s.spot.tree;
-    let first_street =
-        node.street == tree.root_street || (node.kind == KIND_CHANCE && node.street == tree.root_street + 1);
+    let first_street = node.street == tree.root_street
+        || (node.kind == KIND_CHANCE && node.street == tree.root_street + 1);
     let entries: u64 = tree.data_size.iter().sum();
     if !first_street || entries <= EV_MAX_ENTRIES / NP as u64 {
         (true, true)
@@ -248,7 +269,10 @@ pub fn node_view(s: &MwSolver, path: &[PathStep]) -> Result<MwNodeView, String> 
 
     let available_cards = (node.kind == KIND_CHANCE).then(|| {
         (0..52u8)
-            .filter(|&c| spot.tree.children[node.children_start as usize + c as usize] != SENTINEL && !dealt.contains(c))
+            .filter(|&c| {
+                spot.tree.children[node.children_start as usize + c as usize] != SENTINEL
+                    && !dealt.contains(c)
+            })
             .map(card_to_string)
             .collect::<Vec<_>>()
     });
@@ -261,7 +285,9 @@ pub fn node_view(s: &MwSolver, path: &[PathStep]) -> Result<MwNodeView, String> 
         let mut mass = vec![0f32; nh];
         compatible_mass(spot, p, rr, &mut mass);
         let eq = showdown_equity(spot, node.live, dealt.as_slice(), p, rr, &mass);
-        let ev_of = |cfv: f32, i: usize| (mass[i] > 0.0).then(|| (cfv as f64 / mass[i] as f64 + put[p]) as f32);
+        let ev_of = |cfv: f32, i: usize| {
+            (mass[i] > 0.0).then(|| (cfv as f64 / mass[i] as f64 + put[p]) as f32)
+        };
         let mut ev: Vec<Option<f32>> = vec![None; nh];
         let mut evs: Option<Vec<Vec<Option<f32>>>> = None;
         let mut sigma: Option<Vec<f32>> = None;
@@ -309,7 +335,9 @@ pub fn node_view(s: &MwSolver, path: &[PathStep]) -> Result<MwNodeView, String> 
                     valid: mass[i],
                     eq: (!eq[i].is_nan()).then_some(eq[i]),
                     ev: ev[i],
-                    strategy: sigma.as_ref().map(|sg| (0..na).map(|a| sg[a * nh + i]).collect()),
+                    strategy: sigma
+                        .as_ref()
+                        .map(|sg| (0..na).map(|a| sg[a * nh + i]).collect()),
                     evs: evs.as_ref().map(|e| e[i].clone()),
                 }
             })
@@ -353,14 +381,21 @@ pub fn exploit_view(s: &MwSolver, path: &[PathStep], p: usize) -> Result<Exploit
     let node = &spot.tree.nodes[idx as usize];
     let (ev_actor, ev_others) = ev_budget(s, node);
     if !(ev_actor && ev_others) {
-        return Err("this spot is too big to work out the best response here; pick a later street".to_string());
+        return Err(
+            "this spot is too big to work out the best response here; pick a later street"
+                .to_string(),
+        );
     }
     let nh = spot.hands[p].len();
     let rr = [&reach[0][..], &reach[1][..], &reach[2][..]];
     let mut mass = vec![0f32; nh];
     compatible_mass(spot, p, rr, &mut mass);
     let is_actor = node.kind == KIND_ACTION && node.player as usize == p;
-    let na = if node.kind == KIND_ACTION { node.num_children as usize } else { 0 };
+    let na = if node.kind == KIND_ACTION {
+        node.num_children as usize
+    } else {
+        0
+    };
     let lock = s.locks.get(&idx);
 
     let mut acfv: Vec<Vec<f32>> = Vec::new();
@@ -371,7 +406,9 @@ pub fn exploit_view(s: &MwSolver, path: &[PathStep], p: usize) -> Result<Exploit
         (0..nh)
             .map(|i| match lock {
                 Some(l) => (0..na).map(|a| l[a * nh + i] * acfv[a][i]).sum(),
-                None => (0..na).map(|a| acfv[a][i]).fold(f32::NEG_INFINITY, f32::max),
+                None => (0..na)
+                    .map(|a| acfv[a][i])
+                    .fold(f32::NEG_INFINITY, f32::max),
             })
             .collect()
     } else {
@@ -379,7 +416,8 @@ pub fn exploit_view(s: &MwSolver, path: &[PathStep], p: usize) -> Result<Exploit
     };
     let cur_cfv = s.node_values(idx, p, rr, dealt, false);
     let put = node.put[p] as f64;
-    let ev_of = |cfv: f32, i: usize| (mass[i] > 0.0).then(|| (cfv as f64 / mass[i] as f64 + put) as f32);
+    let ev_of =
+        |cfv: f32, i: usize| (mass[i] > 0.0).then(|| (cfv as f64 / mass[i] as f64 + put) as f32);
 
     let hands: Vec<ExploitHandView> = (0..nh)
         .map(|i| {
@@ -390,14 +428,21 @@ pub fn exploit_view(s: &MwSolver, path: &[PathStep], p: usize) -> Result<Exploit
                 let strat: Vec<f32> = match lock {
                     Some(l) => (0..na).map(|a| l[a * nh + i]).collect(),
                     None => {
-                        let m = (0..na).map(|a| acfv[a][i]).fold(f32::NEG_INFINITY, f32::max);
+                        let m = (0..na)
+                            .map(|a| acfv[a][i])
+                            .fold(f32::NEG_INFINITY, f32::max);
                         let eps = (m.abs() * 1e-5).max(1e-5);
                         let win: Vec<bool> = (0..na).map(|a| m - acfv[a][i] <= eps).collect();
                         let w = win.iter().filter(|&&x| x).count().max(1) as f32;
-                        (0..na).map(|a| if win[a] { 1.0 / w } else { 0.0 }).collect()
+                        (0..na)
+                            .map(|a| if win[a] { 1.0 / w } else { 0.0 })
+                            .collect()
                     }
                 };
-                (Some(strat), Some((0..na).map(|a| ev_of(acfv[a][i], i)).collect()))
+                (
+                    Some(strat),
+                    Some((0..na).map(|a| ev_of(acfv[a][i], i)).collect()),
+                )
             } else {
                 (None, None)
             };

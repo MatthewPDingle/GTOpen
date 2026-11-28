@@ -1,9 +1,10 @@
 //! Registered regret matching+ learning screen; registered quality gates.
+use std::{path::Path, sync::Arc, time::Instant};
+
 use serde_json::{json, Value};
 use solver::preflop::{
     convergence_research::Experiment, equity::EquityTable, gpu::PreflopGpu, PreflopSolver,
 };
-use std::{path::Path, sync::Arc, time::Instant};
 fn main() -> Result<(), String> {
     let a: Vec<_> = std::env::args().skip(1).collect();
     if a.len() != 6 {
@@ -11,11 +12,16 @@ fn main() -> Result<(), String> {
     }
     let samples: u32 = a[2].parse().map_err(|_| "samples")?;
     let seed: u64 = a[3].parse().map_err(|_| "seed")?;
-    if !([64,1024].contains(&samples)) || ![42, 314159].contains(&seed) || !["0", "1"].contains(&a[4].as_str()) {
+    if !([64, 1024].contains(&samples))
+        || ![42, 314159].contains(&seed)
+        || !["0", "1"].contains(&a[4].as_str())
+    {
         return Err("unregistered case".into());
     }
     let rm_plus = a[4] == "1";
-    if samples == 1024 && (!rm_plus || seed != 42) { return Err("unregistered full case".into()); }
+    if samples == 1024 && (!rm_plus || seed != 42) {
+        return Err("unregistered full case".into());
+    }
     let pair = samples == 64;
     let normalized = !rm_plus;
     let out = Path::new(&a[5]);
@@ -71,8 +77,14 @@ fn main() -> Result<(), String> {
     g.configure_research(Experiment::new("gamma15", samples, 1000, seed)?)?;
     let pair_extra_bytes = if normalized {
         g.enable_research_normalized_pair_control(1024)?
-    } else if pair { g.enable_research_pair_control(1024)? } else { 0 };
-    if rm_plus { g.enable_research_rm_plus()?; }
+    } else if pair {
+        g.enable_research_pair_control(1024)?
+    } else {
+        0
+    };
+    if rm_plus {
+        g.enable_research_rm_plus()?;
+    }
     let mut streak = 0;
     let mut checks = Vec::new();
     let mut solve_seconds = 0.;

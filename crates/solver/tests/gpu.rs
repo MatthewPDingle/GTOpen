@@ -4,10 +4,13 @@
 
 #![cfg(feature = "gpu")]
 
-use solver::gpu::GpuSolver;
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{LockMode, Solver, Spot, SpotConfig};
 use std::sync::Arc;
+
+use solver::{
+    gpu::GpuSolver,
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    LockMode, Solver, Spot, SpotConfig,
+};
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
     StreetSizing {
@@ -96,8 +99,14 @@ fn gpu_locked_always_call_kills_bluffs() {
         host.iterate();
     }
     let path = vec![solver::PathStep::Action { index: 1 }]; // after OOP bet
-    host.lock_node(&path, LockMode::Range { freqs: vec![0.0, 1.0] }, "ip always calls".to_string())
-        .unwrap();
+    host.lock_node(
+        &path,
+        LockMode::Range {
+            freqs: vec![0.0, 1.0],
+        },
+        "ip always calls".to_string(),
+    )
+    .unwrap();
 
     let mut gpu = GpuSolver::new(&host).unwrap(); // picks up the lock table
     for _ in 0..2000 {
@@ -125,7 +134,11 @@ fn gpu_locked_always_call_kills_bluffs() {
     assert!(view.locked);
     let qq = hand_index(&host.spot, 1, "QdQh");
     let st = view.players[1].hands[qq].strategy.as_ref().unwrap();
-    assert!(st[1] > 0.999, "locked call freq should be 1.0, got {}", st[1]);
+    assert!(
+        st[1] > 0.999,
+        "locked call freq should be 1.0, got {}",
+        st[1]
+    );
 }
 
 /// GPU exploitability (best response in VRAM) must match the CPU's number
@@ -216,7 +229,11 @@ fn gpu_suit_isomorphism_equivalence() {
         },
     };
     let spot = Spot::new(config.clone()).unwrap();
-    assert_eq!(spot.suit_perms.len(), 2, "KsQs2d should have the c<->h swap");
+    assert_eq!(
+        spot.suit_perms.len(),
+        2,
+        "KsQs2d should have the c<->h swap"
+    );
 
     let mut host_iso = Solver::new(Arc::new(spot)); // use_isomorphism = true
     let mut gpu_iso = GpuSolver::new(&host_iso).unwrap();
@@ -375,7 +392,16 @@ fn gpu_icm_matches_cpu() {
     let e_gpu = host.exploitability() / 6.0 * 100.0;
     let e_gpu_own = gpu.exploitability(&host).unwrap() / 6.0 * 100.0;
     eprintln!("ICM flop: cpu {e_cpu:.4}% pot, gpu {e_gpu:.4}% (gpu best response {e_gpu_own:.4}%)");
-    assert!(e_cpu < 1.0 && e_gpu < 1.0, "both should converge: cpu {e_cpu}, gpu {e_gpu}");
-    assert!(e_gpu < e_cpu + 0.15, "GPU should not lag CPU: {e_gpu}% vs {e_cpu}%");
-    assert!((e_gpu - e_gpu_own).abs() < 0.02, "GPU best response {e_gpu_own}% vs CPU {e_gpu}%");
+    assert!(
+        e_cpu < 1.0 && e_gpu < 1.0,
+        "both should converge: cpu {e_cpu}, gpu {e_gpu}"
+    );
+    assert!(
+        e_gpu < e_cpu + 0.15,
+        "GPU should not lag CPU: {e_gpu}% vs {e_cpu}%"
+    );
+    assert!(
+        (e_gpu - e_gpu_own).abs() < 0.02,
+        "GPU best response {e_gpu_own}% vs CPU {e_gpu}%"
+    );
 }

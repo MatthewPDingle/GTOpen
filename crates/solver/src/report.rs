@@ -12,27 +12,47 @@
 //! everywhere: it is the probability the situation actually arises with the
 //! hand, and the only weighting under which EV_OOP + EV_IP = pot.
 
-use crate::cards::{rank, suit, Card};
-use crate::cfr::Solver;
-use crate::game::{fold_cfv, showdown_cfv, Dealt};
-use crate::tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL};
+use std::{collections::BTreeMap, sync::OnceLock};
+
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
-use std::sync::OnceLock;
+
+use crate::{
+    cards::{rank, suit, Card},
+    cfr::Solver,
+    game::{fold_cfv, showdown_cfv, Dealt},
+    tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL},
+};
 
 // ---------------------------------------------------------------------------
 // Hand categories (mirrors web/js/classify.js — keep the two in lockstep)
 // ---------------------------------------------------------------------------
 
 pub const MADE: [&str; 17] = [
-    "sf", "quads", "boat", "flush", "straight", "set", "trips", "two_pair", "overpair",
-    "top_pair", "underpair", "second_pair", "third_pair", "weak_pair", "ace_high",
-    "king_high", "no_made",
+    "sf",
+    "quads",
+    "boat",
+    "flush",
+    "straight",
+    "set",
+    "trips",
+    "two_pair",
+    "overpair",
+    "top_pair",
+    "underpair",
+    "second_pair",
+    "third_pair",
+    "weak_pair",
+    "ace_high",
+    "king_high",
+    "no_made",
 ];
-pub const DRAW: [&str; 8] =
-    ["combo", "nut_fd", "fd", "oesd", "gutshot", "bdfd2", "bdfd1", "no_draw"];
-pub const EQA: [&str; 7] = ["eqa_90", "eqa_80", "eqa_70", "eqa_60", "eqa_50", "eqa_25", "eqa_0"];
+pub const DRAW: [&str; 8] = [
+    "combo", "nut_fd", "fd", "oesd", "gutshot", "bdfd2", "bdfd1", "no_draw",
+];
+pub const EQA: [&str; 7] = [
+    "eqa_90", "eqa_80", "eqa_70", "eqa_60", "eqa_50", "eqa_25", "eqa_0",
+];
 
 fn has_straight(rank_mask: u32) -> bool {
     let m = (rank_mask << 1) | ((rank_mask >> 12) & 1); // ace low
@@ -139,7 +159,11 @@ pub fn classify(board: &[Card], c1: Card, c2: Card) -> (u8, u8) {
             made = Some("two_pair");
         } else if hole_pairs.len() == 1 || (pocket && cnt_board[hr[0]] == 0) {
             if pocket {
-                made = Some(if hr[0] > board_top { "overpair" } else { "underpair" });
+                made = Some(if hr[0] > board_top {
+                    "overpair"
+                } else {
+                    "underpair"
+                });
             } else {
                 let r = hole_pairs[0];
                 let pos = board_ranks.iter().position(|&x| x == r);
@@ -189,7 +213,9 @@ pub fn classify(board: &[Card], c1: Card, c2: Card) -> (u8, u8) {
             let fs = fd_suit as u8;
             let mut res = false;
             for r in (0..13).rev() {
-                let on_board = board.iter().any(|&c| suit(c) == fs && rank(c) as usize == r);
+                let on_board = board
+                    .iter()
+                    .any(|&c| suit(c) == fs && rank(c) as usize == r);
                 if on_board {
                     continue;
                 }
@@ -394,7 +420,11 @@ fn finish(acc: LineAcc) -> LineSummary {
             .iter()
             .map(|pa| {
                 let ev = if pa.w > 1e-12 { pa.wev / pa.w } else { 0.0 };
-                let eq = if pa.has_eq && pa.w > 1e-12 { Some(pa.weq / pa.w) } else { None };
+                let eq = if pa.has_eq && pa.w > 1e-12 {
+                    Some(pa.weq / pa.w)
+                } else {
+                    None
+                };
                 let eqr = eq.filter(|&e| e > 0.02).map(|e| ev / (acc.pot * e));
                 let cats = pa.cats.as_ref().map(|c| {
                     let conv = |v: &Vec<Acc1>| -> Vec<CatStat> {
@@ -411,7 +441,11 @@ fn finish(acc: LineAcc) -> LineSummary {
                             })
                             .collect()
                     };
-                    CatBreakdown { made: conv(&c[0]), draw: conv(&c[1]), eqa: conv(&c[2]) }
+                    CatBreakdown {
+                        made: conv(&c[0]),
+                        draw: conv(&c[1]),
+                        eqa: conv(&c[2]),
+                    }
                 });
                 PlayerStat {
                     w: r4(pa.w),
@@ -464,11 +498,24 @@ impl Solver {
         let reach: [Vec<f32>; 2] = [spot.weights[0].clone(), spot.weights[1].clone()];
         // A board recurs under many betting lines. Categories depend only
         // on its cards and the fixed ranges, not on reaches or strategies.
-        let slots = match spot.board.len() { 3 => 53 + 52 * 52, 4 => 53, _ => 1 };
+        let slots = match spot.board.len() {
+            3 => 53 + 52 * 52,
+            4 => 53,
+            _ => 1,
+        };
         let cache: Vec<OnceLock<BoardCats>> = (0..slots).map(|_| OnceLock::new()).collect();
         let cats = self.cached_board_cats(&cache, Dealt::default());
         let mut out = BTreeMap::new();
-        self.sweep(0, [&reach[0], &reach[1]], Dealt::default(), "", 0, cats, &cache, &mut out);
+        self.sweep(
+            0,
+            [&reach[0], &reach[1]],
+            Dealt::default(),
+            "",
+            0,
+            cats,
+            &cache,
+            &mut out,
+        );
         out.into_iter().map(|(k, v)| (k, finish(v))).collect()
     }
 
@@ -479,17 +526,26 @@ impl Solver {
             board.push(dealt.cards[i]);
         }
         let cats = [0usize, 1].map(|p| {
-            spot.hands[p].iter().map(|h| classify(&board, h.c1, h.c2)).collect()
+            spot.hands[p]
+                .iter()
+                .map(|h| classify(&board, h.c1, h.c2))
+                .collect()
         });
         BoardCats { cats }
     }
 
-    fn cached_board_cats<'a>(&self, cache: &'a [OnceLock<BoardCats>], dealt: Dealt) -> &'a BoardCats {
+    fn cached_board_cats<'a>(
+        &self,
+        cache: &'a [OnceLock<BoardCats>],
+        dealt: Dealt,
+    ) -> &'a BoardCats {
         let key = match dealt.len {
             0 => 0,
             1 => 1 + dealt.cards[0] as usize,
-            _ => 53 + dealt.cards[0].min(dealt.cards[1]) as usize * 52
-                + dealt.cards[0].max(dealt.cards[1]) as usize,
+            _ => {
+                53 + dealt.cards[0].min(dealt.cards[1]) as usize * 52
+                    + dealt.cards[0].max(dealt.cards[1]) as usize
+            }
         };
         cache[key].get_or_init(|| self.board_cats(dealt))
     }
@@ -528,8 +584,7 @@ impl Solver {
                 let mut cfv = [vec![0f32; nh[0]], vec![0f32; nh[1]]];
                 for p in 0..2 {
                     if node.kind == KIND_TERM_FOLD {
-                        let amount =
-                            spot.fold_payoff(node_idx, node, p);
+                        let amount = spot.fold_payoff(node_idx, node, p);
                         fold_cfv(
                             &spot.hands[p],
                             &spot.hands[1 - p],
@@ -598,8 +653,16 @@ impl Solver {
                     let d2 = dealt.push(c);
                     let bc = self.cached_board_cats(cache, d2);
                     let mut local = BTreeMap::new();
-                    let mut cfv =
-                        self.sweep(child, [&r[0], &r[1]], d2, &child_key, 0, bc, cache, &mut local);
+                    let mut cfv = self.sweep(
+                        child,
+                        [&r[0], &r[1]],
+                        d2,
+                        &child_key,
+                        0,
+                        bc,
+                        cache,
+                        &mut local,
+                    );
                     // a hand holding the dealt card does not exist on this
                     // runout: its value here is zero (as in chance_node)
                     for p in 0..2 {
@@ -685,10 +748,21 @@ impl Solver {
                     }
                     let child = spot.tree.children[node.children_start as usize + a];
                     let child_key = format!("{key}{}a{a}", if key.is_empty() { "" } else { "," });
-                    let child_reach: [&[f32]; 2] =
-                        if q == 0 { [rq.as_slice(), reach[1]] } else { [reach[0], rq.as_slice()] };
-                    let ccfv =
-                        self.sweep(child, child_reach, dealt, &child_key, since_chance + 1, cats, cache, out);
+                    let child_reach: [&[f32]; 2] = if q == 0 {
+                        [rq.as_slice(), reach[1]]
+                    } else {
+                        [reach[0], rq.as_slice()]
+                    };
+                    let ccfv = self.sweep(
+                        child,
+                        child_reach,
+                        dealt,
+                        &child_key,
+                        since_chance + 1,
+                        cats,
+                        cache,
+                        out,
+                    );
                     for i in 0..nh[q] {
                         cfv[q][i] += sig[i] * ccfv[q][i];
                     }
@@ -711,15 +785,28 @@ impl Solver {
                     };
                     for p in 0..2 {
                         let valid = self.valid_opp_sum(p, reach[1 - p]);
-                        let eq = if full { Some(self.equity(p, reach[1 - p], dealt)) } else { None };
+                        let eq = if full {
+                            Some(self.equity(p, reach[1 - p], dealt))
+                        } else {
+                            None
+                        };
                         let pa = &mut acc.players[p];
                         pa.has_eq = eq.is_some();
                         if full {
                             let mk = |n: usize, na: usize| -> Vec<Acc1> {
-                                (0..n).map(|_| Acc1 { fsum: vec![0.0; na], ..Default::default() }).collect()
+                                (0..n)
+                                    .map(|_| Acc1 {
+                                        fsum: vec![0.0; na],
+                                        ..Default::default()
+                                    })
+                                    .collect()
                             };
                             let fna = if p == q { na } else { 0 };
-                            pa.cats = Some([mk(MADE.len(), fna), mk(DRAW.len(), fna), mk(EQA.len(), fna)]);
+                            pa.cats = Some([
+                                mk(MADE.len(), fna),
+                                mk(DRAW.len(), fna),
+                                mk(EQA.len(), fna),
+                            ]);
                         }
                         for i in 0..nh[p] {
                             if valid[i] <= 1e-9 || reach[p][i] <= 0.0 {
@@ -784,11 +871,15 @@ mod tests {
         card_from_str(s).unwrap()
     }
     fn made(board: &str, hand: &str) -> &'static str {
-        let b: Vec<Card> = (0..board.len() / 2).map(|i| c(&board[2 * i..2 * i + 2])).collect();
+        let b: Vec<Card> = (0..board.len() / 2)
+            .map(|i| c(&board[2 * i..2 * i + 2]))
+            .collect();
         MADE[classify(&b, c(&hand[0..2]), c(&hand[2..4])).0 as usize]
     }
     fn draw(board: &str, hand: &str) -> &'static str {
-        let b: Vec<Card> = (0..board.len() / 2).map(|i| c(&board[2 * i..2 * i + 2])).collect();
+        let b: Vec<Card> = (0..board.len() / 2)
+            .map(|i| c(&board[2 * i..2 * i + 2]))
+            .collect();
         DRAW[classify(&b, c(&hand[0..2]), c(&hand[2..4])).1 as usize]
     }
 

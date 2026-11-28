@@ -6,14 +6,21 @@
 
 #![cfg(feature = "gpu")]
 
-use solver::gpu::GpuSolver;
-use solver::query::PathStep;
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Solver, Spot, SpotConfig, Storage};
 use std::sync::Arc;
 
+use solver::{
+    gpu::GpuSolver,
+    query::PathStep,
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    Solver, Spot, SpotConfig, Storage,
+};
+
 fn sizing(bet: &str) -> StreetSizing {
-    StreetSizing { bet: parse_sizes(bet).unwrap(), raise: vec![], donk: vec![] }
+    StreetSizing {
+        bet: parse_sizes(bet).unwrap(),
+        raise: vec![],
+        donk: vec![],
+    }
 }
 
 const POT: f64 = 100.0;
@@ -91,18 +98,31 @@ fn gpu_fit_matches_cpu_on_the_river() {
     gpu.download_fits(&mut host).unwrap();
     let x_host = host.exploitability() / POT * 100.0;
     let x_cpu = cpu.exploitability() / POT * 100.0;
-    let (bc, bg) = (cpu.fits_view()[0].bounty_pct_pot.clone(), host.fits_view()[0].bounty_pct_pot.clone());
+    let (bc, bg) = (
+        cpu.fits_view()[0].bounty_pct_pot.clone(),
+        host.fits_view()[0].bounty_pct_pot.clone(),
+    );
     eprintln!("exploitability cpu {x_cpu:.4} gpu {x_gpu:.4} host {x_host:.4}; bounty cpu {bc:?} gpu {bg:?}");
-    assert!((x_gpu - x_host).abs() < 0.01, "GPU readout {x_gpu} vs CPU on GPU arenas {x_host}");
+    assert!(
+        (x_gpu - x_host).abs() < 0.01,
+        "GPU readout {x_gpu} vs CPU on GPU arenas {x_host}"
+    );
     assert!(x_gpu < 0.05 && x_cpu < 0.05);
     for a in 0..2 {
-        assert!((bc[a] - bg[a]).abs() < 0.5 + 0.1 * bc[a].abs(), "bounty {bc:?} vs {bg:?}");
+        assert!(
+            (bc[a] - bg[a]).abs() < 0.5 + 0.1 * bc[a].abs(),
+            "bounty {bc:?} vs {bg:?}"
+        );
     }
     assert!(host.fit_max_error() < 0.005, "{:?}", host.fits_view());
     cpu.materialize_fits().unwrap();
     host.materialize_fits().unwrap();
     let (lc, lg) = (&cpu.locks[&0], &host.locks[&0]);
-    let diff = lc.iter().zip(lg).map(|(a, b)| (a - b).abs()).fold(0f32, f32::max);
+    let diff = lc
+        .iter()
+        .zip(lg)
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
     assert!(diff < 0.1, "locked strategies differ by {diff}");
 }
 
@@ -122,7 +142,8 @@ fn gpu_fit_added_mid_solve_below_a_chance_node() {
             gpu.iterate().unwrap();
         }
         gpu.sync_to_cpu(&mut host).unwrap();
-        host.add_fit(&path, &[0.4, 0.6], "river fit".into()).unwrap();
+        host.add_fit(&path, &[0.4, 0.6], "river fit".into())
+            .unwrap();
         // the server's order: pull dual state, restart fresh fits, upload
         gpu.download_fits(&mut host).unwrap();
         let fresh = host.prepare_fits();

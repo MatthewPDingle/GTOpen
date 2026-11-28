@@ -107,7 +107,11 @@ pub(super) fn bytes(s: &PreflopSolver) -> usize {
         slot_of[q] = Some(j);
     }
     let (_, free_len) = free_layout(s, &slot_of);
-    let ruled = s.nodes.iter().filter(|nd| nd.kind == KIND_ACTION && slot_of[nd.actor as usize].is_some()).count();
+    let ruled = s
+        .nodes
+        .iter()
+        .filter(|nd| nd.kind == KIND_ACTION && slot_of[nd.actor as usize].is_some())
+        .count();
     let k = seats.len();
     let n = s.nodes.len();
     // free regrets + strat, read reach, mixtures, free reach blocks
@@ -119,8 +123,13 @@ pub(super) fn bytes(s: &PreflopSolver) -> usize {
 
 impl Plan {
     pub(super) fn build(
-        s: &PreflopSolver, action_nodes: &[u32], spans: &[(u32, u32)],
-        off: &[u32], src: &[i32], foff: &[u32], forced_len: usize,
+        s: &PreflopSolver,
+        action_nodes: &[u32],
+        spans: &[(u32, u32)],
+        off: &[u32],
+        src: &[i32],
+        foff: &[u32],
+        forced_len: usize,
     ) -> Result<Self, String> {
         let (trust, hero) = s.rnr_active().ok_or("trust dial not active")?;
         let seats = s.trust_seats();
@@ -131,8 +140,13 @@ impl Plan {
             slot_of[q] = Some(j);
         }
         let (loc_of, free_len) = free_layout(s, &slot_of);
-        if s.arena_len.checked_add(free_len).is_none_or(|x| x > u32::MAX as usize) {
-            return Err("free arenas beyond the GPU engine's 32-bit arena indexing; solving on CPU".into());
+        if s.arena_len
+            .checked_add(free_len)
+            .is_none_or(|x| x > u32::MAX as usize)
+        {
+            return Err(
+                "free arenas beyond the GPU engine's 32-bit arena indexing; solving on CPU".into(),
+            );
         }
         // initial free arenas
         let (regrets, strat) = match s.pf_free.as_deref() {
@@ -210,7 +224,11 @@ impl Plan {
                 let o = loc_of[i] as usize;
                 for a in 0..nd.actions.len() {
                     for h in 0..NUM_CLASSES {
-                        let rin = if (b as usize) < k { class_prob(h) } else { rs[(b as usize - k) * NUM_CLASSES + h] };
+                        let rin = if (b as usize) < k {
+                            class_prob(h)
+                        } else {
+                            rs[(b as usize - k) * NUM_CLASSES + h]
+                        };
                         rs[o + a * NUM_CLASSES + h] = rin * sigma[a * NUM_CLASSES + h];
                     }
                 }
@@ -224,9 +242,16 @@ impl Plan {
             }
         }
         let rf_blocks = k + free_len / NUM_CLASSES;
-        let per = |f: &dyn Fn(usize) -> u32| nodes.iter().map(|&nd| f(nd as usize)).collect::<Vec<u32>>();
+        let per =
+            |f: &dyn Fn(usize) -> u32| nodes.iter().map(|&nd| f(nd as usize)).collect::<Vec<u32>>();
         let loc = per(&|i| loc_of[i]);
-        let lock = per(&|i| if s.point_locks.contains_key(&(i as u32)) { foff[i] } else { NO_LOCK });
+        let lock = per(&|i| {
+            if s.point_locks.contains_key(&(i as u32)) {
+                foff[i]
+            } else {
+                NO_LOCK
+            }
+        });
         let mix_off = per(&|i| mix_at[i]);
         let rf_in = per(&|i| rf_in_of[i]);
         let rf_out = per(&|i| (k + loc_of[i] as usize / NUM_CLASSES) as u32);
@@ -263,34 +288,79 @@ impl Plan {
             foff_read.push(fread);
         }
         Ok(Self {
-            trust, hero, seats, free_len, regrets, strat, mix_len, off_free, foff_mixed, src_mixed,
-            src_learn, src_read, foff_read, nodes, spans: rspans, loc, lock, mix_off, rs, rf_in, rf_out, rf_blocks,
+            trust,
+            hero,
+            seats,
+            free_len,
+            regrets,
+            strat,
+            mix_len,
+            off_free,
+            foff_mixed,
+            src_mixed,
+            src_learn,
+            src_read,
+            foff_read,
+            nodes,
+            spans: rspans,
+            loc,
+            lock,
+            mix_off,
+            rs,
+            rf_in,
+            rf_out,
+            rf_blocks,
         })
     }
 }
 
 impl GpuRnr {
-    pub(super) fn new(ctx: &Arc<CudaContext>, stream: &Arc<CudaStream>, arch: &'static str, p: Plan) -> Result<Self, String> {
-        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> = std::sync::OnceLock::new();
+    pub(super) fn new(
+        ctx: &Arc<CudaContext>,
+        stream: &Arc<CudaStream>,
+        arch: &'static str,
+        p: Plan,
+    ) -> Result<Self, String> {
+        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> =
+            std::sync::OnceLock::new();
         let ptx = PTX
             .get_or_init(|| {
                 cudarc::nvrtc::compile_ptx_with_opts(
                     include_str!("rnr.cu"),
-                    cudarc::nvrtc::CompileOptions { arch: Some(arch), ..Default::default() },
+                    cudarc::nvrtc::CompileOptions {
+                        arch: Some(arch),
+                        ..Default::default()
+                    },
                 )
                 .map_err(e)
             })
             .clone()?;
         let module = ctx.load_module(ptx).map_err(e)?;
-        let up_u = |v: &[u32]| stream.clone_htod(if v.is_empty() { &[0u32][..] } else { v }).map_err(e);
+        let up_u = |v: &[u32]| {
+            stream
+                .clone_htod(if v.is_empty() { &[0u32][..] } else { v })
+                .map_err(e)
+        };
         let up_i = |v: &[i32]| stream.clone_htod(v).map_err(e);
         let k = p.seats.len();
-        let mut roles = vec![Role { src: up_i(&p.src_mixed)?, foff: None, free_off: true }];
+        let mut roles = vec![Role {
+            src: up_i(&p.src_mixed)?,
+            foff: None,
+            free_off: true,
+        }];
         for j in 0..k {
-            roles.push(Role { src: up_i(&p.src_learn[j])?, foff: None, free_off: true });
+            roles.push(Role {
+                src: up_i(&p.src_learn[j])?,
+                foff: None,
+                free_off: true,
+            });
         }
         for j in 0..k {
-            roles.push(Role { src: up_i(&p.src_read[j])?, foff: Some(up_u(&p.foff_read[j])?), free_off: false });
+            roles.push(Role {
+                src: up_i(&p.src_read[j])?,
+                foff: Some(up_u(&p.foff_read[j])?),
+                free_off: false,
+            });
         }
         let mut rf = vec![0f32; p.rf_blocks.max(1) * NUM_CLASSES];
         for j in 0..k {
@@ -307,13 +377,17 @@ impl GpuRnr {
             d_off_free: up_u(&p.off_free)?,
             d_foff_mixed: up_u(&p.foff_mixed)?,
             roles,
-            d_src_zero: stream.alloc_zeros::<i32>(p.src_mixed.len().max(1)).map_err(e)?,
+            d_src_zero: stream
+                .alloc_zeros::<i32>(p.src_mixed.len().max(1))
+                .map_err(e)?,
             d_nodes: up_u(&p.nodes)?,
             spans: p.spans,
             d_loc: up_u(&p.loc)?,
             d_lock: up_u(&p.lock)?,
             d_mix_off: up_u(&p.mix_off)?,
-            d_rs: stream.clone_htod(if p.rs.is_empty() { &[0f32][..] } else { &p.rs }).map_err(e)?,
+            d_rs: stream
+                .clone_htod(if p.rs.is_empty() { &[0f32][..] } else { &p.rs })
+                .map_err(e)?,
             d_rf_in: up_u(&p.rf_in)?,
             d_rf_out: up_u(&p.rf_out)?,
             d_rf: stream.clone_htod(&rf).map_err(e)?,
@@ -360,7 +434,12 @@ impl PreflopGpu {
     }
 
     /// Run `f` with role `i`'s tables swapped into the engine.
-    fn rnr_with_role<T>(&mut self, r: &mut GpuRnr, i: usize, f: impl FnOnce(&mut Self) -> Result<T, String>) -> Result<T, String> {
+    fn rnr_with_role<T>(
+        &mut self,
+        r: &mut GpuRnr,
+        i: usize,
+        f: impl FnOnce(&mut Self) -> Result<T, String>,
+    ) -> Result<T, String> {
         let swap = |g: &mut Self, r: &mut GpuRnr| {
             let role = &mut r.roles[i];
             std::mem::swap(&mut g.d_src, &mut role.src);
@@ -380,7 +459,11 @@ impl PreflopGpu {
 
     /// One iteration of the trust game: the hero's pass, each free type's,
     /// then DCFR discounting of the main and free arenas.
-    pub(super) fn try_iterate_rnr(&mut self, iteration: &mut u32, stop: Option<&AtomicBool>) -> Result<bool, String> {
+    pub(super) fn try_iterate_rnr(
+        &mut self,
+        iteration: &mut u32,
+        stop: Option<&AtomicBool>,
+    ) -> Result<bool, String> {
         let stopped = || stop.is_some_and(|f| f.load(Ordering::Relaxed));
         let mut r = self.rnr.take().expect("trust dial engine");
         let result = self.rnr_iterate_with(&mut r, iteration, &stopped);
@@ -388,7 +471,12 @@ impl PreflopGpu {
         result
     }
 
-    fn rnr_iterate_with(&mut self, r: &mut GpuRnr, iteration: &mut u32, stopped: &dyn Fn() -> bool) -> Result<bool, String> {
+    fn rnr_iterate_with(
+        &mut self,
+        r: &mut GpuRnr,
+        iteration: &mut u32,
+        stopped: &dyn Fn() -> bool,
+    ) -> Result<bool, String> {
         let k = r.seats.len();
         let mut passes = vec![(r.hero as i32, 0usize)];
         passes.extend(r.seats.iter().enumerate().map(|(j, &q)| (q as i32, 1 + j)));
@@ -404,13 +492,16 @@ impl PreflopGpu {
             };
             // hero and ruled seats are distinct: one graph per seat
             if self.warmed && self.learning_graphs[p as usize].is_none() {
-                self.stream.begin_capture(sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL).map_err(e)?;
+                self.stream
+                    .begin_capture(sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL)
+                    .map_err(e)?;
                 let result = pass(self, r);
                 let graph = self.stream.end_capture(
                     sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
                 ).map_err(e)?;
                 result?;
-                self.learning_graphs[p as usize] = Some(graph.ok_or_else(|| "preflop graph capture failed".to_string())?);
+                self.learning_graphs[p as usize] =
+                    Some(graph.ok_or_else(|| "preflop graph capture failed".to_string())?);
             }
             if let Some(graph) = &self.learning_graphs[p as usize] {
                 graph.launch().map_err(e)?;
@@ -470,14 +561,24 @@ impl PreflopGpu {
     }
 
     fn root_dot(&self) -> Result<f64, String> {
-        let v: Vec<f32> = self.stream.clone_dtoh(&self.d_val.slice(0..NUM_CLASSES)).map_err(e)?;
-        Ok((0..NUM_CLASSES).map(|h| class_prob(h) as f64 * v[h] as f64).sum())
+        let v: Vec<f32> = self
+            .stream
+            .clone_dtoh(&self.d_val.slice(0..NUM_CLASSES))
+            .map_err(e)?;
+        Ok((0..NUM_CLASSES)
+            .map(|h| class_prob(h) as f64 * v[h] as f64)
+            .sum())
     }
 
     /// Average-strategy evaluation of seats `ps` under role `role` (mixture
     /// at `t` from the free averages already in the forced table): per seat
     /// (best response, average) at the root.
-    fn rnr_eval_role(&mut self, r: &mut GpuRnr, role: usize, ps: &[(i32, i32)]) -> Result<Vec<(f64, f64)>, String> {
+    fn rnr_eval_role(
+        &mut self,
+        r: &mut GpuRnr,
+        role: usize,
+        ps: &[(i32, i32)],
+    ) -> Result<Vec<(f64, f64)>, String> {
         self.rnr_with_role(r, role, |g| {
             g.down(1, -1)?;
             let mut out = Vec::with_capacity(ps.len());
@@ -510,7 +611,10 @@ impl PreflopGpu {
             }
             let constrained = self.constrained_br.clone();
             let br_mode = |p: usize| if constrained[p] { 3 } else { 2 };
-            let others: Vec<(i32, i32)> = (0..np).filter(|&p| slot_of[p].is_none()).map(|p| (p as i32, br_mode(p))).collect();
+            let others: Vec<(i32, i32)> = (0..np)
+                .filter(|&p| slot_of[p].is_none())
+                .map(|p| (p as i32, br_mode(p)))
+                .collect();
             let mut gaps = vec![0f64; np];
             let mut evs = vec![0f64; np];
             for (&(p, _), (br, avg)) in others.iter().zip(self.rnr_eval_role(&mut r, 0, &others)?) {
@@ -555,13 +659,21 @@ impl PreflopGpu {
 
     /// Download the free arenas into the CPU solver's `PfFree`.
     pub(super) fn rnr_sync_to_cpu(&self, s: &mut PreflopSolver) -> Result<(), String> {
-        let Some(r) = self.rnr.as_ref() else { return Ok(()) };
+        let Some(r) = self.rnr.as_ref() else {
+            return Ok(());
+        };
         if r.free_len == 0 {
             return Ok(());
         }
         let span = self.arena_len..self.arena_len + r.free_len;
-        let regs = self.stream.clone_dtoh(&self.d_regrets.slice(span.clone())).map_err(e)?;
-        let strat = self.stream.clone_dtoh(&self.d_strat.slice(span)).map_err(e)?;
+        let regs = self
+            .stream
+            .clone_dtoh(&self.d_regrets.slice(span.clone()))
+            .map_err(e)?;
+        let strat = self
+            .stream
+            .clone_dtoh(&self.d_strat.slice(span))
+            .map_err(e)?;
         s.sync_pf_free();
         match s.pf_free.as_deref() {
             Some(f) if f.hero == r.hero && f.seats == r.seats && f.len == r.free_len => {

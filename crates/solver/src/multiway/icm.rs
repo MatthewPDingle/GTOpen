@@ -13,9 +13,10 @@
 //! and `order` the corrections when the first wins or they tie, which the
 //! evaluator weights with exact ordered pair masses (`eval::order_masses`).
 
+use std::collections::HashMap;
+
 use super::tree::{others, MwNode, MwTree, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, NP};
 use crate::icm::postflop::{IcmPricer, PostflopIcm};
-use std::collections::HashMap;
 
 /// Net chips (won minus put) for every player at a terminal, given each
 /// player's hand strength (higher wins). Pots are settled layer by layer;
@@ -34,7 +35,11 @@ pub fn chip_results(node: &MwNode, strength: [i32; NP]) -> [f64; NP] {
         if amount <= 0.0 {
             continue;
         }
-        let contenders: Vec<usize> = payers.iter().copied().filter(|&i| node.live & (1 << i) != 0).collect();
+        let contenders: Vec<usize> = payers
+            .iter()
+            .copied()
+            .filter(|&i| node.live & (1 << i) != 0)
+            .collect();
         if contenders.is_empty() {
             // Only folded players paid this layer: give it back.
             for &i in &payers {
@@ -43,7 +48,10 @@ pub fn chip_results(node: &MwNode, strength: [i32; NP]) -> [f64; NP] {
             continue;
         }
         let best = contenders.iter().map(|&i| strength[i]).max().unwrap();
-        let winners: Vec<usize> = contenders.into_iter().filter(|&i| strength[i] == best).collect();
+        let winners: Vec<usize> = contenders
+            .into_iter()
+            .filter(|&i| strength[i] == best)
+            .collect();
         for &i in &winners {
             won[i] += amount / winners.len() as f64;
         }
@@ -66,7 +74,11 @@ impl MwIcm {
         let share = cfg.starting_pot / NP as f64;
         let reference: [f64; NP] = std::array::from_fn(|i| cfg.stacks[i] + share);
         let pricer = IcmPricer::new(icm, reference.to_vec());
-        let mut me = MwIcm { pricer, reference, tables: HashMap::new() };
+        let mut me = MwIcm {
+            pricer,
+            reference,
+            tables: HashMap::new(),
+        };
         let mut cache: HashMap<[u64; NP], [f64; NP]> = HashMap::new();
         for node in &tree.nodes {
             if node.kind != KIND_TERM_FOLD && node.kind != KIND_TERM_SHOWDOWN {
@@ -76,7 +88,8 @@ impl MwIcm {
             if me.tables.contains_key(&key) {
                 continue;
             }
-            let t: [([[f64; 3]; 3], [f64; 4]); NP] = std::array::from_fn(|p| me.table_for(node, p, &mut cache));
+            let t: [([[f64; 3]; 3], [f64; 4]); NP] =
+                std::array::from_fn(|p| me.table_for(node, p, &mut cache));
             me.tables.insert(key, t);
         }
         me
@@ -92,7 +105,12 @@ impl MwIcm {
     }
 
     /// Every player's ICM value for given hand strengths (higher wins).
-    pub fn values(&self, node: &MwNode, strength: [i32; NP], cache: &mut HashMap<[u64; NP], [f64; NP]>) -> [f64; NP] {
+    pub fn values(
+        &self,
+        node: &MwNode,
+        strength: [i32; NP],
+        cache: &mut HashMap<[u64; NP], [f64; NP]>,
+    ) -> [f64; NP] {
         let net = chip_results(node, strength);
         let after: [f64; NP] = std::array::from_fn(|i| self.reference[i] + net[i]);
         *cache.entry(after.map(f64::to_bits)).or_insert_with(|| {
@@ -101,7 +119,12 @@ impl MwIcm {
         })
     }
 
-    fn table_for(&self, node: &MwNode, p: usize, cache: &mut HashMap<[u64; NP], [f64; NP]>) -> ([[f64; 3]; 3], [f64; 4]) {
+    fn table_for(
+        &self,
+        node: &MwNode,
+        p: usize,
+        cache: &mut HashMap<[u64; NP], [f64; NP]>,
+    ) -> ([[f64; 3]; 3], [f64; 4]) {
         let (q, r) = others(p);
         let live = |i: usize| node.live & (1 << i) != 0;
         let both = live(q) && live(r);

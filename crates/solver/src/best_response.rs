@@ -1,10 +1,12 @@
 //! Best-response and average-strategy traversals: exploitability measurement
 //! and EV evaluation under the current average strategy profile.
 
-use crate::cfr::Solver;
-use crate::game::{fold_cfv, showdown_cfv, sweep_buckets, Dealt};
-use crate::scratch::Buf;
-use crate::tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL};
+use crate::{
+    cfr::Solver,
+    game::{fold_cfv, showdown_cfv, sweep_buckets, Dealt},
+    scratch::Buf,
+    tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL},
+};
 
 impl Solver {
     /// Counterfactual values for player `p` when `p` plays a best response
@@ -15,14 +17,29 @@ impl Solver {
 
     /// `traverse_br` under a lock view: `free` = the free villain's view
     /// under "trust the read" (profile locks do not bind; see `rnr.rs`).
-    pub fn traverse_br_view(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, free: bool) -> Vec<f32> {
+    pub fn traverse_br_view(
+        &self,
+        node_idx: u32,
+        p: usize,
+        reach_o: &[f32],
+        dealt: Dealt,
+        free: bool,
+    ) -> Vec<f32> {
         let mut out = vec![0f32; self.spot.hands[p].len()];
         self.br_into(node_idx, p, reach_o, dealt, free, &mut out);
         out
     }
 
     /// Best-response traversal writing into `out` (must be zeroed on entry).
-    fn br_into(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, free: bool, out: &mut [f32]) {
+    fn br_into(
+        &self,
+        node_idx: u32,
+        p: usize,
+        reach_o: &[f32],
+        dealt: Dealt,
+        free: bool,
+        out: &mut [f32],
+    ) {
         // Exact for this read-only traversal: zero opponent reach gives zero CFVs.
         if reach_o.iter().all(|&r| r <= 0.0) {
             return;
@@ -142,14 +159,29 @@ impl Solver {
     }
 
     /// `traverse_avg` under a lock view (see `traverse_br_view`).
-    pub fn traverse_avg_view(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, free: bool) -> Vec<f32> {
+    pub fn traverse_avg_view(
+        &self,
+        node_idx: u32,
+        p: usize,
+        reach_o: &[f32],
+        dealt: Dealt,
+        free: bool,
+    ) -> Vec<f32> {
         let mut out = vec![0f32; self.spot.hands[p].len()];
         self.avg_into(node_idx, p, reach_o, dealt, free, &mut out);
         out
     }
 
     /// Average-strategy traversal writing into `out` (must be zeroed on entry).
-    fn avg_into(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, free: bool, out: &mut [f32]) {
+    fn avg_into(
+        &self,
+        node_idx: u32,
+        p: usize,
+        reach_o: &[f32],
+        dealt: Dealt,
+        free: bool,
+        out: &mut [f32],
+    ) {
         // Exact for this read-only traversal: zero opponent reach gives zero CFVs.
         if reach_o.iter().all(|&r| r <= 0.0) {
             return;
@@ -314,40 +346,81 @@ impl Solver {
 
 /// Showdown equity depends on cards and opposing reach, not strategy arenas.
 /// Shared by Solver and research storage callers; summation order is unchanged.
-pub fn equity_for_spot(spot: &crate::game::Spot, p: usize, reach_o: &[f32], dealt: Dealt) -> Vec<f32> {
-        let nh = spot.hands[p].len();
-        let mut win = vec![0f64; nh];
-        let mut tie = vec![0f64; nh];
-        let mut valid = vec![0f64; nh];
-        let board_len = spot.board.len() + dealt.len as usize;
-        match board_len {
-            5 => {
+pub fn equity_for_spot(
+    spot: &crate::game::Spot,
+    p: usize,
+    reach_o: &[f32],
+    dealt: Dealt,
+) -> Vec<f32> {
+    let nh = spot.hands[p].len();
+    let mut win = vec![0f64; nh];
+    let mut tie = vec![0f64; nh];
+    let mut valid = vec![0f64; nh];
+    let board_len = spot.board.len() + dealt.len as usize;
+    match board_len {
+        5 => {
+            sweep_buckets(
+                spot.river.get(&dealt),
+                p,
+                &spot.hands[p],
+                &spot.hands[1 - p],
+                reach_o,
+                &spot.same_combo[p],
+                &mut win,
+                &mut tie,
+                &mut valid,
+            );
+        }
+        4 => {
+            for c in 0..52u8 {
+                if spot.board_mask & (1 << c) != 0 || dealt.contains(c) {
+                    continue;
+                }
+                let mut ro = reach_o.to_vec();
+                let cm = 1u64 << c;
+                for (j, h) in spot.hands[1 - p].iter().enumerate() {
+                    if h.mask & cm != 0 {
+                        ro[j] = 0.0;
+                    }
+                }
                 sweep_buckets(
-                    spot.river.get(&dealt),
+                    spot.river.get(&dealt.push(c)),
                     p,
                     &spot.hands[p],
                     &spot.hands[1 - p],
-                    reach_o,
+                    &ro,
                     &spot.same_combo[p],
                     &mut win,
                     &mut tie,
                     &mut valid,
                 );
             }
-            4 => {
-                for c in 0..52u8 {
-                    if spot.board_mask & (1 << c) != 0 || dealt.contains(c) {
+        }
+        _ => {
+            for t in 0..52u8 {
+                if spot.board_mask & (1 << t) != 0 {
+                    continue;
+                }
+                let tm = 1u64 << t;
+                let mut ro_t = reach_o.to_vec();
+                for (j, h) in spot.hands[1 - p].iter().enumerate() {
+                    if h.mask & tm != 0 {
+                        ro_t[j] = 0.0;
+                    }
+                }
+                for r in (t + 1)..52 {
+                    if spot.board_mask & (1 << r) != 0 {
                         continue;
                     }
-                    let mut ro = reach_o.to_vec();
-                    let cm = 1u64 << c;
+                    let rm = 1u64 << r;
+                    let mut ro = ro_t.clone();
                     for (j, h) in spot.hands[1 - p].iter().enumerate() {
-                        if h.mask & cm != 0 {
+                        if h.mask & rm != 0 {
                             ro[j] = 0.0;
                         }
                     }
                     sweep_buckets(
-                        spot.river.get(&dealt.push(c)),
+                        spot.river.get(&Dealt::default().push(t).push(r)),
                         p,
                         &spot.hands[p],
                         &spot.hands[1 - p],
@@ -359,51 +432,15 @@ pub fn equity_for_spot(spot: &crate::game::Spot, p: usize, reach_o: &[f32], deal
                     );
                 }
             }
-            _ => {
-                for t in 0..52u8 {
-                    if spot.board_mask & (1 << t) != 0 {
-                        continue;
-                    }
-                    let tm = 1u64 << t;
-                    let mut ro_t = reach_o.to_vec();
-                    for (j, h) in spot.hands[1 - p].iter().enumerate() {
-                        if h.mask & tm != 0 {
-                            ro_t[j] = 0.0;
-                        }
-                    }
-                    for r in (t + 1)..52 {
-                        if spot.board_mask & (1 << r) != 0 {
-                            continue;
-                        }
-                        let rm = 1u64 << r;
-                        let mut ro = ro_t.clone();
-                        for (j, h) in spot.hands[1 - p].iter().enumerate() {
-                            if h.mask & rm != 0 {
-                                ro[j] = 0.0;
-                            }
-                        }
-                        sweep_buckets(
-                            spot.river.get(&Dealt::default().push(t).push(r)),
-                            p,
-                            &spot.hands[p],
-                            &spot.hands[1 - p],
-                            &ro,
-                            &spot.same_combo[p],
-                            &mut win,
-                            &mut tie,
-                            &mut valid,
-                        );
-                    }
-                }
-            }
         }
-        (0..nh)
-            .map(|i| {
-                if valid[i] > 1e-12 {
-                    ((win[i] + 0.5 * tie[i]) / valid[i]) as f32
-                } else {
-                    f32::NAN
-                }
-            })
-            .collect()
     }
+    (0..nh)
+        .map(|i| {
+            if valid[i] > 1e-12 {
+                ((win[i] + 0.5 * tie[i]) / valid[i]) as f32
+            } else {
+                f32::NAN
+            }
+        })
+        .collect()
+}

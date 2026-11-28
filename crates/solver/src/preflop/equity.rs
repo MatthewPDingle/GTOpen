@@ -7,9 +7,12 @@
 //! leaves use the coupled-deck model in `multiway`; the pairwise product is
 //! retained only for legacy saves and can severely underprice broad hands.
 
-use crate::cards::{make_card, Card};
-use crate::evaluator::evaluate7;
 use rayon::prelude::*;
+
+use crate::{
+    cards::{make_card, Card},
+    evaluator::evaluate7,
+};
 
 pub const NUM_CLASSES: usize = 169;
 const RANK_CHARS: [char; 13] = [
@@ -146,7 +149,11 @@ impl EquityTable {
                 by_opponent[j * NUM_CLASSES + h] = t[h * NUM_CLASSES + j];
             }
         }
-        Self { t, by_opponent, samples }
+        Self {
+            t,
+            by_opponent,
+            samples,
+        }
     }
 
     #[inline]
@@ -170,7 +177,9 @@ impl EquityTable {
         if std::is_x86_feature_detected!("avx2") {
             // Runtime detection preserves portability. AVX2 widens independent
             // hero lanes; it does not enable FMA or reassociate a hand's sum.
-            unsafe { self.eqs_vs_dist_avx2(dist, out); }
+            unsafe {
+                self.eqs_vs_dist_avx2(dist, out);
+            }
             return;
         }
         self.eqs_vs_dist_portable(dist, out);
@@ -269,12 +278,8 @@ impl EquityTable {
                         deck.swap(k, r);
                         *b = deck[k];
                     }
-                    let va = evaluate7(&[
-                        board[0], board[1], board[2], board[3], board[4], a1, a2,
-                    ]);
-                    let vb = evaluate7(&[
-                        board[0], board[1], board[2], board[3], board[4], b1, b2,
-                    ]);
+                    let va = evaluate7(&[board[0], board[1], board[2], board[3], board[4], a1, a2]);
+                    let vb = evaluate7(&[board[0], board[1], board[2], board[3], board[4], b1, b2]);
                     if va > vb {
                         won += 1.0;
                     } else if va == vb {
@@ -301,9 +306,16 @@ mod tests {
     fn assert_normalized(table: &EquityTable, original: &[f32]) {
         for h in 0..NUM_CLASSES {
             for j in 0..NUM_CLASSES {
-                let want = if h == j { 0.5 } else { original[h * NUM_CLASSES + j] };
+                let want = if h == j {
+                    0.5
+                } else {
+                    original[h * NUM_CLASSES + j]
+                };
                 assert_eq!(table.eq(h, j).to_bits(), want.to_bits(), "({h}, {j})");
-                assert_eq!(table.by_opponent[j * NUM_CLASSES + h].to_bits(), want.to_bits());
+                assert_eq!(
+                    table.by_opponent[j * NUM_CLASSES + h].to_bits(),
+                    want.to_bits()
+                );
             }
         }
     }
@@ -311,7 +323,8 @@ mod tests {
     #[test]
     fn constructor_normalizes_only_diagonal_in_both_layouts() {
         let values: Vec<f32> = (0..NUM_CLASSES * NUM_CLASSES)
-            .map(|k| ((k * 37 + 11) % 997) as f32 / 996.0).collect();
+            .map(|k| ((k * 37 + 11) % 997) as f32 / 996.0)
+            .collect();
         let table = EquityTable::from_values(values.clone(), 123);
         assert_normalized(&table, &values);
         assert_eq!(table.samples, 123);
@@ -328,8 +341,10 @@ mod tests {
             let start = 4 + (h * NUM_CLASSES + h) * 4;
             bytes[start..start + 4].copy_from_slice(&0.50215f32.to_le_bytes());
         }
-        let values: Vec<f32> = bytes[4..].chunks_exact(4)
-            .map(|b| f32::from_le_bytes(b.try_into().unwrap())).collect();
+        let values: Vec<f32> = bytes[4..]
+            .chunks_exact(4)
+            .map(|b| f32::from_le_bytes(b.try_into().unwrap()))
+            .collect();
         let dir = std::env::temp_dir().join(format!("gtopen-stale-equity-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("eq.bin");
@@ -337,7 +352,11 @@ mod tests {
         let table = EquityTable::load_or_build(path.to_str().unwrap(), samples);
         assert_normalized(&table, &values);
         assert_eq!(table.samples, samples);
-        assert_eq!(std::fs::read(&path).unwrap(), bytes, "old cache stays byte-for-byte intact");
+        assert_eq!(
+            std::fs::read(&path).unwrap(),
+            bytes,
+            "old cache stays byte-for-byte intact"
+        );
         std::fs::remove_dir_all(dir).unwrap();
     }
 
@@ -346,14 +365,18 @@ mod tests {
         let table = EquityTable::build(1);
         for h in 0..NUM_CLASSES {
             assert_eq!(table.eq(h, h).to_bits(), 0.5f32.to_bits());
-            assert_eq!(table.by_opponent[h * NUM_CLASSES + h].to_bits(), 0.5f32.to_bits());
+            assert_eq!(
+                table.by_opponent[h * NUM_CLASSES + h].to_bits(),
+                0.5f32.to_bits()
+            );
         }
     }
 
     #[test]
     fn batched_equities_match_scalar_bits() {
         let values = (0..NUM_CLASSES * NUM_CLASSES)
-            .map(|k| ((k * 37 + 11) % 997) as f32 / 996.0).collect();
+            .map(|k| ((k * 37 + 11) % 997) as f32 / 996.0)
+            .collect();
         let table = EquityTable::from_values(values, 1);
         for seed in 0..32 {
             let mut dist = [0.0; NUM_CLASSES];
@@ -363,14 +386,26 @@ mod tests {
                 }
             }
             let sum: f32 = dist.iter().sum();
-            if sum > 0.0 { for d in &mut dist { *d /= sum; } }
+            if sum > 0.0 {
+                for d in &mut dist {
+                    *d /= sum;
+                }
+            }
             let mut got = [0.0; NUM_CLASSES];
             table.eqs_vs_dist(&dist, &mut got);
             let mut portable = [0.0; NUM_CLASSES];
             table.eqs_vs_dist_portable(&dist, &mut portable);
             for h in 0..NUM_CLASSES {
-                assert_eq!(got[h].to_bits(), table.eq_vs_dist(h, &dist).to_bits(), "seed={seed} h={h}");
-                assert_eq!(portable[h].to_bits(), got[h].to_bits(), "portable seed={seed} h={h}");
+                assert_eq!(
+                    got[h].to_bits(),
+                    table.eq_vs_dist(h, &dist).to_bits(),
+                    "seed={seed} h={h}"
+                );
+                assert_eq!(
+                    portable[h].to_bits(),
+                    got[h].to_bits(),
+                    "portable seed={seed} h={h}"
+                );
             }
         }
     }

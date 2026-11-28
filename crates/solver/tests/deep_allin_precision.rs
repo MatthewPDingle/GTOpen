@@ -1,7 +1,10 @@
 //! Bounded reductions of SergMartidi's issue #1 deep-SPR all-in configuration.
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Solver, Spot, SpotConfig, Storage};
 use std::sync::Arc;
+
+use solver::{
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    Solver, Spot, SpotConfig, Storage,
+};
 
 #[test]
 fn zero_opponent_reach_still_accumulates_own_average_strategy() {

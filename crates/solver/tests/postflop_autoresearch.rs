@@ -7,13 +7,18 @@
 //! No saved games or historical research artifacts are read or written.
 #![cfg(feature = "gpu")]
 
+use std::{
+    io::{self, Write},
+    sync::Arc,
+    time::Instant,
+};
+
 use serde_json::{json, Value};
-use solver::gpu::{GpuSolver, KERNEL_NAMES};
-use solver::store::{Storage, Store};
-use solver::{Algorithm, Solver, Spot, SpotConfig};
-use std::io::{self, Write};
-use std::sync::Arc;
-use std::time::Instant;
+use solver::{
+    gpu::{GpuSolver, KERNEL_NAMES},
+    store::{Storage, Store},
+    Algorithm, Solver, Spot, SpotConfig,
+};
 
 const TARGET_PCT_POT: f64 = 0.3;
 const CHECK_EVERY: u32 = 20;
@@ -157,7 +162,11 @@ fn postflop_complete_cycle() {
         Ok("compressed") | Err(_) => Storage::Compressed,
         Ok(other) => panic!("unknown POSTFLOP_AUTORESEARCH_STORAGE {other:?}"),
     };
-    let storage_name = if storage == Storage::Compressed { "compressed" } else { "f32" };
+    let storage_name = if storage == Storage::Compressed {
+        "compressed"
+    } else {
+        "f32"
+    };
     let profile = match std::env::var("POSTFLOP_AUTORESEARCH_PROFILE").as_deref() {
         Ok("1") => true,
         Ok("0") | Err(_) => false,
@@ -176,7 +185,10 @@ fn postflop_complete_cycle() {
 
     let mut completed = 0;
     for (fixture_index, &(name, board, rake)) in FIXTURES.iter().enumerate() {
-        if filter.as_ref().is_some_and(|filter| filter.as_str() != name) {
+        if filter
+            .as_ref()
+            .is_some_and(|filter| filter.as_str() != name)
+        {
             continue;
         }
         let mut config: SpotConfig =
@@ -194,8 +206,15 @@ fn postflop_complete_cycle() {
         let stage_start = Instant::now();
         let mut host = Solver::with_storage(Arc::new(Spot::new(config).unwrap()), storage);
         let build_cpu_alloc_ms = elapsed_ms(stage_start);
-        assert_eq!(host.algo, Algorithm::Dcfr, "frozen evaluator expects default DCFR");
-        assert!(host.use_isomorphism, "frozen evaluator expects default suit isomorphism");
+        assert_eq!(
+            host.algo,
+            Algorithm::Dcfr,
+            "frozen evaluator expects default DCFR"
+        );
+        assert!(
+            host.use_isomorphism,
+            "frozen evaluator expects default suit isomorphism"
+        );
         emit_stage(json!({
             "stage": "build_complete", "fixture_id": name,
             "build_ms": build_cpu_alloc_ms,
@@ -216,7 +235,10 @@ fn postflop_complete_cycle() {
             }
             let exploit = gpu.exploitability(&host).unwrap();
             let pct = exploit / host.spot.tree.config.starting_pot * 100.0;
-            assert!(exploit.is_finite() && pct.is_finite(), "nonfinite exploitability");
+            assert!(
+                exploit.is_finite() && pct.is_finite(),
+                "nonfinite exploitability"
+            );
             emit_stage(json!({
                 "stage": "convergence_check", "fixture_id": name, "iteration": gpu.iteration,
                 "exploit_chips": exploit, "exploit_pct_pot": pct,
@@ -266,7 +288,10 @@ fn postflop_complete_cycle() {
             "full_cycle_ms": total_ms,
             "runtime_nvrtc_jit_included": true, "flushed_progress_logging_included": true,
         }));
-        assert!(target_met, "{name} did not reach the frozen target within {MAX_ITERATIONS} iterations");
+        assert!(
+            target_met,
+            "{name} did not reach the frozen target within {MAX_ITERATIONS} iterations"
+        );
 
         if profile {
             let diagnostic = gpu.iterate_profiled().unwrap();

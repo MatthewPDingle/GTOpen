@@ -2,14 +2,19 @@
 //! each player's regrets and strategy sums as raw little-endian f32 (always
 //! full precision, whatever the in-RAM storage).
 
-use super::game::{MwSpot, MwSpotConfig};
-use super::solver::MwSolver;
-use super::tree::{KIND_ACTION, NP};
-use crate::cfr::Algorithm;
-use crate::store::Storage;
+use std::{
+    io::{BufRead, BufReader, BufWriter, Read, Write},
+    sync::Arc,
+};
+
 use serde::{Deserialize, Serialize};
-use std::io::{BufRead, BufReader, BufWriter, Read, Write};
-use std::sync::Arc;
+
+use super::{
+    game::{MwSpot, MwSpotConfig},
+    solver::MwSolver,
+    tree::{KIND_ACTION, NP},
+};
+use crate::{cfr::Algorithm, store::Storage};
 
 const MAGIC: &str = "GTOMW1";
 /// Tournament (ICM) saves: older binaries refuse them.
@@ -35,9 +40,18 @@ pub fn save(s: &MwSolver, exploit_pct_pot: Option<f64>, w: impl Write) -> Result
         exploit_pct_pot,
     };
     let io = |e: std::io::Error| e.to_string();
-    let magic = if s.spot.config.tree.icm.is_some() { MAGIC_ICM } else { MAGIC };
+    let magic = if s.spot.config.tree.icm.is_some() {
+        MAGIC_ICM
+    } else {
+        MAGIC
+    };
     writeln!(w, "{magic}").map_err(io)?;
-    writeln!(w, "{}", serde_json::to_string(&hdr).map_err(|e| e.to_string())?).map_err(io)?;
+    writeln!(
+        w,
+        "{}",
+        serde_json::to_string(&hdr).map_err(|e| e.to_string())?
+    )
+    .map_err(io)?;
     let spot = &*s.spot;
     let mut buf = Vec::new();
     for p in 0..NP {
@@ -81,7 +95,8 @@ pub fn load(r: impl Read, storage: Storage) -> Result<(MwSolver, MwSaveHeader), 
     }
     line.clear();
     r.read_line(&mut line).map_err(|e| e.to_string())?;
-    let hdr: MwSaveHeader = serde_json::from_str(&line).map_err(|e| format!("bad save header: {e}"))?;
+    let hdr: MwSaveHeader =
+        serde_json::from_str(&line).map_err(|e| format!("bad save header: {e}"))?;
     let spot = Arc::new(MwSpot::new(hdr.config.clone())?);
     let mut s = MwSolver::new(spot.clone(), storage);
     s.iteration = hdr.iteration;
@@ -99,10 +114,19 @@ pub fn load(r: impl Read, storage: Storage) -> Result<(MwSolver, MwSaveHeader), 
                 }
                 let k = n.num_children as usize * nh;
                 bytes.resize(k * 4, 0u8);
-                r.read_exact(&mut bytes).map_err(|e| format!("truncated save: {e}"))?;
+                r.read_exact(&mut bytes)
+                    .map_err(|e| format!("truncated save: {e}"))?;
                 buf.clear();
-                buf.extend(bytes.chunks_exact(4).map(|b| f32::from_le_bytes([b[0], b[1], b[2], b[3]])));
-                let store = if which == 0 { &s.regrets[p] } else { &s.strat[p] };
+                buf.extend(
+                    bytes
+                        .chunks_exact(4)
+                        .map(|b| f32::from_le_bytes([b[0], b[1], b[2], b[3]])),
+                );
+                let store = if which == 0 {
+                    &s.regrets[p]
+                } else {
+                    &s.strat[p]
+                };
                 unsafe { store.write_f32(i as u32, n.data_offset, k, &buf) };
             }
         }

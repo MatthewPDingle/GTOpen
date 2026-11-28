@@ -24,9 +24,7 @@ pub struct Buf {
 impl Buf {
     #[inline]
     fn acquire(len: usize) -> Vec<f32> {
-        let mut v = POOL
-            .with(|p| p.borrow_mut().pop())
-            .unwrap_or_default();
+        let mut v = POOL.with(|p| p.borrow_mut().pop()).unwrap_or_default();
         if v.len() < len {
             v.resize(len, 0.0);
         }

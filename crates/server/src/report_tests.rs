@@ -1,10 +1,11 @@
 //! CUDA report continuation tests and a manual adaptation benchmark.
+use solver::{gpu::GpuSolver, query::PostflopStats};
+
 use super::*;
-use solver::gpu::GpuSolver;
-use solver::query::PostflopStats;
 
 fn reference(board: &str, small: bool, storage: Storage) -> Solver {
-    let mut cfg: SpotConfig = serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
+    let mut cfg: SpotConfig =
+        serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
     cfg.board = board.into();
     cfg.tree.rake_pct = 0.05;
     cfg.tree.rake_cap = 3.0;

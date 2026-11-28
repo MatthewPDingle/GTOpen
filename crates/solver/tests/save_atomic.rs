@@ -6,9 +6,12 @@
 //! and renames over the destination; a failed write must leave the previous
 //! file byte-identical.
 
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Solver, Spot, SpotConfig};
 use std::sync::Arc;
+
+use solver::{
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    Solver, Spot, SpotConfig,
+};
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
     StreetSizing {
@@ -60,7 +63,10 @@ fn failed_save_leaves_previous_save_intact() {
     for _ in 0..10 {
         solver.iterate();
     }
-    assert!(solver.save(&path).is_err(), "blocked staging path must fail the save");
+    assert!(
+        solver.save(&path).is_err(),
+        "blocked staging path must fail the save"
+    );
     assert_eq!(
         before,
         std::fs::read(&path).unwrap(),

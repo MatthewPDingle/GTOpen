@@ -1,9 +1,10 @@
 //! Fixed-age averaging discriminator; current-regret identity is mandatory.
+use std::{path::Path, sync::Arc, time::Instant};
+
 use serde_json::{json, Value};
 use solver::preflop::{
     convergence_research::Experiment, equity::EquityTable, gpu::PreflopGpu, PreflopSolver,
 };
-use std::{path::Path, sync::Arc, time::Instant};
 fn main() -> Result<(), String> {
     let a: Vec<_> = std::env::args().skip(1).collect();
     if a.len() != 5 {

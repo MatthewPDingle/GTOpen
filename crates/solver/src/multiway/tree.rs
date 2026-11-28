@@ -6,8 +6,9 @@
 //! removes cards. Stacks may differ: a short all-in creates side pots, which
 //! terminal payoffs resolve from each player's total contribution.
 
-use crate::tree::{Action, BetSize, StreetSizing, SENTINEL};
 use serde::{Deserialize, Serialize};
+
+use crate::tree::{Action, BetSize, StreetSizing, SENTINEL};
 
 pub const NP: usize = 3;
 
@@ -55,7 +56,11 @@ fn default_max_raises() -> u8 {
 impl MwTreeConfig {
     /// Same bet and raise menus for every player on every street.
     pub fn uniform(starting_pot: f64, stack: f64, bets: &[BetSize], raises: &[BetSize]) -> Self {
-        let s = StreetSizing { bet: bets.to_vec(), raise: raises.to_vec(), donk: Vec::new() };
+        let s = StreetSizing {
+            bet: bets.to_vec(),
+            raise: raises.to_vec(),
+            donk: Vec::new(),
+        };
         MwTreeConfig {
             starting_pot,
             stacks: [stack; NP],
@@ -176,7 +181,9 @@ impl<'a> MwTreeBuilder<'a> {
         }
         for (i, s) in cfg.stacks.iter().enumerate() {
             if !(*s > 0.0 && s.is_finite()) {
-                return Err(format!("stack of player {i} must be a positive finite number"));
+                return Err(format!(
+                    "stack of player {i} must be a positive finite number"
+                ));
             }
         }
         if !(0.0..1.0).contains(&cfg.rake_pct) || cfg.rake_cap < 0.0 {
@@ -244,14 +251,24 @@ impl<'a> MwTreeBuilder<'a> {
 
     fn legal_actions(&self, st: &St) -> Vec<Action> {
         let me = st.to_act as usize;
-        let hi = (0..NP).filter(|&i| st.live & (1 << i) != 0).map(|i| st.street_bet[i]).fold(0.0, f64::max);
+        let hi = (0..NP)
+            .filter(|&i| st.live & (1 << i) != 0)
+            .map(|i| st.street_bet[i])
+            .fold(0.0, f64::max);
         let facing = hi - st.street_bet[me];
         let behind = self.behind(st, me);
         // The most any other player who can still act (or is live) could match.
         let others_can_act = (0..NP).any(|i| i != me && Self::can_act(st, i));
         let cover = (0..NP)
             .filter(|&i| i != me && st.live & (1 << i) != 0)
-            .map(|i| st.street_bet[i] + if st.allin & (1 << i) != 0 { 0.0 } else { self.behind(st, i) })
+            .map(|i| {
+                st.street_bet[i]
+                    + if st.allin & (1 << i) != 0 {
+                        0.0
+                    } else {
+                        self.behind(st, i)
+                    }
+            })
             .fold(0.0, f64::max);
         let own_max = st.street_bet[me] + behind;
         let max_to = own_max.min(cover.max(hi));
@@ -384,7 +401,10 @@ impl<'a> MwTreeBuilder<'a> {
                 }
             }
             Action::Bet(to) | Action::Raise(to) => {
-                let hi = (0..NP).filter(|&i| st.live & (1 << i) != 0).map(|i| st.street_bet[i]).fold(0.0, f64::max);
+                let hi = (0..NP)
+                    .filter(|&i| st.live & (1 << i) != 0)
+                    .map(|i| st.street_bet[i])
+                    .fold(0.0, f64::max);
                 st.last_increment = st.last_increment.max(to - hi);
                 if matches!(a, Action::Raise(_)) {
                     st.num_raises += 1;
@@ -411,12 +431,18 @@ impl<'a> MwTreeBuilder<'a> {
     }
 
     fn street_over(&self, st: &St) -> bool {
-        let hi = (0..NP).filter(|&i| st.live & (1 << i) != 0).map(|i| st.street_bet[i]).fold(0.0, f64::max);
-        (0..NP).all(|i| !Self::can_act(st, i) || (st.acted[i] && (st.street_bet[i] - hi).abs() < 1e-7))
+        let hi = (0..NP)
+            .filter(|&i| st.live & (1 << i) != 0)
+            .map(|i| st.street_bet[i])
+            .fold(0.0, f64::max);
+        (0..NP)
+            .all(|i| !Self::can_act(st, i) || (st.acted[i] && (st.street_bet[i] - hi).abs() < 1e-7))
     }
 
     fn next_actor(&self, st: &St, from: usize) -> Option<usize> {
-        (1..=NP).map(|k| (from + k) % NP).find(|&j| Self::can_act(st, j))
+        (1..=NP)
+            .map(|k| (from + k) % NP)
+            .find(|&j| Self::can_act(st, j))
     }
 
     fn street_end(&mut self, st: St) -> Result<u32, String> {
@@ -522,7 +548,9 @@ pub fn payoff_table(node: &MwNode, p: usize, rake_pct: f64, rake_cap: f64) -> [[
     let returned: f64 = layers
         .iter()
         .zip(levels.iter())
-        .filter(|((_, c), &lv)| c.count_ones() <= 1 && (0..NP).filter(|&i| put[i] >= lv - 1e-7).count() == 1)
+        .filter(|((_, c), &lv)| {
+            c.count_ones() <= 1 && (0..NP).filter(|&i| put[i] >= lv - 1e-7).count() == 1
+        })
         .map(|(l, _)| l.0)
         .sum();
     let contested = total - returned;
@@ -530,15 +558,24 @@ pub fn payoff_table(node: &MwNode, p: usize, rake_pct: f64, rake_cap: f64) -> [[
     if rake_cap > 0.0 {
         rake = rake.min(rake_cap);
     }
-    let rake_frac = if contested > 0.0 { rake / contested } else { 0.0 };
+    let rake_frac = if contested > 0.0 {
+        rake / contested
+    } else {
+        0.0
+    };
     let mut pay = [[0.0; 3]; 3];
     for cq in 0..3 {
         for cr in 0..3 {
             let mut won = 0.0;
             for (k, &(amount, cont)) in layers.iter().enumerate() {
                 let lv = levels[k];
-                let single = (0..NP).filter(|&i| put[i] >= lv - 1e-7).count() == 1 && cont.count_ones() <= 1;
-                let net = if single { amount } else { amount * (1.0 - rake_frac) };
+                let single =
+                    (0..NP).filter(|&i| put[i] >= lv - 1e-7).count() == 1 && cont.count_ones() <= 1;
+                let net = if single {
+                    amount
+                } else {
+                    amount * (1.0 - rake_frac)
+                };
                 if cont & (1 << p) == 0 {
                     continue;
                 }

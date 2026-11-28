@@ -12,8 +12,9 @@
 //! `<name> size <label>` with `"sweep_parent": <name>`. Refinement solves
 //! are recorded as points only: their sizes differ per board.
 
-use super::*;
 use solver::size_sweep::{self, BoardSweep, SizePoint};
+
+use super::*;
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]

@@ -30,12 +30,16 @@
 //! its current average strategy, which is the lock it will become; the usual
 //! exploitability readout then measures the game being converged to.
 
-use crate::cards::card_mask;
-use crate::cfr::Solver;
-use crate::query::{normalize_freqs, rake_to_target, PathStep, Walk};
-use crate::tree::KIND_ACTION;
-use serde::Serialize;
 use std::sync::Mutex;
+
+use serde::Serialize;
+
+use crate::{
+    cards::card_mask,
+    cfr::Solver,
+    query::{normalize_freqs, rake_to_target, PathStep, Walk},
+    tree::KIND_ACTION,
+};
 
 /// Quick-fit temperature, as a fraction of the node's pot: hands whose EV
 /// gap is well below this keep their solved mix, larger gaps decide.
@@ -121,7 +125,15 @@ impl FitConstraint {
         &self.push
     }
 
-    fn new(path: Vec<PathStep>, player: usize, target: Vec<f32>, bounty: Vec<f64>, mass: f64, pot: f64, label: String) -> Self {
+    fn new(
+        path: Vec<PathStep>,
+        player: usize,
+        target: Vec<f32>,
+        bounty: Vec<f64>,
+        mass: f64,
+        pot: f64,
+        label: String,
+    ) -> Self {
         let na = target.len();
         let mut f = FitConstraint {
             path,
@@ -135,7 +147,10 @@ impl FitConstraint {
             push: vec![0.0; na],
             steps: 0,
             fresh: true,
-            acc: Mutex::new(FitAcc { freq: vec![0.0; na], reach: 0.0 }),
+            acc: Mutex::new(FitAcc {
+                freq: vec![0.0; na],
+                reach: 0.0,
+            }),
         };
         f.center();
         f
@@ -145,7 +160,12 @@ impl FitConstraint {
     /// is met the bounty then moves hands between actions without making the
     /// node itself more or less attractive to reach.
     pub(crate) fn center(&mut self) {
-        let c: f64 = self.bounty.iter().zip(&self.target).map(|(b, &t)| b * t as f64).sum();
+        let c: f64 = self
+            .bounty
+            .iter()
+            .zip(&self.target)
+            .map(|(b, &t)| b * t as f64)
+            .sum();
         let cap = FIT_BOUNTY_CAP_POT * self.pot.max(1e-9);
         for b in &mut self.bounty {
             *b = (*b - c).clamp(-cap, cap);
@@ -154,7 +174,14 @@ impl FitConstraint {
 
     /// CPU traversal hook at the node, traverser = owner: add the bounty to
     /// the action values and record the current-iterate frequency.
-    pub(crate) fn apply(&self, sigma: &[f32], reach_p: &[f32], vals: &mut [f32], na: usize, nh: usize) {
+    pub(crate) fn apply(
+        &self,
+        sigma: &[f32],
+        reach_p: &[f32],
+        vals: &mut [f32],
+        na: usize,
+        nh: usize,
+    ) {
         let mut freq = vec![0f64; na];
         let mut tot = 0f64;
         for i in 0..nh {
@@ -193,7 +220,12 @@ impl FitConstraint {
             self.push[a] = kp * self.pot * (self.target[a] as f64 - f);
         }
         self.center();
-        let c: f64 = self.push.iter().zip(&self.target).map(|(b, &t)| b * t as f64).sum();
+        let c: f64 = self
+            .push
+            .iter()
+            .zip(&self.target)
+            .map(|(b, &t)| b * t as f64)
+            .sum();
         for b in &mut self.push {
             *b -= c;
         }
@@ -252,10 +284,18 @@ pub fn fit_least_loss(
             if !active[a] {
                 continue;
             }
-            let p = if psum > 1e-12 { prior[a * nh + i].max(0.0) as f64 / psum } else { 1.0 / n_active as f64 };
+            let p = if psum > 1e-12 {
+                prior[a * nh + i].max(0.0) as f64 / psum
+            } else {
+                1.0 / n_active as f64
+            };
             let p = (1.0 - PRIOR_FLOOR) * p + PRIOR_FLOOR / n_active as f64;
             let ev = evs[a * nh + i];
-            let gap = if ev.is_finite() && best.is_finite() { ev - best } else { 0.0 };
+            let gap = if ev.is_finite() && best.is_finite() {
+                ev - best
+            } else {
+                0.0
+            };
             lb[a * nh + i] = p.ln() + gap / tau;
         }
     }
@@ -271,7 +311,11 @@ pub fn fit_least_loss(
             }
             let mut s = 0f64;
             for a in 0..na {
-                let v = if active[a] { (lb[a * nh + i] + lam[a] * k - m).exp() } else { 0.0 };
+                let v = if active[a] {
+                    (lb[a * nh + i] + lam[a] * k - m).exp()
+                } else {
+                    0.0
+                };
                 out[a * nh + i] = v;
                 s += v;
             }
@@ -386,7 +430,16 @@ impl Solver {
         self.solved_strategy_into(node, &mut prior);
         let (evs, valid) = self.action_evs(walk, p);
         let pot = node.put[0] + node.put[1];
-        let (sigma, lam) = fit_least_loss(&prior, &evs, &valid, &walk.reach[p], target, QUICK_TAU_POT * pot, na, nh);
+        let (sigma, lam) = fit_least_loss(
+            &prior,
+            &evs,
+            &valid,
+            &walk.reach[p],
+            target,
+            QUICK_TAU_POT * pot,
+            na,
+            nh,
+        );
         let (mut wn, mut wd) = (0f64, 0f64);
         for i in 0..nh {
             if valid[i] > 0.0 {
@@ -402,7 +455,12 @@ impl Solver {
     /// seeded from the quick fit; `materialize_fits` locks the result. An
     /// existing lock at the node is removed (journaled, so an enclosing
     /// recorded edit can undo it). Returns the canonical node index.
-    pub fn add_fit(&mut self, path: &[PathStep], freqs: &[f32], label: String) -> Result<u32, String> {
+    pub fn add_fit(
+        &mut self,
+        path: &[PathStep],
+        freqs: &[f32],
+        label: String,
+    ) -> Result<u32, String> {
         let canon = self.canonical_path(path);
         let walk = self.walk_path(&canon)?;
         let node = &self.spot.tree.nodes[walk.node_idx as usize];
@@ -433,7 +491,10 @@ impl Solver {
         let bounty: Vec<f64> = lam.iter().map(|&l| l * scale).collect();
         let idx = walk.node_idx;
         self.take_lock(idx);
-        self.fits.insert(idx, FitConstraint::new(canon, p, target, bounty, mass, pot, label));
+        self.fits.insert(
+            idx,
+            FitConstraint::new(canon, p, target, bounty, mass, pot, label),
+        );
         self.mark_sym_dirty();
         Ok(idx)
     }
@@ -455,7 +516,12 @@ impl Solver {
     /// solver holding its own arenas can do the same. `iterate` calls this;
     /// call it before handing the solver to a GPU solve.
     pub fn prepare_fits(&mut self) -> Vec<u32> {
-        let fresh: Vec<u32> = self.fits.iter().filter(|(_, f)| f.fresh).map(|(&k, _)| k).collect();
+        let fresh: Vec<u32> = self
+            .fits
+            .iter()
+            .filter(|(_, f)| f.fresh)
+            .map(|(&k, _)| k)
+            .collect();
         for &idx in &fresh {
             self.reset_node_average(idx);
             self.fits.get_mut(&idx).unwrap().fresh = false;
@@ -487,7 +553,10 @@ impl Solver {
             if acc.freq.len() == na {
                 fit.step_from(&acc.freq, acc.reach);
             }
-            *fit.acc.lock().unwrap() = FitAcc { freq: vec![0.0; na], reach: 0.0 };
+            *fit.acc.lock().unwrap() = FitAcc {
+                freq: vec![0.0; na],
+                reach: 0.0,
+            };
         }
     }
 
@@ -507,7 +576,10 @@ impl Solver {
                 if tot <= 1e-12 {
                     return 1.0 / na as f32;
                 }
-                ((0..nh).map(|i| r[i] as f64 * s[a * nh + i] as f64).sum::<f64>() / tot) as f32
+                ((0..nh)
+                    .map(|i| r[i] as f64 * s[a * nh + i] as f64)
+                    .sum::<f64>()
+                    / tot) as f32
             })
             .collect())
     }
@@ -525,7 +597,9 @@ impl Solver {
     }
 
     fn fit_view(&self, f: &FitConstraint) -> FitView {
-        let achieved = self.fit_achieved(f).unwrap_or_else(|_| vec![f32::NAN; f.target.len()]);
+        let achieved = self
+            .fit_achieved(f)
+            .unwrap_or_else(|_| vec![f32::NAN; f.target.len()]);
         let max_error = achieved
             .iter()
             .zip(&f.target)
@@ -537,7 +611,11 @@ impl Solver {
             player: f.player,
             target: f.target.clone(),
             achieved,
-            bounty_pct_pot: f.bounty.iter().map(|b| (b / f.pot.max(1e-9) * 100.0) as f32).collect(),
+            bounty_pct_pot: f
+                .bounty
+                .iter()
+                .map(|b| (b / f.pot.max(1e-9) * 100.0) as f32)
+                .collect(),
             max_error,
             current: f.last_freq.iter().map(|&x| x as f32).collect(),
         }
@@ -545,7 +623,10 @@ impl Solver {
 
     /// Largest per-action frequency miss over all running fits (0 if none).
     pub fn fit_max_error(&self) -> f64 {
-        self.fits_view().iter().map(|f| f.max_error as f64).fold(0.0, f64::max)
+        self.fits_view()
+            .iter()
+            .map(|f| f.max_error as f64)
+            .fold(0.0, f64::max)
     }
 
     /// Turn every running fit into an ordinary lock: the node's average
@@ -582,7 +663,14 @@ impl Solver {
     }
 
     /// Overwrite a fit's dual state from the GPU solver.
-    pub fn set_fit_state(&mut self, node: u32, bounty: &[f64], push: &[f64], last_freq: &[f64], steps: u32) {
+    pub fn set_fit_state(
+        &mut self,
+        node: u32,
+        bounty: &[f64],
+        push: &[f64],
+        last_freq: &[f64],
+        steps: u32,
+    ) {
         if let Some(f) = self.fits.get_mut(&node) {
             f.bounty.copy_from_slice(bounty);
             f.push.copy_from_slice(push);

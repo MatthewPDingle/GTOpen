@@ -1,13 +1,16 @@
 //! A `Spot` bundles everything needed to solve one postflop scenario:
 //! the built tree, both players' hand lists, and precomputed river strengths.
 
-use crate::cards::*;
-use crate::evaluator::evaluate7;
-use crate::range::Range;
-use crate::store::Storage;
-use crate::tree::{Strictness, Tree, TreeBuilder, TreeConfig, SENTINEL};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
+
+use crate::{
+    cards::*,
+    evaluator::evaluate7,
+    range::Range,
+    store::Storage,
+    tree::{Strictness, Tree, TreeBuilder, TreeConfig, SENTINEL},
+};
 
 #[derive(Debug, Clone)]
 pub struct HandInfo {
@@ -49,14 +52,19 @@ impl RiverTable {
             }
             _ => {
                 debug_assert_eq!(dealt.len, 2);
-                let (a, b) = (dealt.cards[0].min(dealt.cards[1]), dealt.cards[0].max(dealt.cards[1]));
+                let (a, b) = (
+                    dealt.cards[0].min(dealt.cards[1]),
+                    dealt.cards[0].max(dealt.cards[1]),
+                );
                 a as usize * 52 + b as usize
             }
         }
     }
 
     pub fn get(&self, dealt: &Dealt) -> &RiverBoardEval {
-        self.entries[self.key(dealt)].as_deref().expect("river eval missing")
+        self.entries[self.key(dealt)]
+            .as_deref()
+            .expect("river eval missing")
     }
 }
 
@@ -141,7 +149,10 @@ impl Spot {
         // Record the tree shape explicitly: every new build (and therefore
         // every new save header) says Some(false); only the save loaders
         // turn an ABSENT value into Some(true) for pre-fix files.
-        config.tree.carry_aggressor_through_checks.get_or_insert(false);
+        config
+            .tree
+            .carry_aggressor_through_checks
+            .get_or_insert(false);
         // fraction-vs-percent confusion charges the full cap on every pot
         if config.tree.rake_pct >= 1.0 {
             return Err(format!(
@@ -324,7 +335,9 @@ impl Spot {
         let icm = match &config.tree.icm {
             Some(icm) => {
                 icm.validate(2, config.tree.effective_stack, config.tree.rake_pct)?;
-                Some(std::sync::Arc::new(crate::icm::postflop::HuIcmPayoffs::build(&tree, icm)))
+                Some(std::sync::Arc::new(
+                    crate::icm::postflop::HuIcmPayoffs::build(&tree, icm),
+                ))
             }
             None => None,
         };
@@ -357,7 +370,12 @@ impl Spot {
 
     /// Player p's (win, lose, tie) payoffs at showdown terminal `node_idx`.
     #[inline]
-    pub fn showdown_payoffs(&self, node_idx: u32, node: &crate::tree::Node, p: usize) -> (f32, f32, f32) {
+    pub fn showdown_payoffs(
+        &self,
+        node_idx: u32,
+        node: &crate::tree::Node,
+        p: usize,
+    ) -> (f32, f32, f32) {
         match &self.icm {
             Some(t) => {
                 let i = node_idx as usize;
@@ -442,8 +460,10 @@ impl Spot {
                 }
                 crate::tree::KIND_CHANCE => {
                     let start = node.children_start as usize;
-                    let children = self.tree.children[start..start + 52].iter()
-                        .filter(|&&child| child != crate::tree::SENTINEL).count() as u64;
+                    let children = self.tree.children[start..start + 52]
+                        .iter()
+                        .filter(|&&child| child != crate::tree::SENTINEL)
+                        .count() as u64;
                     reach_blocks[0] += children;
                     reach_blocks[1] += children;
                 }
@@ -510,8 +530,7 @@ fn build_river_table(board: &[Card], board_mask: u64, hands: &[Vec<HandInfo>; 2]
             slots
         }
         _ => {
-            let mut slots: Vec<Option<Box<RiverBoardEval>>> =
-                (0..52 * 52).map(|_| None).collect();
+            let mut slots: Vec<Option<Box<RiverBoardEval>>> = (0..52 * 52).map(|_| None).collect();
             let pairs: Vec<(u8, u8)> = {
                 let mut v = Vec::new();
                 for a in 0..52u8 {

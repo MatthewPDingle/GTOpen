@@ -82,8 +82,7 @@ impl Range {
                         .iter()
                         .map(|&(a, b)| self.weights[combo_index(a, b)])
                         .collect();
-                    let nonzero: Vec<f32> =
-                        weights.iter().copied().filter(|&w| w > 0.0).collect();
+                    let nonzero: Vec<f32> = weights.iter().copied().filter(|&w| w > 0.0).collect();
                     if nonzero.is_empty() {
                         continue;
                     }

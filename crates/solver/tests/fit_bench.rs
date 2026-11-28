@@ -12,16 +12,22 @@
 //!   cargo test --release -p solver --test fit_bench -- --ignored --nocapture fit_cost_cpu
 //!   cargo test --release -p solver --features gpu --test fit_bench -- --ignored --nocapture fit_cost_gpu
 
-use solver::fit::FIT_TOLERANCE;
-use solver::game::Dealt;
-use solver::query::PathStep;
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{LockMode, Solver, Spot, SpotConfig};
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
+
+use solver::{
+    fit::FIT_TOLERANCE,
+    game::Dealt,
+    query::PathStep,
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    LockMode, Solver, Spot, SpotConfig,
+};
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
-    StreetSizing { bet: parse_sizes(bet).unwrap(), raise: parse_sizes(raise).unwrap(), donk: vec![] }
+    StreetSizing {
+        bet: parse_sizes(bet).unwrap(),
+        raise: parse_sizes(raise).unwrap(),
+        donk: vec![],
+    }
 }
 
 fn act(index: usize) -> PathStep {
@@ -34,7 +40,11 @@ fn value_vs_br(s: &Solver, p: usize) -> f64 {
     let spot = &*s.spot;
     let o = 1 - p;
     let cfv = s.traverse_br(0, o, &spot.weights[p], Dealt::default());
-    let br: f64 = spot.weights[o].iter().zip(&cfv).map(|(&w, &v)| w as f64 * v as f64).sum();
+    let br: f64 = spot.weights[o]
+        .iter()
+        .zip(&cfv)
+        .map(|(&w, &v)| w as f64 * v as f64)
+        .sum();
     -br / s.pair_weight_sum()
 }
 
@@ -60,7 +70,10 @@ fn pct(s: &Solver) -> f64 {
 }
 
 fn fmt_freqs(f: &[f64]) -> String {
-    f.iter().map(|x| format!("{:.0}", x * 100.0)).collect::<Vec<_>>().join("/")
+    f.iter()
+        .map(|x| format!("{:.0}", x * 100.0))
+        .collect::<Vec<_>>()
+        .join("/")
 }
 
 struct Case {
@@ -96,9 +109,21 @@ fn river_cases() -> Vec<Case> {
         tree: wide_tree,
     };
     vec![
-        Case { name: "polar river, OOP check/jam", config: polar, path: vec![] },
-        Case { name: "wide river, OOP 4 options", config: wide.clone(), path: vec![] },
-        Case { name: "wide river, IP after check", config: wide, path: vec![act(0)] },
+        Case {
+            name: "polar river, OOP check/jam",
+            config: polar,
+            path: vec![],
+        },
+        Case {
+            name: "wide river, OOP 4 options",
+            config: wide.clone(),
+            path: vec![],
+        },
+        Case {
+            name: "wide river, IP after check",
+            config: wide,
+            path: vec![act(0)],
+        },
     ]
 }
 
@@ -108,11 +133,16 @@ fn targets(gto: &[f64]) -> Vec<(String, Vec<f32>)> {
     let n = gto.len() as f64;
     let half: Vec<f32> = gto.iter().map(|&g| (0.5 * g + 0.5 / n) as f32).collect();
     let mut shift: Vec<f32> = gto.iter().map(|&g| g as f32).collect();
-    let big = (1..gto.len()).max_by(|&a, &b| gto[a].total_cmp(&gto[b])).unwrap_or(1);
+    let big = (1..gto.len())
+        .max_by(|&a, &b| gto[a].total_cmp(&gto[b]))
+        .unwrap_or(1);
     let moved = shift[big] * 0.5;
     shift[big] -= moved;
     shift[0] += moved;
-    let mut out = vec![("halfway to uniform".to_string(), half), ("half of the main bet to check".to_string(), shift)];
+    let mut out = vec![
+        ("halfway to uniform".to_string(), half),
+        ("half of the main bet to check".to_string(), shift),
+    ];
     if gto.len() == 2 {
         out.push(("bet 25%".to_string(), vec![0.75, 0.25]));
         out.push(("bet 75%".to_string(), vec![0.25, 0.75]));
@@ -142,14 +172,37 @@ fn fit_quality() {
         let pot = base.spot.tree.config.starting_pot;
         let gto = freqs_at(&base, &case.path);
         let v0 = value_vs_br(&base, p);
-        println!("\n{}: solved to {:.3}% pot, node frequencies {}", case.name, pct(&base), fmt_freqs(&gto));
+        println!(
+            "\n{}: solved to {:.3}% pot, node frequencies {}",
+            case.name,
+            pct(&base),
+            fmt_freqs(&gto)
+        );
         for (label, target) in targets(&gto) {
             let mut row = Vec::new();
             for method in ["rake", "quick", "full"] {
                 let mut s = solve(&case.config, BASE_ITERS);
                 match method {
-                    "rake" => drop(s.lock_node(&case.path, LockMode::Range { freqs: target.clone() }, "b".into()).unwrap()),
-                    "quick" => drop(s.lock_node(&case.path, LockMode::Fit { freqs: target.clone() }, "b".into()).unwrap()),
+                    "rake" => drop(
+                        s.lock_node(
+                            &case.path,
+                            LockMode::Range {
+                                freqs: target.clone(),
+                            },
+                            "b".into(),
+                        )
+                        .unwrap(),
+                    ),
+                    "quick" => drop(
+                        s.lock_node(
+                            &case.path,
+                            LockMode::Fit {
+                                freqs: target.clone(),
+                            },
+                            "b".into(),
+                        )
+                        .unwrap(),
+                    ),
                     _ => drop(s.add_fit(&case.path, &target, "b".into()).unwrap()),
                 }
                 for _ in 0..RESOLVE_ITERS {
@@ -159,13 +212,22 @@ fn fit_quality() {
                     s.materialize_fits().unwrap();
                 }
                 let got = freqs_at(&s, &case.path);
-                let off = got.iter().zip(&target).map(|(a, &b)| (a - b as f64).abs()).fold(0.0, f64::max);
+                let off = got
+                    .iter()
+                    .zip(&target)
+                    .map(|(a, &b)| (a - b as f64).abs())
+                    .fold(0.0, f64::max);
                 assert!(off < 1e-3, "{method} locked at {got:?}, target {target:?}");
                 let loss = (v0 - value_vs_br(&s, p)) / pot * 100.0;
                 row.push(format!("{method} {loss:7.3}"));
             }
             let t: Vec<f64> = target.iter().map(|&x| x as f64).collect();
-            println!("  {:<32} target {:<14} {}", label, fmt_freqs(&t), row.join("   "));
+            println!(
+                "  {:<32} target {:<14} {}",
+                label,
+                fmt_freqs(&t),
+                row.join("   ")
+            );
         }
     }
 }
@@ -192,7 +254,10 @@ fn run_cpu(s: &mut Solver, target_pct: f64, every: u32, max: u32) -> (u32, f64, 
 #[ignore = "manual benchmark"]
 fn fit_cost_cpu() {
     let target_pct = 0.1;
-    println!("Iterations to {target_pct}% pot (and fits within {:.1} pts)", FIT_TOLERANCE * 100.0);
+    println!(
+        "Iterations to {target_pct}% pot (and fits within {:.1} pts)",
+        FIT_TOLERANCE * 100.0
+    );
     for case in river_cases() {
         let mut plain = Solver::new(Arc::new(Spot::new(case.config.clone()).unwrap()));
         let (n0, t0, _) = run_cpu(&mut plain, target_pct, 10, 20_000);
@@ -215,11 +280,13 @@ fn fit_cost_cpu() {
 
 #[cfg(feature = "gpu")]
 mod gpu {
-    use super::*;
     use solver::gpu::GpuSolver;
 
+    use super::*;
+
     fn bench_config(board: &str) -> SpotConfig {
-        let mut cfg: SpotConfig = serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
+        let mut cfg: SpotConfig =
+            serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
         cfg.board = board.into();
         cfg
     }
@@ -230,7 +297,13 @@ mod gpu {
 
     /// Iterate until exploitability <= target and fits converge, checking
     /// every `every` iterations the way the server does.
-    fn run(gpu: &mut GpuSolver, host: &mut Solver, target_pct: f64, every: u32, max: u32) -> (u32, f64, f64, f64) {
+    fn run(
+        gpu: &mut GpuSolver,
+        host: &mut Solver,
+        target_pct: f64,
+        every: u32,
+        max: u32,
+    ) -> (u32, f64, f64, f64) {
         let start = Instant::now();
         let mut done = 0;
         loop {
@@ -267,7 +340,10 @@ mod gpu {
         let target_pct = 0.3;
         let every = 20;
         let max = 4000;
-        println!("bench_spot.json, iterations to {target_pct}% pot (and fits within {:.1} pts)", FIT_TOLERANCE * 100.0);
+        println!(
+            "bench_spot.json, iterations to {target_pct}% pot (and fits within {:.1} pts)",
+            FIT_TOLERANCE * 100.0
+        );
         // root of the flop; a turn decision below the chance node; a river root
         let cases: Vec<(&str, &str, Vec<PathStep>)> = vec![
             ("flop root (OOP)", "Ks7h2d", vec![]),

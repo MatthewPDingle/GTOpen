@@ -3,8 +3,10 @@
 //! instead of silently solving an unintended tree (or OOMing mid-build) —
 //! plus input validation on the node-lock path.
 
-use solver::tree::{parse_sizes, BetSize, StreetSizing, TreeConfig};
-use solver::{Spot, SpotConfig};
+use solver::{
+    tree::{parse_sizes, BetSize, StreetSizing, TreeConfig},
+    Spot, SpotConfig,
+};
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
     StreetSizing {
@@ -141,7 +143,10 @@ fn lenient_build_still_enforces_node_budget() {
     let err = Spot::new_lenient_with_limit(config, Some(10))
         .err()
         .expect("expected a budget error");
-    assert!(err.contains("max_nodes"), "error should name the budget: {err}");
+    assert!(
+        err.contains("max_nodes"),
+        "error should name the budget: {err}"
+    );
 }
 
 /// Negative rake used to pass validation and pay the winner more than the
@@ -151,7 +156,10 @@ fn negative_rake_pct_is_rejected() {
     let mut config = flop_config();
     config.tree.rake_pct = -0.05;
     let err = Spot::new(config).err().expect("expected a build error");
-    assert!(err.contains("rake_pct"), "error should name rake_pct: {err}");
+    assert!(
+        err.contains("rake_pct"),
+        "error should name rake_pct: {err}"
+    );
 }
 
 #[test]
@@ -160,7 +168,10 @@ fn negative_rake_cap_is_rejected() {
     config.tree.rake_pct = 0.05;
     config.tree.rake_cap = -1.0;
     let err = Spot::new(config).err().expect("expected a build error");
-    assert!(err.contains("rake_cap"), "error should name rake_cap: {err}");
+    assert!(
+        err.contains("rake_cap"),
+        "error should name rake_cap: {err}"
+    );
 }
 
 /// Positive control: an ordinary rake config still builds.
@@ -180,7 +191,9 @@ fn max_nodes_budget_aborts_oversized_build() {
     // sanity: unlimited build succeeds and is comfortably over the budget
     let full = Spot::new(config.clone()).unwrap();
     assert!(full.tree.nodes.len() > 10);
-    let err = Spot::new_with_limit(config, Some(10)).err().expect("expected a build error");
+    let err = Spot::new_with_limit(config, Some(10))
+        .err()
+        .expect("expected a build error");
     assert!(
         err.contains("max_nodes") && err.contains("10"),
         "error should name the budget: {err}"
@@ -280,7 +293,10 @@ fn non_finite_pot_and_stack_are_rejected() {
 
     let mut config = flop_config();
     config.tree.effective_stack = f64::INFINITY;
-    assert!(Spot::new(config).is_err(), "infinite stack must be rejected");
+    assert!(
+        Spot::new(config).is_err(),
+        "infinite stack must be rejected"
+    );
 }
 
 /// Ranges that pass the per-player checks but are MUTUALLY impossible —
@@ -315,8 +331,9 @@ fn overlapping_but_compatible_ranges_still_build() {
 /// magnitudes are rejected with a clear error.
 #[test]
 fn overflowing_lock_frequencies_are_rejected() {
-    use solver::{LockMode, Solver};
     use std::sync::Arc;
+
+    use solver::{LockMode, Solver};
     let spot = Spot::new(flop_config()).unwrap();
     let mut solver = Solver::new(Arc::new(spot));
     for _ in 0..10 {
@@ -324,7 +341,13 @@ fn overflowing_lock_frequencies_are_rejected() {
     }
     let na = solver.node_view(&[]).unwrap().actions.len();
     let err = solver
-        .lock_node(&[], LockMode::Range { freqs: vec![3.0e38; na] }, "overflow".into())
+        .lock_node(
+            &[],
+            LockMode::Range {
+                freqs: vec![3.0e38; na],
+            },
+            "overflow".into(),
+        )
         .err()
         .expect("absurd frequency magnitudes must be rejected");
     assert!(err.contains("sum"), "error should name the sum: {err}");

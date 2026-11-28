@@ -5,10 +5,13 @@
 //! copy, ensure_symmetric, GPU lock table) — after the caller had already
 //! discarded its previous session. Load must instead return a clear Err.
 
-use solver::save::validate_locks;
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig, KIND_ACTION};
-use solver::{LockMode, Solver, Spot, SpotConfig};
 use std::sync::Arc;
+
+use solver::{
+    save::validate_locks,
+    tree::{parse_sizes, StreetSizing, TreeConfig, KIND_ACTION},
+    LockMode, Solver, Spot, SpotConfig,
+};
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
     StreetSizing {
@@ -100,7 +103,10 @@ fn lock_survives_save_load_roundtrip() {
 #[test]
 fn load_rejects_out_of_range_lock_index() {
     let (_solver, path) = solved_save("gto_test_lock_oob.gto");
-    doctor_locks(&path, serde_json::json!([[999_999, [0.25, 0.25, 0.25, 0.25]]]));
+    doctor_locks(
+        &path,
+        serde_json::json!([[999_999, [0.25, 0.25, 0.25, 0.25]]]),
+    );
     let err = load_err(&path, "out-of-range lock index");
     assert!(
         err.contains("lock") && err.contains("out of range"),

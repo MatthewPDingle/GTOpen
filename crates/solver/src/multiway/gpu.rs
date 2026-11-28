@@ -13,18 +13,23 @@
 //! scratch region for reaches and values. Only the root part's reaches and
 //! the group roots' values stay resident.
 
-use super::game::MwSpot;
-use super::solver::{Dealt, MwProgress, MwSolver};
-use super::tree::{others, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, NP};
-use crate::cfr::{Algorithm, Discounts};
-use crate::store::{Storage, Store};
-use crate::tree::SENTINEL;
+use std::{collections::HashMap, sync::Arc};
+
 use cudarc::driver::{
-    sys, CudaContext, CudaFunction, CudaGraph, CudaModule, CudaSlice, CudaStream, DevicePtr, DeviceRepr,
-    LaunchConfig, PushKernelArg, ValidAsZeroBits,
+    sys, CudaContext, CudaFunction, CudaGraph, CudaModule, CudaSlice, CudaStream, DevicePtr,
+    DeviceRepr, LaunchConfig, PushKernelArg, ValidAsZeroBits,
 };
-use std::collections::HashMap;
-use std::sync::Arc;
+
+use super::{
+    game::MwSpot,
+    solver::{Dealt, MwProgress, MwSolver},
+    tree::{others, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, NP},
+};
+use crate::{
+    cfr::{Algorithm, Discounts},
+    store::{Storage, Store},
+    tree::SENTINEL,
+};
 
 const BLOCK: u32 = 128;
 /// VRAM left free for the driver, graphs and fragmentation.
@@ -108,7 +113,9 @@ impl Layout {
             let node = &tree.nodes[n];
             kids.clear();
             match node.kind {
-                KIND_ACTION => kids.extend((0..node.num_children as usize).map(|a| (tree.child(node, a) as usize, None))),
+                KIND_ACTION => kids.extend(
+                    (0..node.num_children as usize).map(|a| (tree.child(node, a) as usize, None)),
+                ),
                 KIND_CHANCE => {
                     for c in 0..52u8 {
                         let ch = tree.children[node.children_start as usize + c as usize];
@@ -135,7 +142,11 @@ impl Layout {
                     Some(k) => dealt[n].push(k),
                     None => dealt[n],
                 };
-                let slots = if seg[c] == 0 { &mut root_slots } else { &mut card_slots[seg[c] as usize - 1] };
+                let slots = if seg[c] == 0 {
+                    &mut root_slots
+                } else {
+                    &mut card_slots[seg[c] as usize - 1]
+                };
                 for (k, s) in slots.iter_mut().enumerate() {
                     if card.is_some() || (node.kind == KIND_ACTION && node.player as usize == k) {
                         *s += 1;
@@ -151,7 +162,11 @@ impl Layout {
         let mut card_width: Vec<Vec<u32>> = vec![Vec::new(); 52];
         for &n in &order {
             let (l, s) = (level[n as usize] as usize, seg[n as usize]);
-            let w = if s == 0 { &mut root_width } else { &mut card_width[s as usize - 1] };
+            let w = if s == 0 {
+                &mut root_width
+            } else {
+                &mut card_width[s as usize - 1]
+            };
             if w.len() <= l {
                 w.resize(l + 1, 0);
             }
@@ -159,7 +174,17 @@ impl Layout {
                 w[l] += 1;
             }
         }
-        Ok(Layout { order, seg, level, dealt, root_slots, root_width, card_slots, card_width, num_roots })
+        Ok(Layout {
+            order,
+            seg,
+            level,
+            dealt,
+            root_slots,
+            root_width,
+            card_slots,
+            card_width,
+            num_roots,
+        })
     }
 
     /// Reach bytes and widest level of one group of first-layer cards.
@@ -181,7 +206,9 @@ impl Layout {
     }
 
     fn cards_present(&self) -> Vec<u8> {
-        (0..52u8).filter(|&c| self.card_slots[c as usize].iter().any(|&x| x > 0)).collect()
+        (0..52u8)
+            .filter(|&c| self.card_slots[c as usize].iter().any(|&x| x > 0))
+            .collect()
     }
 }
 
@@ -206,7 +233,9 @@ fn arena_bytes(spot: &MwSpot, storage: Storage, algo: Algorithm) -> u64 {
     let pcfr = algo == Algorithm::PcfrPlus;
     match storage {
         Storage::F32 => e * if pcfr { 12 } else { 8 },
-        Storage::Compressed => e * if pcfr { 6 } else { 4 } + nn * 4 * NP as u64 * if pcfr { 3 } else { 2 },
+        Storage::Compressed => {
+            e * if pcfr { 6 } else { 4 } + nn * 4 * NP as u64 * if pcfr { 3 } else { 2 }
+        }
     }
 }
 
@@ -251,7 +280,14 @@ fn group_cards(layout: &Layout, nh: &[usize; NP], scratch: u64) -> Option<Vec<Ve
     Some(groups)
 }
 
-fn plan_bytes(spot: &MwSpot, layout: &Layout, groups: &[Vec<u8>], storage: Storage, algo: Algorithm, river_slots: usize) -> GpuBytes {
+fn plan_bytes(
+    spot: &MwSpot,
+    layout: &Layout,
+    groups: &[Vec<u8>],
+    storage: Storage,
+    algo: Algorithm,
+    river_slots: usize,
+) -> GpuBytes {
     let nh: [usize; NP] = std::array::from_fn(|k| spot.hands[k].len());
     let nh_max = *nh.iter().max().unwrap() as u64;
     let mut reach_slots = layout.root_slots;
@@ -296,7 +332,9 @@ fn choose(
     let max_na = max_actions(spot);
     let storages: Vec<Storage> = match opts.storage {
         Some(Storage::Compressed) if max_na > MAX_ACTIONS_Q => {
-            return Err(format!("compressed GPU arenas support at most {MAX_ACTIONS_Q} actions per node"))
+            return Err(format!(
+                "compressed GPU arenas support at most {MAX_ACTIONS_Q} actions per node"
+            ))
         }
         Some(s) => vec![s],
         None if max_na > MAX_ACTIONS_Q => vec![Storage::F32],
@@ -307,16 +345,28 @@ fn choose(
         let groups: Vec<Vec<u8>> = match opts.max_cards_per_group {
             Some(k) => all.chunks(k.max(1)).map(|c| c.to_vec()).collect(),
             None => {
-                let single: Vec<Vec<u8>> = if all.is_empty() { vec![] } else { vec![all.clone()] };
+                let single: Vec<Vec<u8>> = if all.is_empty() {
+                    vec![]
+                } else {
+                    vec![all.clone()]
+                };
                 let b = plan_bytes(spot, layout, &single, storage, algo, river_slots);
                 if b.total() <= budget {
                     single
                 } else {
                     let resident = b.arenas
                         + b.tables
-                        + layout.root_slots.iter().zip(&nh).map(|(&s, &h)| (s * h * 4) as u64).sum::<u64>()
+                        + layout
+                            .root_slots
+                            .iter()
+                            .zip(&nh)
+                            .map(|(&s, &h)| (s * h * 4) as u64)
+                            .sum::<u64>()
                         + layout.num_roots as u64 * nh_max * 4;
-                    match budget.checked_sub(resident).and_then(|scratch| group_cards(layout, &nh, scratch)) {
+                    match budget
+                        .checked_sub(resident)
+                        .and_then(|scratch| group_cards(layout, &nh, scratch))
+                    {
                         Some(g) => g,
                         None => {
                             let singles: Vec<Vec<u8>> = all.iter().map(|&c| vec![c]).collect();
@@ -351,7 +401,13 @@ fn choose(
 }
 
 fn max_actions(spot: &MwSpot) -> usize {
-    spot.tree.nodes.iter().filter(|n| n.kind == KIND_ACTION).map(|n| n.num_children as usize).max().unwrap_or(0)
+    spot.tree
+        .nodes
+        .iter()
+        .filter(|n| n.kind == KIND_ACTION)
+        .map(|n| n.num_children as usize)
+        .max()
+        .unwrap_or(0)
 }
 
 /// Terminal payoff classes and river boards (independent of grouping).
@@ -393,7 +449,11 @@ fn terminals(spot: &MwSpot, layout: &Layout) -> Terminals {
         if let (Some(icm), KIND_TERM_SHOWDOWN) = (&spot.icm, node.kind) {
             for p in 0..NP {
                 let o = icm.order(node, p);
-                let at = if node.live & (1 << p) == 0 { [4, 5, 99, 99] } else { [0, 1, 2, 3] };
+                let at = if node.live & (1 << p) == 0 {
+                    [4, 5, 99, 99]
+                } else {
+                    [0, 1, 2, 3]
+                };
                 for k in 0..4 {
                     if at[k] < 6 {
                         o18[p * 6 + at[k]] = o[k] as f32;
@@ -421,7 +481,13 @@ fn terminals(spot: &MwSpot, layout: &Layout) -> Terminals {
         coef.push(0.0);
         ocoef.push(0.0);
     }
-    Terminals { node_class, node_river, coef, ocoef, river_keys }
+    Terminals {
+        node_class,
+        node_river,
+        coef,
+        ocoef,
+        river_keys,
+    }
 }
 
 /// Host-side layout of the tree for the kernels.
@@ -457,7 +523,12 @@ struct Plan {
 }
 
 impl Plan {
-    fn build(spot: &MwSpot, layout: &Layout, term: Terminals, groups: &[Vec<u8>]) -> Result<Plan, String> {
+    fn build(
+        spot: &MwSpot,
+        layout: &Layout,
+        term: Terminals,
+        groups: &[Vec<u8>],
+    ) -> Result<Plan, String> {
         let tree = &spot.tree;
         let nn = tree.nodes.len();
         let mut group_of = [usize::MAX; 52];
@@ -498,7 +569,11 @@ impl Plan {
                 width[s][l] += 1;
             }
         }
-        let w = width.iter().flat_map(|v| v.iter().copied()).max().unwrap_or(0);
+        let w = width
+            .iter()
+            .flat_map(|v| v.iter().copied())
+            .max()
+            .unwrap_or(0);
         for n in 0..nn {
             if root_idx[n] != u32::MAX {
                 cfv_slot[n] = 2 * w + root_idx[n];
@@ -519,7 +594,9 @@ impl Plan {
             let node = &tree.nodes[n];
             kids.clear();
             match node.kind {
-                KIND_ACTION => kids.extend((0..node.num_children as usize).map(|a| (tree.child(node, a) as usize, false))),
+                KIND_ACTION => kids.extend(
+                    (0..node.num_children as usize).map(|a| (tree.child(node, a) as usize, false)),
+                ),
                 KIND_CHANCE => kids.extend(
                     (0..52usize)
                         .map(|c| tree.children[node.children_start as usize + c])
@@ -540,12 +617,16 @@ impl Plan {
                 }
             }
         }
-        let reach_slots: [usize; NP] = std::array::from_fn(|k| next_slot.iter().map(|x| x[k]).max().unwrap());
+        let reach_slots: [usize; NP] =
+            std::array::from_fn(|k| next_slot.iter().map(|x| x[k]).max().unwrap());
 
         // Work lists, sweep by sweep, level by level.
-        let mut by: Vec<Vec<[Vec<u32>; 4]>> =
-            num_levels.iter().map(|&l| (0..l).map(|_| Default::default()).collect()).collect();
-        let mut edges: Vec<Vec<Vec<(u32, u32, u32)>>> = num_levels.iter().map(|&l| vec![Vec::new(); l]).collect();
+        let mut by: Vec<Vec<[Vec<u32>; 4]>> = num_levels
+            .iter()
+            .map(|&l| (0..l).map(|_| Default::default()).collect())
+            .collect();
+        let mut edges: Vec<Vec<Vec<(u32, u32, u32)>>> =
+            num_levels.iter().map(|&l| vec![Vec::new(); l]).collect();
         let mut entry: Vec<Vec<(u32, u32, u32)>> = vec![Vec::new(); num_sweeps];
         for &n in &layout.order {
             let nu = n as usize;
@@ -578,7 +659,10 @@ impl Plan {
         let mut lists: [Vec<u32>; 4] = Default::default();
         let (mut edge_par, mut edge_chi, mut edge_card) = (Vec::new(), Vec::new(), Vec::new());
         let mut push_edges = |list: &[(u32, u32, u32)]| {
-            let span = Span { start: edge_par.len() as i32, count: list.len() as i32 };
+            let span = Span {
+                start: edge_par.len() as i32,
+                count: list.len() as i32,
+            };
             for &(a, b, c) in list {
                 edge_par.push(a);
                 edge_chi.push(b);
@@ -588,11 +672,17 @@ impl Plan {
         };
         let mut sweeps = Vec::with_capacity(num_sweeps);
         for s in 0..num_sweeps {
-            let mut sw = Sweep { entry: push_edges(&entry[s]), levels: Vec::new() };
+            let mut sw = Sweep {
+                entry: push_edges(&entry[s]),
+                levels: Vec::new(),
+            };
             for l in 0..num_levels[s] {
                 let mut spans = [Span::default(); 4];
                 for (k, out) in lists.iter_mut().enumerate() {
-                    spans[k] = Span { start: out.len() as i32, count: by[s][l][k].len() as i32 };
+                    spans[k] = Span {
+                        start: out.len() as i32,
+                        count: by[s][l][k].len() as i32,
+                    };
                     out.extend_from_slice(&by[s][l][k]);
                 }
                 sw.levels.push(LevelSpans {
@@ -634,7 +724,9 @@ impl Plan {
         let mut rank_pair = Vec::with_capacity(term.river_keys.len() * 2704);
         let mut max_sorted = [0usize; NP];
         for &key in &term.river_keys {
-            let ev = spot.river.entries[key].as_deref().ok_or("river eval missing")?;
+            let ev = spot.river.entries[key]
+                .as_deref()
+                .ok_or("river eval missing")?;
             rank_pair.extend_from_slice(&ev.rank_pair);
             for k in 0..NP {
                 srt_off[k].push(srt_str[k].len() as u32);
@@ -695,14 +787,24 @@ impl Plan {
 /// Device memory a spot needs: (fully resident with f32 arenas, smallest
 /// workable plan). The second decides whether the GPU can take it at all.
 pub fn estimate_device_bytes(spot: &MwSpot, algo: Algorithm) -> (u64, u64) {
-    let Ok(layout) = Layout::build(spot) else { return (0, 0) };
+    let Ok(layout) = Layout::build(spot) else {
+        return (0, 0);
+    };
     let rivers = terminals(spot, &layout).river_keys.len();
     let all = layout.cards_present();
-    let single: Vec<Vec<u8>> = if all.is_empty() { vec![] } else { vec![all.clone()] };
+    let single: Vec<Vec<u8>> = if all.is_empty() {
+        vec![]
+    } else {
+        vec![all.clone()]
+    };
     let full = plan_bytes(spot, &layout, &single, Storage::F32, algo, rivers).total() + HEADROOM;
     let singles: Vec<Vec<u8>> = all.iter().map(|&c| vec![c]).collect();
     let max_na = max_actions(spot);
-    let storage = if max_na > MAX_ACTIONS_Q { Storage::F32 } else { Storage::Compressed };
+    let storage = if max_na > MAX_ACTIONS_Q {
+        Storage::F32
+    } else {
+        Storage::Compressed
+    };
     let min = plan_bytes(spot, &layout, &singles, storage, algo, rivers).total() + HEADROOM;
     (full, min.min(full))
 }
@@ -712,10 +814,17 @@ pub fn estimate_device_bytes(spot: &MwSpot, algo: Algorithm) -> (u64, u64) {
 /// desktop holds and allocations past physical VRAM succeed but page to
 /// system RAM, so the budget also keeps 12% of the card free there.
 fn device_budget(free: u64, total: u64) -> u64 {
-    if let Some(gb) = std::env::var("SOLVER_GPU_MEM_GB").ok().and_then(|v| v.parse::<f64>().ok()) {
+    if let Some(gb) = std::env::var("SOLVER_GPU_MEM_GB")
+        .ok()
+        .and_then(|v| v.parse::<f64>().ok())
+    {
         return (gb * 1e9) as u64;
     }
-    let cap = if cfg!(windows) { total - total / 8 } else { total };
+    let cap = if cfg!(windows) {
+        total - total / 8
+    } else {
+        total
+    };
     free.min(cap).saturating_sub(HEADROOM)
 }
 
@@ -795,7 +904,11 @@ fn ptr<T>(s: &CudaSlice<T>, stream: &CudaStream) -> u64 {
 
 /// Uploads `v`, or `len` zeros when it is empty (kernels never read the
 /// arena of a player without decisions, but allocations must be non-empty).
-fn upload<T: DeviceRepr + ValidAsZeroBits>(stream: &Arc<CudaStream>, v: &[T], len: usize) -> Result<CudaSlice<T>, String> {
+fn upload<T: DeviceRepr + ValidAsZeroBits>(
+    stream: &Arc<CudaStream>,
+    v: &[T],
+    len: usize,
+) -> Result<CudaSlice<T>, String> {
     if v.is_empty() {
         stream.alloc_zeros::<T>(len.max(1)).map_err(e)
     } else {
@@ -842,7 +955,11 @@ impl MwGpuSolver {
         Self::build(spot, algo, None, &MwGpuOptions::default())
     }
 
-    pub fn with_options(spot: Arc<MwSpot>, algo: Algorithm, opts: &MwGpuOptions) -> Result<MwGpuSolver, String> {
+    pub fn with_options(
+        spot: Arc<MwSpot>,
+        algo: Algorithm,
+        opts: &MwGpuOptions,
+    ) -> Result<MwGpuSolver, String> {
         Self::build(spot, algo, None, opts)
     }
 
@@ -860,7 +977,12 @@ impl MwGpuSolver {
         Ok(g)
     }
 
-    fn build(spot: Arc<MwSpot>, algo: Algorithm, init: Option<&MwSolver>, opts: &MwGpuOptions) -> Result<MwGpuSolver, String> {
+    fn build(
+        spot: Arc<MwSpot>,
+        algo: Algorithm,
+        init: Option<&MwSolver>,
+        opts: &MwGpuOptions,
+    ) -> Result<MwGpuSolver, String> {
         let layout = Layout::build(&spot)?;
         let term = terminals(&spot, &layout);
         let ctx = CudaContext::new(0).map_err(e)?;
@@ -875,18 +997,23 @@ impl MwGpuSolver {
                 device_budget(free as u64, total as u64)
             }
         };
-        let (storage, groups, bytes) = choose(&spot, &layout, algo, budget, opts, term.river_keys.len())?;
+        let (storage, groups, bytes) =
+            choose(&spot, &layout, algo, budget, opts, term.river_keys.len())?;
         let plan = Plan::build(&spot, &layout, term, &groups)?;
         drop(layout);
 
         let (cc_maj, cc_min) = ctx.compute_capability().map_err(e)?;
         let arch: &'static str = Box::leak(format!("compute_{cc_maj}{cc_min}").into_boxed_str());
-        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> = std::sync::OnceLock::new();
+        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> =
+            std::sync::OnceLock::new();
         let ptx = PTX
             .get_or_init(|| {
                 cudarc::nvrtc::compile_ptx_with_opts(
                     include_str!("kernels.cu"),
-                    cudarc::nvrtc::CompileOptions { arch: Some(arch), ..Default::default() },
+                    cudarc::nvrtc::CompileOptions {
+                        arch: Some(arch),
+                        ..Default::default()
+                    },
                 )
                 .map_err(e)
             })
@@ -896,16 +1023,32 @@ impl MwGpuSolver {
         let f_up_show = func("mw_up_show")?;
         // Always opt in: the kernel's static shared memory counts toward the
         // 48 KB default too.
-        let show_need = (0..NP).map(|p| Self::show_shared_bytes(&plan.max_sorted, p)).max().unwrap();
+        let show_need = (0..NP)
+            .map(|p| Self::show_shared_bytes(&plan.max_sorted, p))
+            .max()
+            .unwrap();
         f_up_show
-            .set_attribute(sys::CUfunction_attribute::CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES, show_need as i32)
-            .map_err(|err| format!("showdown kernel needs {show_need} bytes of shared memory: {err:?}"))?;
+            .set_attribute(
+                sys::CUfunction_attribute::CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES,
+                show_need as i32,
+            )
+            .map_err(|err| {
+                format!("showdown kernel needs {show_need} bytes of shared memory: {err:?}")
+            })?;
         let f_icm_order = match spot.icm {
             Some(_) => {
                 let f = func("mw_icm_order")?;
-                let need = (0..NP).map(|p| Self::icm_order_shared_bytes(&plan.max_sorted, p)).max().unwrap();
-                f.set_attribute(sys::CUfunction_attribute::CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES, need as i32)
-                    .map_err(|err| format!("ICM order kernel needs {need} bytes of shared memory: {err:?}"))?;
+                let need = (0..NP)
+                    .map(|p| Self::icm_order_shared_bytes(&plan.max_sorted, p))
+                    .max()
+                    .unwrap();
+                f.set_attribute(
+                    sys::CUfunction_attribute::CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES,
+                    need as i32,
+                )
+                .map_err(|err| {
+                    format!("ICM order kernel needs {need} bytes of shared memory: {err:?}")
+                })?;
                 Some(f)
             }
             None => None,
@@ -919,9 +1062,12 @@ impl MwGpuSolver {
         let nh: [usize; NP] = std::array::from_fn(|p| spot.hands[p].len());
         let nh_max = *nh.iter().max().unwrap();
         let hands = &spot.hands;
-        let c1: [Vec<u32>; NP] = std::array::from_fn(|k| hands[k].iter().map(|h| h.c1 as u32).collect());
-        let c2: [Vec<u32>; NP] = std::array::from_fn(|k| hands[k].iter().map(|h| h.c2 as u32).collect());
-        let mask: [Vec<u64>; NP] = std::array::from_fn(|k| hands[k].iter().map(|h| h.mask).collect());
+        let c1: [Vec<u32>; NP] =
+            std::array::from_fn(|k| hands[k].iter().map(|h| h.c1 as u32).collect());
+        let c2: [Vec<u32>; NP] =
+            std::array::from_fn(|k| hands[k].iter().map(|h| h.c2 as u32).collect());
+        let mask: [Vec<u64>; NP] =
+            std::array::from_fn(|k| hands[k].iter().map(|h| h.mask).collect());
         // same[p][j]: hand j of q (first opponent) as a hand of r, if held.
         let same: [Vec<u32>; NP] = std::array::from_fn(|p| {
             let (q, r) = others(p);
@@ -957,25 +1103,61 @@ impl MwGpuSolver {
             node_river: upi(&plan.node_river)?,
             children: up32(&spot.tree.children)?,
             cfv_slot: up32(&plan.cfv_slot)?,
-            cfv: stream.alloc_zeros::<f32>(plan.cfv_slots.max(1) * nh_max).map_err(e)?,
-            reach_slot: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?, up32(&plan.reach_slot[2])?],
-            reach: [
-                stream.alloc_zeros::<f32>(plan.reach_slots[0] * nh[0]).map_err(e)?,
-                stream.alloc_zeros::<f32>(plan.reach_slots[1] * nh[1]).map_err(e)?,
-                stream.alloc_zeros::<f32>(plan.reach_slots[2] * nh[2]).map_err(e)?,
+            cfv: stream
+                .alloc_zeros::<f32>(plan.cfv_slots.max(1) * nh_max)
+                .map_err(e)?,
+            reach_slot: [
+                up32(&plan.reach_slot[0])?,
+                up32(&plan.reach_slot[1])?,
+                up32(&plan.reach_slot[2])?,
             ],
-            weights: [upf(&spot.weights[0])?, upf(&spot.weights[1])?, upf(&spot.weights[2])?],
+            reach: [
+                stream
+                    .alloc_zeros::<f32>(plan.reach_slots[0] * nh[0])
+                    .map_err(e)?,
+                stream
+                    .alloc_zeros::<f32>(plan.reach_slots[1] * nh[1])
+                    .map_err(e)?,
+                stream
+                    .alloc_zeros::<f32>(plan.reach_slots[2] * nh[2])
+                    .map_err(e)?,
+            ],
+            weights: [
+                upf(&spot.weights[0])?,
+                upf(&spot.weights[1])?,
+                upf(&spot.weights[2])?,
+            ],
             c1: [up32(&c1[0])?, up32(&c1[1])?, up32(&c1[2])?],
             c2: [up32(&c2[0])?, up32(&c2[1])?, up32(&c2[2])?],
             mask: [up64(&mask[0])?, up64(&mask[1])?, up64(&mask[2])?],
             same: [up32(&same[0])?, up32(&same[1])?, up32(&same[2])?],
             coef: upf(&plan.coef)?,
             ocoef: upf(&plan.ocoef)?,
-            srt_off: [up32(&plan.srt_off[0])?, up32(&plan.srt_off[1])?, up32(&plan.srt_off[2])?],
-            srt_str: [up32(&plan.srt_str[0])?, up32(&plan.srt_str[1])?, up32(&plan.srt_str[2])?],
-            srt_idx: [up32(&plan.srt_idx[0])?, up32(&plan.srt_idx[1])?, up32(&plan.srt_idx[2])?],
-            cpos_off: [up32(&plan.cpos_off[0])?, up32(&plan.cpos_off[1])?, up32(&plan.cpos_off[2])?],
-            cpos: [up32(&plan.cpos[0])?, up32(&plan.cpos[1])?, up32(&plan.cpos[2])?],
+            srt_off: [
+                up32(&plan.srt_off[0])?,
+                up32(&plan.srt_off[1])?,
+                up32(&plan.srt_off[2])?,
+            ],
+            srt_str: [
+                up32(&plan.srt_str[0])?,
+                up32(&plan.srt_str[1])?,
+                up32(&plan.srt_str[2])?,
+            ],
+            srt_idx: [
+                up32(&plan.srt_idx[0])?,
+                up32(&plan.srt_idx[1])?,
+                up32(&plan.srt_idx[2])?,
+            ],
+            cpos_off: [
+                up32(&plan.cpos_off[0])?,
+                up32(&plan.cpos_off[1])?,
+                up32(&plan.cpos_off[2])?,
+            ],
+            cpos: [
+                up32(&plan.cpos[0])?,
+                up32(&plan.cpos[1])?,
+                up32(&plan.cpos[2])?,
+            ],
             rank_pair: up32(&plan.rank_pair)?,
             lock_off: stream.clone_htod(&vec![-1i64; nn]).map_err(e)?,
             lock_sigma: stream.alloc_zeros::<f32>(1).map_err(e)?,
@@ -1048,7 +1230,10 @@ impl MwGpuSolver {
             0 | 1 => String::new(),
             g => format!(", {g} card groups"),
         };
-        format!("CUDA, {s} arenas, {:.2} GB on the GPU{groups}", self.device_bytes() as f64 / 1e9)
+        format!(
+            "CUDA, {s} arenas, {:.2} GB on the GPU{groups}",
+            self.device_bytes() as f64 / 1e9
+        )
     }
 
     /// Time every kernel (synchronizing around each launch; CUDA graphs
@@ -1069,7 +1254,11 @@ impl MwGpuSolver {
         v
     }
 
-    fn timed(&self, name: &'static str, f: impl FnOnce() -> Result<(), String>) -> Result<(), String> {
+    fn timed(
+        &self,
+        name: &'static str,
+        f: impl FnOnce() -> Result<(), String>,
+    ) -> Result<(), String> {
         let Some(prof) = &self.prof else { return f() };
         self.stream.synchronize().map_err(e)?;
         let t = std::time::Instant::now();
@@ -1083,7 +1272,11 @@ impl MwGpuSolver {
     }
 
     fn cfg(blocks: i32, shared: usize) -> LaunchConfig {
-        LaunchConfig { grid_dim: (blocks as u32, 1, 1), block_dim: (BLOCK, 1, 1), shared_mem_bytes: shared as u32 }
+        LaunchConfig {
+            grid_dim: (blocks as u32, 1, 1),
+            block_dim: (BLOCK, 1, 1),
+            shared_mem_bytes: shared as u32,
+        }
     }
 
     fn p<T>(&self, s: &CudaSlice<T>) -> u64 {
@@ -1093,10 +1286,24 @@ impl MwGpuSolver {
     fn copy_root(&self) -> Result<(), String> {
         let b = &self.bufs;
         let [nh0, nh1, nh2] = self.nh;
-        self.timed("copy_root", || launch!(self.stream, &self.f_copy_root, Self::cfg(8, 0), [
-            self.p(&b.weights[0]), self.p(&b.weights[1]), self.p(&b.weights[2]),
-            self.p(&b.reach[0]), self.p(&b.reach[1]), self.p(&b.reach[2]), nh0, nh1, nh2,
-        ]))
+        self.timed("copy_root", || {
+            launch!(
+                self.stream,
+                &self.f_copy_root,
+                Self::cfg(8, 0),
+                [
+                    self.p(&b.weights[0]),
+                    self.p(&b.weights[1]),
+                    self.p(&b.weights[2]),
+                    self.p(&b.reach[0]),
+                    self.p(&b.reach[1]),
+                    self.p(&b.reach[2]),
+                    nh0,
+                    nh1,
+                    nh2,
+                ]
+            )
+        })
     }
 
     fn down_edges(&self, sp: Span, only: i32) -> Result<(), String> {
@@ -1105,12 +1312,33 @@ impl MwGpuSolver {
         }
         let b = &self.bufs;
         let [nh0, nh1, nh2] = self.nh;
-        self.timed("down_chance", || launch!(self.stream, &self.f_down_chance, Self::cfg(sp.count, 0), [
-            self.p(&b.edge_par), self.p(&b.edge_chi), self.p(&b.edge_card), sp.start, sp.count, only,
-            self.p(&b.reach_slot[0]), self.p(&b.reach_slot[1]), self.p(&b.reach_slot[2]),
-            self.p(&b.mask[0]), self.p(&b.mask[1]), self.p(&b.mask[2]),
-            self.p(&b.reach[0]), self.p(&b.reach[1]), self.p(&b.reach[2]), nh0, nh1, nh2,
-        ]))
+        self.timed("down_chance", || {
+            launch!(
+                self.stream,
+                &self.f_down_chance,
+                Self::cfg(sp.count, 0),
+                [
+                    self.p(&b.edge_par),
+                    self.p(&b.edge_chi),
+                    self.p(&b.edge_card),
+                    sp.start,
+                    sp.count,
+                    only,
+                    self.p(&b.reach_slot[0]),
+                    self.p(&b.reach_slot[1]),
+                    self.p(&b.reach_slot[2]),
+                    self.p(&b.mask[0]),
+                    self.p(&b.mask[1]),
+                    self.p(&b.mask[2]),
+                    self.p(&b.reach[0]),
+                    self.p(&b.reach[1]),
+                    self.p(&b.reach[2]),
+                    nh0,
+                    nh1,
+                    nh2,
+                ]
+            )
+        })
     }
 
     /// Down sweep of one sweep. mode 0 uses current strategies, 1 average
@@ -1118,7 +1346,11 @@ impl MwGpuSolver {
     fn down(&self, s: usize, mode: i32, only: i32) -> Result<(), String> {
         let b = &self.bufs;
         let [nh0, nh1, nh2] = self.nh;
-        let reach = [self.p(&b.reach[0]), self.p(&b.reach[1]), self.p(&b.reach[2])];
+        let reach = [
+            self.p(&b.reach[0]),
+            self.p(&b.reach[1]),
+            self.p(&b.reach[2]),
+        ];
         let null = 0u64;
         let sw = &self.sweeps[s];
         self.down_edges(sw.entry, only)?;
@@ -1128,33 +1360,99 @@ impl MwGpuSolver {
                 match &b.arenas {
                     DevArenas::F32 { reg, str, prd } => {
                         let pr = |k: usize| prd.as_ref().map(|x| self.p(&x[k])).unwrap_or(null);
-                        self.timed("down_action", || launch!(self.stream, &self.f_down_action, Self::cfg(sp.count, 0), [
-                            self.p(&b.action), sp.start, sp.count, mode, only,
-                            self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
-                            self.p(&b.children),
-                            self.p(&b.reach_slot[0]), self.p(&b.reach_slot[1]), self.p(&b.reach_slot[2]),
-                            self.p(&reg[0]), self.p(&reg[1]), self.p(&reg[2]),
-                            pr(0), pr(1), pr(2),
-                            self.p(&str[0]), self.p(&str[1]), self.p(&str[2]),
-                            self.p(&b.lock_sigma), self.p(&b.lock_off),
-                            reach[0], reach[1], reach[2], nh0, nh1, nh2,
-                        ]))?;
+                        self.timed("down_action", || {
+                            launch!(
+                                self.stream,
+                                &self.f_down_action,
+                                Self::cfg(sp.count, 0),
+                                [
+                                    self.p(&b.action),
+                                    sp.start,
+                                    sp.count,
+                                    mode,
+                                    only,
+                                    self.p(&b.node_player),
+                                    self.p(&b.node_na),
+                                    self.p(&b.node_off),
+                                    self.p(&b.node_cs),
+                                    self.p(&b.children),
+                                    self.p(&b.reach_slot[0]),
+                                    self.p(&b.reach_slot[1]),
+                                    self.p(&b.reach_slot[2]),
+                                    self.p(&reg[0]),
+                                    self.p(&reg[1]),
+                                    self.p(&reg[2]),
+                                    pr(0),
+                                    pr(1),
+                                    pr(2),
+                                    self.p(&str[0]),
+                                    self.p(&str[1]),
+                                    self.p(&str[2]),
+                                    self.p(&b.lock_sigma),
+                                    self.p(&b.lock_off),
+                                    reach[0],
+                                    reach[1],
+                                    reach[2],
+                                    nh0,
+                                    nh1,
+                                    nh2,
+                                ]
+                            )
+                        })?;
                     }
-                    DevArenas::Q { reg, str, prd, rsc, psc, .. } => {
+                    DevArenas::Q {
+                        reg,
+                        str,
+                        prd,
+                        rsc,
+                        psc,
+                        ..
+                    } => {
                         let pr = |k: usize| prd.as_ref().map(|x| self.p(&x[k])).unwrap_or(null);
                         let ps = |k: usize| psc.as_ref().map(|x| self.p(&x[k])).unwrap_or(null);
-                        self.timed("down_action_q", || launch!(self.stream, &self.f_down_action_q, Self::cfg(sp.count, 0), [
-                            self.p(&b.action), sp.start, sp.count, mode, only,
-                            self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
-                            self.p(&b.children),
-                            self.p(&b.reach_slot[0]), self.p(&b.reach_slot[1]), self.p(&b.reach_slot[2]),
-                            self.p(&reg[0]), self.p(&reg[1]), self.p(&reg[2]),
-                            pr(0), pr(1), pr(2),
-                            self.p(&str[0]), self.p(&str[1]), self.p(&str[2]),
-                            self.p(&rsc[0]), self.p(&rsc[1]), self.p(&rsc[2]),
-                            ps(0), ps(1), ps(2),
-                            reach[0], reach[1], reach[2], nh0, nh1, nh2,
-                        ]))?;
+                        self.timed("down_action_q", || {
+                            launch!(
+                                self.stream,
+                                &self.f_down_action_q,
+                                Self::cfg(sp.count, 0),
+                                [
+                                    self.p(&b.action),
+                                    sp.start,
+                                    sp.count,
+                                    mode,
+                                    only,
+                                    self.p(&b.node_player),
+                                    self.p(&b.node_na),
+                                    self.p(&b.node_off),
+                                    self.p(&b.node_cs),
+                                    self.p(&b.children),
+                                    self.p(&b.reach_slot[0]),
+                                    self.p(&b.reach_slot[1]),
+                                    self.p(&b.reach_slot[2]),
+                                    self.p(&reg[0]),
+                                    self.p(&reg[1]),
+                                    self.p(&reg[2]),
+                                    pr(0),
+                                    pr(1),
+                                    pr(2),
+                                    self.p(&str[0]),
+                                    self.p(&str[1]),
+                                    self.p(&str[2]),
+                                    self.p(&rsc[0]),
+                                    self.p(&rsc[1]),
+                                    self.p(&rsc[2]),
+                                    ps(0),
+                                    ps(1),
+                                    ps(2),
+                                    reach[0],
+                                    reach[1],
+                                    reach[2],
+                                    nh0,
+                                    nh1,
+                                    nh2,
+                                ]
+                            )
+                        })?;
                     }
                 }
             }
@@ -1174,21 +1472,47 @@ impl MwGpuSolver {
         let show_shared = Self::show_shared_bytes(&self.max_sorted, p);
         // One thread per hand of p in whole warps, at most 256 (the kernel's
         // launch bound; SOLVER_SHOW_THREADS overrides, for tuning).
-        let show_threads = self.show_threads.unwrap_or(((nh_p as u32 + 31) / 32 * 32).clamp(64, 256));
+        let show_threads = self
+            .show_threads
+            .unwrap_or(((nh_p as u32 + 31) / 32 * 32).clamp(64, 256));
         let null = 0u64;
         for ls in self.sweeps[s].levels.iter().rev() {
             let sp = ls.fold;
             if sp.count > 0 {
-                self.timed("up_fold", || launch!(self.stream, &self.f_up_fold, Self::cfg(sp.count, fold_shared), [
-                    self.p(&b.fold), sp.start, sp.count, pi, qi, ri,
-                    self.p(&b.node_class), self.p(&b.coef),
-                    self.p(&b.reach_slot[q]), self.p(&b.reach_slot[r]),
-                    self.p(&b.reach[q]), self.p(&b.reach[r]),
-                    self.p(&b.c1[p]), self.p(&b.c2[p]), self.p(&b.c1[q]), self.p(&b.c2[q]),
-                    self.p(&b.c1[r]), self.p(&b.c2[r]),
-                    self.p(&b.same[p]),
-                    self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_q, nh_r, nh_max,
-                ]))?;
+                self.timed("up_fold", || {
+                    launch!(
+                        self.stream,
+                        &self.f_up_fold,
+                        Self::cfg(sp.count, fold_shared),
+                        [
+                            self.p(&b.fold),
+                            sp.start,
+                            sp.count,
+                            pi,
+                            qi,
+                            ri,
+                            self.p(&b.node_class),
+                            self.p(&b.coef),
+                            self.p(&b.reach_slot[q]),
+                            self.p(&b.reach_slot[r]),
+                            self.p(&b.reach[q]),
+                            self.p(&b.reach[r]),
+                            self.p(&b.c1[p]),
+                            self.p(&b.c2[p]),
+                            self.p(&b.c1[q]),
+                            self.p(&b.c2[q]),
+                            self.p(&b.c1[r]),
+                            self.p(&b.c2[r]),
+                            self.p(&b.same[p]),
+                            self.p(&b.cfv_slot),
+                            self.p(&b.cfv),
+                            nh_p,
+                            nh_q,
+                            nh_r,
+                            nh_max,
+                        ]
+                    )
+                })?;
             }
             let sp = ls.show;
             if sp.count > 0 {
@@ -1197,81 +1521,210 @@ impl MwGpuSolver {
                     block_dim: (show_threads, 1, 1),
                     shared_mem_bytes: show_shared as u32,
                 };
-                self.timed("up_show", || launch!(self.stream, &self.f_up_show, cfg, [
-                    self.p(&b.show), sp.start, sp.count, pi, qi, ri,
-                    self.p(&b.node_class), self.p(&b.coef), self.p(&b.node_river),
-                    self.p(&b.reach_slot[q]), self.p(&b.reach_slot[r]),
-                    self.p(&b.reach[q]), self.p(&b.reach[r]),
-                    self.p(&b.srt_off[p]), self.p(&b.srt_str[p]), self.p(&b.srt_idx[p]),
-                    self.p(&b.srt_off[q]), self.p(&b.srt_str[q]), self.p(&b.srt_idx[q]),
-                    self.p(&b.srt_off[r]), self.p(&b.srt_str[r]), self.p(&b.srt_idx[r]),
-                    self.p(&b.cpos_off[q]), self.p(&b.cpos[q]),
-                    self.p(&b.cpos_off[r]), self.p(&b.cpos[r]),
-                    self.p(&b.rank_pair),
-                    self.p(&b.c1[p]), self.p(&b.c2[p]), self.p(&b.c1[q]), self.p(&b.c2[q]),
-                    self.p(&b.c1[r]), self.p(&b.c2[r]),
-                    self.p(&b.same[p]),
-                    self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_q, nh_r, nh_max,
-                ]))?;
+                self.timed("up_show", || {
+                    launch!(
+                        self.stream,
+                        &self.f_up_show,
+                        cfg,
+                        [
+                            self.p(&b.show),
+                            sp.start,
+                            sp.count,
+                            pi,
+                            qi,
+                            ri,
+                            self.p(&b.node_class),
+                            self.p(&b.coef),
+                            self.p(&b.node_river),
+                            self.p(&b.reach_slot[q]),
+                            self.p(&b.reach_slot[r]),
+                            self.p(&b.reach[q]),
+                            self.p(&b.reach[r]),
+                            self.p(&b.srt_off[p]),
+                            self.p(&b.srt_str[p]),
+                            self.p(&b.srt_idx[p]),
+                            self.p(&b.srt_off[q]),
+                            self.p(&b.srt_str[q]),
+                            self.p(&b.srt_idx[q]),
+                            self.p(&b.srt_off[r]),
+                            self.p(&b.srt_str[r]),
+                            self.p(&b.srt_idx[r]),
+                            self.p(&b.cpos_off[q]),
+                            self.p(&b.cpos[q]),
+                            self.p(&b.cpos_off[r]),
+                            self.p(&b.cpos[r]),
+                            self.p(&b.rank_pair),
+                            self.p(&b.c1[p]),
+                            self.p(&b.c2[p]),
+                            self.p(&b.c1[q]),
+                            self.p(&b.c2[q]),
+                            self.p(&b.c1[r]),
+                            self.p(&b.c2[r]),
+                            self.p(&b.same[p]),
+                            self.p(&b.cfv_slot),
+                            self.p(&b.cfv),
+                            nh_p,
+                            nh_q,
+                            nh_r,
+                            nh_max,
+                        ]
+                    )
+                })?;
                 if let Some(f) = &self.f_icm_order {
                     let cfg = LaunchConfig {
                         grid_dim: (sp.count as u32, 1, 1),
                         block_dim: (show_threads, 1, 1),
                         shared_mem_bytes: Self::icm_order_shared_bytes(&self.max_sorted, p) as u32,
                     };
-                    self.timed("icm_order", || launch!(self.stream, f, cfg, [
-                        self.p(&b.show), sp.start, sp.count, pi,
-                        self.p(&b.node_class), self.p(&b.ocoef), self.p(&b.node_river),
-                        self.p(&b.reach_slot[q]), self.p(&b.reach_slot[r]),
-                        self.p(&b.reach[q]), self.p(&b.reach[r]),
-                        self.p(&b.srt_off[p]), self.p(&b.srt_str[p]), self.p(&b.srt_idx[p]),
-                        self.p(&b.srt_off[q]), self.p(&b.srt_str[q]), self.p(&b.srt_idx[q]),
-                        self.p(&b.srt_off[r]), self.p(&b.srt_str[r]), self.p(&b.srt_idx[r]),
-                        self.p(&b.cpos_off[q]), self.p(&b.cpos[q]),
-                        self.p(&b.cpos_off[r]), self.p(&b.cpos[r]),
-                        self.p(&b.rank_pair),
-                        self.p(&b.c1[p]), self.p(&b.c2[p]), self.p(&b.c1[q]), self.p(&b.c2[q]),
-                        self.p(&b.c1[r]), self.p(&b.c2[r]),
-                        self.p(&b.cfv_slot), self.p(&b.cfv), nh_q, nh_r, nh_max,
-                    ]))?;
+                    self.timed("icm_order", || {
+                        launch!(
+                            self.stream,
+                            f,
+                            cfg,
+                            [
+                                self.p(&b.show),
+                                sp.start,
+                                sp.count,
+                                pi,
+                                self.p(&b.node_class),
+                                self.p(&b.ocoef),
+                                self.p(&b.node_river),
+                                self.p(&b.reach_slot[q]),
+                                self.p(&b.reach_slot[r]),
+                                self.p(&b.reach[q]),
+                                self.p(&b.reach[r]),
+                                self.p(&b.srt_off[p]),
+                                self.p(&b.srt_str[p]),
+                                self.p(&b.srt_idx[p]),
+                                self.p(&b.srt_off[q]),
+                                self.p(&b.srt_str[q]),
+                                self.p(&b.srt_idx[q]),
+                                self.p(&b.srt_off[r]),
+                                self.p(&b.srt_str[r]),
+                                self.p(&b.srt_idx[r]),
+                                self.p(&b.cpos_off[q]),
+                                self.p(&b.cpos[q]),
+                                self.p(&b.cpos_off[r]),
+                                self.p(&b.cpos[r]),
+                                self.p(&b.rank_pair),
+                                self.p(&b.c1[p]),
+                                self.p(&b.c2[p]),
+                                self.p(&b.c1[q]),
+                                self.p(&b.c2[q]),
+                                self.p(&b.c1[r]),
+                                self.p(&b.c2[r]),
+                                self.p(&b.cfv_slot),
+                                self.p(&b.cfv),
+                                nh_q,
+                                nh_r,
+                                nh_max,
+                            ]
+                        )
+                    })?;
                 }
             }
             let sp = ls.chance;
             if sp.count > 0 {
-                self.timed("up_chance", || launch!(self.stream, &self.f_up_chance, Self::cfg(sp.count, 0), [
-                    self.p(&b.chance), sp.start, sp.count,
-                    self.p(&b.node_cs), self.p(&b.children), self.p(&b.node_cdiv), self.p(&b.mask[p]),
-                    self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_max,
-                ]))?;
+                self.timed("up_chance", || {
+                    launch!(
+                        self.stream,
+                        &self.f_up_chance,
+                        Self::cfg(sp.count, 0),
+                        [
+                            self.p(&b.chance),
+                            sp.start,
+                            sp.count,
+                            self.p(&b.node_cs),
+                            self.p(&b.children),
+                            self.p(&b.node_cdiv),
+                            self.p(&b.mask[p]),
+                            self.p(&b.cfv_slot),
+                            self.p(&b.cfv),
+                            nh_p,
+                            nh_max,
+                        ]
+                    )
+                })?;
             }
             let sp = ls.action;
             if sp.count > 0 {
                 match &b.arenas {
                     DevArenas::F32 { reg, str, prd } => {
                         let prd = prd.as_ref().map(|x| self.p(&x[p])).unwrap_or(null);
-                        self.timed("up_action", || launch!(self.stream, &self.f_up_action, Self::cfg(sp.count, 0), [
-                            self.p(&b.action), sp.start, sp.count, pi, mode,
-                            self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
-                            self.p(&b.children),
-                            self.p(&reg[p]), prd, self.p(&str[p]),
-                            self.p(&b.lock_sigma), self.p(&b.lock_off),
-                            self.p(&b.reach_slot[p]), self.p(&b.reach[p]),
-                            self.p(&b.disc),
-                            self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_max,
-                        ]))?;
+                        self.timed("up_action", || {
+                            launch!(
+                                self.stream,
+                                &self.f_up_action,
+                                Self::cfg(sp.count, 0),
+                                [
+                                    self.p(&b.action),
+                                    sp.start,
+                                    sp.count,
+                                    pi,
+                                    mode,
+                                    self.p(&b.node_player),
+                                    self.p(&b.node_na),
+                                    self.p(&b.node_off),
+                                    self.p(&b.node_cs),
+                                    self.p(&b.children),
+                                    self.p(&reg[p]),
+                                    prd,
+                                    self.p(&str[p]),
+                                    self.p(&b.lock_sigma),
+                                    self.p(&b.lock_off),
+                                    self.p(&b.reach_slot[p]),
+                                    self.p(&b.reach[p]),
+                                    self.p(&b.disc),
+                                    self.p(&b.cfv_slot),
+                                    self.p(&b.cfv),
+                                    nh_p,
+                                    nh_max,
+                                ]
+                            )
+                        })?;
                     }
-                    DevArenas::Q { reg, str, prd, rsc, ssc, psc } => {
+                    DevArenas::Q {
+                        reg,
+                        str,
+                        prd,
+                        rsc,
+                        ssc,
+                        psc,
+                    } => {
                         let prd = prd.as_ref().map(|x| self.p(&x[p])).unwrap_or(null);
                         let psc = psc.as_ref().map(|x| self.p(&x[p])).unwrap_or(null);
-                        self.timed("up_action_q", || launch!(self.stream, &self.f_up_action_q, Self::cfg(sp.count, 0), [
-                            self.p(&b.action), sp.start, sp.count, pi, mode,
-                            self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
-                            self.p(&b.children),
-                            self.p(&reg[p]), prd, self.p(&str[p]), self.p(&rsc[p]), psc, self.p(&ssc[p]),
-                            self.p(&b.reach_slot[p]), self.p(&b.reach[p]),
-                            self.p(&b.disc),
-                            self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_max,
-                        ]))?;
+                        self.timed("up_action_q", || {
+                            launch!(
+                                self.stream,
+                                &self.f_up_action_q,
+                                Self::cfg(sp.count, 0),
+                                [
+                                    self.p(&b.action),
+                                    sp.start,
+                                    sp.count,
+                                    pi,
+                                    mode,
+                                    self.p(&b.node_player),
+                                    self.p(&b.node_na),
+                                    self.p(&b.node_off),
+                                    self.p(&b.node_cs),
+                                    self.p(&b.children),
+                                    self.p(&reg[p]),
+                                    prd,
+                                    self.p(&str[p]),
+                                    self.p(&rsc[p]),
+                                    psc,
+                                    self.p(&ssc[p]),
+                                    self.p(&b.reach_slot[p]),
+                                    self.p(&b.reach[p]),
+                                    self.p(&b.disc),
+                                    self.p(&b.cfv_slot),
+                                    self.p(&b.cfv),
+                                    nh_p,
+                                    nh_max,
+                                ]
+                            )
+                        })?;
                     }
                 }
             }
@@ -1310,7 +1763,10 @@ impl MwGpuSolver {
         self.iteration += 1;
         let d = Discounts::for_iteration(self.algo, self.iteration);
         self.stream
-            .memcpy_htod(&[d.pos, d.neg, d.strat, f32::from_bits(self.iteration)], &mut self.bufs.disc)
+            .memcpy_htod(
+                &[d.pos, d.neg, d.strat, f32::from_bits(self.iteration)],
+                &mut self.bufs.disc,
+            )
             .map_err(e)?;
         if !self.reach_current {
             self.down_all(0)?;
@@ -1386,7 +1842,13 @@ impl MwGpuSolver {
         let mut gaps = [0f64; NP];
         for p in 0..NP {
             let w = &self.spot.weights[p];
-            let dot = |v: &[f32]| w.iter().zip(v).map(|(&a, &b)| a as f64 * b as f64).sum::<f64>() / denom;
+            let dot = |v: &[f32]| {
+                w.iter()
+                    .zip(v)
+                    .map(|(&a, &b)| a as f64 * b as f64)
+                    .sum::<f64>()
+                    / denom
+            };
             let br = dot(&best[p]);
             let ev = dot(&avg[p]);
             evs[p] = ev;
@@ -1448,8 +1910,11 @@ impl MwGpuSolver {
                         continue;
                     }
                     for (dev, store) in [(&reg[p], &mut s.regrets[p]), (&str[p], &mut s.strat[p])] {
-                        let Store::F32(buf) = store else { unreachable!() };
-                        st.memcpy_dtoh(&dev.slice(0..len), buf.as_mut_slice()).map_err(e)?;
+                        let Store::F32(buf) = store else {
+                            unreachable!()
+                        };
+                        st.memcpy_dtoh(&dev.slice(0..len), buf.as_mut_slice())
+                            .map_err(e)?;
                     }
                 }
                 if let Some(pr) = prd {
@@ -1457,35 +1922,57 @@ impl MwGpuSolver {
                     for p in 0..NP {
                         let len = ds[p] as usize;
                         if len > 0 {
-                            let Store::F32(buf) = &mut host[p] else { unreachable!() };
-                            st.memcpy_dtoh(&pr[p].slice(0..len), buf.as_mut_slice()).map_err(e)?;
+                            let Store::F32(buf) = &mut host[p] else {
+                                unreachable!()
+                            };
+                            st.memcpy_dtoh(&pr[p].slice(0..len), buf.as_mut_slice())
+                                .map_err(e)?;
                         }
                     }
                     preds = Some(host);
                 }
             }
-            DevArenas::Q { reg, str, prd, rsc, ssc, psc } => {
+            DevArenas::Q {
+                reg,
+                str,
+                prd,
+                rsc,
+                ssc,
+                psc,
+            } => {
                 for p in 0..NP {
                     let len = ds[p] as usize;
-                    let Store::I16 { q, scale } = &mut s.regrets[p] else { unreachable!() };
+                    let Store::I16 { q, scale } = &mut s.regrets[p] else {
+                        unreachable!()
+                    };
                     if len > 0 {
-                        st.memcpy_dtoh(&reg[p].slice(0..len), q.as_mut_slice()).map_err(e)?;
+                        st.memcpy_dtoh(&reg[p].slice(0..len), q.as_mut_slice())
+                            .map_err(e)?;
                     }
-                    st.memcpy_dtoh(&rsc[p].slice(0..nn), scale.as_mut_slice()).map_err(e)?;
-                    let Store::U16 { q, scale } = &mut s.strat[p] else { unreachable!() };
+                    st.memcpy_dtoh(&rsc[p].slice(0..nn), scale.as_mut_slice())
+                        .map_err(e)?;
+                    let Store::U16 { q, scale } = &mut s.strat[p] else {
+                        unreachable!()
+                    };
                     if len > 0 {
-                        st.memcpy_dtoh(&str[p].slice(0..len), q.as_mut_slice()).map_err(e)?;
+                        st.memcpy_dtoh(&str[p].slice(0..len), q.as_mut_slice())
+                            .map_err(e)?;
                     }
-                    st.memcpy_dtoh(&ssc[p].slice(0..nn), scale.as_mut_slice()).map_err(e)?;
+                    st.memcpy_dtoh(&ssc[p].slice(0..nn), scale.as_mut_slice())
+                        .map_err(e)?;
                 }
                 if let (Some(pr), Some(ps)) = (prd, psc) {
                     let mut host: [Store; NP] = std::array::from_fn(|p| Store::i16(ds[p], nn));
                     for p in 0..NP {
-                        let Store::I16 { q, scale } = &mut host[p] else { unreachable!() };
+                        let Store::I16 { q, scale } = &mut host[p] else {
+                            unreachable!()
+                        };
                         if ds[p] > 0 {
-                            st.memcpy_dtoh(&pr[p].slice(0..ds[p] as usize), q.as_mut_slice()).map_err(e)?;
+                            st.memcpy_dtoh(&pr[p].slice(0..ds[p] as usize), q.as_mut_slice())
+                                .map_err(e)?;
                         }
-                        st.memcpy_dtoh(&ps[p].slice(0..nn), scale.as_mut_slice()).map_err(e)?;
+                        st.memcpy_dtoh(&ps[p].slice(0..nn), scale.as_mut_slice())
+                            .map_err(e)?;
                     }
                     preds = Some(host);
                 }
@@ -1529,25 +2016,42 @@ fn upload_arenas(
             let three = |which: usize| -> Result<[CudaSlice<f32>; NP], String> {
                 Ok([arena(0, which)?, arena(1, which)?, arena(2, which)?])
             };
-            Ok(DevArenas::F32 { reg: three(0)?, str: three(1)?, prd: if pcfr { Some(three(2)?) } else { None } })
+            Ok(DevArenas::F32 {
+                reg: three(0)?,
+                str: three(1)?,
+                prd: if pcfr { Some(three(2)?) } else { None },
+            })
         }
         Storage::Compressed => {
-            let signed = |p: usize, which: usize| -> Result<(CudaSlice<i16>, CudaSlice<f32>), String> {
-                let len = ds[p] as usize;
-                match source(p, which) {
-                    None => Ok((upload::<i16>(stream, &[], len)?, upload::<f32>(stream, &[], nn)?)),
-                    Some(Store::I16 { q, scale }) => Ok((upload(stream, q.as_slice(), len)?, upload(stream, scale.as_slice(), nn)?)),
-                    Some(store) => {
-                        let (q, sc) = encode_signed(spot, p, store);
-                        Ok((upload(stream, &q, len)?, upload(stream, &sc, nn)?))
+            let signed =
+                |p: usize, which: usize| -> Result<(CudaSlice<i16>, CudaSlice<f32>), String> {
+                    let len = ds[p] as usize;
+                    match source(p, which) {
+                        None => Ok((
+                            upload::<i16>(stream, &[], len)?,
+                            upload::<f32>(stream, &[], nn)?,
+                        )),
+                        Some(Store::I16 { q, scale }) => Ok((
+                            upload(stream, q.as_slice(), len)?,
+                            upload(stream, scale.as_slice(), nn)?,
+                        )),
+                        Some(store) => {
+                            let (q, sc) = encode_signed(spot, p, store);
+                            Ok((upload(stream, &q, len)?, upload(stream, &sc, nn)?))
+                        }
                     }
-                }
-            };
+                };
             let unsigned = |p: usize| -> Result<(CudaSlice<u16>, CudaSlice<f32>), String> {
                 let len = ds[p] as usize;
                 match source(p, 1) {
-                    None => Ok((upload::<u16>(stream, &[], len)?, upload::<f32>(stream, &[], nn)?)),
-                    Some(Store::U16 { q, scale }) => Ok((upload(stream, q.as_slice(), len)?, upload(stream, scale.as_slice(), nn)?)),
+                    None => Ok((
+                        upload::<u16>(stream, &[], len)?,
+                        upload::<f32>(stream, &[], nn)?,
+                    )),
+                    Some(Store::U16 { q, scale }) => Ok((
+                        upload(stream, q.as_slice(), len)?,
+                        upload(stream, scale.as_slice(), nn)?,
+                    )),
                     Some(store) => {
                         let (q, sc) = encode_unsigned(spot, p, store);
                         Ok((upload(stream, &q, len)?, upload(stream, &sc, nn)?))
@@ -1579,7 +2083,9 @@ fn store_to_f32(spot: &MwSpot, p: usize, store: &Store, len: usize) -> Vec<f32> 
     let mut out = vec![0f32; len];
     match store {
         Store::F32(b) => out[..b.len()].copy_from_slice(b.as_slice()),
-        _ => for_nodes(spot, p, |i, off, k| unsafe { store.read_f32(i, off as u64, k, &mut out[off..off + k]) }),
+        _ => for_nodes(spot, p, |i, off, k| unsafe {
+            store.read_f32(i, off as u64, k, &mut out[off..off + k])
+        }),
     }
     out
 }
@@ -1588,7 +2094,11 @@ fn for_nodes(spot: &MwSpot, p: usize, mut f: impl FnMut(u32, usize, usize)) {
     let nh = spot.hands[p].len();
     for (i, n) in spot.tree.nodes.iter().enumerate() {
         if n.kind == KIND_ACTION && n.player as usize == p {
-            f(i as u32, n.data_offset as usize, n.num_children as usize * nh);
+            f(
+                i as u32,
+                n.data_offset as usize,
+                n.num_children as usize * nh,
+            );
         }
     }
 }
@@ -1620,15 +2130,20 @@ fn encode_unsigned(spot: &MwSpot, p: usize, store: &Store) -> (Vec<u16>, Vec<f32
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::multiway::{MwSpotConfig, MwTreeConfig};
-    use crate::tree::parse_sizes;
+    use crate::{
+        multiway::{MwSpotConfig, MwTreeConfig},
+        tree::parse_sizes,
+    };
 
     /// PTX compiles (needs libnvrtc, not a device).
     #[test]
     fn kernels_compile() {
         cudarc::nvrtc::compile_ptx_with_opts(
             include_str!("kernels.cu"),
-            cudarc::nvrtc::CompileOptions { arch: Some("compute_86"), ..Default::default() },
+            cudarc::nvrtc::CompileOptions {
+                arch: Some("compute_86"),
+                ..Default::default()
+            },
         )
         .expect("multiway kernels compile");
     }
@@ -1638,27 +2153,61 @@ mod tests {
     const R2: &str = "AA-88,AK,AQ,AJs,KQs,KJs,QJs,JTs,65s,54s";
 
     fn spot(board: &str, stacks: [f64; 3], bets: &str, raises: &str, rake: f64) -> Arc<MwSpot> {
-        let mut t = MwTreeConfig::uniform(30.0, stacks[0], &parse_sizes(bets).unwrap(), &parse_sizes(raises).unwrap());
+        let mut t = MwTreeConfig::uniform(
+            30.0,
+            stacks[0],
+            &parse_sizes(bets).unwrap(),
+            &parse_sizes(raises).unwrap(),
+        );
         t.stacks = stacks;
         t.rake_pct = rake;
         t.rake_cap = if rake > 0.0 { 3.0 } else { 0.0 };
-        let c = MwSpotConfig { board: board.into(), ranges: [R0, R1, R2].map(String::from), tree: t, seats: None };
+        let c = MwSpotConfig {
+            board: board.into(),
+            ranges: [R0, R1, R2].map(String::from),
+            tree: t,
+            seats: None,
+        };
         Arc::new(MwSpot::new(c).unwrap())
     }
 
     /// A tournament spot: payouts and the stacks of players outside the hand.
-    fn icm_spot(board: &str, stacks: [f64; 3], bets: &str, raises: &str, payouts: &[f64], others: &[f64]) -> Arc<MwSpot> {
-        let mut t = MwTreeConfig::uniform(30.0, stacks[0], &parse_sizes(bets).unwrap(), &parse_sizes(raises).unwrap());
+    fn icm_spot(
+        board: &str,
+        stacks: [f64; 3],
+        bets: &str,
+        raises: &str,
+        payouts: &[f64],
+        others: &[f64],
+    ) -> Arc<MwSpot> {
+        let mut t = MwTreeConfig::uniform(
+            30.0,
+            stacks[0],
+            &parse_sizes(bets).unwrap(),
+            &parse_sizes(raises).unwrap(),
+        );
         t.stacks = stacks;
         t.icm = Some(crate::icm::postflop::PostflopIcm {
-            payouts: payouts.to_vec(), behind: None, others: others.to_vec(), field_groups: vec![],
+            payouts: payouts.to_vec(),
+            behind: None,
+            others: others.to_vec(),
+            field_groups: vec![],
         });
-        let c = MwSpotConfig { board: board.into(), ranges: [R0, R1, R2].map(String::from), tree: t, seats: None };
+        let c = MwSpotConfig {
+            board: board.into(),
+            ranges: [R0, R1, R2].map(String::from),
+            tree: t,
+            seats: None,
+        };
         Arc::new(MwSpot::new(c).unwrap())
     }
 
     fn opts(storage: Storage, group: Option<usize>) -> MwGpuOptions {
-        MwGpuOptions { storage: Some(storage), budget_bytes: None, max_cards_per_group: group }
+        MwGpuOptions {
+            storage: Some(storage),
+            budget_bytes: None,
+            max_cards_per_group: group,
+        }
     }
 
     /// Device exploitability equals the CPU's on the downloaded arenas.
@@ -1667,8 +2216,18 @@ mod tests {
         let (ev_g, gap_g) = g.exploitability().unwrap();
         let (ev_c, gap_c) = g.to_cpu().unwrap().exploitability();
         for p in 0..NP {
-            assert!((ev_g[p] - ev_c[p]).abs() < tol, "{label} ev p{p}: gpu {} cpu {}", ev_g[p], ev_c[p]);
-            assert!((gap_g[p] - gap_c[p]).abs() < tol, "{label} gap p{p}: gpu {} cpu {}", gap_g[p], gap_c[p]);
+            assert!(
+                (ev_g[p] - ev_c[p]).abs() < tol,
+                "{label} ev p{p}: gpu {} cpu {}",
+                ev_g[p],
+                ev_c[p]
+            );
+            assert!(
+                (gap_g[p] - gap_c[p]).abs() < tol,
+                "{label} gap p{p}: gpu {} cpu {}",
+                gap_g[p],
+                gap_c[p]
+            );
         }
     }
 
@@ -1678,7 +2237,9 @@ mod tests {
         c.use_isomorphism = false;
         let mut x = 0x9E37_79B9_7F4A_7C15u64 ^ seed;
         for p in 0..NP {
-            let Store::F32(b) = &mut c.strat[p] else { unreachable!() };
+            let Store::F32(b) = &mut c.strat[p] else {
+                unreachable!()
+            };
             for v in b.as_mut_slice() {
                 x ^= x << 13;
                 x ^= x >> 7;
@@ -1696,8 +2257,22 @@ mod tests {
             spot("Ks9d4c7h2s", [100.0; 3], "50 100", "100", 0.0),
             spot("QsQd3c3h", [100.0; 3], "33 a", "a", 0.05),
             // ICM: the opponents' order matters (busts, side pots, folds).
-            icm_spot("Ks9d4c7h2s", [25.0, 140.0, 60.0], "50 a", "a", &[50.0, 30.0, 20.0], &[]),
-            icm_spot("9h9d8c8s", [20.0, 60.0, 45.0], "75 a", "a", &[40.0, 25.0, 15.0, 10.0, 10.0], &[30.0, 50.0]),
+            icm_spot(
+                "Ks9d4c7h2s",
+                [25.0, 140.0, 60.0],
+                "50 a",
+                "a",
+                &[50.0, 30.0, 20.0],
+                &[],
+            ),
+            icm_spot(
+                "9h9d8c8s",
+                [20.0, 60.0, 45.0],
+                "75 a",
+                "a",
+                &[40.0, 25.0, 15.0, 10.0, 10.0],
+                &[30.0, 50.0],
+            ),
         ]
     }
 
@@ -1714,10 +2289,24 @@ mod tests {
             let mut g = MwGpuSolver::from_solver_with(&c, &opts(Storage::F32, None)).unwrap();
             let (ev_g, gap_g) = g.exploitability().unwrap();
             for p in 0..NP {
-                assert!((ev_g[p] - ev_c[p]).abs() < tol, "case {ci} ev p{p}: gpu {} cpu {}", ev_g[p], ev_c[p]);
-                assert!((gap_g[p] - gap_c[p]).abs() < tol, "case {ci} gap p{p}: gpu {} cpu {}", gap_g[p], gap_c[p]);
+                assert!(
+                    (ev_g[p] - ev_c[p]).abs() < tol,
+                    "case {ci} ev p{p}: gpu {} cpu {}",
+                    ev_g[p],
+                    ev_c[p]
+                );
+                assert!(
+                    (gap_g[p] - gap_c[p]).abs() < tol,
+                    "case {ci} gap p{p}: gpu {} cpu {}",
+                    gap_g[p],
+                    gap_c[p]
+                );
             }
-            for (storage, group) in [(Storage::F32, Some(5)), (Storage::Compressed, None), (Storage::Compressed, Some(3))] {
+            for (storage, group) in [
+                (Storage::F32, Some(5)),
+                (Storage::Compressed, None),
+                (Storage::Compressed, Some(3)),
+            ] {
                 let mut g = MwGpuSolver::from_solver_with(&c, &opts(storage, group)).unwrap();
                 let label = format!("case {ci} {storage:?} groups {}", g.num_groups());
                 assert_eval_matches(&mut g, &label);
@@ -1737,7 +2326,12 @@ mod tests {
             c.iterate();
         }
         let e_c = c.progress(0.0).exploit_pct_pot;
-        for (storage, group) in [(Storage::F32, None), (Storage::F32, Some(4)), (Storage::Compressed, None), (Storage::Compressed, Some(4))] {
+        for (storage, group) in [
+            (Storage::F32, None),
+            (Storage::F32, Some(4)),
+            (Storage::Compressed, None),
+            (Storage::Compressed, Some(4)),
+        ] {
             let mut g = MwGpuSolver::with_options(sp.clone(), algo, &opts(storage, group)).unwrap();
             let label = format!("{algo:?} {storage:?} groups {}", g.num_groups());
             for _ in 0..iters {
@@ -1748,7 +2342,10 @@ mod tests {
             println!("{label}: gpu {e_g:.4}% cpu {e_c:.4}% after {iters}");
             // Same dynamics, different rounding: runs drift apart where regrets
             // are exactly zero, so only the convergence level is compared.
-            assert!((e_g - e_c).abs() < 0.3 * e_c + 0.05, "{label}: gpu {e_g}% cpu {e_c}% pot");
+            assert!(
+                (e_g - e_c).abs() < 0.3 * e_c + 0.05,
+                "{label}: gpu {e_g}% cpu {e_c}% pot"
+            );
             g.iterate().unwrap();
             assert_eval_matches(&mut g, &format!("{label} after eval"));
         }
@@ -1757,31 +2354,58 @@ mod tests {
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_river() {
-        check(spot("Ks9d4c7h2s", [100.0; 3], "50 100", "100", 0.0), Algorithm::Dcfr, 30);
+        check(
+            spot("Ks9d4c7h2s", [100.0; 3], "50 100", "100", 0.0),
+            Algorithm::Dcfr,
+            30,
+        );
     }
 
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_turn_side_pots_rake() {
-        check(spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", 0.05), Algorithm::Dcfr, 30);
+        check(
+            spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", 0.05),
+            Algorithm::Dcfr,
+            30,
+        );
     }
 
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_icm_turn() {
-        check(icm_spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", &[50.0, 30.0, 20.0], &[35.0]), Algorithm::Dcfr, 30);
+        check(
+            icm_spot(
+                "Ks9d4c7h",
+                [20.0, 120.0, 60.0],
+                "50 a",
+                "a",
+                &[50.0, 30.0, 20.0],
+                &[35.0],
+            ),
+            Algorithm::Dcfr,
+            30,
+        );
     }
 
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_turn_pcfr() {
-        check(spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0), Algorithm::PcfrPlus, 30);
+        check(
+            spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0),
+            Algorithm::PcfrPlus,
+            30,
+        );
     }
 
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_paired_turn() {
-        check(spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0), Algorithm::Dcfr, 30);
+        check(
+            spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0),
+            Algorithm::Dcfr,
+            30,
+        );
     }
 
     /// Grouped sweeps do the same arithmetic as resident ones: first-iteration
@@ -1792,21 +2416,36 @@ mod tests {
     #[ignore = "needs a CUDA device"]
     fn gpu_groups_match_resident() {
         let sp = spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0);
-        let mut a = MwGpuSolver::with_options(sp.clone(), Algorithm::Dcfr, &opts(Storage::F32, None)).unwrap();
-        let mut b = MwGpuSolver::with_options(sp.clone(), Algorithm::Dcfr, &opts(Storage::F32, Some(3))).unwrap();
+        let mut a =
+            MwGpuSolver::with_options(sp.clone(), Algorithm::Dcfr, &opts(Storage::F32, None))
+                .unwrap();
+        let mut b =
+            MwGpuSolver::with_options(sp.clone(), Algorithm::Dcfr, &opts(Storage::F32, Some(3)))
+                .unwrap();
         assert!(a.num_groups() == 1 && b.num_groups() > 1);
         a.iterate().unwrap();
         b.iterate().unwrap();
         let (x, y) = (a.to_cpu().unwrap(), b.to_cpu().unwrap());
         for p in 0..NP {
-            let (Store::F32(u), Store::F32(v)) = (&x.regrets[p], &y.regrets[p]) else { unreachable!() };
+            let (Store::F32(u), Store::F32(v)) = (&x.regrets[p], &y.regrets[p]) else {
+                unreachable!()
+            };
             let nh = sp.hands[p].len();
-            for n in sp.tree.nodes.iter().filter(|n| n.kind == KIND_ACTION && n.player as usize == p) {
-                let r = n.data_offset as usize..n.data_offset as usize + n.num_children as usize * nh;
+            for n in sp
+                .tree
+                .nodes
+                .iter()
+                .filter(|n| n.kind == KIND_ACTION && n.player as usize == p)
+            {
+                let r =
+                    n.data_offset as usize..n.data_offset as usize + n.num_children as usize * nh;
                 let (u, v) = (&u.as_slice()[r.clone()], &v.as_slice()[r]);
                 let scale = u.iter().fold(1e-3f32, |m, x| m.max(x.abs()));
                 for (s, t) in u.iter().zip(v) {
-                    assert!((s - t).abs() <= 1e-4 * scale, "p{p} regret {s} vs {t} (node scale {scale})");
+                    assert!(
+                        (s - t).abs() <= 1e-4 * scale,
+                        "p{p} regret {s} vs {t} (node scale {scale})"
+                    );
                 }
             }
         }
@@ -1816,7 +2455,10 @@ mod tests {
         }
         let ea = a.progress(0.0).unwrap().exploit_pct_pot;
         let eb = b.progress(0.0).unwrap().exploit_pct_pot;
-        assert!((ea - eb).abs() < 0.2 * ea.max(eb) + 0.02, "resident {ea}% vs grouped {eb}% pot");
+        assert!(
+            (ea - eb).abs() < 0.2 * ea.max(eb) + 0.02,
+            "resident {ea}% vs grouped {eb}% pot"
+        );
     }
 
     /// Compressed arenas move between host and device unchanged.
@@ -1832,14 +2474,21 @@ mod tests {
         let g = MwGpuSolver::from_solver_with(&c, &opts(Storage::Compressed, Some(6))).unwrap();
         let d = g.to_cpu().unwrap();
         let same = |x: &Store, y: &Store| match (x, y) {
-            (Store::I16 { q: a, scale: s }, Store::I16 { q: b, scale: t }) => a.as_slice() == b.as_slice() && s.as_slice() == t.as_slice(),
-            (Store::U16 { q: a, scale: s }, Store::U16 { q: b, scale: t }) => a.as_slice() == b.as_slice() && s.as_slice() == t.as_slice(),
+            (Store::I16 { q: a, scale: s }, Store::I16 { q: b, scale: t }) => {
+                a.as_slice() == b.as_slice() && s.as_slice() == t.as_slice()
+            }
+            (Store::U16 { q: a, scale: s }, Store::U16 { q: b, scale: t }) => {
+                a.as_slice() == b.as_slice() && s.as_slice() == t.as_slice()
+            }
             _ => false,
         };
         for p in 0..NP {
             assert!(same(&c.regrets[p], &d.regrets[p]), "regrets p{p}");
             assert!(same(&c.strat[p], &d.strat[p]), "strat p{p}");
-            assert!(same(&c.preds.as_ref().unwrap()[p], &d.preds.as_ref().unwrap()[p]), "preds p{p}");
+            assert!(
+                same(&c.preds.as_ref().unwrap()[p], &d.preds.as_ref().unwrap()[p]),
+                "preds p{p}"
+            );
         }
     }
 
@@ -1848,7 +2497,9 @@ mod tests {
     fn gpu_turn_converges() {
         let s = spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0);
         for (storage, group) in [(Storage::F32, None), (Storage::Compressed, Some(5))] {
-            let mut g = MwGpuSolver::with_options(s.clone(), Algorithm::Dcfr, &opts(storage, group)).unwrap();
+            let mut g =
+                MwGpuSolver::with_options(s.clone(), Algorithm::Dcfr, &opts(storage, group))
+                    .unwrap();
             for _ in 0..150 {
                 g.iterate().unwrap();
             }
@@ -1863,7 +2514,12 @@ mod tests {
     #[ignore = "needs a CUDA device"]
     fn gpu_flop_grouped_compressed() {
         let sp = spot("Ks9d4c", [60.0; 3], "50", "a", 0.0);
-        let mut g = MwGpuSolver::with_options(sp.clone(), Algorithm::Dcfr, &opts(Storage::Compressed, Some(8))).unwrap();
+        let mut g = MwGpuSolver::with_options(
+            sp.clone(),
+            Algorithm::Dcfr,
+            &opts(Storage::Compressed, Some(8)),
+        )
+        .unwrap();
         println!("{}", g.describe());
         assert!(g.num_groups() > 1);
         for _ in 0..40 {
@@ -1890,10 +2546,19 @@ mod tests {
         assert!(b.total() <= full);
         let (s, g, b) = choose(&sp, &layout, Algorithm::Dcfr, min, &o, rivers).unwrap();
         println!("full {full}, min {min}: {s:?}, {} groups, {b:?}", g.len());
-        assert!(g.len() > 1 && b.total() <= min, "{} groups, {} > {}", g.len(), b.total(), min);
+        assert!(
+            g.len() > 1 && b.total() <= min,
+            "{} groups, {} > {}",
+            g.len(),
+            b.total(),
+            min
+        );
         let plan = Plan::build(&sp, &layout, terminals(&sp, &layout), &g).unwrap();
         assert_eq!(plan.sweeps.len(), g.len() + 1);
-        let c = MwGpuOptions { storage: Some(Storage::Compressed), ..Default::default() };
+        let c = MwGpuOptions {
+            storage: Some(Storage::Compressed),
+            ..Default::default()
+        };
         let (_, g, b) = choose(&sp, &layout, Algorithm::Dcfr, min, &c, rivers).unwrap();
         assert!(b.total() <= min && g.len() <= 49);
         assert!(choose(&sp, &layout, Algorithm::Dcfr, min / 4, &o, rivers).is_err());

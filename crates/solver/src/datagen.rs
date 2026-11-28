@@ -21,11 +21,14 @@
 //! older versions' sampling stays in the code so their uploads can still be
 //! regenerated and checked.
 
-use crate::cards::{rank, suit};
-use crate::preflop::equity::{class_index, class_label, class_parts, NUM_CLASSES};
-use crate::tree::TreeConfig;
-use crate::{Solver, SpotConfig};
 use serde::{Deserialize, Serialize};
+
+use crate::{
+    cards::{rank, suit},
+    preflop::equity::{class_index, class_label, class_parts, NUM_CLASSES},
+    tree::TreeConfig,
+    Solver, SpotConfig,
+};
 
 /// Format name written in every file header.
 pub const FORMAT: &str = "gtopen-leaf-values";
@@ -275,7 +278,11 @@ fn threshold_weights(order: &[usize], frac: f64, edge: f64) -> Vec<f64> {
         let mid = (cum + combos(k) / 2.0) / total; // position in [0, 1]
         cum += combos(k);
         let x = if edge <= 1e-9 {
-            if mid <= frac { 1.0 } else { 0.0 }
+            if mid <= frac {
+                1.0
+            } else {
+                0.0
+            }
         } else {
             (0.5 - (mid - frac) / edge).clamp(0.0, 1.0)
         };
@@ -344,7 +351,9 @@ pub fn sample_range(rng: &mut Rng) -> Vec<f32> {
         let frac = rng.log_range(0.1, 1.0);
         let base = threshold_weights(&order, frac, 0.1);
         let p = rng.range(1.0, 4.0);
-        (0..NUM_CLASSES).map(|k| base[k] * rng.f64().powf(p)).collect()
+        (0..NUM_CLASSES)
+            .map(|k| base[k] * rng.f64().powf(p))
+            .collect()
     };
     let max = w.iter().cloned().fold(0.0f64, f64::max);
     if max <= 0.0 {
@@ -358,7 +367,11 @@ pub fn sample_range(rng: &mut Rng) -> Vec<f32> {
     w.iter()
         .map(|&x| {
             let r = (x * 1000.0).round() / 1000.0;
-            if r < 0.02 { 0.0 } else { r as f32 }
+            if r < 0.02 {
+                0.0
+            } else {
+                r as f32
+            }
         })
         .collect()
 }
@@ -401,7 +414,12 @@ pub fn example_inputs_capped(job: u64, index: u32, cap_gb: Option<f64>) -> Examp
 
 /// [`example_inputs_capped`] as generator `version` drew it (2 to 4, the
 /// generators whose mix was written in code), for checking their uploads.
-pub fn example_inputs_for(version: u32, job: u64, index: u32, cap_gb: Option<f64>) -> ExampleInputs {
+pub fn example_inputs_for(
+    version: u32,
+    job: u64,
+    index: u32,
+    cap_gb: Option<f64>,
+) -> ExampleInputs {
     capped(cap_gb, |attempt| draw_inputs(version, job, index, attempt))
 }
 
@@ -477,7 +495,14 @@ pub(crate) fn draw_stack_from(rng: &mut Rng, pot_bb: f64, lo: f64, hi: f64) -> f
     round2((start - pot_bb / 2.0).min(MAX_SPR * pot_bb))
 }
 
-pub(crate) fn finish(rng: &mut Rng, pot_type: &str, pot_bb: f64, pot_scale: f64, stack_bb: f64, rake: (f64, f64)) -> ExampleInputs {
+pub(crate) fn finish(
+    rng: &mut Rng,
+    pot_type: &str,
+    pot_bb: f64,
+    pot_scale: f64,
+    stack_bb: f64,
+    rake: (f64, f64),
+) -> ExampleInputs {
     let board = random_flop(rng);
     let range = [sample_range(rng), sample_range(rng)];
     ExampleInputs {
@@ -507,7 +532,11 @@ fn draw_v2(rng: &mut Rng) -> ExampleInputs {
     let chosen = pick_pot_type(rng, &types);
     let pot_bb = round2(rng.range(chosen.2, chosen.3));
     let stack_bb = draw_stack(rng, pot_bb);
-    let rake = if rng.f64() < 0.5 { (0.0, 0.0) } else { (0.05, 3.0) };
+    let rake = if rng.f64() < 0.5 {
+        (0.0, 0.0)
+    } else {
+        (0.05, 3.0)
+    };
     finish(rng, chosen.0, pot_bb, 1.0, stack_bb, rake)
 }
 
@@ -522,7 +551,11 @@ fn draw_v3(rng: &mut Rng) -> ExampleInputs {
     let chosen = pick_pot_type(rng, &types);
     // Straddled games (2x) and big live opens (7.5 bb opens make 15+ bb
     // single-raised pots) play every pot type bigger than the blinds suggest.
-    let pot_scale = if rng.f64() < 0.2 { round2(rng.range(1.6, 2.6)) } else { 1.0 };
+    let pot_scale = if rng.f64() < 0.2 {
+        round2(rng.range(1.6, 2.6))
+    } else {
+        1.0
+    };
     let pot_bb = round2(rng.range(chosen.2, chosen.3) * pot_scale);
     let stack_bb = draw_stack(rng, pot_bb);
     let u = rng.f64();
@@ -534,7 +567,10 @@ fn draw_v3(rng: &mut Rng) -> ExampleInputs {
     } else if u < 0.85 {
         (0.10, round1(rng.range(6.0, 10.0)))
     } else {
-        ((rng.range(0.03, 0.10) * 1000.0).round() / 1000.0, round1(rng.log_range(1.0, 10.0)))
+        (
+            (rng.range(0.03, 0.10) * 1000.0).round() / 1000.0,
+            round1(rng.log_range(1.0, 10.0)),
+        )
     };
     finish(rng, chosen.0, pot_bb, pot_scale, stack_bb, rake)
 }
@@ -569,7 +605,10 @@ fn draw_v4(rng: &mut Rng) -> ExampleInputs {
     } else if u < 0.90 {
         (0.10, cap(rng, 1.0, 10.0))
     } else {
-        ((rng.range(0.03, 0.10) * 1000.0).round() / 1000.0, cap(rng, 0.5, 12.0))
+        (
+            (rng.range(0.03, 0.10) * 1000.0).round() / 1000.0,
+            cap(rng, 0.5, 12.0),
+        )
     };
     finish(rng, chosen.0, pot_bb, pot_scale, stack_bb, rake)
 }
@@ -601,7 +640,11 @@ pub fn line_flop(seed: u64, line: &str, index: u32) -> String {
     for b in line.bytes() {
         h = (h ^ b as u64).wrapping_mul(0x0000_0100_0000_01b3);
     }
-    let mut rng = Rng::new(seed.wrapping_mul(0x9E37_79B9_7F4A_7C15) ^ h ^ (index as u64 + 1).wrapping_mul(0xD6E8_FEB8_6659_FD93));
+    let mut rng = Rng::new(
+        seed.wrapping_mul(0x9E37_79B9_7F4A_7C15)
+            ^ h
+            ^ (index as u64 + 1).wrapping_mul(0xD6E8_FEB8_6659_FD93),
+    );
     random_flop(&mut rng)
 }
 
@@ -617,19 +660,43 @@ pub struct LineBoards {
 /// The flops of an earlier leaf export by line, from the text of its leaves.json and inputs.jsonl, so a
 /// later export of the same game (solved again, or with another model) can put the same flops under the same
 /// lines and the two can be compared flop for flop. Also returns the export's seat names.
-pub fn leaf_boards(leaves_json: &str, inputs_jsonl: &str) -> Result<(Vec<String>, std::collections::HashMap<String, LineBoards>), String> {
-    let v: serde_json::Value = serde_json::from_str(leaves_json).map_err(|e| format!("leaves.json: {e}"))?;
-    let positions: Vec<String> = v["positions"].as_array().map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+pub fn leaf_boards(
+    leaves_json: &str,
+    inputs_jsonl: &str,
+) -> Result<(Vec<String>, std::collections::HashMap<String, LineBoards>), String> {
+    let v: serde_json::Value =
+        serde_json::from_str(leaves_json).map_err(|e| format!("leaves.json: {e}"))?;
+    let positions: Vec<String> = v["positions"]
+        .as_array()
+        .map(|a| {
+            a.iter()
+                .filter_map(|x| x.as_str().map(String::from))
+                .collect()
+        })
         .unwrap_or_default();
-    let mut by_job: std::collections::HashMap<u64, Vec<(u32, String)>> = std::collections::HashMap::new();
-    for (n, line) in inputs_jsonl.lines().enumerate().filter(|(_, l)| !l.trim().is_empty()) {
-        let ex: ExampleInputs = serde_json::from_str(line).map_err(|e| format!("inputs.jsonl line {}: {e}", n + 1))?;
+    let mut by_job: std::collections::HashMap<u64, Vec<(u32, String)>> =
+        std::collections::HashMap::new();
+    for (n, line) in inputs_jsonl
+        .lines()
+        .enumerate()
+        .filter(|(_, l)| !l.trim().is_empty())
+    {
+        let ex: ExampleInputs =
+            serde_json::from_str(line).map_err(|e| format!("inputs.jsonl line {}: {e}", n + 1))?;
         by_job.entry(ex.job).or_default().push((ex.index, ex.board));
     }
     let mut out = std::collections::HashMap::new();
     for leaf in v["leaves"].as_array().ok_or("leaves.json has no leaves")? {
-        let path: Vec<String> = leaf["path"].as_array().ok_or("a leaf has no path (not written by `datagen leaves`)")?
-            .iter().map(|x| x.as_str().map(String::from).unwrap_or_else(|| x.to_string())).collect();
+        let path: Vec<String> = leaf["path"]
+            .as_array()
+            .ok_or("a leaf has no path (not written by `datagen leaves`)")?
+            .iter()
+            .map(|x| {
+                x.as_str()
+                    .map(String::from)
+                    .unwrap_or_else(|| x.to_string())
+            })
+            .collect();
         let job = leaf["job"].as_u64().ok_or("a leaf has no job number")?;
         let mut boards = by_job.remove(&job).unwrap_or_default();
         boards.sort();
@@ -639,7 +706,10 @@ pub fn leaf_boards(leaves_json: &str, inputs_jsonl: &str) -> Result<(Vec<String>
             boards: boards.into_iter().map(|(_, b)| b).collect(),
         };
         if out.insert(line_key(&path), entry).is_some() {
-            return Err(format!("leaves.json lists the line {} twice", line_key(&path)));
+            return Err(format!(
+                "leaves.json lists the line {} twice",
+                line_key(&path)
+            ));
         }
     }
     Ok((positions, out))
@@ -791,8 +861,16 @@ pub struct JobHeader {
 
 impl JobHeader {
     #[allow(clippy::too_many_arguments)]
-    pub fn new(job: u64, contributor: &str, examples: u32, target_pct: f64, max_iterations: u32, engine: &str,
-               max_vram_gb: Option<f64>, mix: Option<(u32, String)>) -> Self {
+    pub fn new(
+        job: u64,
+        contributor: &str,
+        examples: u32,
+        target_pct: f64,
+        max_iterations: u32,
+        engine: &str,
+        max_vram_gb: Option<f64>,
+        mix: Option<(u32, String)>,
+    ) -> Self {
         JobHeader {
             kind: "header".into(),
             format: FORMAT.into(),
@@ -856,7 +934,10 @@ pub struct RealHeader {
 /// decides whether a hand enters. Small enough tokens leave the solve of the
 /// played hands as it was.
 pub fn export_range(range: &[f32], token: f32) -> Vec<f32> {
-    let mut out: Vec<f32> = range.iter().map(|&x| (x * 1000.0).round() / 1000.0).collect();
+    let mut out: Vec<f32> = range
+        .iter()
+        .map(|&x| (x * 1000.0).round() / 1000.0)
+        .collect();
     let max = out.iter().cloned().fold(0f32, f32::max);
     if token > 0.0 && max > 0.0 {
         // seven decimals: enough for a ten-thousandth of a weight of 0.001
@@ -869,14 +950,21 @@ pub fn export_range(range: &[f32], token: f32) -> Vec<f32> {
 }
 
 pub fn plain_name(s: &str) -> bool {
-    !s.is_empty() && s.len() <= 64 && s.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+    !s.is_empty()
+        && s.len() <= 64
+        && s.chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
 }
 
 /// Plausibility of a real-range example's inputs (they cannot be
 /// regenerated): a real flop, two usable 169-class ranges, sane sizes.
 pub fn check_real_inputs(ex: &ExampleInputs) -> Option<String> {
     match crate::cards::parse_cards(&ex.board) {
-        Ok(cards) if cards.len() == 3 && cards[0] != cards[1] && cards[0] != cards[2] && cards[1] != cards[2] => {}
+        Ok(cards)
+            if cards.len() == 3
+                && cards[0] != cards[1]
+                && cards[0] != cards[2]
+                && cards[1] != cards[2] => {}
         _ => return Some(format!("board {:?} is not a flop", ex.board)),
     }
     if !crate::preflop::leafnet::POT_TYPES.contains(&ex.pot_type.as_str()) {
@@ -889,7 +977,10 @@ pub fn check_real_inputs(ex: &ExampleInputs) -> Option<String> {
         return Some(format!("stack {} bb out of range", ex.stack_bb));
     }
     if !(ex.rake_pct.is_finite() && (0.0..=0.25).contains(&ex.rake_pct)) {
-        return Some(format!("rake {} out of range (a fraction of the pot)", ex.rake_pct));
+        return Some(format!(
+            "rake {} out of range (a fraction of the pot)",
+            ex.rake_pct
+        ));
     }
     if !(ex.rake_cap_bb.is_finite() && ex.rake_cap_bb >= 0.0) {
         return Some(format!("rake cap {} bb out of range", ex.rake_cap_bb));
@@ -898,7 +989,10 @@ pub fn check_real_inputs(ex: &ExampleInputs) -> Option<String> {
         if ex.range[p].len() != NUM_CLASSES {
             return Some(format!("range {p} has {} classes", ex.range[p].len()));
         }
-        if ex.range[p].iter().any(|w| !w.is_finite() || !(0.0..=1.0).contains(w)) {
+        if ex.range[p]
+            .iter()
+            .any(|w| !w.is_finite() || !(0.0..=1.0).contains(w))
+        {
             return Some(format!("range {p} has a weight outside 0..1"));
         }
         if ex.range[p].iter().all(|&w| w <= 0.0) {
@@ -954,15 +1048,35 @@ mod tests {
         let tok = export_range(&range, 0.0001);
         assert_eq!(&tok[..2], &[0.5, 0.2]);
         assert_eq!(tok[3], 0.001, "a hand the range holds keeps its weight");
-        assert!((tok[2] - 0.00005).abs() < 1e-9 && tok[4..].iter().all(|&w| w == tok[2]), "{}", tok[2]);
+        assert!(
+            (tok[2] - 0.00005).abs() < 1e-9 && tok[4..].iter().all(|&w| w == tok[2]),
+            "{}",
+            tok[2]
+        );
         // the tokens together stay a sliver of the range
-        let (held, tokens): (f32, f32) = (tok[..2].iter().sum::<f32>() + tok[3], tok[2] + tok[4..].iter().sum::<f32>());
+        let (held, tokens): (f32, f32) = (
+            tok[..2].iter().sum::<f32>() + tok[3],
+            tok[2] + tok[4..].iter().sum::<f32>(),
+        );
         assert!(tokens < 0.02 * held, "{tokens} against {held}");
         // an empty range stays empty, and the result passes the checks a pooled example must pass
-        assert!(export_range(&vec![0f32; NUM_CLASSES], 0.0001).iter().all(|&w| w == 0.0));
-        let ex = ExampleInputs { job: 1, index: 0, board: "AsKd7c".into(), pot_type: "srp".into(), pot_bb: 6.5, stack_bb: 97.0,
-                                 rake_pct: 0.05, rake_cap_bb: 3.0, range: [tok.clone(), tok], attempt: 0, pot_scale: 1.0,
-                                 situation: None };
+        assert!(export_range(&vec![0f32; NUM_CLASSES], 0.0001)
+            .iter()
+            .all(|&w| w == 0.0));
+        let ex = ExampleInputs {
+            job: 1,
+            index: 0,
+            board: "AsKd7c".into(),
+            pot_type: "srp".into(),
+            pot_bb: 6.5,
+            stack_bb: 97.0,
+            rake_pct: 0.05,
+            rake_cap_bb: 3.0,
+            range: [tok.clone(), tok],
+            attempt: 0,
+            pot_scale: 1.0,
+            situation: None,
+        };
         assert_eq!(check_real_inputs(&ex), None);
     }
 
@@ -977,18 +1091,36 @@ mod tests {
             change(&mut ex);
             check_real_inputs(&ex)
         };
-        assert!(bad(&|ex| ex.board = "AcAc5h".into()).unwrap().contains("not a flop"));
-        assert!(bad(&|ex| ex.board = "Ac5h".into()).unwrap().contains("not a flop"));
-        assert!(bad(&|ex| ex.board = "Ac5h7d9s".into()).unwrap().contains("not a flop"));
-        assert!(bad(&|ex| ex.pot_type = "5bet".into()).unwrap().contains("pot type"));
+        assert!(bad(&|ex| ex.board = "AcAc5h".into())
+            .unwrap()
+            .contains("not a flop"));
+        assert!(bad(&|ex| ex.board = "Ac5h".into())
+            .unwrap()
+            .contains("not a flop"));
+        assert!(bad(&|ex| ex.board = "Ac5h7d9s".into())
+            .unwrap()
+            .contains("not a flop"));
+        assert!(bad(&|ex| ex.pot_type = "5bet".into())
+            .unwrap()
+            .contains("pot type"));
         assert!(bad(&|ex| ex.pot_bb = 0.0).unwrap().contains("pot"));
         assert!(bad(&|ex| ex.stack_bb = f64::NAN).unwrap().contains("stack"));
         assert!(bad(&|ex| ex.rake_pct = 5.0).unwrap().contains("rake"));
-        assert!(bad(&|ex| ex.rake_cap_bb = -1.0).unwrap().contains("rake cap"));
-        assert!(bad(&|ex| ex.range[0].truncate(100)).unwrap().contains("classes"));
-        assert!(bad(&|ex| ex.range[1][5] = 1.5).unwrap().contains("outside 0..1"));
-        assert!(bad(&|ex| ex.range[1][5] = f32::NAN).unwrap().contains("outside 0..1"));
-        assert!(bad(&|ex| ex.range[0].iter_mut().for_each(|w| *w = 0.0)).unwrap().contains("empty"));
+        assert!(bad(&|ex| ex.rake_cap_bb = -1.0)
+            .unwrap()
+            .contains("rake cap"));
+        assert!(bad(&|ex| ex.range[0].truncate(100))
+            .unwrap()
+            .contains("classes"));
+        assert!(bad(&|ex| ex.range[1][5] = 1.5)
+            .unwrap()
+            .contains("outside 0..1"));
+        assert!(bad(&|ex| ex.range[1][5] = f32::NAN)
+            .unwrap()
+            .contains("outside 0..1"));
+        assert!(bad(&|ex| ex.range[0].iter_mut().for_each(|w| *w = 0.0))
+            .unwrap()
+            .contains("empty"));
     }
 
     #[test]
@@ -997,7 +1129,10 @@ mod tests {
         assert_eq!(line, "UTG Raise 2.5 | BB Call 2.5");
         // the same line, seed and index always give the same flop; nothing else goes in
         assert_eq!(line_flop(1000, &line, 0), line_flop(1000, &line, 0));
-        let canon: std::collections::HashSet<String> = crate::cards::canonical_flops().into_iter().map(|x| x.0).collect();
+        let canon: std::collections::HashSet<String> = crate::cards::canonical_flops()
+            .into_iter()
+            .map(|x| x.0)
+            .collect();
         let mut seen = std::collections::HashSet::new();
         for index in 0..40 {
             let flop = line_flop(1000, &line, index);
@@ -1006,7 +1141,11 @@ mod tests {
         }
         assert!(seen.len() >= 35, "40 draws gave only {} flops", seen.len());
         // another seed or another line draws other flops
-        let same = |a: &dyn Fn(u32) -> String| (0..40).filter(|&i| a(i) == line_flop(1000, &line, i)).count();
+        let same = |a: &dyn Fn(u32) -> String| {
+            (0..40)
+                .filter(|&i| a(i) == line_flop(1000, &line, i))
+                .count()
+        };
         assert!(same(&|i| line_flop(1001, &line, i)) <= 3);
         assert!(same(&|i| line_flop(1000, "UTG Raise 2.5 | SB Call 2.5", i)) <= 3);
     }
@@ -1023,7 +1162,12 @@ mod tests {
         }).to_string();
         let mut ex = example_inputs(42, 7);
         let mut inputs = String::new();
-        for (job, index, board) in [(1, 1, "KsQs2d"), (0, 0, "AsKd7c"), (1, 0, "9h8h7h"), (0, 1, "2c2d5s")] {
+        for (job, index, board) in [
+            (1, 1, "KsQs2d"),
+            (0, 0, "AsKd7c"),
+            (1, 0, "9h8h7h"),
+            (0, 1, "2c2d5s"),
+        ] {
             ex.job = LEAF_JOB_BASE + job;
             ex.index = index;
             ex.board = board.to_string();
@@ -1033,12 +1177,20 @@ mod tests {
         let (positions, kept) = leaf_boards(&leaves, &inputs).unwrap();
         assert_eq!(positions, ["BTN", "SB", "BB"]);
         assert_eq!(kept.len(), 3);
-        assert_eq!(kept["BTN Raise 2.5 | BB Call 2.5"],
-                   LineBoards { pot_bb: 5.5, stack_bb: 97.5, boards: vec!["AsKd7c".into(), "2c2d5s".into()] });
-        assert_eq!(kept["SB Raise 3 | BB Call 3"].boards, ["9h8h7h", "KsQs2d"]);      // in index order
-        assert!(kept["BTN Limp 1 | BB Check"].boards.is_empty());                     // a leaf without examples
+        assert_eq!(
+            kept["BTN Raise 2.5 | BB Call 2.5"],
+            LineBoards {
+                pot_bb: 5.5,
+                stack_bb: 97.5,
+                boards: vec!["AsKd7c".into(), "2c2d5s".into()]
+            }
+        );
+        assert_eq!(kept["SB Raise 3 | BB Call 3"].boards, ["9h8h7h", "KsQs2d"]); // in index order
+        assert!(kept["BTN Limp 1 | BB Check"].boards.is_empty()); // a leaf without examples
         assert!(leaf_boards("{}", "").unwrap_err().contains("no leaves"));
-        let twice = serde_json::json!({"leaves": [{"job": 1, "path": ["a"]}, {"job": 2, "path": ["a"]}]}).to_string();
+        let twice =
+            serde_json::json!({"leaves": [{"job": 1, "path": ["a"]}, {"job": 2, "path": ["a"]}]})
+                .to_string();
         assert!(leaf_boards(&twice, "").unwrap_err().contains("twice"));
     }
 
@@ -1121,10 +1273,15 @@ mod tests {
         for job in [42u64, 16861638950914, 900_000_000_123] {
             for i in 0..40 {
                 s.push_str(&serde_json::to_string(&example_inputs_for(2, job, i, None)).unwrap());
-                s.push_str(&serde_json::to_string(&example_inputs_for(2, job, i, Some(6.0))).unwrap());
+                s.push_str(
+                    &serde_json::to_string(&example_inputs_for(2, job, i, Some(6.0))).unwrap(),
+                );
             }
         }
-        assert_eq!((fnv1a(s.as_bytes()), s.len()), (0xf3b9_96f0_c8bb_a227, 413_200));
+        assert_eq!(
+            (fnv1a(s.as_bytes()), s.len()),
+            (0xf3b9_96f0_c8bb_a227, 413_200)
+        );
     }
 
     /// v3 uploads are checked the same way: this hash was taken before v4 was added.
@@ -1134,10 +1291,15 @@ mod tests {
         for job in [42u64, 16861638950914, 900_000_000_123] {
             for i in 0..40 {
                 s.push_str(&serde_json::to_string(&example_inputs_for(3, job, i, None)).unwrap());
-                s.push_str(&serde_json::to_string(&example_inputs_for(3, job, i, Some(6.0))).unwrap());
+                s.push_str(
+                    &serde_json::to_string(&example_inputs_for(3, job, i, Some(6.0))).unwrap(),
+                );
             }
         }
-        assert_eq!((fnv1a(s.as_bytes()), s.len()), (0x64a2_6454_5b00_e782, 417_855));
+        assert_eq!(
+            (fnv1a(s.as_bytes()), s.len()),
+            (0x64a2_6454_5b00_e782, 417_855)
+        );
     }
 
     /// v4 uploads are checked the same way: this hash was taken before v5 was added.
@@ -1147,10 +1309,15 @@ mod tests {
         for job in [42u64, 16861638950914, 900_000_000_123] {
             for i in 0..40 {
                 s.push_str(&serde_json::to_string(&example_inputs_for(4, job, i, None)).unwrap());
-                s.push_str(&serde_json::to_string(&example_inputs_for(4, job, i, Some(6.0))).unwrap());
+                s.push_str(
+                    &serde_json::to_string(&example_inputs_for(4, job, i, Some(6.0))).unwrap(),
+                );
             }
         }
-        assert_eq!((fnv1a(s.as_bytes()), s.len()), (0xc8d9_c8b1_49b2_d91c, 419_276));
+        assert_eq!(
+            (fnv1a(s.as_bytes()), s.len()),
+            (0xc8d9_c8b1_49b2_d91c, 419_276)
+        );
     }
 
     #[test]
@@ -1168,13 +1335,21 @@ mod tests {
             assert!((0.0..=0.10).contains(&ex.rake_pct) && ex.rake_cap_bb <= 10.0);
         }
         let share = |t: &str| count.get(t).copied().unwrap_or(0) as f64 / n as f64;
-        for (t, want) in [("limped", 0.10), ("srp", 0.65), ("3bet", 0.15), ("4bet", 0.10)] {
+        for (t, want) in [
+            ("limped", 0.10),
+            ("srp", 0.65),
+            ("3bet", 0.15),
+            ("4bet", 0.10),
+        ] {
             assert!((share(t) - want).abs() < 0.025, "{t}: {}", share(t));
         }
         assert!((scaled as f64 / n as f64 - 0.2).abs() < 0.025);
         assert!((raked10 as f64 / n as f64 - 0.2).abs() < 0.025);
         // An unscaled v3 record serializes without pot_scale, like v2 ones.
-        let plain = (0..n).map(|i| example_inputs_for(3, 7, i, None)).find(|e| e.pot_scale == 1.0).unwrap();
+        let plain = (0..n)
+            .map(|i| example_inputs_for(3, 7, i, None))
+            .find(|e| e.pot_scale == 1.0)
+            .unwrap();
         assert!(!serde_json::to_string(&plain).unwrap().contains("pot_scale"));
     }
 
@@ -1208,15 +1383,30 @@ mod tests {
         }
         let share = |x: usize| x as f64 / n as f64;
         let by_type = |t: &str| share(count.get(t).copied().unwrap_or(0));
-        for (t, want) in [("limped", 0.10), ("srp", 0.55), ("3bet", 0.20), ("4bet", 0.15)] {
+        for (t, want) in [
+            ("limped", 0.10),
+            ("srp", 0.55),
+            ("3bet", 0.20),
+            ("4bet", 0.15),
+        ] {
             assert!((by_type(t) - want).abs() < 0.025, "{t}: {}", by_type(t));
         }
-        for (got, want, what) in [(online, 0.4, "online"), (live, 0.4, "live"), (straddled, 0.2, "straddled"),
-                                   (none, 0.2, "no rake"), (five, 0.35, "5%"), (ten, 0.35, "10%")] {
+        for (got, want, what) in [
+            (online, 0.4, "online"),
+            (live, 0.4, "live"),
+            (straddled, 0.2, "straddled"),
+            (none, 0.2, "no rake"),
+            (five, 0.35, "5%"),
+            (ten, 0.35, "10%"),
+        ] {
             assert!((share(got) - want).abs() < 0.025, "{what}: {}", share(got));
         }
         // 10% rake with a live room's low cap (Pan's 8-max game: 3.4 bb) is no longer rare.
-        assert!(share(low_live_cap) > 0.07, "low live caps {}", share(low_live_cap));
+        assert!(
+            share(low_live_cap) > 0.07,
+            "low live caps {}",
+            share(low_live_cap)
+        );
         // live and straddled tables reach past the 200 bb v3 stopped at
         assert!(share(deep) > 0.1, "deep {}", share(deep));
     }
@@ -1225,7 +1415,10 @@ mod tests {
     fn contributor_blocks_differ() {
         assert_ne!(contributor_base("alice"), contributor_base("bob"));
         assert_eq!(contributor_base("Alice"), contributor_base("alice"));
-        assert_eq!(contributor_job("alice", 3), contributor_base("alice") + VERSION_JOB_OFFSET + 3);
+        assert_eq!(
+            contributor_job("alice", 3),
+            contributor_base("alice") + VERSION_JOB_OFFSET + 3
+        );
         // v4 jobs never land on the job numbers v2 (from 0) or v3 (from 2^23) handed out.
         assert!(contributor_job("alice", 0) - contributor_base("alice") >= 3 << 22);
     }
@@ -1237,7 +1430,12 @@ mod tests {
         assert_eq!(job_mix(contributor_job("alice", 5)), 0);
         assert_eq!(job_mix(LEAF_JOB_BASE + 7), 0);
         assert!(contributor_base(&"z".repeat(30)) + (1 << BLOCK_BITS) <= 1 << MIX_SHIFT);
-        for (mix, k) in [(1u32, 0u64), (1, 1_000_000), (7, 3), (MAX_MIX_ID, (1 << BLOCK_BITS) - 1)] {
+        for (mix, k) in [
+            (1u32, 0u64),
+            (1, 1_000_000),
+            (7, 3),
+            (MAX_MIX_ID, (1 << BLOCK_BITS) - 1),
+        ] {
             let job = mix_job("alice", mix, k);
             assert_eq!(job_mix(job), mix);
             // below the mix it is still a number of the contributor's own block
@@ -1246,7 +1444,10 @@ mod tests {
         }
         // two mixes never share a job number, so never a file name or a seed
         assert_ne!(mix_job("alice", 1, 0), mix_job("alice", 2, 0));
-        assert_ne!(attempt_seed(5, mix_job("alice", 1, 0), 0, 0), attempt_seed(5, mix_job("alice", 2, 0), 0, 0));
+        assert_ne!(
+            attempt_seed(5, mix_job("alice", 1, 0), 0, 0),
+            attempt_seed(5, mix_job("alice", 2, 0), 0, 0)
+        );
     }
 
     #[test]
@@ -1262,7 +1463,11 @@ mod tests {
         let mut solver = Solver::new(spot);
         let stop = std::sync::atomic::AtomicBool::new(false);
         solver.run(
-            &crate::RunOptions { max_iterations: 300, target_exploit_pct: 0.05, check_every: 50 },
+            &crate::RunOptions {
+                max_iterations: 300,
+                target_exploit_pct: 0.05,
+                check_every: 50,
+            },
             &stop,
             |_| {},
         );

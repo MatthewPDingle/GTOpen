@@ -1,8 +1,8 @@
 //! Times CPU iterations of an 8-handed tournament tree under chip EV and
 //! under ICM payouts. `cargo run --release -p solver --example icm_cpu_bench -- [stack] [iters]`
+use std::{sync::Arc, time::Instant};
+
 use solver::preflop::{equity::EquityTable, IcmConfig, PreflopConfig, PreflopSolver};
-use std::sync::Arc;
-use std::time::Instant;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -19,7 +19,18 @@ fn main() {
     // A standard-looking 8-player final table.
     let payouts = vec![30.0, 20.0, 14.0, 10.5, 8.0, 6.5, 5.5, 5.5];
     let only = args.get(3).cloned().unwrap_or_default();
-    for (label, icm) in [("chip EV", None), ("ICM", Some(IcmConfig { payouts: payouts.clone(), field: vec![], field_groups: vec![], stack_off: 1.0 }))] {
+    for (label, icm) in [
+        ("chip EV", None),
+        (
+            "ICM",
+            Some(IcmConfig {
+                payouts: payouts.clone(),
+                field: vec![],
+                field_groups: vec![],
+                stack_off: 1.0,
+            }),
+        ),
+    ] {
         if !only.is_empty() && !label.to_lowercase().starts_with(&only) {
             continue;
         }
@@ -34,6 +45,10 @@ fn main() {
             s.iterate();
         }
         let per = t.elapsed().as_secs_f64() / iters as f64;
-        println!("{label}: {} nodes, build {build:.2}s, {:.1} ms/iteration", s.nodes.len(), per * 1e3);
+        println!(
+            "{label}: {} nodes, build {build:.2}s, {:.1} ms/iteration",
+            s.nodes.len(),
+            per * 1e3
+        );
     }
 }

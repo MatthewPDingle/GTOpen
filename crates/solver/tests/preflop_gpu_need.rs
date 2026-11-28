@@ -2,12 +2,14 @@
 //! card. That figure comes from the size walk's counts; it must equal what
 //! the built game reports. Arithmetic only: no CUDA device is needed.
 #![cfg(feature = "gpu")]
+use std::sync::Arc;
+
 use solver::preflop::{
-    equity::EquityTable, estimate_tree,
+    equity::EquityTable,
+    estimate_tree,
     gpu::{minimum_need_mb, minimum_need_of, policy_need_mb, tree_need_mb},
     PreflopConfig, PreflopSolver,
 };
-use std::sync::Arc;
 
 fn games() -> Vec<serde_json::Value> {
     let six = ["UTG", "HJ", "CO", "BTN", "SB", "BB"];
@@ -48,7 +50,10 @@ fn the_estimate_before_a_build_matches_the_built_game() {
         let s = PreflopSolver::new(cfg, eq.clone()).unwrap();
         assert_eq!(est.nodes as usize, s.nodes.len(), "{game}");
         let built = minimum_need_mb(&s);
-        assert!((before - built).abs() < 1e-6 * built, "{game}: estimated {before} MB, built {built} MB");
+        assert!(
+            (before - built).abs() < 1e-6 * built,
+            "{game}: estimated {before} MB, built {built} MB"
+        );
         // the two parts add up, and a fresh game has only the placeholder for locked strategies
         assert_eq!(built, tree_need_mb(&s) + policy_need_mb(&s));
         assert_eq!(policy_need_mb(&s), 4.0 / 1e6);
@@ -68,5 +73,9 @@ fn a_locked_node_adds_to_the_need() {
     s.iterate();
     s.lock_point(&[], None).unwrap();
     assert!(policy_need_mb(&s) > fresh);
-    assert_eq!(tree_need_mb(&s), tree, "locks do not change the tree's part");
+    assert_eq!(
+        tree_need_mb(&s),
+        tree,
+        "locks do not change the tree's part"
+    );
 }

@@ -1,11 +1,14 @@
 //! End-to-end solver correctness tests against known game-theory results.
 
-use solver::cards::*;
-use solver::evaluator::evaluate7;
-use solver::game::Dealt;
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Algorithm, LockMode, Solver, Spot, SpotConfig, Storage};
 use std::sync::Arc;
+
+use solver::{
+    cards::*,
+    evaluator::evaluate7,
+    game::Dealt,
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    Algorithm, LockMode, Solver, Spot, SpotConfig, Storage,
+};
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
     StreetSizing {
@@ -219,11 +222,13 @@ fn locked_always_call_kills_bluffs() {
         solver.iterate();
     }
     let path = vec![solver::PathStep::Action { index: 1 }]; // after OOP bet
-    // range mode: 0% fold, 100% call -> every bluff-catcher calls
+                                                            // range mode: 0% fold, 100% call -> every bluff-catcher calls
     solver
         .lock_node(
             &path,
-            LockMode::Range { freqs: vec![0.0, 1.0] },
+            LockMode::Range {
+                freqs: vec![0.0, 1.0],
+            },
             "ip always calls".to_string(),
         )
         .unwrap();
@@ -252,7 +257,11 @@ fn locked_always_call_kills_bluffs() {
     assert!(view.locked);
     let qq = hand_index(&solver.spot, 1, "QdQh");
     let st = view.players[1].hands[qq].strategy.as_ref().unwrap();
-    assert!(st[1] > 0.999, "locked call freq should be 1.0, got {}", st[1]);
+    assert!(
+        st[1] > 0.999,
+        "locked call freq should be 1.0, got {}",
+        st[1]
+    );
 }
 
 /// Lock modes: range targeting is idempotent (re-applying the same target
@@ -299,40 +308,73 @@ fn lock_modes_clean_and_idempotent() {
 
     // target 30% bet / 70% check
     solver
-        .lock_node(&root_path, LockMode::Range { freqs: vec![0.70, 0.30] }, "r".into())
+        .lock_node(
+            &root_path,
+            LockMode::Range {
+                freqs: vec![0.70, 0.30],
+            },
+            "r".into(),
+        )
         .unwrap();
     let a1 = agg_bet(&solver);
-    assert!((a1 - 0.30).abs() < 0.02, "aggregate bet should be ~30%, got {a1}");
+    assert!(
+        (a1 - 0.30).abs() < 0.02,
+        "aggregate bet should be ~30%, got {a1}"
+    );
 
     // re-apply the SAME target: must not compound (idempotent)
     solver
-        .lock_node(&root_path, LockMode::Range { freqs: vec![0.70, 0.30] }, "r".into())
+        .lock_node(
+            &root_path,
+            LockMode::Range {
+                freqs: vec![0.70, 0.30],
+            },
+            "r".into(),
+        )
         .unwrap();
     let a2 = agg_bet(&solver);
-    assert!((a2 - a1).abs() < 1e-3, "re-locking same target compounded: {a1} -> {a2}");
+    assert!(
+        (a2 - a1).abs() < 1e-3,
+        "re-locking same target compounded: {a1} -> {a2}"
+    );
 
     // change the target up to 65% bet, still from the solved base (not compounded)
     solver
-        .lock_node(&root_path, LockMode::Range { freqs: vec![0.35, 0.65] }, "r".into())
+        .lock_node(
+            &root_path,
+            LockMode::Range {
+                freqs: vec![0.35, 0.65],
+            },
+            "r".into(),
+        )
         .unwrap();
     let a3 = agg_bet(&solver);
-    assert!((a3 - 0.65).abs() < 0.02, "aggregate bet should retarget to ~65%, got {a3}");
+    assert!(
+        (a3 - 0.65).abs() < 0.02,
+        "aggregate bet should retarget to ~65%, got {a3}"
+    );
 
     // per-hand edit: force AA to check 100% (action 0), others keep current
     solver
         .lock_node(
             &root_path,
-            LockMode::Hands { edits: vec![solver::query::HandEdit {
-                combo: "AcAd".into(),
-                freqs: vec![1.0, 0.0],
-            }] },
+            LockMode::Hands {
+                edits: vec![solver::query::HandEdit {
+                    combo: "AcAd".into(),
+                    freqs: vec![1.0, 0.0],
+                }],
+            },
             "h".into(),
         )
         .unwrap();
     let v = solver.node_view(&[]).unwrap();
     let aa = hand_index(&solver.spot, 0, "AcAd");
     let st = v.players[0].hands[aa].strategy.as_ref().unwrap();
-    assert!(st[0] > 0.999, "AcAd should be locked to 100% check, got {}", st[0]);
+    assert!(
+        st[0] > 0.999,
+        "AcAd should be locked to 100% check, got {}",
+        st[0]
+    );
 }
 
 /// Suit isomorphism must (a) detect the c<->h symmetry on a two-tone board,
@@ -369,7 +411,10 @@ fn suit_isomorphism_equivalence() {
     let e_iso = iso.exploitability() / 60.0 * 100.0;
     let e_plain = plain.exploitability() / 60.0 * 100.0;
     assert!(e_iso < 2.0, "iso solver should converge, got {e_iso}%");
-    assert!(e_plain < 2.0, "plain solver should converge, got {e_plain}%");
+    assert!(
+        e_plain < 2.0,
+        "plain solver should converge, got {e_plain}%"
+    );
     assert!(
         (e_iso - e_plain).abs() < 0.6,
         "iso and plain exploitability should agree: {e_iso}% vs {e_plain}%"
@@ -405,7 +450,9 @@ fn suit_isomorphism_equivalence() {
         vec![
             PathStep::Action { index: 0 },
             PathStep::Action { index: 0 },
-            PathStep::Card { card: card.to_string() },
+            PathStep::Card {
+                card: card.to_string(),
+            },
         ]
     };
     let vc = iso.node_view(&path("4c")).unwrap();
@@ -449,8 +496,7 @@ fn small_flop_config() -> SpotConfig {
 fn compressed_matches_f32_within_tenth_pct_pot() {
     let config = small_flop_config();
     let mut plain = Solver::new(Arc::new(Spot::new(config.clone()).unwrap()));
-    let mut comp =
-        Solver::with_storage(Arc::new(Spot::new(config).unwrap()), Storage::Compressed);
+    let mut comp = Solver::with_storage(Arc::new(Spot::new(config).unwrap()), Storage::Compressed);
     for _ in 0..200 {
         plain.iterate();
         comp.iterate();
@@ -506,7 +552,10 @@ fn pcfr_plus_converges() {
         s.iterate();
     }
     let e = s.exploitability() / 60.0 * 100.0;
-    assert!(e < 1.0, "PCFR+ (f32) should converge below 1% pot, got {e}%");
+    assert!(
+        e < 1.0,
+        "PCFR+ (f32) should converge below 1% pot, got {e}%"
+    );
 
     let mut c = Solver::with_storage(Arc::new(Spot::new(config).unwrap()), Storage::Compressed);
     c.algo = Algorithm::PcfrPlus;
@@ -615,7 +664,9 @@ fn hands_lock_respects_suit_isomorphism() {
     let path = vec![
         PathStep::Action { index: 0 },
         PathStep::Action { index: 0 },
-        PathStep::Card { card: "4h".to_string() },
+        PathStep::Card {
+            card: "4h".to_string(),
+        },
     ];
     // sanity: 4c is the representative, so browsing 4h exercises the remap
     let canon = solver.canonical_path(&path);
@@ -660,7 +711,13 @@ fn save_load_preserves_locks() {
         solver.iterate();
     }
     solver
-        .lock_node(&[], LockMode::Range { freqs: vec![0.7, 0.3] }, "root 30% bet".into())
+        .lock_node(
+            &[],
+            LockMode::Range {
+                freqs: vec![0.7, 0.3],
+            },
+            "root 30% bet".into(),
+        )
         .unwrap();
     let v_before = solver.node_view(&[]).unwrap();
     let path = std::env::temp_dir().join("gto_test_save_locks.bin");
@@ -732,7 +789,9 @@ fn lock_after_solve_visible_on_isomorphic_branch() {
     let path = vec![
         PathStep::Action { index: 0 },
         PathStep::Action { index: 0 },
-        PathStep::Card { card: "4h".to_string() },
+        PathStep::Card {
+            card: "4h".to_string(),
+        },
     ];
     // sanity: 4c is the representative, so browsing 4h reads the sibling copy
     let canon = solver.canonical_path(&path);
@@ -743,7 +802,13 @@ fn lock_after_solve_visible_on_isomorphic_branch() {
     // lock to always-bet: the solved strategy here is check-heavy, so any
     // stale (pre-lock or post-unlock) branch copy is unmistakable
     solver
-        .lock_node(&path, LockMode::Range { freqs: vec![0.0, 1.0] }, "always bet".into())
+        .lock_node(
+            &path,
+            LockMode::Range {
+                freqs: vec![0.0, 1.0],
+            },
+            "always bet".into(),
+        )
         .unwrap();
     solver.ensure_symmetric(); // what the server does before every node_view
     let v = solver.node_view(&path).unwrap();
@@ -862,11 +927,16 @@ fn runouts_labels_allin_bets() {
     let chance = vec![PathStep::Action { index: 0 }, PathStep::Action { index: 0 }];
     let rep = solver.runouts(&chance).unwrap();
     let mut node_path = chance.clone();
-    node_path.push(PathStep::Card { card: rep.rows[0].card.clone() });
+    node_path.push(PathStep::Card {
+        card: rep.rows[0].card.clone(),
+    });
     let view = solver.node_view(&node_path).unwrap();
     let browse: Vec<String> = view.actions.iter().map(|a| a.label.clone()).collect();
     let report: Vec<String> = rep.actions.iter().map(|a| a.label.clone()).collect();
-    assert_eq!(report, browse, "report labels must match the browse action bar");
+    assert_eq!(
+        report, browse,
+        "report labels must match the browse action bar"
+    );
     assert!(
         report.iter().any(|l| l.starts_with("All-in")),
         "the stack-sized turn bet should be labeled all-in: {report:?}"
@@ -901,7 +971,9 @@ fn exploit_view_vs_locked_station() {
     solver
         .lock_node(
             &bet_path,
-            LockMode::Range { freqs: vec![0.0, 1.0] },
+            LockMode::Range {
+                freqs: vec![0.0, 1.0],
+            },
             "station".into(),
         )
         .unwrap();
@@ -912,17 +984,33 @@ fn exploit_view_vs_locked_station() {
     let air = hand_index(&solver.spot, 0, "8h7h");
     let st_nuts = v.hands[nuts].br_strategy.as_ref().unwrap();
     let st_air = v.hands[air].br_strategy.as_ref().unwrap();
-    assert!(st_nuts[1] > 0.999, "BR must always bet the nuts, got {:?}", st_nuts);
-    assert!(st_air[0] > 0.999, "BR must never bluff vs a station, got {:?}", st_air);
+    assert!(
+        st_nuts[1] > 0.999,
+        "BR must always bet the nuts, got {:?}",
+        st_nuts
+    );
+    assert!(
+        st_air[0] > 0.999,
+        "BR must never bluff vs a station, got {:?}",
+        st_air
+    );
     for h in &v.hands {
         if let (Some(b), Some(c)) = (h.br_ev, h.cur_ev) {
-            assert!(b >= c - 1e-3, "BR EV must dominate: {} vs {} ({})", b, c, h.combo);
+            assert!(
+                b >= c - 1e-3,
+                "BR EV must dominate: {} vs {} ({})",
+                b,
+                c,
+                h.combo
+            );
         }
     }
     let gain = v.avg_gain.expect("avg gain");
-    assert!(gain > 0.5, "exploiting a station should gain plainly, got {gain}");
+    assert!(
+        gain > 0.5,
+        "exploiting a station should gain plainly, got {gain}"
+    );
 }
-
 
 // ---------------------------------------------------------------------------
 // Regression tests for the 2026-09 audit fixes (locks vs suit isomorphism,
@@ -958,19 +1046,46 @@ fn asymmetric_hands_lock_is_refused_under_isomorphism() {
     for _ in 0..20 {
         solver.iterate();
     }
-    let edit = |combo: &str| solver::query::HandEdit { combo: combo.into(), freqs: vec![0.0, 1.0] };
+    let edit = |combo: &str| solver::query::HandEdit {
+        combo: combo.into(),
+        freqs: vec![0.0, 1.0],
+    };
     let err = solver
-        .lock_node(&[], LockMode::Hands { edits: vec![edit("AcJc")] }, "asym".into())
+        .lock_node(
+            &[],
+            LockMode::Hands {
+                edits: vec![edit("AcJc")],
+            },
+            "asym".into(),
+        )
         .unwrap_err();
-    assert!(err.contains("AhJh"), "the refusal must name the missing mirror, got: {err}");
-    assert!(solver.list_locks().is_empty(), "a refused lock must not be installed");
+    assert!(
+        err.contains("AhJh"),
+        "the refusal must name the missing mirror, got: {err}"
+    );
+    assert!(
+        solver.list_locks().is_empty(),
+        "a refused lock must not be installed"
+    );
     solver
-        .lock_node(&[], LockMode::Hands { edits: vec![edit("AcJc"), edit("AhJh")] }, "sym".into())
+        .lock_node(
+            &[],
+            LockMode::Hands {
+                edits: vec![edit("AcJc"), edit("AhJh")],
+            },
+            "sym".into(),
+        )
         .unwrap();
     assert_eq!(solver.list_locks().len(), 1);
     solver.use_isomorphism = false;
     solver
-        .lock_node(&[], LockMode::Hands { edits: vec![edit("AhKh")] }, "plain".into())
+        .lock_node(
+            &[],
+            LockMode::Hands {
+                edits: vec![edit("AhKh")],
+            },
+            "plain".into(),
+        )
         .unwrap();
 }
 
@@ -986,10 +1101,14 @@ fn three_card_steps_are_an_error_not_a_panic() {
     use solver::PathStep;
     let path: Vec<PathStep> = ["4h", "5h", "6h"]
         .iter()
-        .map(|c| PathStep::Card { card: c.to_string() })
+        .map(|c| PathStep::Card {
+            card: c.to_string(),
+        })
         .collect();
     assert!(solver.exploit_view(&path, 0).is_err());
-    assert!(solver.lock_node(&path, LockMode::Freeze, "x".into()).is_err());
+    assert!(solver
+        .lock_node(&path, LockMode::Freeze, "x".into())
+        .is_err());
     assert!(solver.unlock_node(&path).is_err());
     assert!(solver.node_view(&path).is_err());
 }
@@ -1011,7 +1130,11 @@ fn check_through_street_clears_the_initiative() {
                 starting_pot: 60.0,
                 effective_stack: 970.0,
                 oop: [sizing("33", "60"), sizing("75", "60"), sizing("75", "60")],
-                ip: [sizing("33 75", "60"), sizing("75", "60"), sizing("75", "60")],
+                ip: [
+                    sizing("33 75", "60"),
+                    sizing("75", "60"),
+                    sizing("75", "60"),
+                ],
                 ..Default::default()
             },
         };
@@ -1023,21 +1146,40 @@ fn check_through_street_clears_the_initiative() {
         let mut path: Vec<PathStep> = Vec::new();
         let step = |path: &[PathStep], kind: &str| -> usize {
             let v = solver.node_view(path).unwrap();
-            v.actions.iter().position(|a| a.kind == kind).unwrap_or_else(|| {
-                panic!("no {kind} at {path:?}: {:?}", v.actions.iter().map(|a| a.label.clone()).collect::<Vec<_>>())
-            })
+            v.actions
+                .iter()
+                .position(|a| a.kind == kind)
+                .unwrap_or_else(|| {
+                    panic!(
+                        "no {kind} at {path:?}: {:?}",
+                        v.actions
+                            .iter()
+                            .map(|a| a.label.clone())
+                            .collect::<Vec<_>>()
+                    )
+                })
         };
         for kind in ["check", "bet", "call"] {
             let i = step(&path, kind);
             path.push(PathStep::Action { index: i });
         }
-        path.push(PathStep::Card { card: "5d".to_string() });
+        path.push(PathStep::Card {
+            card: "5d".to_string(),
+        });
         for kind in ["check", "check"] {
             let i = step(&path, kind);
             path.push(PathStep::Action { index: i });
         }
-        path.push(PathStep::Card { card: "Kc".to_string() });
-        solver.node_view(&path).unwrap().actions.iter().map(|a| a.kind.clone()).collect()
+        path.push(PathStep::Card {
+            card: "Kc".to_string(),
+        });
+        solver
+            .node_view(&path)
+            .unwrap()
+            .actions
+            .iter()
+            .map(|a| a.kind.clone())
+            .collect()
     };
     let fixed = mk(None);
     let kinds = river_kinds(&fixed);
