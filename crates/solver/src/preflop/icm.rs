@@ -401,8 +401,8 @@ impl IcmTables {
                 None => {
                     f.weight.push(0.0);
                     f.pot.push(0.0);
-                    f.commit.extend(std::iter::repeat(0.0).take(s.n));
-                    f.wins.extend(std::iter::repeat(1.0).take(s.n));
+                    f.commit.extend(std::iter::repeat_n(0.0, s.n));
+                    f.wins.extend(std::iter::repeat_n(1.0, s.n));
                 }
             }
             f.a_pot_start.push(f.a_masks.len() as u32);
@@ -731,14 +731,9 @@ fn icm_v(
 /// Dot product in eight independent lanes, so it vectorizes.
 fn dot(a: &[f32], b: &[f32]) -> f32 {
     let mut acc = [0f32; 8];
-    let (ca, cb) = (a.chunks_exact(8), b.chunks_exact(8));
-    let tail: f32 = ca
-        .remainder()
-        .iter()
-        .zip(cb.remainder())
-        .map(|(x, y)| x * y)
-        .sum();
-    for (x, y) in ca.zip(cb) {
+    let (ca, cb) = (a.as_chunks::<8>(), b.as_chunks::<8>());
+    let tail: f32 = ca.1.iter().zip(cb.1).map(|(x, y)| x * y).sum();
+    for (x, y) in ca.0.iter().zip(cb.0) {
         for i in 0..8 {
             acc[i] += x[i] * y[i];
         }

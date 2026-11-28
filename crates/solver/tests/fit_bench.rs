@@ -183,7 +183,7 @@ fn fit_quality() {
             for method in ["rake", "quick", "full"] {
                 let mut s = solve(&case.config, BASE_ITERS);
                 match method {
-                    "rake" => drop(
+                    "rake" => {
                         s.lock_node(
                             &case.path,
                             LockMode::Range {
@@ -191,9 +191,9 @@ fn fit_quality() {
                             },
                             "b".into(),
                         )
-                        .unwrap(),
-                    ),
-                    "quick" => drop(
+                        .unwrap();
+                    }
+                    "quick" => {
                         s.lock_node(
                             &case.path,
                             LockMode::Fit {
@@ -201,8 +201,8 @@ fn fit_quality() {
                             },
                             "b".into(),
                         )
-                        .unwrap(),
-                    ),
+                        .unwrap();
+                    }
                     _ => drop(s.add_fit(&case.path, &target, "b".into()).unwrap()),
                 }
                 for _ in 0..RESOLVE_ITERS {
@@ -244,7 +244,7 @@ fn run_cpu(s: &mut Solver, target_pct: f64, every: u32, max: u32) -> (u32, f64, 
         done += every;
         let x = pct(s);
         let err = if s.has_fits() { s.fit_max_error() } else { 0.0 };
-        if (x <= target_pct && err <= FIT_TOLERANCE as f64) || done >= max {
+        if (x <= target_pct && err <= FIT_TOLERANCE) || done >= max {
             return (done, start.elapsed().as_secs_f64(), x);
         }
     }
@@ -318,7 +318,7 @@ mod gpu {
                 gpu.download_fits(host).unwrap();
                 err = host.fit_max_error();
             }
-            if (x <= target_pct && err <= FIT_TOLERANCE as f64) || done >= max {
+            if (x <= target_pct && err <= FIT_TOLERANCE) || done >= max {
                 return (done, start.elapsed().as_secs_f64(), x, err);
             }
         }

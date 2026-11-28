@@ -101,15 +101,15 @@ pub fn average(
         }
         if reach > 0. {
             let p = policy(model, key, n);
-            for a in 0..n {
-                numerator[a] += reach * p[a];
+            for (num, &pa) in numerator[..n].iter_mut().zip(&p[..n]) {
+                *num += reach * pa;
             }
             total += reach;
         }
     }
     if total > 0. {
-        for a in 0..n {
-            numerator[a] /= total;
+        for num in &mut numerator[..n] {
+            *num /= total;
         }
     } else {
         numerator[..n].fill(1. / n as f64);

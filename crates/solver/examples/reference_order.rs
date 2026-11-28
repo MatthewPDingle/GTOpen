@@ -110,7 +110,7 @@ fn main() {
         let raise_first = act(&s, node, "raise").expect("open raise");
         let mut dnode = s.child(node, raise_first);
         let mut def_pcts = Vec::new();
-        for d in q + 1..n {
+        for (d, &defender) in positions.iter().enumerate().skip(q + 1) {
             let dn = &s.nodes[dnode];
             assert_eq!(dn.actor as usize, d, "defender node actor");
             let sig = s.average_strategy(dnode);
@@ -137,7 +137,7 @@ fn main() {
             def_n += 1;
             def_pcts.push(format!(
                 "{} call {:.1}/3b {:.1}",
-                positions[d],
+                defender,
                 cp * 100.0,
                 rp * 100.0
             ));
@@ -254,8 +254,8 @@ fn main() {
             "\n#[rustfmt::skip]\npub const {name}: [f32; {NUM_CLASSES}] = ["
         )
         .unwrap();
-        for h in 0..NUM_CLASSES {
-            writeln!(out, "    {:.4}, // {}", v[h], class_label(h)).unwrap();
+        for (h, &val) in v.iter().enumerate() {
+            writeln!(out, "    {:.4}, // {}", val, class_label(h)).unwrap();
         }
         writeln!(out, "];").unwrap();
     }

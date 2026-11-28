@@ -432,7 +432,7 @@ fn freezing_the_own_line_leaves_the_other_player_free() {
         .unwrap();
     assert_eq!(frozen, 1, "only OOP's own check is kept as solved");
     assert!(s.locks.contains_key(&0), "the root is OOP's decision");
-    let ip_node = node_idx(&s, &[check.clone()]);
+    let ip_node = node_idx(&s, std::slice::from_ref(&check));
     assert!(
         !s.locks.contains_key(&ip_node),
         "IP's decision stays free to answer the lock"

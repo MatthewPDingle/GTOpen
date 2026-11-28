@@ -2,13 +2,13 @@
 #[path = "research_sampled/network_v1.rs"]
 mod network_v1;
 #[path = "research_sampled/observation_v1.rs"]
-mod observation_v1;
+pub mod observation_v1;
 #[path = "research_sampled/poker_reference_v1.rs"]
-mod poker_reference_v1;
+pub mod poker_reference_v1;
 #[path = "research_sampled/policy_bank_v1.rs"]
 mod policy_bank_v1;
 #[path = "research_sampled/state.rs"]
-mod state;
+pub mod state;
 use std::collections::BTreeMap;
 
 use network_v1::Network;
@@ -18,6 +18,8 @@ use serde_json::{json, Value};
 use state::State;
 type Distribution = BTreeMap<(usize, u64), f64>;
 
+// Recursive audit walker; its eight cursor arguments are the traversal state.
+#[allow(clippy::too_many_arguments)]
 fn post(
     g: &Game,
     d: &[u8; 9],

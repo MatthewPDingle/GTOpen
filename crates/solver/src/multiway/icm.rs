@@ -65,8 +65,12 @@ pub struct MwIcm {
     reference: [f64; NP],
     /// (live, put bits) -> per-player 3x3 table, as `payoff_table`, and
     /// order corrections (see `MwIcm::order`).
-    tables: HashMap<(u8, [u32; NP]), [([[f64; 3]; 3], [f64; 4]); NP]>,
+    tables: HashMap<(u8, [u32; NP]), IcmTable>,
 }
+
+/// One terminal's ICM prices per player: the 3x3 payoff table and the four
+/// order corrections.
+type IcmTable = [([[f64; 3]; 3], [f64; 4]); NP];
 
 impl MwIcm {
     pub fn build(tree: &MwTree, icm: &PostflopIcm) -> Self {
@@ -147,18 +151,18 @@ impl MwIcm {
         }
         // An opponent weaker than p sits at 5, tied at 10, stronger at 15.
         let at = |c: usize| 5 * (c as i32 + 1);
-        for cq in 0..3 {
-            for cr in 0..3 {
+        for (cq, row) in pay.iter_mut().enumerate() {
+            for (cr, cell) in row.iter_mut().enumerate() {
                 let (x, y) = (at(cq), at(cr));
                 if both && cq == cr && cq != 1 {
                     // Both above or both below p: r wins in the table.
                     let base = value(x, x + 1);
-                    pay[cq][cr] = base;
+                    *cell = base;
                     let slot = if cq == 2 { 0 } else { 2 };
                     order[slot] = value(x + 1, x) - base;
                     order[slot + 1] = value(x, x) - base;
                 } else {
-                    pay[cq][cr] = value(x, y);
+                    *cell = value(x, y);
                 }
             }
         }

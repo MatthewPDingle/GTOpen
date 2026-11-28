@@ -78,8 +78,8 @@ pub fn evaluate7(cards: &[Card]) -> u32 {
     }
 
     let mut flush_suit: Option<usize> = None;
-    for s in 0..4 {
-        if suit_masks[s].count_ones() >= 5 {
+    for (s, &mask) in suit_masks.iter().enumerate() {
+        if mask.count_ones() >= 5 {
             flush_suit = Some(s);
             break; // at most one suit can have 5+ cards out of 7
         }
@@ -100,17 +100,13 @@ pub fn evaluate7(cards: &[Card]) -> u32 {
     for r in (0..13).rev() {
         match rank_counts[r] {
             4 => quads = Some(r as u8),
-            3 => {
-                if n_trips < 2 {
-                    trips[n_trips] = r as u8;
-                    n_trips += 1;
-                }
+            3 if n_trips < 2 => {
+                trips[n_trips] = r as u8;
+                n_trips += 1;
             }
-            2 => {
-                if n_pairs < 3 {
-                    pairs[n_pairs] = r as u8;
-                    n_pairs += 1;
-                }
+            2 if n_pairs < 3 => {
+                pairs[n_pairs] = r as u8;
+                n_pairs += 1;
             }
             _ => {}
         }

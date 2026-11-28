@@ -277,7 +277,7 @@ pub fn list() -> Value {
                     && header
                         .get("members")
                         .and_then(Value::as_array)
-                        .map_or(false, |m| m.iter().any(|v| v.as_str() == Some(best)));
+                        .is_some_and(|m| m.iter().any(|v| v.as_str() == Some(best)));
                 nets.push(json!({
                     "id": format!("{snap_name}/{run}"),
                     "kind": "research",

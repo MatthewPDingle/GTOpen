@@ -1,8 +1,8 @@
 //! Enumerate all public terminals and all winner assignments for fixed BB context.
 #[path = "research_sampled/poker_reference_v1.rs"]
-mod poker_reference_v1;
+pub mod poker_reference_v1;
 #[path = "research_sampled/state.rs"]
-mod state;
+pub mod state;
 use poker_reference_v1::Game;
 use serde_json::{json, Value};
 use state::State;

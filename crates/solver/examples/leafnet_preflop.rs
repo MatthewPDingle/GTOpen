@@ -27,7 +27,7 @@ fn main() -> Result<(), String> {
     let iterations: u32 = a[2].parse().map_err(|_| "ITERATIONS must be a number")?;
     let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", 20000));
     let every: u32 = a.get(3).and_then(|v| v.parse().ok()).unwrap_or(50);
-    let leaf_only = a.get(4).map_or(false, |v| v == "leaf-only");
+    let leaf_only = a.get(4).is_some_and(|v| v == "leaf-only");
     let mut solved = Vec::new();
     for realization in ["balanced", "leafnet"] {
         if leaf_only && realization == "balanced" {

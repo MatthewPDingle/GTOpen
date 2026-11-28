@@ -94,8 +94,7 @@ impl MwSpot {
         let mut hands: [Vec<HandInfo>; NP] = Default::default();
         for p in 0..NP {
             let range = Range::parse(&config.ranges[p])?;
-            for idx in 0..NUM_COMBOS {
-                let w = range.weights[idx];
+            for (idx, &w) in range.weights.iter().enumerate() {
                 if w <= 0.0 {
                     continue;
                 }

@@ -348,8 +348,7 @@ fn overflowing_lock_frequencies_are_rejected() {
             },
             "overflow".into(),
         )
-        .err()
-        .expect("absurd frequency magnitudes must be rejected");
+        .expect_err("absurd frequency magnitudes must be rejected");
     assert!(err.contains("sum"), "error should name the sum: {err}");
     // sane frequencies still lock
     let mut freqs = vec![0f32; na];

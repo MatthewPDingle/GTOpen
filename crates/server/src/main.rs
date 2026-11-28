@@ -339,6 +339,8 @@ struct PfEnginePlan {
 const PF_TREE_BYTES_PER_NODE: f64 = 400.0;
 
 /// What the machine offers a GPU solve.
+// the gpu build and the tests make these; a CPU-only build only sees NoEngine
+#[cfg_attr(not(feature = "gpu"), allow(dead_code))]
 #[derive(Clone, Copy)]
 enum PfCard {
     /// Built without the GPU engine.
@@ -1307,11 +1309,11 @@ fn cpu_solve_loop(
 ) {
     let start = std::time::Instant::now();
     let mut level_start = std::time::Instant::now();
-    let pot = lock_unpoisoned(&solver).spot.tree.config.starting_pot;
+    let pot = lock_unpoisoned(solver).spot.tree.config.starting_pot;
     loop {
         if stop.load(Ordering::Relaxed) {
             let (note, last) = {
-                let mut s = lock_unpoisoned(&solver);
+                let mut s = lock_unpoisoned(solver);
                 let note = finish_fits(&mut s);
                 s.ensure_symmetric();
                 // the number shown for a stopped solve belongs to what it leaves
@@ -1329,7 +1331,7 @@ fn cpu_solve_loop(
             break;
         }
         let it = {
-            let mut s = lock_unpoisoned(&solver);
+            let mut s = lock_unpoisoned(solver);
             s.iterate();
             s.iteration
         };
@@ -1344,7 +1346,7 @@ fn cpu_solve_loop(
         let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
         if check {
             let (e, fits, fit_err) = {
-                let s = lock_unpoisoned(&solver);
+                let s = lock_unpoisoned(solver);
                 let fits = s.fits_view();
                 let err = fits.iter().map(|f| f.max_error as f64).fold(0.0, f64::max);
                 (s.exploitability(), fits, err)
@@ -1363,7 +1365,7 @@ fn cpu_solve_loop(
             let on_target = fit_err <= solver::fit::FIT_TOLERANCE;
             if (pct <= req.target_exploit_pct && on_target) || run_it >= req.max_iterations {
                 drop(st);
-                let mut s = lock_unpoisoned(&solver);
+                let mut s = lock_unpoisoned(solver);
                 let readout = s.trust_readout().ok();
                 if finish_level(
                     &mut s,
@@ -1798,13 +1800,15 @@ async fn pf_build(
     let arena_mb = built.arena_mb();
     let multiway_equity_model = built.multiway_equity_model();
     let icm = built.icm_summary();
-    let mut status = PreflopStatus::default();
-    status.size = Some(size);
-    status.state = "idle".into();
-    status.hero = built.hero;
-    status.frozen = built.seat_frozen.clone();
-    status.realization_note = built.realization_note.clone();
-    status.multiway_equity_model = multiway_equity_model.into();
+    let status = PreflopStatus {
+        size: Some(size),
+        state: "idle".into(),
+        hero: built.hero,
+        frozen: built.seat_frozen.clone(),
+        realization_note: built.realization_note.clone(),
+        multiway_equity_model: multiway_equity_model.into(),
+        ..Default::default()
+    };
     pf_install_session(
         &state,
         PreflopSession {
@@ -1871,6 +1875,8 @@ struct PfSolveRequest {
     #[serde(default = "pf_default_target")]
     target_gap: f64,
     /// Versioned opt-in: publish real learned snapshots at iteration2, then every10.
+    // only a GPU solve publishes previews; the field keeps the opt-in on the wire
+    #[cfg_attr(not(feature = "gpu"), allow(dead_code))]
     #[serde(default)]
     early_preview: bool,
 }
@@ -1885,8 +1891,10 @@ fn pf_default_target() -> f64 {
 }
 
 /// Cadence is independent of the accuracy/convergence schedule and solver math.
+// only a GPU solve publishes previews; the tests pin the cadence
+#[cfg_attr(not(feature = "gpu"), allow(dead_code))]
 fn pf_preview_due(done: u32, enabled: bool) -> bool {
-    enabled && (done == 2 || (done >= 10 && done % 10 == 0))
+    enabled && (done == 2 || (done >= 10 && done.is_multiple_of(10)))
 }
 
 /// Caller holds the solver mutex throughout the transactional download and
@@ -2011,16 +2019,14 @@ struct PfPublished<T> {
     publication: PfPublication,
 }
 
-fn pf_session(
-    state: &AppState,
-) -> Result<
-    (
-        Arc<Mutex<solver::preflop::PreflopSolver>>,
-        Arc<AtomicBool>,
-        Arc<Mutex<PreflopStatus>>,
-    ),
-    ApiError,
-> {
+/// The live preflop game's handles: solver, stop flag and status.
+type PfSessionHandles = (
+    Arc<Mutex<solver::preflop::PreflopSolver>>,
+    Arc<AtomicBool>,
+    Arc<Mutex<PreflopStatus>>,
+);
+
+fn pf_session(state: &AppState) -> Result<PfSessionHandles, ApiError> {
     state
         .preflop
         .lock()
@@ -2190,10 +2196,14 @@ async fn pf_solve(
                 let stopping = stop.load(Ordering::Relaxed);
                 let check_at_stop = stopping && !abandon.load(Ordering::Relaxed) && {
                     #[cfg(feature = "gpu")]
-                    let on_device = gpu.is_some().then_some(gpu_iteration);
+                    let solved = if gpu.is_some() {
+                        gpu_iteration
+                    } else {
+                        lock_unpoisoned(&solver).iteration
+                    };
                     #[cfg(not(feature = "gpu"))]
-                    let on_device: Option<u32> = None;
-                    on_device.unwrap_or_else(|| lock_unpoisoned(&solver).iteration) > 0
+                    let solved = lock_unpoisoned(&solver).iteration;
+                    solved > 0
                 };
                 if stopping && !check_at_stop {
                     #[cfg(feature = "gpu")]
@@ -2318,7 +2328,7 @@ async fn pf_solve(
                         continue;
                     }
                     done += 1;
-                    let checkpoint = done % check == 0 || done >= max;
+                    let checkpoint = done.is_multiple_of(check) || done >= max;
                     if !checkpoint {
                         #[cfg(feature = "gpu")]
                         let iteration = if gpu.is_some() {
@@ -3072,7 +3082,7 @@ async fn pf_list_games() -> Json<serde_json::Value> {
             }
         }
     }
-    entries.sort_by(|a, b| b.1.cmp(&a.1)); // newest first
+    entries.sort_by_key(|e| std::cmp::Reverse(e.1)); // newest first
     Json(serde_json::json!(entries
         .into_iter()
         .map(|(n, _)| n)
@@ -3164,9 +3174,9 @@ fn report_node_stats(
     pot: f64,
 ) -> (Vec<serde_json::Value>, Option<serde_json::Value>) {
     let mut players = Vec::new();
-    for p in 0..2 {
+    for player in &view.players {
         let (mut wev, mut weq, mut wt) = (0f64, 0f64, 0f64);
-        for h in &view.players[p].hands {
+        for h in &player.hands {
             if let (Some(eq), Some(ev)) = (h.eq, h.ev) {
                 let w = h.reach as f64 * h.valid as f64;
                 wev += ev as f64 * w;
@@ -3330,7 +3340,7 @@ async fn report_run(
                 rows.push(b.row(board, *weight));
                 // a report that was open in the tab must not serve stale boards
                 app.report_cache.lock().unwrap().clear();
-                if rows.len() % 8 == 0 {
+                if rows.len().is_multiple_of(8) {
                     let _ = write_report(&path, &req, &rows, false);
                 }
             }
@@ -3799,7 +3809,7 @@ fn report_solve(
         }
         solver.iterate();
         let it = solver.iteration - base;
-        if it % 20 == 0 || it >= max_iterations {
+        if it.is_multiple_of(20) || it >= max_iterations {
             let pct = solver.exploitability() / pot * 100.0;
             if pct <= target || it >= max_iterations {
                 return (solver.iteration, pct, "cpu");

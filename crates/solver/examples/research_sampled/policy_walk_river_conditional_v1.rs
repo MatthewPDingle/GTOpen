@@ -87,8 +87,8 @@ impl<'a, F: Fn(Key, usize) -> [f64; 4], R: Fn(Key, usize) -> Option<[f64; 4]>>
             let x = uniform(&mut self.rng);
             let mut sum = 0.;
             let mut a = n - 1;
-            for i in 0..n {
-                sum += p[i];
+            for (i, &pi) in p.iter().enumerate().take(n) {
+                sum += pi;
                 if x < sum {
                     a = i;
                     break;

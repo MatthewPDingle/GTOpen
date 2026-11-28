@@ -280,7 +280,7 @@ fn run(req: Request) -> Result<Value, String> {
         }
         drop(seed);
         let mut trained = Vec::new();
-        for train_world in 0..4 {
+        for (train_world, &world) in WORLDS.iter().enumerate() {
             let start = Instant::now();
             let mut s = PreflopSolver::new(scenario.cfg.clone(), eq.clone())?;
             let perturbed = install(
@@ -310,7 +310,7 @@ fn run(req: Request) -> Result<Value, String> {
             let iterations = s.iteration;
             let solve_seconds = start.elapsed().as_secs_f64();
             let mut cross = Vec::new();
-            for evaluate_world in 0..4 {
+            for (evaluate_world, &eval_world) in WORLDS.iter().enumerate() {
                 install(
                     &mut s,
                     &base,
@@ -326,13 +326,13 @@ fn run(req: Request) -> Result<Value, String> {
                 if hero_fingerprint(&s, scenario.hero) != learned_hero_fingerprint {
                     return Err("cross-evaluation changed the learned hero strategy".into());
                 }
-                cross.push(json!({"world":WORLDS[evaluate_world],"hero_strategy_preserved":true,"hero_ev_bb_per_hand":evs[scenario.hero],"best_response_gap_bb_per_hand":gaps[scenario.hero],"best_response_ev_bb_per_hand":evs[scenario.hero]+gaps[scenario.hero]}));
+                cross.push(json!({"world":eval_world,"hero_strategy_preserved":true,"hero_ev_bb_per_hand":evs[scenario.hero],"best_response_gap_bb_per_hand":gaps[scenario.hero],"best_response_ev_bb_per_hand":evs[scenario.hero]+gaps[scenario.hero]}));
             }
             eprintln!(
                 "{} / {}: {} iterations, gap {:.6} bb/hand, {:.2}s",
-                scenario.name, WORLDS[train_world], iterations, final_gap, solve_seconds
+                scenario.name, world, iterations, final_gap, solve_seconds
             );
-            trained.push(json!({"world":WORLDS[train_world],"hero_strategy_fingerprint":format!("{learned_hero_fingerprint:016x}"),"iterations":iterations,"self_gap_bb_per_hand":final_gap,"converged":final_gap<=req.target_gap,"solve_seconds":solve_seconds,"perturbed_nodes":perturbed,"convergence":trace,"focal":own_focal,"target_events":own_events,"cross_evaluation":cross}));
+            trained.push(json!({"world":world,"hero_strategy_fingerprint":format!("{learned_hero_fingerprint:016x}"),"iterations":iterations,"self_gap_bb_per_hand":final_gap,"converged":final_gap<=req.target_gap,"solve_seconds":solve_seconds,"perturbed_nodes":perturbed,"convergence":trace,"focal":own_focal,"target_events":own_events,"cross_evaluation":cross}));
         }
         results.push(json!({"name":scenario.name,"config":scenario.cfg,"hero":scenario.cfg.positions[scenario.hero],"nodes":nodes,"arena_mb":arena_mb,"focal_history":scenario.focal_history,"seconds":started.elapsed().as_secs_f64(),"trained":trained}));
     }

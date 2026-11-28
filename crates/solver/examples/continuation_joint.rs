@@ -28,6 +28,8 @@ fn dist(text: &str) -> Vec<f32> {
     d
 }
 
+// Pricing helper; the eight arguments mirror the audit columns.
+#[allow(clippy::too_many_arguments)]
 fn prices(
     oop: &str,
     ip: &str,
@@ -149,7 +151,7 @@ fn main() -> Result<(), String> {
         let mut gap = 100.0;
         while s.iteration < 500 {
             s.iterate();
-            if s.iteration % 25 == 0 {
+            if s.iteration.is_multiple_of(25) {
                 gap = s.exploitability() / pot * 100.0;
                 trace.push(json!({"iteration":s.iteration,"gap_pct_pot":gap,"seconds":solve.elapsed().as_secs_f64()}));
                 eprintln!(

@@ -189,8 +189,7 @@ impl Spot {
         ];
         let mut hands: [Vec<HandInfo>; 2] = [Vec::new(), Vec::new()];
         for p in 0..2 {
-            for idx in 0..NUM_COMBOS {
-                let w = ranges[p].weights[idx];
+            for (idx, &w) in ranges[p].weights.iter().enumerate() {
                 if w <= 0.0 {
                     continue;
                 }
@@ -680,6 +679,9 @@ pub fn showdown_cfv(
 }
 
 /// Accumulate win/tie/valid opponent reach per hand for equity calculation.
+// The eight slices are the evaluation's per-side working set; splitting
+// them into a struct would only move the same state around.
+#[allow(clippy::too_many_arguments)]
 pub fn sweep_buckets(
     eval: &RiverBoardEval,
     me: usize,

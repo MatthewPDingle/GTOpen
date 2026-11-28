@@ -686,7 +686,7 @@ impl MwSolver {
         let mut last = None;
         while self.iteration < opts.max_iterations && !stop.load(Ordering::Relaxed) {
             self.iterate();
-            if self.iteration % opts.check_every.max(1) == 0
+            if self.iteration.is_multiple_of(opts.check_every.max(1))
                 || self.iteration >= opts.max_iterations
             {
                 let pr = self.progress(start.elapsed().as_secs_f64());

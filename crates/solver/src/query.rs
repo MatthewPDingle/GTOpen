@@ -164,8 +164,8 @@ fn rake_to_target_impl<const N: usize>(
         let msum: f64 = m.iter().sum();
         if msum > 1e-12 {
             let scale = na as f64 / msum;
-            for a in 0..na {
-                m[a] *= scale;
+            for v in m.iter_mut() {
+                *v *= scale;
             }
         }
         if max_err < 1e-4 {
@@ -532,8 +532,8 @@ impl Solver {
         let walk = self.walk_path(path)?;
         let node = &spot.tree.nodes[walk.node_idx as usize];
         let mut board: Vec<String> = spot.board.iter().map(|&c| card_to_string(c)).collect();
-        for i in 0..walk.dealt.len as usize {
-            board.push(card_to_string(walk.dealt.cards[i]));
+        for &c in &walk.dealt.cards[..walk.dealt.len as usize] {
+            board.push(card_to_string(c));
         }
         let pot = node.put[0] + node.put[1];
 
@@ -1659,8 +1659,7 @@ impl Solver {
         }
 
         let mut target = vec![0f32; na];
-        let label;
-        if facing {
+        let label = if facing {
             let f = (stats.fold_to_bet[st] / 100.0).clamp(0.0, 1.0);
             let mut r = (stats.raise_bet / 100.0).clamp(0.0, 1.0).min(1.0 - f);
             if pref.is_none() {
@@ -1673,12 +1672,12 @@ impl Solver {
             if let Some(pi) = pref {
                 target[pi] = r;
             }
-            label = format!(
+            format!(
                 "{PROFILE_LABEL} {} fold {:.0}% / raise {:.0}%",
                 ["flop", "turn", "river"][st],
                 f * 100.0,
                 r * 100.0
-            );
+            )
         } else {
             let with_init = aggressor == Some(villain);
             let bf_pct = if with_init {
@@ -1696,13 +1695,13 @@ impl Solver {
             if let Some(pi) = pref {
                 target[pi] = bf;
             }
-            label = format!(
+            format!(
                 "{PROFILE_LABEL} {} {} {:.0}%",
                 ["flop", "turn", "river"][st],
                 if with_init { "c-bet" } else { "stab" },
                 bf * 100.0
-            );
-        }
+            )
+        };
 
         let mut sigma = vec![0f32; na * nh];
         self.solved_strategy_into(node, &mut sigma);
@@ -1785,12 +1784,12 @@ impl Solver {
         let pot = tc.starting_pot;
         let spr = tc.effective_stack / pot.max(1e-9);
         let mut out = Vec::new();
-        for p in 0..2usize {
+        for (p, player) in view.players.iter().enumerate() {
             let mut w = vec![0f64; 169];
             let mut wv = vec![0f64; 169];
             let mut se = vec![0f64; 169];
             let mut sv = vec![0f64; 169];
-            for h in &view.players[p].hands {
+            for h in &player.hands {
                 let (eq, ev) = match (h.eq, h.ev) {
                     (Some(a), Some(b)) => (a as f64, b as f64),
                     _ => continue,

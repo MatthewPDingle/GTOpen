@@ -1,8 +1,8 @@
 //! Bounded fresh-deal growth measurement using the qualified poker kernel.
 #[path = "research_sampled/poker_reference_v1.rs"]
-mod reference;
+pub mod reference;
 #[path = "research_sampled/state.rs"]
-mod state;
+pub mod state;
 #[cfg(not(feature = "gpu"))]
 fn main() {
     panic!("requires gpu");

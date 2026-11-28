@@ -985,17 +985,17 @@ pub fn check_real_inputs(ex: &ExampleInputs) -> Option<String> {
     if !(ex.rake_cap_bb.is_finite() && ex.rake_cap_bb >= 0.0) {
         return Some(format!("rake cap {} bb out of range", ex.rake_cap_bb));
     }
-    for p in 0..2 {
-        if ex.range[p].len() != NUM_CLASSES {
-            return Some(format!("range {p} has {} classes", ex.range[p].len()));
+    for (p, range) in ex.range.iter().enumerate() {
+        if range.len() != NUM_CLASSES {
+            return Some(format!("range {p} has {} classes", range.len()));
         }
-        if ex.range[p]
+        if range
             .iter()
             .any(|w| !w.is_finite() || !(0.0..=1.0).contains(w))
         {
             return Some(format!("range {p} has a weight outside 0..1"));
         }
-        if ex.range[p].iter().all(|&w| w <= 0.0) {
+        if range.iter().all(|&w| w <= 0.0) {
             return Some(format!("range {p} is empty"));
         }
     }
@@ -1220,12 +1220,12 @@ mod tests {
     fn ranges_round_trip_through_text() {
         for i in 0..50 {
             let ex = example_inputs(1, i);
-            for p in 0..2 {
-                let text = range_text(&ex.range[p]);
+            for range in &ex.range {
+                let text = range_text(range);
                 let parsed = crate::Range::parse(&text).expect("range parses");
                 assert!(!parsed.is_empty(), "empty range for example {i}");
                 // every class keeps its weight exactly
-                for k in 0..NUM_CLASSES {
+                for (k, &weight) in range.iter().enumerate() {
                     let (hi, lo, suited) = class_parts(k);
                     let s = if hi == lo {
                         crate::range::Suitedness::Pair
@@ -1236,7 +1236,7 @@ mod tests {
                     };
                     for (c1, c2) in crate::range::class_combo_list(hi, lo, s) {
                         let w = parsed.weights[crate::cards::combo_index(c1, c2)];
-                        assert_eq!(w, ex.range[p][k], "class {} example {i}", class_label(k));
+                        assert_eq!(w, weight, "class {} example {i}", class_label(k));
                     }
                 }
             }
@@ -1363,7 +1363,7 @@ mod tests {
             let ex = example_inputs(7, i);
             *count.entry(ex.pot_type.clone()).or_insert(0) += 1;
             match ex.pot_scale {
-                s if s == 1.0 => online += 1,
+                1.0 => online += 1,
                 s if (1.3..2.0).contains(&s) => live += 1,
                 s => {
                     assert!((2.0..=4.0).contains(&s), "pot_scale {s}");

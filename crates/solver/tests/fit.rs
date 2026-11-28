@@ -241,7 +241,7 @@ fn simplex_max(c: &[f64], rows: &[(Vec<f64>, f64)], eq: &[f64], beq: f64) -> f64
         for k in 0..nr {
             if t[k][e] > 1e-10 {
                 let ratio = t[k][ncol] / t[k][e];
-                if best.map_or(true, |(r, bk)| {
+                if best.is_none_or(|(r, bk)| {
                     ratio < r - 1e-12 || (ratio <= r + 1e-12 && basis[k] < basis[bk])
                 }) {
                     best = Some((ratio, k));

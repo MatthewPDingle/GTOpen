@@ -103,8 +103,8 @@ pub fn classify(board: &[Card], c1: Card, c2: Card) -> (u8, u8) {
 
     let mut made: Option<&str> = None;
     let mut flush_suit: i32 = -1;
-    for s in 0..4 {
-        if suit_all[s] >= 5 {
+    for (s, &n) in suit_all.iter().enumerate() {
+        if n >= 5 {
             flush_suit = s as i32;
         }
     }
@@ -522,8 +522,8 @@ impl Solver {
     fn board_cats(&self, dealt: Dealt) -> BoardCats {
         let spot = &*self.spot;
         let mut board: Vec<Card> = spot.board.clone();
-        for i in 0..dealt.len as usize {
-            board.push(dealt.cards[i]);
+        for &c in &dealt.cards[..dealt.len as usize] {
+            board.push(c);
         }
         let cats = [0usize, 1].map(|p| {
             spot.hands[p]
@@ -554,6 +554,9 @@ impl Solver {
     /// strategies (the `traverse_avg` convention: per-hand cfv normalized by
     /// the opponent's valid mass gives the pot-share EV), recording summaries
     /// on the way. Line keys: `a<i>` per action step, `c` per chance step.
+    // The parameters are the walk's whole state; a struct would just carry
+    // the same fields through the recursion.
+    #[allow(clippy::too_many_arguments)]
     fn sweep(
         &self,
         node_idx: u32,
@@ -676,11 +679,13 @@ impl Solver {
                 };
                 // parallel when the children open a betting round (the same
                 // rule as the CFR traversal); bare runouts stay sequential
-                let parallel = cards.first().map_or(false, |&c| {
+                let parallel = cards.first().is_some_and(|&c| {
                     let child = spot.tree.children[node.children_start as usize + c as usize];
                     spot.tree.nodes[child as usize].kind == KIND_ACTION
                 });
-                let results: Vec<([Vec<f32>; 2], BTreeMap<String, LineAcc>)> = if parallel {
+                // one child line's counterfactual values for both players and its lines
+                type LineCfv = ([Vec<f32>; 2], BTreeMap<String, LineAcc>);
+                let results: Vec<LineCfv> = if parallel {
                     cards.par_iter().map(run).collect()
                 } else {
                     cards.iter().map(run).collect()
@@ -695,8 +700,8 @@ impl Solver {
                     merge_maps(out, local);
                 }
                 let inv = 1.0 / divisor;
-                for p in 0..2 {
-                    for x in cfv[p].iter_mut() {
+                for row in cfv.iter_mut() {
+                    for x in row.iter_mut() {
                         *x *= inv;
                     }
                 }

@@ -123,15 +123,17 @@ fn main() {
         .collect();
     let bytes = std::fs::read("cache/preflop_eq169.bin").unwrap();
     let table: Vec<f64> = bytes[4..]
-        .chunks_exact(4)
-        .map(|b| f32::from_le_bytes(b.try_into().unwrap()) as f64)
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .map(|b| f32::from_le_bytes(*b) as f64)
         .collect();
     let output:Vec<_>=cases.par_iter().enumerate().map(|(case_idx,(name,percombo))|{
  let weights:Vec<Vec<f64>>=percombo.iter().map(|w|{let total:f64=(0..169).map(|h|w[h]*class_combos(h)as f64).sum();(0..169).map(|h|w[h]*class_combos(h)as f64/total).collect()}).collect();
  let samplers:Vec<Vec<(f64,[u8;2])>>=percombo.iter().map(|w|{let mut sum=0.;let mut c=vec![];for h in 0..169{for &cards in &combos[h]{sum+=w[h];c.push((sum,cards));}}for(a,_)in &mut c{*a/=sum;}c}).collect();
  let mut results=vec![];
  for(label,hero)in hands {let h=class_index(hero[0]/4,hero[1]/4,hero[0]%4==hero[1]%4);let mut rng=Rng(620011+case_idx as u64*200+h as u64);let(mut sum,mut squares,mut accepted)=(0.,0.,0);let trials=100_000;while accepted<trials{let mut mask=(1u64<<hero[0])|(1u64<<hero[1]);let mut hs=vec![hero];let mut collision=false;for sampler in &samplers{let u=rng.unit();let cards=sampler[sampler.partition_point(|(w,_)|*w<=u).min(sampler.len()-1)].1;let bits=(1u64<<cards[0])|(1u64<<cards[1]);if bits&mask!=0{collision=true;break}mask|=bits;hs.push(cards);}if collision{continue}let mut board=[0;5];for c in &mut board{loop{let x=(rng.next()%52)as u8;if mask&(1<<x)==0{*c=x;mask|=1<<x;break}}}let ranks:Vec<_>=hs.iter().map(|c|evaluate7(&[c[0],c[1],board[0],board[1],board[2],board[3],board[4]])).collect();let best=*ranks.iter().max().unwrap();let winners=ranks.iter().filter(|&&r|r==best).count();let eq=if ranks[0]==best{1./winners as f64}else{0.};sum+=eq;squares+=eq*eq;accepted+=1;}
- let reference=sum/trials as f64;let modeled:Vec<_>=particles.iter().enumerate().map(|(seed,ps)|{let mut sum=0.;let mut out=vec![];for(n,ranks)in ps.iter().enumerate(){sum+=share(ranks[h],ranks,&weights);if[1024,4096].contains(&(n+1)){out.push(json!({"seed":seeds[seed],"particles":n+1,"equity":sum/(n+1)as f64,"error":sum/(n+1)as f64-reference}));}}out}).flatten().collect();let legacy=weights.iter().map(|w|(0..169).map(|j|table[h*169+j]*w[j]).sum::<f64>()).product::<f64>();results.push(json!({"hand":label,"reference":reference,"legacy_product":legacy,"legacy_error":legacy-reference,"mc_95_half_width":1.96*((squares/trials as f64-reference*reference)/trials as f64).sqrt(),"coupled":modeled}));}
+ let reference=sum/trials as f64;let modeled:Vec<_>=particles.iter().enumerate().flat_map(|(seed,ps)|{let mut sum=0.;let mut out=vec![];for(n,ranks)in ps.iter().enumerate(){sum+=share(ranks[h],ranks,&weights);if[1024,4096].contains(&(n+1)){out.push(json!({"seed":seeds[seed],"particles":n+1,"equity":sum/(n+1)as f64,"error":sum/(n+1)as f64-reference}));}}out}).collect();let legacy=weights.iter().map(|w|(0..169).map(|j|table[h*169+j]*w[j]).sum::<f64>()).product::<f64>();results.push(json!({"hand":label,"reference":reference,"legacy_product":legacy,"legacy_error":legacy-reference,"mc_95_half_width":1.96*((squares/trials as f64-reference*reference)/trials as f64).sqrt(),"coupled":modeled}));}
  json!({"case":name,"opponents":weights.len(),"results":results})}).collect();
     println!("{}",serde_json::to_string_pretty(&json!({"mc_samples_per_hand":100000,"scope":"Out-of-fixture synthetic range tests. Independent class prior deck-coupled ranks versus compatible-card exact-deal Monte Carlo. No future betting or folded-card removal.","cases":output})).unwrap());
 }

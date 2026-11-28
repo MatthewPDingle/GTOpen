@@ -395,7 +395,7 @@ impl Mix {
         self.card_rules
             .iter()
             .rev()
-            .find(|r| cap_gb.map_or(true, |c| c >= r.cap_from_gb))
+            .find(|r| cap_gb.is_none_or(|c| c >= r.cap_from_gb))
     }
 
     /// One plain line on what the mix's card rule means for this card, for
@@ -857,8 +857,8 @@ fn choose_by<T>(
     for attempt in 0..datagen::MAX_ATTEMPTS {
         let ex = draw(attempt);
         let bytes = size(&ex);
-        if cap_gb.map_or(true, |cap| bytes as f64 <= cap * 1e9) {
-            let small = rule.map_or(false, |r| (bytes as f64) < r.under_gb * 1e9);
+        if cap_gb.is_none_or(|cap| bytes as f64 <= cap * 1e9) {
+            let small = rule.is_some_and(|r| (bytes as f64) < r.under_gb * 1e9);
             if !small || coin(attempt) < rule.map_or(1.0, |r| r.keep) {
                 return (ex, bytes);
             }
@@ -953,10 +953,10 @@ pub fn sha256_hex(data: &[u8]) -> String {
         msg.push(0);
     }
     msg.extend_from_slice(&((data.len() as u64) * 8).to_be_bytes());
-    for block in msg.chunks_exact(64) {
+    for block in msg.as_chunks::<64>().0 {
         let mut w = [0u32; 64];
-        for (i, word) in block.chunks_exact(4).enumerate() {
-            w[i] = u32::from_be_bytes([word[0], word[1], word[2], word[3]]);
+        for (i, word) in block.as_chunks::<4>().0.iter().enumerate() {
+            w[i] = u32::from_be_bytes(*word);
         }
         for i in 16..64 {
             let s0 = w[i - 15].rotate_right(7) ^ w[i - 15].rotate_right(18) ^ (w[i - 15] >> 3);
@@ -1203,7 +1203,7 @@ impl MixSync {
         let mut notes = Vec::new();
         for id in self.book.open_ids() {
             let need = self.book.mixes[&id].min_card_gb;
-            if card_gb.map_or(false, |c| c < need) {
+            if card_gb.is_some_and(|c| c < need) {
                 notes.push(format!(
                     "mix {id} needs a graphics card that holds {need} GB trees (this machine: {})",
                     card_gb
@@ -1334,7 +1334,7 @@ mod tests {
             );
             *count.entry(ex.pot_type.clone()).or_insert(0) += 1;
             match ex.pot_scale {
-                s if s == 1.0 => online += 1,
+                1.0 => online += 1,
                 s if (1.3..2.0).contains(&s) => live += 1,
                 s => {
                     assert!((2.0..=4.0).contains(&s), "pot_scale {s}");
@@ -1844,7 +1844,6 @@ mod tests {
         assert!(again.refresh_if_due().is_none());
         assert!(MixSync::open(&dir.join("cache")).refresh_if_due().is_none());
         // and a list that would not load is not fetched again on every job either
-        let mut all = all;
         all.push(serde_json::json!({"id": newest + 2, "needs_generator": 5, "note": "another list",
             "parts": [{"kind": "situations", "share": 1.0, "list": "missing", "sha256": "0".repeat(64)}]}));
         again.book.add_text(&file(all)).unwrap();

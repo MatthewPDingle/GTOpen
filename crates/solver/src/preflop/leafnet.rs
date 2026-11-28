@@ -22,6 +22,7 @@
 //! one that is played a little. A net's first layer says which layout it
 //! was trained with, and the loader builds the extra inputs itself, so every
 //! caller hands over the same 686.
+use std::cmp::Ordering;
 use std::path::Path;
 
 use super::{equity::NUM_CLASSES, leaf_total::TotalRule};
@@ -123,12 +124,14 @@ impl LeafNet {
             }
         };
         let data = &bytes[body..];
-        if data.len() % 4 != 0 {
+        if !data.len().is_multiple_of(4) {
             return Err("leaf net data is not whole f32 values".into());
         }
         let vals: Vec<f32> = data
-            .chunks_exact(4)
-            .map(|c| f32::from_le_bytes(c.try_into().unwrap()))
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .map(|c| f32::from_le_bytes(*c))
             .collect();
         let mut pos = 0usize;
         let mut take = |n: usize| -> Result<Vec<f32>, String> {
@@ -153,7 +156,10 @@ impl LeafNet {
                     b: take(cols)?,
                 });
             }
-            if sd.iter().any(|&s| !(s > 0.0)) {
+            if sd
+                .iter()
+                .any(|&s| s.partial_cmp(&0.0) != Some(Ordering::Greater))
+            {
                 return Err("leaf net has invalid numbers".into());
             }
             members.push(Member { mu, sd, layers });
@@ -377,7 +383,9 @@ impl Member {
     fn residual_batch(&self, xs: &[f32]) -> Vec<f32> {
         let n = xs.len() / INPUTS;
         let mut h: Vec<f32> = xs
-            .chunks_exact(INPUTS)
+            .as_chunks::<INPUTS>()
+            .0
+            .iter()
             .flat_map(|x| self.normalized(x))
             .collect();
         for (k, layer) in self.layers.iter().enumerate() {

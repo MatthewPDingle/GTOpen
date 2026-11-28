@@ -417,7 +417,7 @@ fn save_load_round_trip_and_browse() {
     assert!(ex.avg_gain.unwrap() >= -1e-4);
     for h in &ex.hands {
         assert!(
-            h.gain.map_or(true, |g| g >= -2e-3),
+            h.gain.is_none_or(|g| g >= -2e-3),
             "{} gain {:?}",
             h.combo,
             h.gain

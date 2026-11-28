@@ -37,6 +37,8 @@ struct Audit {
     selected: Vec<Value>,
 }
 
+// Recursive audit walker; its eight cursor arguments are the traversal state.
+#[allow(clippy::too_many_arguments)]
 fn walk(
     s: &PreflopSolver,
     regrets: &[f32],

@@ -2,9 +2,9 @@
 #[path = "research_sampled/observation_v1.rs"]
 mod observation;
 #[path = "research_sampled/poker_reference_v1.rs"]
-mod poker_reference_v1;
+pub mod poker_reference_v1;
 #[path = "research_sampled/state.rs"]
-mod state;
+pub mod state;
 use std::collections::{BTreeMap, BTreeSet};
 
 use observation::{Observation, WIDTH};
@@ -178,18 +178,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let mut changed = d;
             let mut used = 0u64;
-            for i in 0..9 {
+            for (i, &card) in d.iter().enumerate() {
                 if q.visible(i) {
-                    used |= 1u64 << d[i];
+                    used |= 1u64 << card;
                 }
             }
-            for i in 0..9 {
+            for (i, slot) in changed.iter_mut().enumerate() {
                 if !q.visible(i) {
                     let c = (0..52)
                         .rev()
                         .find(|&c| used & (1u64 << c) == 0 && c != d[i])
                         .unwrap();
-                    changed[i] = c;
+                    *slot = c;
                     used |= 1u64 << c;
                 }
             }

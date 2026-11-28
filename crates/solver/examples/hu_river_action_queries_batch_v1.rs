@@ -188,6 +188,8 @@ fn action_document(action: Action, before: State, after: State, cfg: &TreeConfig
             (after.put[actor]-(cfg.starting_pot/2.+cfg.effective_stack)).abs()<1e-8})
 }
 
+// Recursive audit walker; its eight cursor arguments are the traversal state.
+#[allow(clippy::too_many_arguments)]
 fn tree(
     game: &Game,
     deal: &[u8; 9],
@@ -271,9 +273,9 @@ fn target_export(
     assert_eq!(input.format, 1);
     let target = Observation::decode((input.hi.parse().unwrap(), input.lo.parse().unwrap()));
     assert_eq!(target.phase, 3);
-    let n = target.legal_actions(&game);
+    let n = target.legal_actions(game);
     assert!((2..=4).contains(&n));
-    let pre = parents(&game, target.public_id);
+    let pre = parents(game, target.public_id);
     let cfg = &game.configs[target.public_id];
     let mut mask = 0u64;
     for &c in &target.cards {

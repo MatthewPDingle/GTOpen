@@ -333,7 +333,7 @@ impl Solver {
         };
         while self.iteration < opts.max_iterations && !stop.load(Ordering::Relaxed) {
             self.iterate();
-            let check = self.iteration % opts.check_every.max(1) == 0
+            let check = self.iteration.is_multiple_of(opts.check_every.max(1))
                 || self.iteration >= opts.max_iterations;
             if check {
                 let e = self.exploitability();
