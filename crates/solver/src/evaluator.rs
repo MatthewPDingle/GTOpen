@@ -258,10 +258,7 @@ mod tests {
                 if groups[1].0 == 2 {
                     return (2, vec![groups[0].1, groups[1].1, groups[2].1]);
                 }
-                return (
-                    1,
-                    vec![groups[0].1, groups[1].1, groups[2].1, groups[3].1],
-                );
+                return (1, vec![groups[0].1, groups[1].1, groups[2].1, groups[3].1]);
             }
             _ => {}
         }
@@ -318,15 +315,14 @@ mod tests {
         // Wheel is the lowest straight
         assert!(ev("6c5d4h3s2cKdQd") > ev("Ac5d4h3s2cKdQd"));
         // Two pair kicker
-        assert!(ev("AcAdKcKd5h7s2c") > ev("AcAdKcKd4h7s2c") || {
-            // both have 7 kicker (5h/4h irrelevant) -> equal
-            ev("AcAdKcKd5h7s2c") == ev("AcAdKcKd4h7s2c")
-        });
-        // Board plays: same value for both
-        assert_eq!(
-            ev("AsKsQsJsTs2c3d"),
-            ev("AsKsQsJsTs4c5d")
+        assert!(
+            ev("AcAdKcKd5h7s2c") > ev("AcAdKcKd4h7s2c") || {
+                // both have 7 kicker (5h/4h irrelevant) -> equal
+                ev("AcAdKcKd5h7s2c") == ev("AcAdKcKd4h7s2c")
+            }
         );
+        // Board plays: same value for both
+        assert_eq!(ev("AsKsQsJsTs2c3d"), ev("AsKsQsJsTs4c5d"));
     }
 
     #[test]

@@ -1,15 +1,18 @@
 //! Node inspection for the strategy browser: walk a path of actions/cards
 //! from the root, then report per-hand strategies, EVs and equities.
 
-use crate::cards::*;
-use crate::cfr::Solver;
-use crate::game::Dealt;
-use crate::tree::{
-    Action, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL,
-};
 use serde::{Deserialize, Serialize};
-pub use crate::contextual_postflop::{BettingKind, ContextualBetCell, ContextualBetting, PostflopPotType, ProfileRootEvidence};
-use crate::contextual_postflop::{adjust_betting, BettingHistory};
+
+pub use crate::contextual_postflop::{
+    BettingKind, ContextualBetCell, ContextualBetting, PostflopPotType, ProfileRootEvidence,
+};
+use crate::{
+    cards::*,
+    cfr::Solver,
+    contextual_postflop::{adjust_betting, BettingHistory},
+    game::Dealt,
+    tree::{Action, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL},
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
@@ -45,7 +48,10 @@ pub struct HandEdit {
 /// Validate and normalize a per-action frequency vector to sum 1.
 pub(crate) fn normalize_freqs(freqs: &[f32], na: usize) -> Result<Vec<f32>, String> {
     if freqs.len() != na {
-        return Err(format!("expected {na} action frequencies, got {}", freqs.len()));
+        return Err(format!(
+            "expected {na} action frequencies, got {}",
+            freqs.len()
+        ));
     }
     if freqs.iter().any(|&x| x < 0.0 || !x.is_finite()) {
         return Err("frequencies must be finite and >= 0".to_string());
@@ -71,7 +77,13 @@ pub(crate) fn normalize_freqs(freqs: &[f32], na: usize) -> Result<Vec<f32>, Stri
 /// frequency of each action matches `target`. Actions with a zero target are
 /// driven out; actions the solved strategy never uses can't be forced up
 /// (no probability mass to scale) — those stay near zero (use per-hand edits).
-pub(crate) fn rake_to_target(sigma: &mut [f32], na: usize, nh: usize, reach: &[f32], target: &[f32]) {
+pub(crate) fn rake_to_target(
+    sigma: &mut [f32],
+    na: usize,
+    nh: usize,
+    reach: &[f32],
+    target: &[f32],
+) {
     // Most poker nodes have two or three choices. Constant action counts
     // let the compiler unroll their independent arithmetic without changing
     // the accumulation order for any hand or action.
@@ -83,7 +95,13 @@ pub(crate) fn rake_to_target(sigma: &mut [f32], na: usize, nh: usize, reach: &[f
     }
 }
 
-fn rake_to_target_impl<const N: usize>(sigma: &mut [f32], na: usize, nh: usize, reach: &[f32], target: &[f32]) {
+fn rake_to_target_impl<const N: usize>(
+    sigma: &mut [f32],
+    na: usize,
+    nh: usize,
+    reach: &[f32],
+    target: &[f32],
+) {
     let na = if N == 0 { na } else { N };
     let mut m = vec![0f64; na];
     for a in 0..na {
@@ -655,12 +673,18 @@ impl Solver {
             locked: {
                 // the lock lives on the orbit representative's node
                 let canon = self.canonical_path(path);
-                let idx = self.walk_path(&canon).map(|w| w.node_idx).unwrap_or(walk.node_idx);
+                let idx = self
+                    .walk_path(&canon)
+                    .map(|w| w.node_idx)
+                    .unwrap_or(walk.node_idx);
                 self.locks.contains_key(&idx)
             },
             fit: if self.has_fits() {
                 let canon = self.canonical_path(path);
-                let idx = self.walk_path(&canon).map(|w| w.node_idx).unwrap_or(walk.node_idx);
+                let idx = self
+                    .walk_path(&canon)
+                    .map(|w| w.node_idx)
+                    .unwrap_or(walk.node_idx);
                 self.fit_view_at(idx)
             } else {
                 None
@@ -776,7 +800,8 @@ impl Solver {
             // assignment, so successive per-hand edits accumulate cleanly.
             LockMode::Hands { edits } => {
                 let mut s = self.average_strategy(walk.node_idx, node);
-                let mut placed: Vec<(crate::cards::Card, crate::cards::Card, Vec<f32>)> = Vec::new();
+                let mut placed: Vec<(crate::cards::Card, crate::cards::Card, Vec<f32>)> =
+                    Vec::new();
                 for edit in &edits {
                     let target = normalize_freqs(&edit.freqs, na)?;
                     let combo = parse_cards(&edit.combo)?;
@@ -789,12 +814,13 @@ impl Solver {
                     let c2 = crate::cards::permute_card(combo[1], &perm);
                     let idx = self.spot.hands[p]
                         .iter()
-                        .position(|h| {
-                            (h.c1 == c1 && h.c2 == c2) || (h.c1 == c2 && h.c2 == c1)
-                        })
+                        .position(|h| (h.c1 == c1 && h.c2 == c2) || (h.c1 == c2 && h.c2 == c1))
                         .ok_or_else(|| {
-                            format!("{} is not in {}'s range here", edit.combo,
-                                if p == 0 { "OOP" } else { "IP" })
+                            format!(
+                                "{} is not in {}'s range here",
+                                edit.combo,
+                                if p == 0 { "OOP" } else { "IP" }
+                            )
                         })?;
                     for a in 0..na {
                         s[a * nh + idx] = target[a];
@@ -874,7 +900,12 @@ impl Solver {
         if !self.locks.is_empty() {
             self.mark_sym_dirty();
         }
-        let mut keys: Vec<u32> = self.locks.keys().chain(self.lock_labels.keys()).copied().collect();
+        let mut keys: Vec<u32> = self
+            .locks
+            .keys()
+            .chain(self.lock_labels.keys())
+            .copied()
+            .collect();
         keys.sort_unstable();
         keys.dedup();
         for k in keys {
@@ -973,8 +1004,7 @@ impl Solver {
                                 .map(|a| acfv[a][j])
                                 .fold(f32::NEG_INFINITY, f32::max);
                             let eps = (m.abs() * 1e-5).max(1e-5);
-                            let win: Vec<bool> =
-                                (0..na).map(|a| m - acfv[a][j] <= eps).collect();
+                            let win: Vec<bool> = (0..na).map(|a| m - acfv[a][j] <= eps).collect();
                             let w = win.iter().filter(|&&x| x).count().max(1) as f32;
                             (0..na)
                                 .map(|a| if win[a] { 1.0 / w } else { 0.0 })
@@ -1102,7 +1132,13 @@ impl Solver {
                 }
                 freqs = sums
                     .iter()
-                    .map(|&s| if total > 1e-12 { (s / total) as f32 } else { 0.0 })
+                    .map(|&s| {
+                        if total > 1e-12 {
+                            (s / total) as f32
+                        } else {
+                            0.0
+                        }
+                    })
                     .collect();
             }
             // average equities and average-strategy EVs on this runout (EVs
@@ -1140,7 +1176,11 @@ impl Solver {
                         d += w;
                     }
                 }
-                ev_avg[p] = if d > 1e-12 { Some((n / d) as f32) } else { None };
+                ev_avg[p] = if d > 1e-12 {
+                    Some((n / d) as f32)
+                } else {
+                    None
+                };
             }
             if pot == 0.0 {
                 pot = child.put[0] + child.put[1];
@@ -1160,7 +1200,6 @@ impl Solver {
         })
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -1300,11 +1339,11 @@ impl Solver {
         if pf_aggressor.is_some_and(|p| p > 1) {
             return Err("aggressor must be 0 (OOP) or 1 (IP)".into());
         }
-        if let Some(data) = &stats.contextual_betting { data.validate()?; }
+        if let Some(data) = &stats.contextual_betting {
+            data.validate()?;
+        }
         if self.iteration == 0 {
-            return Err(
-                "solve the spot first — the profile distorts the solved strategy".into(),
-            );
+            return Err("solve the spot first — the profile distorts the solved strategy".into());
         }
         self.clear_profile_locks();
         let reach: Vec<f32> = self.spot.weights[villain].clone();
@@ -1361,11 +1400,19 @@ impl Solver {
         if acc[7].0 > 0.0 {
             rows.push(ProfileLockRow {
                 label: "bet (no initiative)".into(),
-                target: if stats.contextual_betting.is_some() { (contextual_target / acc[7].0 * 100.0) as f32 } else { stats.donk },
+                target: if stats.contextual_betting.is_some() {
+                    (contextual_target / acc[7].0 * 100.0) as f32
+                } else {
+                    stats.donk
+                },
                 achieved: (acc[7].1 / acc[7].0 * 100.0) as f32,
             });
         }
-        Ok(ProfileLockSummary { locked, rows, root_evidence })
+        Ok(ProfileLockSummary {
+            locked,
+            rows,
+            root_evidence,
+        })
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -1404,7 +1451,11 @@ impl Solver {
                 let divisor = (46 - node.street as i32) as f32;
                 let mut rep_of = [255u8; 52];
                 let use_iso = self.use_isomorphism && spot.suit_perms.len() > 1;
-                let valid = if use_iso { spot.perms_fixing(&dealt) } else { Vec::new() };
+                let valid = if use_iso {
+                    spot.perms_fixing(&dealt)
+                } else {
+                    Vec::new()
+                };
                 for c in 0..52u8 {
                     if spot.tree.children[cs + c as usize] == SENTINEL || dealt.contains(c) {
                         continue;
@@ -1436,8 +1487,18 @@ impl Solver {
                         }
                     }
                     self.profile_walk(
-                        child, &r, dealt.push(c), history.next_street(), villain, stats, eps, locked,
-                        acc, pot_type, contextual_target, root_evidence,
+                        child,
+                        &r,
+                        dealt.push(c),
+                        history.next_street(),
+                        villain,
+                        stats,
+                        eps,
+                        locked,
+                        acc,
+                        pot_type,
+                        contextual_target,
+                        root_evidence,
                     );
                 }
             }
@@ -1450,16 +1511,25 @@ impl Solver {
 
                 let sigma: Option<Vec<f32>> = if actor == villain {
                     Some(self.profile_lock_node(
-                        node_idx, &node, &acts, reach, history, villain, stats, locked,
-                        acc, pot_type, contextual_target, root_evidence,
+                        node_idx,
+                        &node,
+                        &acts,
+                        reach,
+                        history,
+                        villain,
+                        stats,
+                        locked,
+                        acc,
+                        pot_type,
+                        contextual_target,
+                        root_evidence,
                     ))
                 } else {
                     None
                 };
 
                 for (a, act) in acts.iter().enumerate() {
-                    let child =
-                        self.spot.tree.children[node.children_start as usize + a];
+                    let child = self.spot.tree.children[node.children_start as usize + a];
                     let next_history = history.after(actor, act);
                     if let Some(sig) = &sigma {
                         let mut r = vec![0f32; nh];
@@ -1467,13 +1537,33 @@ impl Solver {
                             r[h] = reach[h] * sig[a * nh + h];
                         }
                         self.profile_walk(
-                            child, &r, dealt, next_history, villain, stats, eps, locked, acc,
-                            pot_type, contextual_target, root_evidence,
+                            child,
+                            &r,
+                            dealt,
+                            next_history,
+                            villain,
+                            stats,
+                            eps,
+                            locked,
+                            acc,
+                            pot_type,
+                            contextual_target,
+                            root_evidence,
                         );
                     } else {
                         self.profile_walk(
-                            child, reach, dealt, next_history, villain, stats, eps, locked,
-                            acc, pot_type, contextual_target, root_evidence,
+                            child,
+                            reach,
+                            dealt,
+                            next_history,
+                            villain,
+                            stats,
+                            eps,
+                            locked,
+                            acc,
+                            pot_type,
+                            contextual_target,
+                            root_evidence,
                         );
                     }
                 }
@@ -1518,9 +1608,15 @@ impl Solver {
         }
         let facing = fold_i.is_some();
         let pref = if stats.bet_size == "max" {
-            aggro.iter().max_by(|x, y| x.1.partial_cmp(&y.1).unwrap()).map(|x| x.0)
+            aggro
+                .iter()
+                .max_by(|x, y| x.1.partial_cmp(&y.1).unwrap())
+                .map(|x| x.0)
         } else {
-            aggro.iter().min_by(|x, y| x.1.partial_cmp(&y.1).unwrap()).map(|x| x.0)
+            aggro
+                .iter()
+                .min_by(|x, y| x.1.partial_cmp(&y.1).unwrap())
+                .map(|x| x.0)
         };
 
         // pre-existing manual lock wins (point read > profile), like preflop
@@ -1536,8 +1632,15 @@ impl Solver {
             if let Some(data) = &stats.contextual_betting {
                 let mut sigma = vec![0f32; na * nh];
                 self.solved_strategy_into(node, &mut sigma);
-                let evidence = adjust_betting(&mut sigma, acts, reach, data,
-                    history.kind(villain, node.street), node.street, pot_type);
+                let evidence = adjust_betting(
+                    &mut sigma,
+                    acts,
+                    reach,
+                    data,
+                    history.kind(villain, node.street),
+                    node.street,
+                    pot_type,
+                );
                 let mass: f64 = reach.iter().map(|&w| w as f64).sum();
                 if !aggro.is_empty() {
                     acc[7].0 += mass;
@@ -1548,7 +1651,9 @@ impl Solver {
                     ["flop", "turn", "river"][st], evidence.kind, evidence.achieved, evidence.opportunities));
                 self.mark_sym_dirty();
                 *locked += 1;
-                if node_idx == 0 { *root_evidence = Some(evidence); }
+                if node_idx == 0 {
+                    *root_evidence = Some(evidence);
+                }
                 return sigma;
             }
         }
@@ -1576,7 +1681,11 @@ impl Solver {
             );
         } else {
             let with_init = aggressor == Some(villain);
-            let bf_pct = if with_init { stats.cbet[st] } else { stats.donk };
+            let bf_pct = if with_init {
+                stats.cbet[st]
+            } else {
+                stats.donk
+            };
             let mut bf = (bf_pct / 100.0).clamp(0.0, 1.0);
             if pref.is_none() {
                 bf = 0.0;

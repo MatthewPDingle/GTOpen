@@ -1,5 +1,6 @@
-use solver::preflop::{equity::EquityTable, estimate_tree, PreflopConfig, PreflopSolver};
 use std::sync::{Arc, OnceLock};
+
+use solver::preflop::{equity::EquityTable, estimate_tree, PreflopConfig, PreflopSolver};
 fn eq() -> Arc<EquityTable> {
     static TABLE: OnceLock<Arc<EquityTable>> = OnceLock::new();
     TABLE

@@ -3,10 +3,9 @@
 //! each realization (with the learned correction), 3+ way pots, side pots
 //! and the exact 3-way table.
 use super::*;
-use crate::preflop::equity::EquityTable;
-use crate::preflop::leafnet::constant_net;
-use crate::preflop::PreflopConfig;
-use crate::preflop::three_way::tests::small;
+use crate::preflop::{
+    equity::EquityTable, leafnet::constant_net, three_way::tests::small, PreflopConfig,
+};
 
 fn table() -> Arc<EquityTable> {
     static T: std::sync::OnceLock<Arc<EquityTable>> = std::sync::OnceLock::new();
@@ -14,7 +13,10 @@ fn table() -> Arc<EquityTable> {
 }
 
 fn close(a: &(Vec<f64>, Vec<f64>), b: &(Vec<f64>, Vec<f64>)) -> bool {
-    a.0.iter().chain(&a.1).zip(b.0.iter().chain(&b.1)).all(|(x, y)| (x - y).abs() < 5e-3)
+    a.0.iter()
+        .chain(&a.1)
+        .zip(b.0.iter().chain(&b.1))
+        .all(|(x, y)| (x - y).abs() < 5e-3)
 }
 
 fn game(n: usize, realization: &str, stacks: Option<Vec<f64>>) -> PreflopConfig {
@@ -42,8 +44,16 @@ fn blockers_match_the_cpu() {
         ("3 seats static", game(3, "static", None), false),
         ("3 seats learned", game(3, "leafnet", None), false),
         ("4 seats balanced", game(4, "balanced", None), false),
-        ("4 seats, side pots", game(4, "static", Some(vec![12.0, 30.0, 6.0, 20.0])), false),
-        ("3 seats, exact 3-way table", game(3, "balanced", None), true),
+        (
+            "4 seats, side pots",
+            game(4, "static", Some(vec![12.0, 30.0, 6.0, 20.0])),
+            false,
+        ),
+        (
+            "3 seats, exact 3-way table",
+            game(3, "balanced", None),
+            true,
+        ),
     ];
     let mut shared_runs = 0;
     for (name, cfg, three_way) in cases {
@@ -53,8 +63,11 @@ fn blockers_match_the_cpu() {
             s.set_three_way_table(small()).unwrap();
         }
         if learned {
-            let pattern: Vec<f32> = (0..2 * NUM_CLASSES).map(|k| 0.04 * (((k * 7) % 11) as f32 - 5.0) / 5.0).collect();
-            s.install_leaf_net(Arc::new(constant_net(&pattern))).unwrap();
+            let pattern: Vec<f32> = (0..2 * NUM_CLASSES)
+                .map(|k| 0.04 * (((k * 7) % 11) as f32 - 5.0) / 5.0)
+                .collect();
+            s.install_leaf_net(Arc::new(constant_net(&pattern)))
+                .unwrap();
             s.set_leaf_schedule(u32::MAX, Some(0.3));
         }
         for _ in 0..20 {
@@ -67,40 +80,70 @@ fn blockers_match_the_cpu() {
         // table; it must agree with the normal plan at the same strategies.
         let shared = s.n > 2 && !three_way && s.nodes.iter().all(|nd| nd.side_pots.is_empty());
         {
-            let (mut fast, selection) = PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA");
-            eprintln!("{name}: {} ({:?})", selection.mode, selection.fallback_reason);
-            assert!(shared || selection.mode == "normal_gpu", "{name}: {selection:?}");
+            let (mut fast, selection) =
+                PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA");
+            eprintln!(
+                "{name}: {} ({:?})",
+                selection.mode, selection.fallback_reason
+            );
+            assert!(
+                shared || selection.mode == "normal_gpu",
+                "{name}: {selection:?}"
+            );
             shared_runs += (selection.mode == "retained_cohorts") as usize;
             let fast = fast.gaps_and_evs().unwrap();
             let normal = PreflopGpu::new(&s, 2000).unwrap().gaps_and_evs().unwrap();
-            assert!(fast.0.iter().chain(&fast.1).zip(normal.0.iter().chain(&normal.1)).all(|(x, y)| (x - y).abs() < 2e-4),
-                "{name}: shared plan {fast:?} normal plan {normal:?}");
+            assert!(
+                fast.0
+                    .iter()
+                    .chain(&fast.1)
+                    .zip(normal.0.iter().chain(&normal.1))
+                    .all(|(x, y)| (x - y).abs() < 2e-4),
+                "{name}: shared plan {fast:?} normal plan {normal:?}"
+            );
         }
         // the plan the server picks, then the normal plan directly
         for fast in [true, false] {
             let mut g = if fast {
-                PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA").0
+                PreflopGpu::new_throughput(&s, 8000)
+                    .expect("test requires CUDA")
+                    .0
             } else {
                 PreflopGpu::new(&s, 2000).expect("test requires CUDA")
             };
             let (cpu, gpu) = (s.gaps_and_evs(), g.gaps_and_evs().unwrap());
-            assert!(close(&cpu, &gpu), "{name}, at build: cpu {cpu:?} gpu {gpu:?}");
+            assert!(
+                close(&cpu, &gpu),
+                "{name}, at build: cpu {cpu:?} gpu {gpu:?}"
+            );
             // blockers move the values (so the comparison means something)
             s.cfg.card_removal = false;
             let plain = s.gaps_and_evs();
             s.cfg.card_removal = true;
-            assert!(cpu.0.iter().chain(&cpu.1).zip(plain.0.iter().chain(&plain.1)).any(|(x, y)| (x - y).abs() > 1e-4),
-                "{name}: blockers change nothing");
+            assert!(
+                cpu.0
+                    .iter()
+                    .chain(&cpu.1)
+                    .zip(plain.0.iter().chain(&plain.1))
+                    .any(|(x, y)| (x - y).abs() > 1e-4),
+                "{name}: blockers change nothing"
+            );
             // learn on the device, then compare again at the new strategies
             for _ in 0..10 {
                 g.iterate(&mut s).unwrap();
             }
             g.sync_to_cpu(&mut s).unwrap();
             let (cpu, gpu) = (s.gaps_and_evs(), g.gaps_and_evs().unwrap());
-            assert!(close(&cpu, &gpu), "{name}, after learning: cpu {cpu:?} gpu {gpu:?}");
+            assert!(
+                close(&cpu, &gpu),
+                "{name}, after learning: cpu {cpu:?} gpu {gpu:?}"
+            );
         }
     }
-    assert!(shared_runs >= 2, "the shared plan ran {shared_runs} of the games it should take");
+    assert!(
+        shared_runs >= 2,
+        "the shared plan ran {shared_runs} of the games it should take"
+    );
 }
 
 #[test]
@@ -108,7 +151,10 @@ fn blockers_terminal_values_match_the_cpu_class_by_class() {
     for (name, cfg) in [
         ("heads-up balanced", game(2, "balanced", None)),
         ("3 seats static", game(3, "static", None)),
-        ("4 seats, side pots", game(4, "static", Some(vec![12.0, 30.0, 6.0, 20.0]))),
+        (
+            "4 seats, side pots",
+            game(4, "static", Some(vec![12.0, 30.0, 6.0, 20.0])),
+        ),
     ] {
         let mut s = PreflopSolver::new(cfg, table()).unwrap();
         for _ in 0..15 {
@@ -117,39 +163,50 @@ fn blockers_terminal_values_match_the_cpu_class_by_class() {
         // the normal plan, then the plan the server picks (the shared one
         // for the 3-seat game)
         for fast in [false, true] {
-        let mut g = if fast {
-            PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA").0
-        } else {
-            PreflopGpu::new(&s, 2000).expect("test requires CUDA")
-        };
-        let np = s.n;
-        for p in 0..np {
-            g.down(1, p as i32).unwrap();
-            g.terminals(p as i32).unwrap();
-            let reach: Vec<f32> = g.stream.clone_dtoh(&g.d_reach).unwrap();
-            let src: Vec<u32> = g.stream.clone_dtoh(&g.d_reach_src).unwrap();
-            let slots: Vec<u32> = g.stream.clone_dtoh(&g.d_val_slot).unwrap();
-            let val: Vec<f32> = g.stream.clone_dtoh(&g.d_val).unwrap();
-            let mut worst = 0f32;
-            for (node, nd) in s.nodes.iter().enumerate() {
-                if nd.kind == KIND_ACTION {
-                    continue;
+            let mut g = if fast {
+                PreflopGpu::new_throughput(&s, 8000)
+                    .expect("test requires CUDA")
+                    .0
+            } else {
+                PreflopGpu::new(&s, 2000).expect("test requires CUDA")
+            };
+            let np = s.n;
+            for p in 0..np {
+                g.down(1, p as i32).unwrap();
+                g.terminals(p as i32).unwrap();
+                let reach: Vec<f32> = g.stream.clone_dtoh(&g.d_reach).unwrap();
+                let src: Vec<u32> = g.stream.clone_dtoh(&g.d_reach_src).unwrap();
+                let slots: Vec<u32> = g.stream.clone_dtoh(&g.d_val_slot).unwrap();
+                let val: Vec<f32> = g.stream.clone_dtoh(&g.d_val).unwrap();
+                let mut worst = 0f32;
+                for (node, nd) in s.nodes.iter().enumerate() {
+                    if nd.kind == KIND_ACTION {
+                        continue;
+                    }
+                    let local: Vec<Vec<f32>> = (0..np)
+                        .map(|q| {
+                            reach[src[node * np + q] as usize * NUM_CLASSES..][..NUM_CLASSES]
+                                .to_vec()
+                        })
+                        .collect();
+                    let mut expected = vec![0f32; NUM_CLASSES];
+                    s.terminal_value(node, p, &local, &mut expected);
+                    for h in 0..NUM_CLASSES {
+                        let got = val[slots[node] as usize * NUM_CLASSES + h];
+                        let err = (got - expected[h]).abs() / expected[h].abs().max(1e-3);
+                        worst = worst.max(err);
+                        assert!(
+                            err < 2e-2 || (got - expected[h]).abs() < 1e-5,
+                            "{name} seat {p} node {node} class {h}: gpu {got} cpu {}",
+                            expected[h]
+                        );
+                    }
                 }
-                let local: Vec<Vec<f32>> = (0..np)
-                    .map(|q| reach[src[node * np + q] as usize * NUM_CLASSES..][..NUM_CLASSES].to_vec())
-                    .collect();
-                let mut expected = vec![0f32; NUM_CLASSES];
-                s.terminal_value(node, p, &local, &mut expected);
-                for h in 0..NUM_CLASSES {
-                    let got = val[slots[node] as usize * NUM_CLASSES + h];
-                    let err = (got - expected[h]).abs() / expected[h].abs().max(1e-3);
-                    worst = worst.max(err);
-                    assert!(err < 2e-2 || (got - expected[h]).abs() < 1e-5,
-                        "{name} seat {p} node {node} class {h}: gpu {got} cpu {}", expected[h]);
-                }
+                eprintln!(
+                    "{name} seat {p}{}: worst relative difference {worst:.2e}",
+                    if fast { ", server plan" } else { "" }
+                );
             }
-            eprintln!("{name} seat {p}{}: worst relative difference {worst:.2e}", if fast { ", server plan" } else { "" });
-        }
         }
     }
 }
@@ -160,8 +217,11 @@ fn warmed(cfg: PreflopConfig) -> PreflopSolver {
     let learned = cfg.realization == "leafnet";
     let mut s = PreflopSolver::new(cfg, table()).unwrap();
     if learned {
-        let pattern: Vec<f32> = (0..2 * NUM_CLASSES).map(|k| 0.04 * (((k * 7) % 11) as f32 - 5.0) / 5.0).collect();
-        s.install_leaf_net(Arc::new(constant_net(&pattern))).unwrap();
+        let pattern: Vec<f32> = (0..2 * NUM_CLASSES)
+            .map(|k| 0.04 * (((k * 7) % 11) as f32 - 5.0) / 5.0)
+            .collect();
+        s.install_leaf_net(Arc::new(constant_net(&pattern)))
+            .unwrap();
         s.set_leaf_schedule(u32::MAX, Some(0.3));
     }
     for _ in 0..20 {
@@ -185,7 +245,8 @@ fn blockers_learn_the_same_on_the_shared_and_normal_plans() {
         ("5 seats learned", game(5, "leafnet", None)),
     ] {
         let (mut a, mut b) = (warmed(cfg.clone()), warmed(cfg));
-        let (mut fast, selection) = PreflopGpu::new_throughput(&a, 12000).expect("test requires CUDA");
+        let (mut fast, selection) =
+            PreflopGpu::new_throughput(&a, 12000).expect("test requires CUDA");
         assert_eq!(selection.mode, "retained_cohorts", "{name}: {selection:?}");
         let mut normal = PreflopGpu::new(&b, 4000).expect("test requires CUDA");
         for round in 0..4 {
@@ -194,17 +255,38 @@ fn blockers_learn_the_same_on_the_shared_and_normal_plans() {
                 normal.iterate(&mut b).unwrap();
             }
             for (what, x, y) in [
-                ("regrets", fast.stream.clone_dtoh(&fast.d_regrets).unwrap(), normal.stream.clone_dtoh(&normal.d_regrets).unwrap()),
-                ("strategy sums", fast.stream.clone_dtoh(&fast.d_strat).unwrap(), normal.stream.clone_dtoh(&normal.d_strat).unwrap()),
+                (
+                    "regrets",
+                    fast.stream.clone_dtoh(&fast.d_regrets).unwrap(),
+                    normal.stream.clone_dtoh(&normal.d_regrets).unwrap(),
+                ),
+                (
+                    "strategy sums",
+                    fast.stream.clone_dtoh(&fast.d_strat).unwrap(),
+                    normal.stream.clone_dtoh(&normal.d_strat).unwrap(),
+                ),
             ] {
                 let len = fast.arena_len;
-                let differing = x[..len].iter().zip(&y[..len]).filter(|(u, v)| u.to_bits() != v.to_bits()).count();
-                let worst = x[..len].iter().zip(&y[..len]).map(|(u, v)| (u - v).abs()).fold(0f32, f32::max);
+                let differing = x[..len]
+                    .iter()
+                    .zip(&y[..len])
+                    .filter(|(u, v)| u.to_bits() != v.to_bits())
+                    .count();
+                let worst = x[..len]
+                    .iter()
+                    .zip(&y[..len])
+                    .map(|(u, v)| (u - v).abs())
+                    .fold(0f32, f32::max);
                 assert_eq!(differing, 0, "{name}, round {round}: {differing} of {len} {what} differ, largest by {worst:e}");
             }
             let (x, y) = (fast.gaps_and_evs().unwrap(), normal.gaps_and_evs().unwrap());
-            assert!(x.0.iter().chain(&x.1).zip(y.0.iter().chain(&y.1)).all(|(u, v)| (u - v).abs() < 2e-4),
-                "{name}, round {round}: shared plan {x:?} normal plan {y:?}");
+            assert!(
+                x.0.iter()
+                    .chain(&x.1)
+                    .zip(y.0.iter().chain(&y.1))
+                    .all(|(u, v)| (u - v).abs() < 2e-4),
+                "{name}, round {round}: shared plan {x:?} normal plan {y:?}"
+            );
         }
     }
 }

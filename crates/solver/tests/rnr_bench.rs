@@ -5,11 +5,9 @@
 
 #![cfg(feature = "gpu")]
 
-use solver::gpu::GpuSolver;
-use solver::query::PostflopStats;
-use solver::{Solver, Spot, SpotConfig};
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
+
+use solver::{gpu::GpuSolver, query::PostflopStats, Solver, Spot, SpotConfig};
 
 fn station_folder() -> PostflopStats {
     // folds too much to bets, rarely raises, c-bets a lot
@@ -37,7 +35,13 @@ fn ms_per_iteration(gpu: &mut GpuSolver, n: u32) -> f64 {
 }
 
 /// Iterate until the solve's exploitability is at most `target` % pot.
-fn run_to(gpu: &mut GpuSolver, host: &Solver, target: f64, every: u32, max: u32) -> (u32, f64, f64) {
+fn run_to(
+    gpu: &mut GpuSolver,
+    host: &Solver,
+    target: f64,
+    every: u32,
+    max: u32,
+) -> (u32, f64, f64) {
     let pot = host.spot.tree.config.starting_pot;
     let t = Instant::now();
     let mut done = 0;
@@ -64,13 +68,19 @@ fn rnr_bench_flop() {
         let mut gpu = GpuSolver::new(&host).unwrap();
         let (n, secs, x) = run_to(&mut gpu, &host, target, 20, 4000);
         let ms_plain = ms_per_iteration(&mut gpu, 20);
-        println!("plain solve: {n} iterations, {secs:.1} s, {x:.3}% pot; {ms_plain:.2} ms/iteration");
+        println!(
+            "plain solve: {n} iterations, {secs:.1} s, {x:.3}% pot; {ms_plain:.2} ms/iteration"
+        );
 
         gpu.sync_to_cpu(&mut host).unwrap();
         host.ensure_symmetric();
         let t = Instant::now();
         let summary = host.lock_profile(1, &station_folder(), Some(1)).unwrap();
-        println!("profile lock on IP: {} nodes in {:.1} s", summary.locked, t.elapsed().as_secs_f64());
+        println!(
+            "profile lock on IP: {} nodes in {:.1} s",
+            summary.locked,
+            t.elapsed().as_secs_f64()
+        );
         gpu.update_locks(&host).unwrap();
         let ms_locked = ms_per_iteration(&mut gpu, 20);
 
@@ -94,7 +104,8 @@ fn rnr_bench_flop() {
 }
 
 fn bench_spot() -> Arc<Spot> {
-    let mut cfg: SpotConfig = serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
+    let mut cfg: SpotConfig =
+        serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
     cfg.board = "Ks7h2d".into();
     Arc::new(Spot::new(cfg).unwrap())
 }
@@ -147,13 +158,20 @@ fn rnr_bench_trust_zero_tracks_unlocked() {
             for _ in 0..200 {
                 g.iterate().unwrap();
             }
-            println!("  {}, {:.4}", k * 200, g.exploitability(&s).unwrap() / pot * 100.0);
+            println!(
+                "  {}, {:.4}",
+                k * 200,
+                g.exploitability(&s).unwrap() / pot * 100.0
+            );
         }
         let gr = g.trust_readout(&s).unwrap();
         g.sync_to_cpu(&mut s).unwrap();
         s.ensure_symmetric();
         let t = Instant::now();
         let cr = s.trust_readout().unwrap();
-        println!("  gpu readout {gr:?}\n  cpu readout {cr:?} ({:.1} s)", t.elapsed().as_secs_f64());
+        println!(
+            "  gpu readout {gr:?}\n  cpu readout {cr:?} ({:.1} s)",
+            t.elapsed().as_secs_f64()
+        );
     }
 }

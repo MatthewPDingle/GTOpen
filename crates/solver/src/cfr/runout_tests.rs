@@ -1,6 +1,8 @@
 use super::*;
-use crate::game::SpotConfig;
-use crate::tree::{Action, TreeConfig};
+use crate::{
+    game::SpotConfig,
+    tree::{Action, TreeConfig},
+};
 
 fn fixture(board: &str) -> Arc<Spot> {
     Arc::new(

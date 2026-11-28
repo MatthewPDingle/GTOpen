@@ -1,14 +1,20 @@
 //! Discounted CFR engine with alternating updates, vectorized over hands and
 //! parallelized over chance-node branches.
 
-use crate::game::{fold_cfv, showdown_cfv, Dealt, Spot};
-use crate::scratch::Buf;
-use crate::store::{Storage, Store};
-use crate::tree::{Node, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL};
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
+
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
+
+use crate::{
+    game::{fold_cfv, showdown_cfv, Dealt, Spot},
+    scratch::Buf,
+    store::{Storage, Store},
+    tree::{Node, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL},
+};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum Algorithm {
@@ -149,19 +155,38 @@ impl Solver {
     /// arbitrary external reaches need not preserve the original suit orbits.
     #[cfg(feature = "preflop-research")]
     pub fn research_continuation_sweep(
-        &mut self, p: usize, t: u32, own: &[f32], opponent: &[f32],
+        &mut self,
+        p: usize,
+        t: u32,
+        own: &[f32],
+        opponent: &[f32],
     ) -> Result<Vec<f32>, String> {
         if p > 1 || t == 0 || self.use_isomorphism || self.algo != Algorithm::CfrPlus {
-            return Err("research continuation requires p=0/1, t>0, CFR+ and no isomorphism".into());
+            return Err(
+                "research continuation requires p=0/1, t>0, CFR+ and no isomorphism".into(),
+            );
         }
-        if own.len() != self.spot.hands[p].len() || opponent.len() != self.spot.hands[1-p].len()
-            || own.iter().chain(opponent).any(|x| !x.is_finite() || *x < 0.) {
+        if own.len() != self.spot.hands[p].len()
+            || opponent.len() != self.spot.hands[1 - p].len()
+            || own
+                .iter()
+                .chain(opponent)
+                .any(|x| !x.is_finite() || *x < 0.)
+        {
             return Err("invalid continuation reaches".into());
         }
         self.iteration = t;
         let mut out = vec![0.; own.len()];
-        self.cfr(0, p, own, opponent, Dealt::default(),
-            &Discounts::for_iteration(self.algo, t), false, &mut out);
+        self.cfr(
+            0,
+            p,
+            own,
+            opponent,
+            Dealt::default(),
+            &Discounts::for_iteration(self.algo, t),
+            false,
+            &mut out,
+        );
         Ok(out)
     }
 
@@ -204,7 +229,12 @@ impl Solver {
 
     /// Actual bytes held by the solver data arenas.
     pub fn arena_bytes(&self) -> u64 {
-        let mut total: u64 = self.regrets.iter().chain(self.strat.iter()).map(Store::bytes).sum();
+        let mut total: u64 = self
+            .regrets
+            .iter()
+            .chain(self.strat.iter())
+            .map(Store::bytes)
+            .sum();
         if let Some(preds) = &self.preds {
             total += preds.iter().map(Store::bytes).sum::<u64>();
         }
@@ -355,12 +385,22 @@ impl Solver {
                 return (&f.regrets, &f.strat, f.preds.as_ref());
             }
         }
-        (&self.regrets[p], &self.strat[p], self.preds.as_deref().map(|b| &b[p]))
+        (
+            &self.regrets[p],
+            &self.strat[p],
+            self.preds.as_deref().map(|b| &b[p]),
+        )
     }
 
     /// Current strategy from regret matching (or the locked strategy),
     /// written into `sigma` (na*nh). `free`: see `lock_view`.
-    pub(crate) fn current_strategy(&self, node_idx: u32, node: &Node, sigma: &mut [f32], free: bool) {
+    pub(crate) fn current_strategy(
+        &self,
+        node_idx: u32,
+        node: &Node,
+        sigma: &mut [f32],
+        free: bool,
+    ) {
         if let Some(lock) = self.lock_view(node_idx, free) {
             sigma.copy_from_slice(lock);
             return;
@@ -371,7 +411,11 @@ impl Solver {
         let n = na * nh;
         let off = node.data_offset;
         let (regrets, _, preds) = self.arenas(p, free);
-        let preds = if self.algo == Algorithm::PcfrPlus { preds } else { None };
+        let preds = if self.algo == Algorithm::PcfrPlus {
+            preds
+        } else {
+            None
+        };
         match (regrets, preds) {
             (Store::F32(rb), None) => {
                 regret_match(unsafe { rb.slice(off, n) }, na, nh, sigma);
@@ -431,7 +475,11 @@ impl Solver {
         let n = na * nh;
         let off = node.data_offset;
         let (regret_store, strat_store, preds) = self.arenas(p, free);
-        let preds = if self.algo == Algorithm::PcfrPlus { preds } else { None };
+        let preds = if self.algo == Algorithm::PcfrPlus {
+            preds
+        } else {
+            None
+        };
         match self.storage {
             Storage::F32 => {
                 let regrets = match regret_store {
@@ -499,8 +547,19 @@ impl Solver {
                 }
                 unsafe {
                     let seed = ((self.iteration as u64) << 32) | node_idx as u64;
-                    rscale.write_at(node_idx as usize, crate::store::quantize_i16_unbiased(&rbuf, rmax, rq, seed));
-                    sscale.write_at(node_idx as usize, crate::store::quantize_u16_unbiased(&sbuf, smax, sq, seed ^ 0xD1B54A32D192ED03));
+                    rscale.write_at(
+                        node_idx as usize,
+                        crate::store::quantize_i16_unbiased(&rbuf, rmax, rq, seed),
+                    );
+                    sscale.write_at(
+                        node_idx as usize,
+                        crate::store::quantize_u16_unbiased(
+                            &sbuf,
+                            smax,
+                            sq,
+                            seed ^ 0xD1B54A32D192ED03,
+                        ),
+                    );
                 }
                 if let Some(preds) = preds {
                     let mut pmax = 0f32;
@@ -585,9 +644,15 @@ impl Solver {
                 );
             }
             KIND_CHANCE => {
-                self.chance_node(node, p, reach_p, reach_o, dealt, out, |s, c, rp, ro, d, o| {
-                    s.cfr(c, p, rp, ro, d, disc, free, o)
-                });
+                self.chance_node(
+                    node,
+                    p,
+                    reach_p,
+                    reach_o,
+                    dealt,
+                    out,
+                    |s, c, rp, ro, d, o| s.cfr(c, p, rp, ro, d, disc, free, o),
+                );
             }
             KIND_ACTION => {
                 let na = node.num_children as usize;
@@ -627,7 +692,9 @@ impl Solver {
                         }
                     }
                     if !locked {
-                        self.update_node(node_idx, node, p, &sigma, &vals, out, reach_p, disc, free);
+                        self.update_node(
+                            node_idx, node, p, &sigma, &vals, out, reach_p, disc, free,
+                        );
                     }
                 } else {
                     let o = 1 - p;
@@ -767,8 +834,7 @@ impl Solver {
         let parallel = cards
             .first()
             .map(|&c| {
-                let child =
-                    self.spot.tree.children[node.children_start as usize + c as usize];
+                let child = self.spot.tree.children[node.children_start as usize + c as usize];
                 self.node(child).kind == KIND_ACTION
             })
             .unwrap_or(false);
@@ -837,7 +903,13 @@ impl Solver {
     }
 
     /// `average_strategy_into` under a lock view (see `lock_view`).
-    pub(crate) fn average_strategy_view(&self, node_idx: u32, node: &Node, sigma: &mut [f32], free: bool) {
+    pub(crate) fn average_strategy_view(
+        &self,
+        node_idx: u32,
+        node: &Node,
+        sigma: &mut [f32],
+        free: bool,
+    ) {
         if let Some(lock) = self.lock_view(node_idx, free) {
             sigma.copy_from_slice(lock);
             return;

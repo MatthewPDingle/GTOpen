@@ -1,11 +1,16 @@
-use super::eval::{terminal_cfv, terminal_cfv_brute};
-use super::game::{MwSpot, MwSpotConfig};
-use super::solver::{Dealt, MwSolver};
-use super::tree::*;
-use crate::cfr::Algorithm;
-use crate::store::Storage;
-use crate::tree::{parse_sizes, Action};
 use std::sync::Arc;
+
+use super::{
+    eval::{terminal_cfv, terminal_cfv_brute},
+    game::{MwSpot, MwSpotConfig},
+    solver::{Dealt, MwSolver},
+    tree::*,
+};
+use crate::{
+    cfr::Algorithm,
+    store::Storage,
+    tree::{parse_sizes, Action},
+};
 
 struct Rng(u64);
 impl Rng {
@@ -17,10 +22,27 @@ impl Rng {
     }
 }
 
-fn cfg(board: &str, ranges: [&str; 3], pot: f64, stacks: [f64; 3], bets: &str, raises: &str) -> MwSpotConfig {
-    let mut t = MwTreeConfig::uniform(pot, stacks[0], &parse_sizes(bets).unwrap(), &parse_sizes(raises).unwrap());
+fn cfg(
+    board: &str,
+    ranges: [&str; 3],
+    pot: f64,
+    stacks: [f64; 3],
+    bets: &str,
+    raises: &str,
+) -> MwSpotConfig {
+    let mut t = MwTreeConfig::uniform(
+        pot,
+        stacks[0],
+        &parse_sizes(bets).unwrap(),
+        &parse_sizes(raises).unwrap(),
+    );
     t.stacks = stacks;
-    MwSpotConfig { board: board.into(), ranges: ranges.map(String::from), tree: t, seats: None }
+    MwSpotConfig {
+        board: board.into(),
+        ranges: ranges.map(String::from),
+        tree: t,
+        seats: None,
+    }
 }
 
 const R0: &str = "AA,KK,QQ,JJ,TT,99,AK,AQ,KQ,QJ,JT,T9s,98s,87s,A5s";
@@ -29,7 +51,13 @@ const R2: &str = "AA-88,AK,AQ,AJs,KQs,KJs,QJs,JTs,65s,54s";
 
 /// Walks the tree collecting (terminal node, dealt cards) pairs, sampling a
 /// few cards per chance node.
-fn collect_terminals(spot: &MwSpot, idx: u32, dealt: Dealt, out: &mut Vec<(u32, Dealt)>, budget: &mut usize) {
+fn collect_terminals(
+    spot: &MwSpot,
+    idx: u32,
+    dealt: Dealt,
+    out: &mut Vec<(u32, Dealt)>,
+    budget: &mut usize,
+) {
     let n = &spot.tree.nodes[idx as usize];
     match n.kind {
         KIND_ACTION => {
@@ -75,7 +103,10 @@ fn check_terminals(c: MwSpotConfig, seed: u64) {
             dm |= 1u64 << c;
         }
         let reach: [Vec<f32>; 3] = std::array::from_fn(|o| {
-            spot.hands[o].iter().map(|h| if h.mask & dm != 0 { 0.0 } else { rng.f() }).collect()
+            spot.hands[o]
+                .iter()
+                .map(|h| if h.mask & dm != 0 { 0.0 } else { rng.f() })
+                .collect()
         });
         let rr = [&reach[0][..], &reach[1][..], &reach[2][..]];
         for p in 0..3 {
@@ -98,23 +129,49 @@ fn check_terminals(c: MwSpotConfig, seed: u64) {
             }
         }
     }
-    assert!(kinds[0] > 0 && kinds[1] > 0, "need fold and showdown terminals: {kinds:?}");
+    assert!(
+        kinds[0] > 0 && kinds[1] > 0,
+        "need fold and showdown terminals: {kinds:?}"
+    );
 }
 
 #[test]
 fn river_terminals_match_brute_force() {
-    check_terminals(cfg("Ks9d4c7h2s", [R0, R1, R2], 30.0, [100.0; 3], "50 100", "100"), 7);
+    check_terminals(
+        cfg(
+            "Ks9d4c7h2s",
+            [R0, R1, R2],
+            30.0,
+            [100.0; 3],
+            "50 100",
+            "100",
+        ),
+        7,
+    );
 }
 
 #[test]
 fn turn_terminals_match_brute_force_with_ties() {
     // Paired, connected board: many split pots.
-    check_terminals(cfg("9h9d8c8s", [R0, R1, R2], 30.0, [60.0; 3], "75", "100"), 11);
+    check_terminals(
+        cfg("9h9d8c8s", [R0, R1, R2], 30.0, [60.0; 3], "75", "100"),
+        11,
+    );
 }
 
 #[test]
 fn side_pot_terminals_match_brute_force() {
-    check_terminals(cfg("Ks9d4c7h", [R0, R1, R2], 30.0, [20.0, 120.0, 60.0], "50 a", "a"), 13);
+    check_terminals(
+        cfg(
+            "Ks9d4c7h",
+            [R0, R1, R2],
+            30.0,
+            [20.0, 120.0, 60.0],
+            "50 a",
+            "a",
+        ),
+        13,
+    );
 }
 
 #[test]
@@ -129,30 +186,62 @@ fn raked_terminals_match_brute_force() {
 #[test]
 fn payoffs_are_zero_sum_up_to_rake() {
     let spot = MwSpot::new({
-        let mut c = cfg("Ks9d4c7h2s", [R0, R1, R2], 30.0, [20.0, 120.0, 60.0], "50 a", "a");
+        let mut c = cfg(
+            "Ks9d4c7h2s",
+            [R0, R1, R2],
+            30.0,
+            [20.0, 120.0, 60.0],
+            "50 a",
+            "a",
+        );
         c.tree.rake_pct = 0.05;
         c
     })
     .unwrap();
     let mut rng = Rng(3);
-    for node in spot.tree.nodes.iter().filter(|n| n.kind == KIND_TERM_SHOWDOWN || n.kind == KIND_TERM_FOLD) {
+    for node in spot
+        .tree
+        .nodes
+        .iter()
+        .filter(|n| n.kind == KIND_TERM_SHOWDOWN || n.kind == KIND_TERM_FOLD)
+    {
         for _ in 0..8 {
             let ranks: [u32; 3] = std::array::from_fn(|_| (rng.f() * 4.0) as u32);
             let mut sum = 0.0;
             for p in 0..3 {
                 let (q, r) = others(p);
-                let cat = |o: usize| if ranks[o] < ranks[p] { 0 } else if ranks[o] == ranks[p] { 1 } else { 2 };
+                let cat = |o: usize| {
+                    if ranks[o] < ranks[p] {
+                        0
+                    } else if ranks[o] == ranks[p] {
+                        1
+                    } else {
+                        2
+                    }
+                };
                 sum += payoff_table(node, p, 0.05, 0.0)[cat(q)][cat(r)];
             }
             let put: f64 = node.put.iter().map(|&x| x as f64).sum();
-            assert!(sum <= 1e-4 && sum >= -0.05 * put - 1e-3, "sum {sum} put {put} live {:b}", node.live);
+            assert!(
+                sum <= 1e-4 && sum >= -0.05 * put - 1e-3,
+                "sum {sum} put {put} live {:b}",
+                node.live
+            );
         }
     }
 }
 
 #[test]
 fn tree_continues_heads_up_after_a_fold() {
-    let spot = MwSpot::new(cfg("Ks9d4c7h2s", [R0, R1, R2], 30.0, [100.0; 3], "50", "100")).unwrap();
+    let spot = MwSpot::new(cfg(
+        "Ks9d4c7h2s",
+        [R0, R1, R2],
+        30.0,
+        [100.0; 3],
+        "50",
+        "100",
+    ))
+    .unwrap();
     let root = &spot.tree.nodes[0];
     let acts = spot.tree.node_actions(root);
     assert_eq!(acts[0], Action::Check);
@@ -167,7 +256,13 @@ fn tree_continues_heads_up_after_a_fold() {
     assert_eq!(n2.live, 0b101);
 }
 
-fn solve(c: MwSpotConfig, iters: u32, storage: Storage, iso: bool, algo: Algorithm) -> (MwSolver, f64) {
+fn solve(
+    c: MwSpotConfig,
+    iters: u32,
+    storage: Storage,
+    iso: bool,
+    algo: Algorithm,
+) -> (MwSolver, f64) {
     let spot = Arc::new(MwSpot::new(c).unwrap());
     let mut s = MwSolver::new(spot, storage);
     s.use_isomorphism = iso;
@@ -181,7 +276,14 @@ fn solve(c: MwSpotConfig, iters: u32, storage: Storage, iso: bool, algo: Algorit
 
 #[test]
 fn river_solve_converges() {
-    let c = cfg("Ks9d4c7h2s", [R0, R1, R2], 30.0, [100.0; 3], "50 100", "100");
+    let c = cfg(
+        "Ks9d4c7h2s",
+        [R0, R1, R2],
+        30.0,
+        [100.0; 3],
+        "50 100",
+        "100",
+    );
     let (_, e10) = solve(c.clone(), 10, Storage::F32, true, Algorithm::Dcfr);
     let (s, e) = solve(c, 300, Storage::F32, true, Algorithm::Dcfr);
     assert!(e < e10, "{e} !< {e10}");
@@ -220,12 +322,17 @@ fn isomorphism_matches_full_traversal() {
 #[test]
 fn compressed_and_pcfr_turn_solves_converge() {
     let c = cfg("Ks9d4c7h", [R0, R1, R2], 30.0, [90.0; 3], "66", "a");
-    let (_, e) = solve(c.clone(), 120, Storage::Compressed, true, Algorithm::PcfrPlus);
+    let (_, e) = solve(
+        c.clone(),
+        120,
+        Storage::Compressed,
+        true,
+        Algorithm::PcfrPlus,
+    );
     assert!(e < 1.5, "compressed pcfr+ turn exploitability {e}% pot");
     let (_, e) = solve(c, 120, Storage::F32, true, Algorithm::Dcfr);
     assert!(e < 1.5, "dcfr turn exploitability {e}% pot");
 }
-
 
 #[test]
 fn save_load_round_trip_and_browse() {
@@ -278,7 +385,12 @@ fn save_load_round_trip_and_browse() {
     for (p, pl) in root.players.iter().enumerate() {
         for h in &pl.hands {
             assert_eq!(h.strategy.is_some(), p == 0);
-            assert!(h.eq.is_some_and(|x| (0.0..=1.0).contains(&x)), "{} eq {:?}", h.combo, h.eq);
+            assert!(
+                h.eq.is_some_and(|x| (0.0..=1.0).contains(&x)),
+                "{} eq {:?}",
+                h.combo,
+                h.eq
+            );
             if let (Some(sg), Some(evs), Some(ev)) = (&h.strategy, &h.evs, h.ev) {
                 assert!((sg.iter().sum::<f32>() - 1.0).abs() < 1e-4);
                 let mix: f32 = sg.iter().zip(evs).map(|(a, b)| a * b.unwrap()).sum();
@@ -304,7 +416,12 @@ fn save_load_round_trip_and_browse() {
     assert_eq!(ex.exploiter, 0);
     assert!(ex.avg_gain.unwrap() >= -1e-4);
     for h in &ex.hands {
-        assert!(h.gain.map_or(true, |g| g >= -2e-3), "{} gain {:?}", h.combo, h.gain);
+        assert!(
+            h.gain.map_or(true, |g| g >= -2e-3),
+            "{} gain {:?}",
+            h.combo,
+            h.gain
+        );
         assert!((h.br_strategy.as_ref().unwrap().iter().sum::<f32>() - 1.0).abs() < 1e-5);
     }
     let ex1 = exploit_view(&t, &[], 1).unwrap();
@@ -318,8 +435,14 @@ fn save_load_round_trip_and_browse() {
     assert_eq!(folded.history[1].actions[0].kind, "fold");
     assert_eq!(folded.live, [true, false, true]);
     assert_eq!(folded.player, Some(2));
-    assert!(folded.players[1].hands.iter().all(|h| h.eq.is_none() && h.ev.is_none()));
-    assert!(folded.players[0].hands.iter().any(|h| h.eq.is_some() && h.ev.is_some()));
+    assert!(folded.players[1]
+        .hands
+        .iter()
+        .all(|h| h.eq.is_none() && h.ev.is_none()));
+    assert!(folded.players[0]
+        .hands
+        .iter()
+        .any(|h| h.eq.is_some() && h.ev.is_some()));
 
     // Check, check, check, then a river card.
     let path = [act(0), act(0), act(0)];
@@ -329,7 +452,9 @@ fn save_load_round_trip_and_browse() {
     let cards = ch.available_cards.unwrap();
     assert_eq!(cards.len(), 48);
     let mut path = path.to_vec();
-    path.push(PathStep::Card { card: cards[0].clone() });
+    path.push(PathStep::Card {
+        card: cards[0].clone(),
+    });
     let river = node_view(&t, &path).unwrap();
     assert_eq!(river.board.len(), 5);
     assert_eq!(river.player, Some(0));
@@ -397,7 +522,11 @@ fn equity_brute(spot: &MwSpot, live: u8, dealt: &[u8], p: usize, reach: [&[f32];
                     }
                 }
             }
-            if den > 0.0 { num / den } else { f64::NAN }
+            if den > 0.0 {
+                num / den
+            } else {
+                f64::NAN
+            }
         })
         .collect()
 }
@@ -407,7 +536,11 @@ fn equity_matches_brute_force() {
     use super::eval::{compatible_mass, showdown_equity};
     // (board, ranges, cards dealt below the root): two cards to come, one
     // to come (from a flop and from a turn root) and none.
-    let small = ["AA,KK,AKs,QJs,T9s", "QQ,JJ,AQs,KQs,98s,A5s", "TT,99,AKo,KJs,JTs"];
+    let small = [
+        "AA,KK,AKs,QJs,T9s",
+        "QQ,JJ,AQs,KQs,98s,A5s",
+        "TT,99,AKo,KJs,JTs",
+    ];
     let cases: [(&str, [&str; 3], &[u8]); 5] = [
         ("Ks9d4c", small, &[]),
         ("Ks9d4c", small, &[21]),
@@ -421,7 +554,10 @@ fn equity_matches_brute_force() {
         let dm = dealt.iter().fold(0u64, |m, &c| m | (1u64 << c));
         assert_eq!(dm & spot.board_mask, 0);
         let reach: [Vec<f32>; 3] = std::array::from_fn(|o| {
-            spot.hands[o].iter().map(|h| if h.mask & dm != 0 { 0.0 } else { rng.f() }).collect()
+            spot.hands[o]
+                .iter()
+                .map(|h| if h.mask & dm != 0 { 0.0 } else { rng.f() })
+                .collect()
         });
         let rr = [&reach[0][..], &reach[1][..], &reach[2][..]];
         for live in [0b111u8, 0b011, 0b101, 0b110] {
@@ -436,9 +572,15 @@ fn equity_matches_brute_force() {
                 let slow = equity_brute(&spot, live, dealt, p, rr);
                 for (i, (a, b)) in fast.iter().zip(&slow).enumerate() {
                     if b.is_nan() {
-                        assert!(a.is_nan() || mass[i] <= 1e-6, "{board} {dealt:?} live {live:b} p{p} hand {i}: {a}");
+                        assert!(
+                            a.is_nan() || mass[i] <= 1e-6,
+                            "{board} {dealt:?} live {live:b} p{p} hand {i}: {a}"
+                        );
                     } else {
-                        assert!((*a as f64 - b).abs() < 2e-4, "{board} {dealt:?} live {live:b} p{p} hand {i}: {a} vs {b}");
+                        assert!(
+                            (*a as f64 - b).abs() < 2e-4,
+                            "{board} {dealt:?} live {live:b} p{p} hand {i}: {a} vs {b}"
+                        );
                     }
                 }
             }
@@ -446,25 +588,45 @@ fn equity_matches_brute_force() {
     }
 }
 
-
 // --- Tournament (ICM) payoffs -------------------------------------------
 
 fn icm_cfg(payouts: &[f64], others: &[f64]) -> crate::icm::postflop::PostflopIcm {
-    crate::icm::postflop::PostflopIcm { payouts: payouts.to_vec(), behind: None, others: others.to_vec(), field_groups: vec![] }
+    crate::icm::postflop::PostflopIcm {
+        payouts: payouts.to_vec(),
+        behind: None,
+        others: others.to_vec(),
+        field_groups: vec![],
+    }
 }
 
 #[test]
 fn icm_winner_take_all_tables_are_chips() {
-    let mut c = cfg("Ks9d4c7h", [R0, R1, R2], 30.0, [20.0, 120.0, 60.0], "50 a", "a");
+    let mut c = cfg(
+        "Ks9d4c7h",
+        [R0, R1, R2],
+        30.0,
+        [20.0, 120.0, 60.0],
+        "50 a",
+        "a",
+    );
     c.tree.icm = Some(icm_cfg(&[1.0], &[40.0, 75.0]));
     let spot = MwSpot::new(c).unwrap();
     let mut n = 0;
-    for node in spot.tree.nodes.iter().filter(|n| n.kind == KIND_TERM_SHOWDOWN || n.kind == KIND_TERM_FOLD) {
+    for node in spot
+        .tree
+        .nodes
+        .iter()
+        .filter(|n| n.kind == KIND_TERM_SHOWDOWN || n.kind == KIND_TERM_FOLD)
+    {
         for p in 0..3 {
             let (icm, chips) = (spot.payoff_table(node, p), payoff_table(node, p, 0.0, 0.0));
             for x in 0..3 {
                 for y in 0..3 {
-                    assert!((icm[x][y] - chips[x][y]).abs() < 1e-6, "live {:b} p {p}: {icm:?} vs {chips:?}", node.live);
+                    assert!(
+                        (icm[x][y] - chips[x][y]).abs() < 1e-6,
+                        "live {:b} p {p}: {icm:?} vs {chips:?}",
+                        node.live
+                    );
                 }
             }
         }
@@ -476,7 +638,14 @@ fn icm_winner_take_all_tables_are_chips() {
 #[test]
 fn icm_terminals_match_brute_force() {
     // Final-table payouts, side pots and a short stack that can bust.
-    let mut c = cfg("Ks9d4c7h", [R0, R1, R2], 30.0, [20.0, 120.0, 60.0], "50 a", "a");
+    let mut c = cfg(
+        "Ks9d4c7h",
+        [R0, R1, R2],
+        30.0,
+        [20.0, 120.0, 60.0],
+        "50 a",
+        "a",
+    );
     c.tree.icm = Some(icm_cfg(&[40.0, 25.0, 15.0, 10.0, 10.0], &[40.0, 75.0]));
     check_terminals(c, 19);
 }
@@ -484,14 +653,28 @@ fn icm_terminals_match_brute_force() {
 #[test]
 fn icm_river_terminals_match_exact_three_hand_icm() {
     // Deep, uneven stacks: who wins between the other two decides who busts.
-    let mut c = cfg("Ks9d4c7h2s", [R0, R1, R2], 30.0, [25.0, 140.0, 60.0], "50 a", "a");
+    let mut c = cfg(
+        "Ks9d4c7h2s",
+        [R0, R1, R2],
+        30.0,
+        [25.0, 140.0, 60.0],
+        "50 a",
+        "a",
+    );
     c.tree.icm = Some(icm_cfg(&[50.0, 30.0, 20.0], &[]));
     check_terminals(c, 23);
 }
 
 #[test]
 fn icm_river_solve_converges() {
-    let mut c = cfg("Ks9d4c7h2s", [R0, R1, R2], 6.0, [12.0, 30.0, 20.0], "50", "a");
+    let mut c = cfg(
+        "Ks9d4c7h2s",
+        [R0, R1, R2],
+        6.0,
+        [12.0, 30.0, 20.0],
+        "50",
+        "a",
+    );
     c.tree.add_allin = true;
     c.tree.icm = Some(icm_cfg(&[50.0, 30.0, 20.0], &[15.0]));
     let (_, e10) = solve(c.clone(), 10, Storage::F32, true, Algorithm::Dcfr);

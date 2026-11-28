@@ -10,9 +10,9 @@ pub mod icm;
 pub mod query;
 pub mod save;
 pub mod solver;
-pub mod tree;
 #[cfg(test)]
 mod tests;
+pub mod tree;
 
 pub use game::{MwSpot, MwSpotConfig};
 pub use solver::{MwProgress, MwSolver};

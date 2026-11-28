@@ -9,10 +9,14 @@
 //! `leafnet_work/` in the repo (the harness's default), `../leafnet-work`
 //! (its README's layout) or `../GTOpen-research/leafnet-work` that has a
 //! `runs` folder.
-use super::leafnet::LeafNet;
+use std::{
+    collections::HashMap,
+    path::{Path, PathBuf},
+};
+
 use serde_json::{json, Value};
-use std::collections::HashMap;
-use std::path::{Path, PathBuf};
+
+use super::leafnet::LeafNet;
 
 /// The first shipped net, and what `leaf_net: None` means: games saved
 /// before a second net shipped carry no name and keep this one.
@@ -82,12 +86,19 @@ pub fn shipped(name: &str) -> Option<&'static ShippedNet> {
 /// Where a shipped net's file is, if this build has it.
 pub fn shipped_path(net: &ShippedNet) -> Option<PathBuf> {
     // the server runs from the repo root; tests run from crates/solver
-    ["cache", "../../cache"].iter().map(|dir| Path::new(dir).join(net.file)).find(|p| p.is_file())
+    ["cache", "../../cache"]
+        .iter()
+        .map(|dir| Path::new(dir).join(net.file))
+        .find(|p| p.is_file())
 }
 
 fn repo_roots() -> Vec<PathBuf> {
     // the server runs from the repo root; tests run from crates/solver
-    [".", "../.."].iter().map(PathBuf::from).filter(|r| r.join("cache").is_dir()).collect()
+    [".", "../.."]
+        .iter()
+        .map(PathBuf::from)
+        .filter(|r| r.join("cache").is_dir())
+        .collect()
 }
 
 /// The harness's work folder, if there is one.
@@ -96,7 +107,11 @@ pub fn work_dir() -> Option<PathBuf> {
         return Some(PathBuf::from(p));
     }
     for root in repo_roots() {
-        for rel in ["leafnet_work", "../leafnet-work", "../GTOpen-research/leafnet-work"] {
+        for rel in [
+            "leafnet_work",
+            "../leafnet-work",
+            "../GTOpen-research/leafnet-work",
+        ] {
             let p = root.join(rel);
             if p.join("runs").is_dir() {
                 return Some(p);
@@ -107,7 +122,10 @@ pub fn work_dir() -> Option<PathBuf> {
 }
 
 fn valid_part(s: &str) -> bool {
-    !s.is_empty() && !s.starts_with('.') && s.chars().all(|c| c.is_ascii_alphanumeric() || "._-".contains(c))
+    !s.is_empty()
+        && !s.starts_with('.')
+        && s.chars()
+            .all(|c| c.is_ascii_alphanumeric() || "._-".contains(c))
 }
 
 /// The file behind a research net name "SNAPSHOT/RUN".
@@ -115,12 +133,19 @@ pub fn research_net_path(name: &str) -> Result<PathBuf, String> {
     let parts: Vec<&str> = name.split('/').collect();
     if parts.len() != 2 || !parts.iter().all(|p| valid_part(p)) {
         let names: Vec<&str> = SHIPPED_NETS.iter().map(|n| n.name).collect();
-        return Err(format!("leaf net \"{name}\" is not a shipped net ({}) or SNAPSHOT/RUN", names.join(", ")));
+        return Err(format!(
+            "leaf net \"{name}\" is not a shipped net ({}) or SNAPSHOT/RUN",
+            names.join(", ")
+        ));
     }
     let work = work_dir().ok_or_else(|| {
         format!("leaf net \"{name}\" comes from the leaf-net harness, but its work folder was not found (set LEAFNET_WORK)")
     })?;
-    let p = work.join("runs").join(parts[0]).join(parts[1]).join("leaf_net.bin");
+    let p = work
+        .join("runs")
+        .join(parts[0])
+        .join(parts[1])
+        .join("leaf_net.bin");
     if !p.is_file() {
         return Err(format!("leaf net \"{name}\" not found at {}", p.display()));
     }
@@ -147,13 +172,22 @@ fn read_header(path: &Path) -> Option<Value> {
 
 /// results.tsv as rows of column -> value.
 pub fn read_results(work: &Path) -> Vec<HashMap<String, String>> {
-    let Ok(text) = std::fs::read_to_string(work.join("results.tsv")) else { return Vec::new() };
+    let Ok(text) = std::fs::read_to_string(work.join("results.tsv")) else {
+        return Vec::new();
+    };
     let mut lines = text.lines();
-    let Some(head) = lines.next() else { return Vec::new() };
+    let Some(head) = lines.next() else {
+        return Vec::new();
+    };
     let cols: Vec<&str> = head.split('\t').collect();
     lines
         .filter(|l| !l.trim().is_empty())
-        .map(|l| cols.iter().zip(l.split('\t')).map(|(c, v)| (c.to_string(), v.to_string())).collect())
+        .map(|l| {
+            cols.iter()
+                .zip(l.split('\t'))
+                .map(|(c, v)| (c.to_string(), v.to_string()))
+                .collect()
+        })
         .collect()
 }
 
@@ -162,7 +196,8 @@ fn read_json(path: &Path) -> Option<Value> {
 }
 
 fn num(v: Option<&String>) -> Value {
-    v.and_then(|s| s.parse::<f64>().ok()).map_or(Value::Null, |x| json!(x))
+    v.and_then(|s| s.parse::<f64>().ok())
+        .map_or(Value::Null, |x| json!(x))
 }
 
 /// Every net the Preflop Lab can use, newest research nets first, the
@@ -182,12 +217,18 @@ pub fn list() -> Value {
         snaps.sort_by_key(|e| e.file_name());
         for snap in snaps {
             let snap_name = snap.file_name().to_string_lossy().to_string();
-            let Some(state) = read_json(&snap.path().join("state.json")) else { continue };
+            let Some(state) = read_json(&snap.path().join("state.json")) else {
+                continue;
+            };
             let best = state.get("best").and_then(Value::as_str).unwrap_or("");
             let mut kept: Vec<String> = state
                 .get("history")
                 .and_then(Value::as_array)
-                .map(|h| h.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+                .map(|h| {
+                    h.iter()
+                        .filter_map(|v| v.as_str().map(String::from))
+                        .collect()
+                })
                 .unwrap_or_default();
             if !best.is_empty() && !kept.iter().any(|k| k == best) {
                 kept.insert(0, best.to_string()); // the seed-0 noise run that set the first bar
@@ -196,27 +237,46 @@ pub fn list() -> Value {
             let ensembles: Vec<String> = state
                 .get("ensembles")
                 .and_then(Value::as_array)
-                .map(|e| e.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+                .map(|e| {
+                    e.iter()
+                        .filter_map(|v| v.as_str().map(String::from))
+                        .collect()
+                })
                 .unwrap_or_default();
             for e in ensembles {
                 if !kept.contains(&e) {
                     kept.push(e);
                 }
             }
-            let manifest = read_json(&work.join("snapshots").join(&snap_name).join("manifest.json"));
-            let train_examples = manifest.as_ref().and_then(|m| m.pointer("/examples_by_split/train").cloned());
+            let manifest = read_json(
+                &work
+                    .join("snapshots")
+                    .join(&snap_name)
+                    .join("manifest.json"),
+            );
+            let train_examples = manifest
+                .as_ref()
+                .and_then(|m| m.pointer("/examples_by_split/train").cloned());
             for run in kept {
                 if !valid_part(&run) {
                     continue;
                 }
                 let path = snap.path().join(&run).join("leaf_net.bin");
-                let Some(header) = read_header(&path) else { continue };
+                let Some(header) = read_header(&path) else {
+                    continue;
+                };
                 let row = by_run.get(&(snap_name.as_str(), run.as_str()));
                 let cfg = read_json(&snap.path().join(&run).join("config.json"));
                 // an ensemble: how many nets it averages, and whether the best run is one of them
-                let members = header.get("ensemble").and_then(Value::as_array).map(Vec::len);
-                let averages_best = members.is_some() && !best.is_empty()
-                    && header.get("members").and_then(Value::as_array)
+                let members = header
+                    .get("ensemble")
+                    .and_then(Value::as_array)
+                    .map(Vec::len);
+                let averages_best = members.is_some()
+                    && !best.is_empty()
+                    && header
+                        .get("members")
+                        .and_then(Value::as_array)
                         .map_or(false, |m| m.iter().any(|v| v.as_str() == Some(best)));
                 nets.push(json!({
                     "id": format!("{snap_name}/{run}"),
@@ -239,7 +299,12 @@ pub fn list() -> Value {
             }
         }
         nets.sort_by(|a, b| {
-            let t = |v: &Value| v.get("time").and_then(Value::as_str).unwrap_or("").to_string();
+            let t = |v: &Value| {
+                v.get("time")
+                    .and_then(Value::as_str)
+                    .unwrap_or("")
+                    .to_string()
+            };
             t(b).cmp(&t(a))
         });
     }
@@ -268,13 +333,24 @@ pub fn list() -> Value {
 
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
+
     use super::*;
     use crate::preflop::equity::EquityTable;
-    use std::sync::Arc;
 
     #[test]
     fn names_must_be_two_plain_parts() {
-        for bad in ["", "v5", "a/b/c", "../x", "snap/..", "snap/.hidden", "snap/run x", "snap\\run", "/abs"] {
+        for bad in [
+            "",
+            "v5",
+            "a/b/c",
+            "../x",
+            "snap/..",
+            "snap/.hidden",
+            "snap/run x",
+            "snap\\run",
+            "/abs",
+        ] {
             assert!(research_net_path(bad).is_err(), "{bad} accepted");
         }
         assert!(valid_part("snap-73k-2026-11-10") && valid_part("20261110-031200-s0"));
@@ -282,11 +358,19 @@ mod tests {
 
     #[test]
     fn a_new_game_uses_v4_and_an_unnamed_net_stays_v1() {
-        assert_eq!((DEFAULT_NET, SHIPPED), ("v4", "v1"), "a save without a net name was solved with v1");
+        assert_eq!(
+            (DEFAULT_NET, SHIPPED),
+            ("v4", "v1"),
+            "a save without a net name was solved with v1"
+        );
         assert_eq!(SHIPPED_NETS[0].name, DEFAULT_NET, "newest first");
         for net in &SHIPPED_NETS {
             assert!(valid_part(net.name) && shipped(net.name).is_some());
-            assert!(research_net_path(net.name).is_err(), "{} is not a harness run", net.name);
+            assert!(
+                research_net_path(net.name).is_err(),
+                "{} is not a harness run",
+                net.name
+            );
             // every shipped net is in the repo: a default that cannot load would fail every new game
             let path = shipped_path(net).unwrap_or_else(|| panic!("cache/{} is missing", net.file));
             let loaded = LeafNet::load_named(Some(net.name)).unwrap();
@@ -294,12 +378,16 @@ mod tests {
         }
         assert!(shipped("v5").is_none());
         // the shipped nets are different files: v4, v3 and v2 average three nets each, v1 is one
-        let [v4, v3, v2] = [DEFAULT_NET, "v3", "v2"].map(|name| LeafNet::load_named(Some(name)).unwrap());
+        let [v4, v3, v2] =
+            [DEFAULT_NET, "v3", "v2"].map(|name| LeafNet::load_named(Some(name)).unwrap());
         assert_eq!((v4.members(), v3.members(), v2.members()), (3, 3, 3));
         assert_ne!(v4.header, v3.header, "a game saved with v3 keeps v3");
         assert_ne!(v3.header, v2.header, "a game saved with v2 keeps v2");
         if std::env::var_os("LEAF_NET").is_none() {
-            let (unnamed, v1) = (LeafNet::load_named(None).unwrap(), LeafNet::load_named(Some(SHIPPED)).unwrap());
+            let (unnamed, v1) = (
+                LeafNet::load_named(None).unwrap(),
+                LeafNet::load_named(Some(SHIPPED)).unwrap(),
+            );
             assert_eq!(v1.members(), 1);
             assert_eq!(unnamed.header, v1.header, "no name means v1");
         }
@@ -311,19 +399,37 @@ mod tests {
         let snap = work.join("runs").join("snap-1k");
         for run in ["r1", "r2", "r3"] {
             std::fs::create_dir_all(snap.join(run)).unwrap();
-            let net = crate::preflop::leafnet::constant_net(&vec![0.0; 2 * crate::preflop::equity::NUM_CLASSES]);
+            let net = crate::preflop::leafnet::constant_net(&vec![
+                    0.0;
+                    2 * crate::preflop::equity::NUM_CLASSES
+                ]);
             std::fs::write(snap.join(run).join("leaf_net.bin"), net.to_bytes()).unwrap();
         }
         // an ensemble of r2 and r3, as `harness.py ensemble` writes it
         let mut ens = LeafNet::ensemble(
-            [0.1f32, 0.3].iter().map(|&b| crate::preflop::leafnet::constant_net(&vec![b; 2 * crate::preflop::equity::NUM_CLASSES])).collect(),
+            [0.1f32, 0.3]
+                .iter()
+                .map(|&b| {
+                    crate::preflop::leafnet::constant_net(
+                        &vec![b; 2 * crate::preflop::equity::NUM_CLASSES],
+                    )
+                })
+                .collect(),
         );
         ens.header["members"] = json!(["r2", "r3"]);
         std::fs::create_dir_all(snap.join("ens2-r3")).unwrap();
         std::fs::write(snap.join("ens2-r3").join("leaf_net.bin"), ens.to_bytes()).unwrap();
-        std::fs::write(snap.join("state.json"), r#"{"best": "r3", "history": ["r1", "r3"], "ensembles": ["ens2-r3"]}"#).unwrap();
+        std::fs::write(
+            snap.join("state.json"),
+            r#"{"best": "r3", "history": ["r1", "r3"], "ensembles": ["ens2-r3"]}"#,
+        )
+        .unwrap();
         std::fs::create_dir_all(work.join("snapshots").join("snap-1k")).unwrap();
-        std::fs::write(work.join("snapshots/snap-1k/manifest.json"), r#"{"examples_by_split": {"train": 800}}"#).unwrap();
+        std::fs::write(
+            work.join("snapshots/snap-1k/manifest.json"),
+            r#"{"examples_by_split": {"train": 800}}"#,
+        )
+        .unwrap();
         std::fs::write(
             work.join("results.tsv"),
             "time\tsnapshot\trun\tdesc\tval_class\tverdict\n\
@@ -336,12 +442,31 @@ mod tests {
         // LEAFNET_WORK is process-wide: this is the only test that sets it
         std::env::set_var("LEAFNET_WORK", &work);
         let out = list();
-        let ids: Vec<&str> = out["nets"].as_array().unwrap().iter().map(|n| n["id"].as_str().unwrap()).collect();
-        assert_eq!(ids, ["snap-1k/ens2-r3", "snap-1k/r3", "snap-1k/r1", "v4", "v3", "v2", "v1"]);
+        let ids: Vec<&str> = out["nets"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|n| n["id"].as_str().unwrap())
+            .collect();
+        assert_eq!(
+            ids,
+            [
+                "snap-1k/ens2-r3",
+                "snap-1k/r3",
+                "snap-1k/r1",
+                "v4",
+                "v3",
+                "v2",
+                "v1"
+            ]
+        );
         assert_eq!(out["default"], "v4");
         let n = out["nets"].as_array().unwrap().len();
         let defaults: Vec<&Value> = (n - 4..n).map(|i| &out["nets"][i]["default"]).collect();
-        assert_eq!(defaults, [&json!(true), &json!(false), &json!(false), &json!(false)]);
+        assert_eq!(
+            defaults,
+            [&json!(true), &json!(false), &json!(false), &json!(false)]
+        );
         assert_eq!(out["nets"][0]["members"], 2);
         assert_eq!(out["nets"][0]["averages_best"], true);
         assert_eq!(out["nets"][0]["best"], false);
@@ -373,11 +498,14 @@ mod tests {
         }
         let path = work.join("game.bin");
         s.save_game(path.to_str().unwrap()).unwrap();
-        let loaded = crate::preflop::PreflopSolver::load_game(path.to_str().unwrap(), eq.clone()).unwrap();
+        let loaded =
+            crate::preflop::PreflopSolver::load_game(path.to_str().unwrap(), eq.clone()).unwrap();
         assert_eq!(loaded.cfg.leaf_net.as_deref(), Some("snap-1k/r1"));
         assert_eq!(loaded.arena_snapshot(), s.arena_snapshot());
         std::fs::remove_dir_all(work.join("runs/snap-1k/r1")).unwrap();
-        let err = crate::preflop::PreflopSolver::load_game(path.to_str().unwrap(), eq).err().unwrap();
+        let err = crate::preflop::PreflopSolver::load_game(path.to_str().unwrap(), eq)
+            .err()
+            .unwrap();
         assert!(err.contains("snap-1k/r1"), "{err}");
         std::env::remove_var("LEAFNET_WORK");
         let _ = std::fs::remove_dir_all(&work);

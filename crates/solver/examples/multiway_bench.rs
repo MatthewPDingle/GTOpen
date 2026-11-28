@@ -9,22 +9,27 @@
 //!      (override the GPU memory plan), SOLVER_GPU_MEM_GB (device budget),
 //!      SOLVER_PROFILE=1 (per-kernel times, without CUDA graphs).
 
-use solver::multiway::{MwSolver, MwSpot, MwSpotConfig};
-use solver::{Algorithm, Storage};
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
+
+use solver::{
+    multiway::{MwSolver, MwSpot, MwSpotConfig},
+    Algorithm, Storage,
+};
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     let cfg: MwSpotConfig =
-        serde_json::from_str(&std::fs::read_to_string(&args[1]).expect("read config")).expect("parse config");
+        serde_json::from_str(&std::fs::read_to_string(&args[1]).expect("read config"))
+            .expect("parse config");
     let iters: u32 = args.get(2).and_then(|s| s.parse().ok()).unwrap_or(100);
     let check: u32 = args.get(3).and_then(|s| s.parse().ok()).unwrap_or(25);
     let storage = match std::env::var("SOLVER_STORAGE").as_deref() {
         Ok("f32") => Storage::F32,
         _ => Storage::Compressed,
     };
-    let algo = std::env::var("SOLVER_ALGO").map(|s| Algorithm::parse(&s).unwrap()).unwrap_or(Algorithm::Dcfr);
+    let algo = std::env::var("SOLVER_ALGO")
+        .map(|s| Algorithm::parse(&s).unwrap())
+        .unwrap_or(Algorithm::Dcfr);
     let t0 = Instant::now();
     let spot = Arc::new(MwSpot::new(cfg).expect("build spot"));
     let e: u64 = spot.tree.data_size.iter().sum();
@@ -45,7 +50,11 @@ fn main() {
     #[cfg(feature = "gpu")]
     if std::env::var("SOLVER_GPU").as_deref() == Ok("1") {
         let (full, min) = solver::multiway::gpu::estimate_device_bytes(&spot, algo);
-        println!("gpu estimate: {:.2} GB resident f32, {:.2} GB minimum", full as f64 / 1e9, min as f64 / 1e9);
+        println!(
+            "gpu estimate: {:.2} GB resident f32, {:.2} GB minimum",
+            full as f64 / 1e9,
+            min as f64 / 1e9
+        );
         let opts = solver::multiway::gpu::MwGpuOptions {
             storage: match std::env::var("SOLVER_GPU_STORAGE").as_deref() {
                 Ok("f32") => Some(Storage::F32),
@@ -53,11 +62,18 @@ fn main() {
                 _ => None,
             },
             budget_bytes: None,
-            max_cards_per_group: std::env::var("SOLVER_GPU_GROUP").ok().and_then(|s| s.parse().ok()),
+            max_cards_per_group: std::env::var("SOLVER_GPU_GROUP")
+                .ok()
+                .and_then(|s| s.parse().ok()),
         };
         let ti = Instant::now();
-        let mut gpu = solver::multiway::gpu::MwGpuSolver::with_options(spot.clone(), algo, &opts).expect("gpu init");
-        println!("gpu: {} (init {:.1}s)", gpu.describe(), ti.elapsed().as_secs_f64());
+        let mut gpu = solver::multiway::gpu::MwGpuSolver::with_options(spot.clone(), algo, &opts)
+            .expect("gpu init");
+        println!(
+            "gpu: {} (init {:.1}s)",
+            gpu.describe(),
+            ti.elapsed().as_secs_f64()
+        );
         let profiling = std::env::var("SOLVER_PROFILE").as_deref() == Ok("1");
         gpu.set_profiling(profiling);
         let t = Instant::now();
@@ -72,7 +88,9 @@ fn main() {
             }
             if it % check == 0 || it == iters {
                 let te = Instant::now();
-                let pr = gpu.progress(t.elapsed().as_secs_f64()).expect("gpu exploitability");
+                let pr = gpu
+                    .progress(t.elapsed().as_secs_f64())
+                    .expect("gpu exploitability");
                 println!(
                     "iter {:5} {:8.2}s  {:.2} ms/iter  exploit {:.3}% pot  gaps {:?}  (eval {:.0} ms)",
                     it,
@@ -93,7 +111,10 @@ fn main() {
         if std::env::var("SOLVER_VERIFY").as_deref() == Ok("1") {
             let s = gpu.to_cpu().expect("download");
             let pr = s.progress(0.0);
-            println!("cpu check of gpu arenas: exploit {:.3}% pot", pr.exploit_pct_pot);
+            println!(
+                "cpu check of gpu arenas: exploit {:.3}% pot",
+                pr.exploit_pct_pot
+            );
         }
         return;
     }

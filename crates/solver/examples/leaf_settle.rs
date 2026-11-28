@@ -11,8 +11,9 @@
 //! net's output at the current strategies ("real", what a solve shows now),
 //! and how far the blend is from that output (fraction of the pot). The net
 //! is LEAF_NET or the shipped one.
-use solver::preflop::{equity::EquityTable, PreflopConfig, PreflopSolver};
 use std::{sync::Arc, time::Instant};
+
+use solver::preflop::{equity::EquityTable, PreflopConfig, PreflopSolver};
 
 fn game(n: usize, stack: f64, open: f64, eq: Arc<EquityTable>) -> PreflopSolver {
     let names = ["UTG", "HJ", "CO", "BTN", "SB", "BB"];
@@ -24,7 +25,8 @@ fn game(n: usize, stack: f64, open: f64, eq: Arc<EquityTable>) -> PreflopSolver 
         "positions": positions, "stack": stack, "posts": posts, "limp": true, "open_raises": [open],
         "raise_mults": [3.0], "max_raises": 4, "add_allin": false, "rake_pct": 5.0, "rake_cap": 3.0,
         "no_flop_no_drop": true, "realization": "leafnet",
-    })).unwrap();
+    }))
+    .unwrap();
     PreflopSolver::new(cfg, eq).unwrap()
 }
 
@@ -45,18 +47,29 @@ fn main() {
     for spec in &args[3..] {
         let (interval, weight) = spec.split_once(':').expect("INTERVAL:WEIGHT");
         let interval: u32 = interval.parse().expect("INTERVAL");
-        let weight: Option<f32> = if weight == "lin" { None } else { Some(weight.parse().expect("WEIGHT")) };
+        let weight: Option<f32> = if weight == "lin" {
+            None
+        } else {
+            Some(weight.parse().expect("WEIGHT"))
+        };
         let mut s = game(seats, stack, open, eq.clone());
         s.set_leaf_schedule(interval, weight);
         let t0 = Instant::now();
-        println!("# seats {seats} stack {stack} open {open} nodes {} schedule {spec}", s.nodes.len());
+        println!(
+            "# seats {seats} stack {stack} open {open} nodes {} schedule {spec}",
+            s.nodes.len()
+        );
         println!("iteration\treported\treal\tdrift\tseconds");
         for it in 1..=total {
             s.iterate();
             if it % step == 0 {
                 let reported: f64 = s.gaps_and_evs().0.iter().sum();
                 let (gaps, _, drift) = s.consistent_gaps_and_evs().unwrap();
-                println!("{it}\t{reported:.5}\t{:.5}\t{drift:.5}\t{:.0}", gaps.iter().sum::<f64>(), t0.elapsed().as_secs_f64());
+                println!(
+                    "{it}\t{reported:.5}\t{:.5}\t{drift:.5}\t{:.0}",
+                    gaps.iter().sum::<f64>(),
+                    t0.elapsed().as_secs_f64()
+                );
             }
         }
     }

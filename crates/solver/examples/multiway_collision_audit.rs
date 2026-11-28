@@ -1,8 +1,7 @@
 //! Offline shared-board equity with pairwise collision corrections.
 use rayon::prelude::*;
 use serde_json::{json, Value};
-use solver::evaluator::evaluate7;
-use solver::preflop::equity::class_index;
+use solver::{evaluator::evaluate7, preflop::equity::class_index};
 struct Rng(u64);
 impl Rng {
     fn next(&mut self) -> u64 {

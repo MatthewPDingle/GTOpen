@@ -7,9 +7,12 @@
 //! and load the file, while the strict build path keeps rejecting the same
 //! config for NEW builds.
 
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Solver, Spot, SpotConfig};
 use std::sync::Arc;
+
+use solver::{
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    Solver, Spot, SpotConfig,
+};
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
     StreetSizing {

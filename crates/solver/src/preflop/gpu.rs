@@ -7,73 +7,84 @@
 //! VRAM budget or CUDA is unavailable, and the server then solves on the
 //! CPU + system RAM instead.
 
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc, Mutex,
+};
+
+use cudarc::driver::{
+    sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaStream, LaunchConfig, PushKernelArg,
+};
+
 use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
-use crate::preflop::equity::{class_prob, NUM_CLASSES};
-use crate::gpu::PinnedBuf;
-use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaStream, LaunchConfig, PushKernelArg};
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use crate::{
+    gpu::PinnedBuf,
+    preflop::equity::{class_prob, NUM_CLASSES},
+};
 
 const BLOCK: u32 = 256; // narrow per-node launches; reach totals always use 128 threads
 const MAX_NA: usize = 16;
 
+mod adaptive_throughput;
+mod cohort_reuse;
 #[cfg(feature = "preflop-research")]
 mod cv_research;
 mod exact_reuse;
-mod cohort_reuse;
-mod terminal_unroll;
-mod narrow_offsets;
-mod adaptive_throughput;
 mod icm;
+mod large_game;
+mod narrow_offsets;
 mod removal;
 mod rnr;
-mod large_game;
-pub use large_game::{large_need_mb, large_need_of, large_plan_report, large_policy_need_mb, large_tree_need_mb, LargeGameInfo};
+mod terminal_unroll;
 pub use adaptive_throughput::ThroughputSelection;
-#[cfg(test)]
-mod side_pot_tests;
-#[cfg(test)]
-mod three_way_tests;
+pub use large_game::{
+    large_need_mb, large_need_of, large_plan_report, large_policy_need_mb, large_tree_need_mb,
+    LargeGameInfo,
+};
+#[cfg(feature = "preflop-research")]
+mod average_opponents;
+#[cfg(feature = "preflop-research")]
+mod behavioral;
+#[cfg(feature = "preflop-research")]
+mod conditional_sampling;
+#[cfg(all(test, feature = "preflop-research"))]
+mod cross_player_inventory;
+#[cfg(all(test, feature = "preflop-research"))]
+mod exact_reuse_inventory;
+#[cfg(feature = "preflop-research")]
+mod exploration;
+#[cfg(feature = "preflop-research")]
+mod fixed_history_units;
+#[cfg(feature = "preflop-research")]
+mod frontier_research;
+#[cfg(all(feature = "preflop-research", test))]
+mod history_units;
 #[cfg(test)]
 mod icm_tests;
 #[cfg(test)]
 mod leaf_tests;
-#[cfg(test)]
-mod removal_tests;
-#[cfg(all(test, feature = "preflop-research"))]
-mod exact_reuse_inventory;
-#[cfg(all(test, feature = "preflop-research"))]
-mod cross_player_inventory;
-#[cfg(all(test, feature = "preflop-research"))]
-mod terminal_locality;
-#[cfg(all(test, feature = "preflop-research"))]
-mod terminal_tiles;
-#[cfg(feature = "preflop-research")]
-mod frontier_research;
-#[cfg(feature = "preflop-research")]
-mod conditional_sampling;
-#[cfg(feature = "preflop-research")]
-mod normalized_regret;
-#[cfg(feature = "preflop-research")]
-mod rm_plus;
-#[cfg(feature = "preflop-research")]
-mod predictive;
-#[cfg(feature = "preflop-research")]
-mod pair_control;
-#[cfg(feature = "preflop-research")]
-mod exploration;
-#[cfg(feature = "preflop-research")]
-mod behavioral;
-#[cfg(feature = "preflop-research")]
-mod average_opponents;
-#[cfg(feature = "preflop-research")]
-mod fixed_history_units;
 #[cfg(feature = "preflop-research")]
 mod learned;
 #[cfg(feature = "preflop-research")]
 mod learned_interface;
-#[cfg(all(feature = "preflop-research", test))]
-mod history_units;
+#[cfg(feature = "preflop-research")]
+mod normalized_regret;
+#[cfg(feature = "preflop-research")]
+mod pair_control;
+#[cfg(feature = "preflop-research")]
+mod predictive;
+#[cfg(test)]
+mod removal_tests;
+#[cfg(feature = "preflop-research")]
+mod rm_plus;
+#[cfg(test)]
+mod side_pot_tests;
+#[cfg(all(test, feature = "preflop-research"))]
+mod terminal_locality;
+#[cfg(all(test, feature = "preflop-research"))]
+mod terminal_tiles;
+#[cfg(test)]
+mod three_way_tests;
 
 fn e(err: impl std::fmt::Debug) -> String {
     format!("cuda: {err:?}")
@@ -157,7 +168,7 @@ pub struct PreflopGpu {
     research_exact_reuse: Option<exact_reuse::ExactReuse>,
     research_cohorts: Option<cohort_reuse::CohortReuse>,
     throughput_narrow: bool,
-    static_cdf:Option<static_cdf::Packed>,
+    static_cdf: Option<static_cdf::Packed>,
     #[cfg(feature = "preflop-research")]
     research_average_opponents: Option<CudaFunction>,
     #[cfg(feature = "preflop-research")]
@@ -277,7 +288,9 @@ impl ValuePlan {
         let mut depth = vec![0usize; n];
         let mut max_depth = 0;
         for (i, node) in s.nodes.iter().enumerate() {
-            if node.kind != KIND_ACTION { continue; }
+            if node.kind != KIND_ACTION {
+                continue;
+            }
             for a in 0..node.actions.len() {
                 let d = depth[i] + 1;
                 depth[s.child(i, a)] = d;
@@ -315,7 +328,12 @@ impl ValuePlan {
             }
             spans.push((start, level.len() as u32));
         }
-        Self { slots, blocks: next + widths[0] + widths[1], action_nodes, spans }
+        Self {
+            slots,
+            blocks: next + widths[0] + widths[1],
+            action_nodes,
+            spans,
+        }
     }
 }
 
@@ -326,16 +344,24 @@ fn minimum_vram_mb(s: &PreflopSolver, value_blocks: usize) -> f64 {
     let arena = s.arena_len as f64;
     // One root reach per seat, then one actor reach per action edge.
     // Other seats alias their nearest written ancestor through reach_src.
-    ((n + np - 1.0) * (nc + 1.0) * 4.0 + value_blocks as f64 * nc * 4.0 + 2.0 * arena * 4.0
-        + n * (np * 12.0 + 44.0)) / 1e6 + 64.0
+    ((n + np - 1.0) * (nc + 1.0) * 4.0
+        + value_blocks as f64 * nc * 4.0
+        + 2.0 * arena * 4.0
+        + n * (np * 12.0 + 44.0))
+        / 1e6
+        + 64.0
 }
 
 fn reach_sources(s: &PreflopSolver) -> Vec<u32> {
     let np = s.n;
     let mut sources = vec![0u32; s.nodes.len() * np];
-    for q in 0..np { sources[q] = q as u32; }
+    for q in 0..np {
+        sources[q] = q as u32;
+    }
     for (i, node) in s.nodes.iter().enumerate() {
-        if node.kind != KIND_ACTION { continue; }
+        if node.kind != KIND_ACTION {
+            continue;
+        }
         for a in 0..node.actions.len() {
             let c = s.child(i, a);
             sources.copy_within(i * np..(i + 1) * np, c * np);
@@ -367,23 +393,43 @@ struct SidePots {
 
 impl SidePots {
     fn build(s: &PreflopSolver, coupled_model: bool) -> Self {
-        let mut nodes: Vec<usize> = (0..s.nodes.len()).filter(|&i| !s.nodes[i].side_pots.is_empty()).collect();
+        let mut nodes: Vec<usize> = (0..s.nodes.len())
+            .filter(|&i| !s.nodes[i].side_pots.is_empty())
+            .collect();
         if coupled_model {
             nodes.sort_by_key(|&i| !coupled_terminal(s, &s.nodes[i]));
         }
-        let coupled = if coupled_model { nodes.iter().filter(|&&i| coupled_terminal(s, &s.nodes[i])).count() } else { 0 };
+        let coupled = if coupled_model {
+            nodes
+                .iter()
+                .filter(|&&i| coupled_terminal(s, &s.nodes[i]))
+                .count()
+        } else {
+            0
+        };
         let mut start = vec![0u32];
         let (mut amount, mut mask) = (Vec::new(), Vec::new());
         for &i in &nodes {
             let nd = &s.nodes[i];
-            let scale = if nd.pot > 0.0 { (nd.pot - s.rake_of(nd.pot)) / nd.pot } else { 0.0 };
+            let scale = if nd.pot > 0.0 {
+                (nd.pot - s.rake_of(nd.pot)) / nd.pot
+            } else {
+                0.0
+            };
             for &(a, m) in &nd.side_pots {
                 amount.push((a * scale) as f32);
                 mask.push(m as i32);
             }
             start.push(amount.len() as u32);
         }
-        let mut bal = vec![0f32; if nodes.is_empty() { 1 } else { NUM_CLASSES * NUM_CLASSES }];
+        let mut bal = vec![
+            0f32;
+            if nodes.is_empty() {
+                1
+            } else {
+                NUM_CLASSES * NUM_CLASSES
+            }
+        ];
         if !nodes.is_empty() {
             for h in 0..NUM_CLASSES {
                 for j in 0..NUM_CLASSES {
@@ -393,12 +439,30 @@ impl SidePots {
         }
         let count = nodes.len();
         let mut terms: Vec<u32> = nodes.iter().map(|&i| i as u32).collect();
-        if terms.is_empty() { terms.push(0); amount.push(0.0); mask.push(0); }
-        Self { terms, start, amount, mask, bal, count, coupled }
+        if terms.is_empty() {
+            terms.push(0);
+            amount.push(0.0);
+            mask.push(0);
+        }
+        Self {
+            terms,
+            start,
+            amount,
+            mask,
+            bal,
+            count,
+            coupled,
+        }
     }
 
     fn bytes(&self) -> usize {
-        (self.terms.len() + self.start.len() + self.amount.len() + self.mask.len() + self.bal.len() + self.coupled.max(1)) * 4
+        (self.terms.len()
+            + self.start.len()
+            + self.amount.len()
+            + self.mask.len()
+            + self.bal.len()
+            + self.coupled.max(1))
+            * 4
     }
 }
 
@@ -406,7 +470,9 @@ impl SidePots {
 /// except exactly three under the 3-way table.
 fn coupled_terminal(s: &PreflopSolver, nd: &super::PNode) -> bool {
     let live = nd.live.count_ones();
-    s.multiway.is_some() && nd.kind == KIND_POT_SHARE && (live >= 4 || (live == 3 && s.three_way.is_none()))
+    s.multiway.is_some()
+        && nd.kind == KIND_POT_SHARE
+        && (live >= 4 || (live == 3 && s.three_way.is_none()))
 }
 
 impl EquityCachePlan {
@@ -420,11 +486,17 @@ impl EquityCachePlan {
         let nblocks = s.nodes.len() + s.n - 1;
         let mut needed = vec![vec![false; nblocks]; s.n];
         for (i, node) in s.nodes.iter().enumerate() {
-            if node.kind != KIND_POT_SHARE { continue; }
+            if node.kind != KIND_POT_SHARE {
+                continue;
+            }
             let coupled = coupled_terminal(s, node);
-            if coupled != multiway { continue; }
+            if coupled != multiway {
+                continue;
+            }
             for p in 0..s.n {
-                if (node.live >> p) & 1 == 0 { continue; }
+                if (node.live >> p) & 1 == 0 {
+                    continue;
+                }
                 for q in 0..s.n {
                     if q != p && (node.live >> q) & 1 != 0 {
                         needed[p][sources[i * s.n + q] as usize] = true;
@@ -453,12 +525,20 @@ impl EquityCachePlan {
             }
             spans.push((start, work.len() as u32 - start));
         }
-        let plan = Self { slots, blocks, work, spans };
+        let plan = Self {
+            slots,
+            blocks,
+            work,
+            spans,
+        };
         // Opt-in planning-only instrumentation: no CUDA allocation/launch,
         // strategy mutation, or altered cache layout. Also works via the CPU
         // caller of vram_estimate_mb before GPU construction.
         if multiway && std::env::var_os("PREFLOP_MW_SLOT_STATS").is_some() {
-            let counts: Vec<usize> = plan.spans[..s.n].iter().map(|&(_, count)| count as usize).collect();
+            let counts: Vec<usize> = plan.spans[..s.n]
+                .iter()
+                .map(|&(_, count)| count as usize)
+                .collect();
             let union = plan.blocks.len();
             let max_seat = counts.iter().copied().max().unwrap_or(0);
             let layouts: Vec<_> = [1usize, 7, 32].into_iter().map(|batch| {
@@ -484,26 +564,34 @@ impl EquityCachePlan {
                     "net_saved_dynamic_normalized_bytes": saved_normalized as i128 - dynamic_map as i128,
                 })
             }).collect();
-            println!("preflop mw slot stats: {}", serde_json::json!({
-                "positions": &s.cfg.positions,
-                "union_slots": union,
-                "per_traverser_slots": counts,
-                "max_traverser_slots": max_seat,
-                "max_union_ratio": if union == 0 { 0.0 } else { max_seat as f64 / union as f64 },
-                "layouts": layouts,
-            }));
+            println!(
+                "preflop mw slot stats: {}",
+                serde_json::json!({
+                    "positions": &s.cfg.positions,
+                    "union_slots": union,
+                    "per_traverser_slots": counts,
+                    "max_traverser_slots": max_seat,
+                    "max_union_ratio": if union == 0 { 0.0 } else { max_seat as f64 / union as f64 },
+                    "layouts": layouts,
+                })
+            );
         }
         plan
     }
     fn bytes(&self) -> usize {
-        (self.slots.len() + self.blocks.len() + self.work.len()
-            + self.blocks.len() * NUM_CLASSES) * 4
+        (self.slots.len() + self.blocks.len() + self.work.len() + self.blocks.len() * NUM_CLASSES)
+            * 4
     }
     fn metadata_bytes(&self) -> usize {
         (self.slots.len() + self.blocks.len() + self.work.len()) * 4
     }
     fn disabled(np: usize) -> Self {
-        Self { slots: vec![0], blocks: vec![0], work: vec![0], spans: vec![(0, 0); np + 1] }
+        Self {
+            slots: vec![0],
+            blocks: vec![0],
+            work: vec![0],
+            spans: vec![(0, 0); np + 1],
+        }
     }
 }
 
@@ -517,18 +605,38 @@ struct MultiwayCompactPlan {
 }
 impl MultiwayCompactPlan {
     fn union(slots: usize) -> Self {
-        Self { capacity: slots, map: vec![0], bytes: 0, enabled: false }
+        Self {
+            capacity: slots,
+            map: vec![0],
+            bytes: 0,
+            enabled: false,
+        }
     }
     fn build(plan: &EquityCachePlan, np: usize) -> Result<Self, String> {
         let union = plan.blocks.len();
-        if union == 0 { return Ok(Self::union(0)); }
-        let capacity = plan.spans[..np].iter().map(|&(_, n)| n as usize).max().unwrap_or(0);
-        if capacity == 0 { return Err("multiway compact plan has no traverser slots".into()); }
-        let len = union.checked_mul(np).ok_or_else(|| "multiway compact map overflow".to_string())?;
-        let bytes = len.checked_mul(4).ok_or_else(|| "multiway compact map overflow".to_string())?;
-        let saved_minimum = (union - capacity).checked_mul((NUM_CLASSES + 1) * 4)
+        if union == 0 {
+            return Ok(Self::union(0));
+        }
+        let capacity = plan.spans[..np]
+            .iter()
+            .map(|&(_, n)| n as usize)
+            .max()
+            .unwrap_or(0);
+        if capacity == 0 {
+            return Err("multiway compact plan has no traverser slots".into());
+        }
+        let len = union
+            .checked_mul(np)
+            .ok_or_else(|| "multiway compact map overflow".to_string())?;
+        let bytes = len
+            .checked_mul(4)
+            .ok_or_else(|| "multiway compact map overflow".to_string())?;
+        let saved_minimum = (union - capacity)
+            .checked_mul((NUM_CLASSES + 1) * 4)
             .ok_or_else(|| "multiway compact cache overflow".to_string())?;
-        if bytes >= saved_minimum { return Ok(Self::union(union)); }
+        if bytes >= saved_minimum {
+            return Ok(Self::union(union));
+        }
         let mut map = vec![u32::MAX; len];
         for p in 0..np {
             let (start, count) = plan.spans[p];
@@ -537,7 +645,12 @@ impl MultiwayCompactPlan {
                 map[p * union + global] = local as u32;
             }
         }
-        Ok(Self { capacity, map, bytes, enabled: true })
+        Ok(Self {
+            capacity,
+            map,
+            bytes,
+            enabled: true,
+        })
     }
 }
 
@@ -549,48 +662,88 @@ struct MultiwayBatchPlan {
     cache_len: usize,
     normalized_bytes: usize,
 }
-fn multiway_batch_plan(available_bytes: usize, slots: usize) -> Result<Option<MultiwayBatchPlan>, String> {
-    if slots == 0 { return Err("multiway cache requires at least one slot".into()); }
-    let one_particle = slots.checked_mul((NUM_CLASSES + 1) * 4)
+fn multiway_batch_plan(
+    available_bytes: usize,
+    slots: usize,
+) -> Result<Option<MultiwayBatchPlan>, String> {
+    if slots == 0 {
+        return Err("multiway cache requires at least one slot".into());
+    }
+    let one_particle = slots
+        .checked_mul((NUM_CLASSES + 1) * 4)
         .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
-    if available_bytes < one_particle { return Ok(None); }
-    let preferred_normalized = slots.checked_mul(NUM_CLASSES * 4)
+    if available_bytes < one_particle {
+        return Ok(None);
+    }
+    let preferred_normalized = slots
+        .checked_mul(NUM_CLASSES * 4)
         .ok_or_else(|| "multiway normalized reach size overflow".to_string())?;
     // Retain the preferred normalized path even if direct division could fit
     // a larger batch. Fall back only if normalized+one particle cannot fit.
     let normalized_bytes = if available_bytes - one_particle >= preferred_normalized {
         preferred_normalized
-    } else { 0 };
+    } else {
+        0
+    };
     let batch = ((available_bytes - normalized_bytes) / one_particle)
-        .min(32).min(super::multiway::SAMPLES);
-    let cache_len = slots.checked_mul(NUM_CLASSES + 1)
+        .min(32)
+        .min(super::multiway::SAMPLES);
+    let cache_len = slots
+        .checked_mul(NUM_CLASSES + 1)
         .and_then(|n| n.checked_mul(batch))
         .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
-    Ok(Some(MultiwayBatchPlan { batch, cache_len, normalized_bytes }))
+    Ok(Some(MultiwayBatchPlan {
+        batch,
+        cache_len,
+        normalized_bytes,
+    }))
 }
 
 // Reference arithmetic grouping is a compatibility constraint, separate from
 // physical scratch layout. Reproduce the original union CDF planner for the
 // explicitly supplied literal or corrected base, without allocating its scratch.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-struct ReferenceMultiwayPlan { batch: usize, use_eq_cache: bool }
+struct ReferenceMultiwayPlan {
+    batch: usize,
+    use_eq_cache: bool,
+}
 fn reference_multiway_plan(
-    budget_mb: u64, base_mb: f64, fixed_bytes: usize, union_slots: usize,
-    eq_cache_bytes: usize, has_eq_cache: bool,
+    budget_mb: u64,
+    base_mb: f64,
+    fixed_bytes: usize,
+    union_slots: usize,
+    eq_cache_bytes: usize,
+    has_eq_cache: bool,
 ) -> Result<Option<ReferenceMultiwayPlan>, String> {
-    if !base_mb.is_finite() || base_mb < 0.0 { return Err("invalid multiway base allocation".into()); }
-    if union_slots == 0 { return Err("reference multiway cache requires slots".into()); }
-    let one_particle = union_slots.checked_mul((NUM_CLASSES + 1) * 4)
+    if !base_mb.is_finite() || base_mb < 0.0 {
+        return Err("invalid multiway base allocation".into());
+    }
+    if union_slots == 0 {
+        return Err("reference multiway cache requires slots".into());
+    }
+    let one_particle = union_slots
+        .checked_mul((NUM_CLASSES + 1) * 4)
         .ok_or_else(|| "reference CDF allocation overflow".to_string())?;
     // Preserve the original floating-point MB-to-byte calculation and floor.
     let remaining = (budget_mb as f64 * 1e6 - base_mb * 1e6 - fixed_bytes as f64).max(0.0) as usize;
-    let batch = (remaining / one_particle).min(32).min(super::multiway::SAMPLES);
-    if batch == 0 { return Ok(None); }
-    let cdf_bytes = one_particle.checked_mul(batch).ok_or_else(|| "reference CDF allocation overflow".to_string())?;
-    let fixed_and_cdf = fixed_bytes.checked_add(cdf_bytes).ok_or_else(|| "reference allocation overflow".to_string())?;
+    let batch = (remaining / one_particle)
+        .min(32)
+        .min(super::multiway::SAMPLES);
+    if batch == 0 {
+        return Ok(None);
+    }
+    let cdf_bytes = one_particle
+        .checked_mul(batch)
+        .ok_or_else(|| "reference CDF allocation overflow".to_string())?;
+    let fixed_and_cdf = fixed_bytes
+        .checked_add(cdf_bytes)
+        .ok_or_else(|| "reference allocation overflow".to_string())?;
     let need = base_mb + fixed_and_cdf as f64 / 1e6;
     let use_eq_cache = has_eq_cache && need + eq_cache_bytes as f64 / 1e6 <= budget_mb as f64;
-    Ok(Some(ReferenceMultiwayPlan { batch, use_eq_cache }))
+    Ok(Some(ReferenceMultiwayPlan {
+        batch,
+        use_eq_cache,
+    }))
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -603,58 +756,126 @@ struct CompatibleMultiwayPlan {
 }
 #[cfg(test)]
 fn compatible_multiway_plan(
-    budget_mb: u64, base_mb: f64, reference_fixed_bytes: usize,
-    optimized_fixed_bytes: usize, union_slots: usize, physical_slots: usize,
-    eq_cache_bytes: usize, has_eq_cache: bool,
+    budget_mb: u64,
+    base_mb: f64,
+    reference_fixed_bytes: usize,
+    optimized_fixed_bytes: usize,
+    union_slots: usize,
+    physical_slots: usize,
+    eq_cache_bytes: usize,
+    has_eq_cache: bool,
 ) -> Result<Option<CompatibleMultiwayPlan>, String> {
-    let reference = reference_multiway_plan(budget_mb, base_mb, reference_fixed_bytes,
-        union_slots, eq_cache_bytes, has_eq_cache)?;
-    fit_compatible_multiway_plan(budget_mb, base_mb, reference_fixed_bytes,
-        optimized_fixed_bytes, union_slots, physical_slots, eq_cache_bytes, reference)
+    let reference = reference_multiway_plan(
+        budget_mb,
+        base_mb,
+        reference_fixed_bytes,
+        union_slots,
+        eq_cache_bytes,
+        has_eq_cache,
+    )?;
+    fit_compatible_multiway_plan(
+        budget_mb,
+        base_mb,
+        reference_fixed_bytes,
+        optimized_fixed_bytes,
+        union_slots,
+        physical_slots,
+        eq_cache_bytes,
+        reference,
+    )
 }
 
 // Physical fit is independent of how the numerical reference was chosen.
 // An unsupported target returns None; allocation overflow remains an error.
 fn fit_compatible_multiway_plan(
-    budget_mb:u64, base_mb:f64, reference_fixed_bytes:usize, optimized_fixed_bytes:usize,
-    union_slots:usize, physical_slots:usize, eq_cache_bytes:usize,
-    reference:Option<ReferenceMultiwayPlan>,
-) -> Result<Option<CompatibleMultiwayPlan>,String> {
-    if physical_slots == 0 { return Err("physical multiway cache requires slots".into()); }
-    let available = (budget_mb as f64 * 1e6 - base_mb * 1e6 - optimized_fixed_bytes as f64).max(0.0) as usize;
+    budget_mb: u64,
+    base_mb: f64,
+    reference_fixed_bytes: usize,
+    optimized_fixed_bytes: usize,
+    union_slots: usize,
+    physical_slots: usize,
+    eq_cache_bytes: usize,
+    reference: Option<ReferenceMultiwayPlan>,
+) -> Result<Option<CompatibleMultiwayPlan>, String> {
+    if physical_slots == 0 {
+        return Err("physical multiway cache requires slots".into());
+    }
+    let available =
+        (budget_mb as f64 * 1e6 - base_mb * 1e6 - optimized_fixed_bytes as f64).max(0.0) as usize;
     let Some(ref target) = reference else {
         // Preserve the existing bounded capacity-extension/direct minimum-fit
         // behavior only when no original same-budget GPU batch exists.
-        return Ok(multiway_batch_plan(available, physical_slots)?.map(|storage|
-            CompatibleMultiwayPlan { storage, reference: None, minimal_metadata: false }));
+        return Ok(
+            multiway_batch_plan(available, physical_slots)?.map(|storage| CompatibleMultiwayPlan {
+                storage,
+                reference: None,
+                minimal_metadata: false,
+            }),
+        );
     };
-    let cache_len = physical_slots.checked_mul(NUM_CLASSES + 1)
-        .and_then(|n| n.checked_mul(target.batch)).ok_or_else(|| "compatible CDF allocation overflow".to_string())?;
-    let cdf_bytes = cache_len.checked_mul(4).ok_or_else(|| "compatible CDF allocation overflow".to_string())?;
-    let eq_reserve = if target.use_eq_cache { eq_cache_bytes } else { 0 };
-    let required = cdf_bytes.checked_add(eq_reserve).ok_or_else(|| "compatible allocation overflow".to_string())?;
+    let cache_len = physical_slots
+        .checked_mul(NUM_CLASSES + 1)
+        .and_then(|n| n.checked_mul(target.batch))
+        .ok_or_else(|| "compatible CDF allocation overflow".to_string())?;
+    let cdf_bytes = cache_len
+        .checked_mul(4)
+        .ok_or_else(|| "compatible CDF allocation overflow".to_string())?;
+    let eq_reserve = if target.use_eq_cache {
+        eq_cache_bytes
+    } else {
+        0
+    };
+    let required = cdf_bytes
+        .checked_add(eq_reserve)
+        .ok_or_else(|| "compatible allocation overflow".to_string())?;
     if available < required {
-        return original_layout_multiway_plan(budget_mb, base_mb, reference_fixed_bytes,
-            union_slots, eq_cache_bytes, reference);
+        return original_layout_multiway_plan(
+            budget_mb,
+            base_mb,
+            reference_fixed_bytes,
+            union_slots,
+            eq_cache_bytes,
+            reference,
+        );
     }
-    let preferred_normalized = physical_slots.checked_mul(NUM_CLASSES * 4)
+    let preferred_normalized = physical_slots
+        .checked_mul(NUM_CLASSES * 4)
         .ok_or_else(|| "compatible normalized allocation overflow".to_string())?;
     // The required reference batch/cache wins over optional normalization.
     // Direct division is the exact arithmetic alternative already supported.
-    let mut normalized_bytes = if available - required >= preferred_normalized { preferred_normalized } else { 0 };
+    let mut normalized_bytes = if available - required >= preferred_normalized {
+        preferred_normalized
+    } else {
+        0
+    };
     let planned_need = |normalized: usize| -> Result<f64, String> {
-        let bytes = optimized_fixed_bytes.checked_add(cdf_bytes).and_then(|n|n.checked_add(normalized))
+        let bytes = optimized_fixed_bytes
+            .checked_add(cdf_bytes)
+            .and_then(|n| n.checked_add(normalized))
             .ok_or_else(|| "compatible total allocation overflow".to_string())?;
         Ok(base_mb + bytes as f64 / 1e6 + eq_reserve as f64 / 1e6)
     };
     // Keep the final MB check authoritative at sub-byte/f64 boundaries too.
-    if normalized_bytes != 0 && planned_need(normalized_bytes)? > budget_mb as f64 { normalized_bytes = 0; }
+    if normalized_bytes != 0 && planned_need(normalized_bytes)? > budget_mb as f64 {
+        normalized_bytes = 0;
+    }
     if planned_need(normalized_bytes)? > budget_mb as f64 {
-        return original_layout_multiway_plan(budget_mb, base_mb, reference_fixed_bytes,
-            union_slots, eq_cache_bytes, reference);
+        return original_layout_multiway_plan(
+            budget_mb,
+            base_mb,
+            reference_fixed_bytes,
+            union_slots,
+            eq_cache_bytes,
+            reference,
+        );
     }
     Ok(Some(CompatibleMultiwayPlan {
-        storage: MultiwayBatchPlan { batch: target.batch, cache_len, normalized_bytes }, reference,
+        storage: MultiwayBatchPlan {
+            batch: target.batch,
+            cache_len,
+            normalized_bytes,
+        },
+        reference,
         minimal_metadata: false,
     }))
 }
@@ -662,20 +883,42 @@ fn fit_compatible_multiway_plan(
 // Exact original union/direct layout: no active flags, probability table,
 // normalized reaches or compact map. Preserve reference batch AND HU cache.
 fn original_layout_multiway_plan(
-    budget_mb: u64, base_mb: f64, reference_fixed_bytes: usize, union_slots: usize,
-    eq_cache_bytes: usize, reference: Option<ReferenceMultiwayPlan>,
+    budget_mb: u64,
+    base_mb: f64,
+    reference_fixed_bytes: usize,
+    union_slots: usize,
+    eq_cache_bytes: usize,
+    reference: Option<ReferenceMultiwayPlan>,
 ) -> Result<Option<CompatibleMultiwayPlan>, String> {
-    let Some(target) = reference else { return Ok(None); };
-    let cache_len = union_slots.checked_mul(NUM_CLASSES + 1)
-        .and_then(|n|n.checked_mul(target.batch)).ok_or_else(|| "original CDF allocation overflow".to_string())?;
-    let bytes = cache_len.checked_mul(4).and_then(|n|n.checked_add(reference_fixed_bytes))
+    let Some(target) = reference else {
+        return Ok(None);
+    };
+    let cache_len = union_slots
+        .checked_mul(NUM_CLASSES + 1)
+        .and_then(|n| n.checked_mul(target.batch))
+        .ok_or_else(|| "original CDF allocation overflow".to_string())?;
+    let bytes = cache_len
+        .checked_mul(4)
+        .and_then(|n| n.checked_add(reference_fixed_bytes))
         .ok_or_else(|| "original total allocation overflow".to_string())?;
-    let need = base_mb + bytes as f64 / 1e6
-        + if target.use_eq_cache {eq_cache_bytes as f64 / 1e6} else {0.0};
-    if need > budget_mb as f64 { return Ok(None); }
+    let need = base_mb
+        + bytes as f64 / 1e6
+        + if target.use_eq_cache {
+            eq_cache_bytes as f64 / 1e6
+        } else {
+            0.0
+        };
+    if need > budget_mb as f64 {
+        return Ok(None);
+    }
     Ok(Some(CompatibleMultiwayPlan {
-        storage: MultiwayBatchPlan {batch:target.batch,cache_len,normalized_bytes:0},
-        reference:Some(target),minimal_metadata:true,
+        storage: MultiwayBatchPlan {
+            batch: target.batch,
+            cache_len,
+            normalized_bytes: 0,
+        },
+        reference: Some(target),
+        minimal_metadata: true,
     }))
 }
 
@@ -689,55 +932,101 @@ struct DeployedCompatibilityPlan {
 // Accurate base includes forced policies; literal base is captured beforehand,
 // not recovered by subtracting bytes from an already-rounded f64 total.
 fn deployed_compatible_multiway_plan(
-    budget_mb:u64, accurate_base_mb:f64, literal_base_mb:f64,
-    reference_fixed_bytes:usize, optimized_fixed_bytes:usize,
-    union_slots:usize, physical_slots:usize, eq_cache_bytes:usize, has_eq_cache:bool,
-    force_minimal:bool,
-) -> Result<Option<DeployedCompatibilityPlan>,String> {
+    budget_mb: u64,
+    accurate_base_mb: f64,
+    literal_base_mb: f64,
+    reference_fixed_bytes: usize,
+    optimized_fixed_bytes: usize,
+    union_slots: usize,
+    physical_slots: usize,
+    eq_cache_bytes: usize,
+    has_eq_cache: bool,
+    force_minimal: bool,
+) -> Result<Option<DeployedCompatibilityPlan>, String> {
     if !accurate_base_mb.is_finite() || accurate_base_mb < literal_base_mb {
         return Err("invalid accurately accounted multiway base".into());
     }
-    let literal = reference_multiway_plan(budget_mb,literal_base_mb,reference_fixed_bytes,
-        union_slots,eq_cache_bytes,has_eq_cache)?;
-    let fit = |target:Option<ReferenceMultiwayPlan>| {
+    let literal = reference_multiway_plan(
+        budget_mb,
+        literal_base_mb,
+        reference_fixed_bytes,
+        union_slots,
+        eq_cache_bytes,
+        has_eq_cache,
+    )?;
+    let fit = |target: Option<ReferenceMultiwayPlan>| {
         if force_minimal {
-            original_layout_multiway_plan(budget_mb,accurate_base_mb,reference_fixed_bytes,
-                union_slots,eq_cache_bytes,target)
+            original_layout_multiway_plan(
+                budget_mb,
+                accurate_base_mb,
+                reference_fixed_bytes,
+                union_slots,
+                eq_cache_bytes,
+                target,
+            )
         } else {
-            fit_compatible_multiway_plan(budget_mb,accurate_base_mb,reference_fixed_bytes,
-                optimized_fixed_bytes,union_slots,physical_slots,eq_cache_bytes,target)
+            fit_compatible_multiway_plan(
+                budget_mb,
+                accurate_base_mb,
+                reference_fixed_bytes,
+                optimized_fixed_bytes,
+                union_slots,
+                physical_slots,
+                eq_cache_bytes,
+                target,
+            )
         }
     };
     // None means no original GPU grouping, not permission to prefer an
     // arbitrary capacity-extension batch before trying a corrected reference.
     if literal.is_some() {
-        if let Some(plan)=fit(literal)? {
+        if let Some(plan) = fit(literal)? {
             return Ok(Some(DeployedCompatibilityPlan {
-                plan,reference_source:"deployed_prepass",literal_reference:literal,
+                plan,
+                reference_source: "deployed_prepass",
+                literal_reference: literal,
             }));
         }
     }
-    let corrected=reference_multiway_plan(budget_mb,accurate_base_mb,reference_fixed_bytes,
-        union_slots,eq_cache_bytes,has_eq_cache)?;
+    let corrected = reference_multiway_plan(
+        budget_mb,
+        accurate_base_mb,
+        reference_fixed_bytes,
+        union_slots,
+        eq_cache_bytes,
+        has_eq_cache,
+    )?;
     Ok(fit(corrected)?.map(|plan| DeployedCompatibilityPlan {
-        reference_source:if plan.reference.is_some() {"corrected_budget_fallback"} else {"capacity_extension"},
-        plan,literal_reference:literal,
+        reference_source: if plan.reference.is_some() {
+            "corrected_budget_fallback"
+        } else {
+            "capacity_extension"
+        },
+        plan,
+        literal_reference: literal,
     }))
 }
 
 // Include the one-float placeholder allocated when no policies are forced.
 fn forced_storage_bytes(elements: usize) -> Result<usize, String> {
-    elements.max(1).checked_mul(std::mem::size_of::<f32>())
+    elements
+        .max(1)
+        .checked_mul(std::mem::size_of::<f32>())
         .ok_or_else(|| "forced strategy allocation size overflow".into())
 }
 
 // Stream one node's policy at a time: exact CPU routing, no concatenated
 // forced table or tree-sized temporary allocation in the estimate.
 fn forced_policy_elements(s: &PreflopSolver) -> Result<usize, String> {
-    s.nodes.iter().enumerate().filter(|(_, n)| n.kind == KIND_ACTION)
+    s.nodes
+        .iter()
+        .enumerate()
+        .filter(|(_, n)| n.kind == KIND_ACTION)
         .try_fold(0usize, |total, (i, _)| {
             let count = s.forced_sigma(i).map_or(0, |p| p.len());
-            total.checked_add(count).ok_or_else(|| "forced strategy count overflow".into())
+            total
+                .checked_add(count)
+                .ok_or_else(|| "forced strategy count overflow".into())
         })
 }
 
@@ -755,29 +1044,51 @@ fn reserve_forced_vram_mb(base_mb: f64, elements: usize, budget_mb: u64) -> Resu
 pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
     let sources = reach_sources(s);
     let mw = EquityCachePlan::multiway(s, &sources);
-    let mw_bytes = if mw.blocks.is_empty() { 0 } else {
-        let compact = MultiwayCompactPlan::build(&mw, s.n).unwrap_or_else(|_| MultiwayCompactPlan::union(mw.blocks.len()));
-        mw.metadata_bytes() + compact.bytes + compact.capacity * (NUM_CLASSES + 1) * 32 * 4
-            + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 8
-            + mw.blocks.len() * 4 + compact.capacity * NUM_CLASSES * 4
+    let mw_bytes = if mw.blocks.is_empty() {
+        0
+    } else {
+        let compact = MultiwayCompactPlan::build(&mw, s.n)
+            .unwrap_or_else(|_| MultiwayCompactPlan::union(mw.blocks.len()));
+        mw.metadata_bytes()
+            + compact.bytes
+            + compact.capacity * (NUM_CLASSES + 1) * 32 * 4
+            + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4
+            + s.nodes.len() * 8
+            + mw.blocks.len() * 4
+            + compact.capacity * NUM_CLASSES * 4
     };
     let forced_bytes = match forced_policy_elements(s).and_then(forced_storage_bytes) {
         Ok(bytes) => bytes,
         Err(_) => return f64::INFINITY,
     };
     minimum_vram_mb(s, ValuePlan::build(s).blocks)
-        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes + forced_bytes + icm::IcmGpu::bytes(s) + rnr::bytes(s)) as f64 / 1e6
+        + (EquityCachePlan::build(s, &sources).bytes()
+            + mw_bytes
+            + forced_bytes
+            + icm::IcmGpu::bytes(s)
+            + rnr::bytes(s)) as f64
+            / 1e6
 }
 
 /// The tables every GPU solve of this game holds, in MB: reaches, values,
 /// both arenas, the tree, the extra equity channels, ICM, the learned flop
 /// corrections and blockers. The constructor's first budget check.
 fn base_need_mb(s: &PreflopSolver, value_blocks: usize, reach_blocks: usize) -> f64 {
-    let eq_channels = if super::balanced_family(&s.cfg.realization) {3usize} else {1};
-    let leaf_bytes = s.leaf_terminals().map_or(0, |(nodes, _, _)| nodes.len() * (2 * NUM_CLASSES * 4 + 12));
-    minimum_vram_mb(s, value_blocks) + ((eq_channels-1)*NUM_CLASSES*NUM_CLASSES*4) as f64 / 1e6
-        + icm::IcmGpu::bytes(s) as f64 / 1e6 + leaf_bytes as f64 / 1e6
-        + removal::RemovalGpu::bytes(s, reach_blocks, eq_channels * NUM_CLASSES * NUM_CLASSES) as f64 / 1e6
+    let eq_channels = if super::balanced_family(&s.cfg.realization) {
+        3usize
+    } else {
+        1
+    };
+    let leaf_bytes = s
+        .leaf_terminals()
+        .map_or(0, |(nodes, _, _)| nodes.len() * (2 * NUM_CLASSES * 4 + 12));
+    minimum_vram_mb(s, value_blocks)
+        + ((eq_channels - 1) * NUM_CLASSES * NUM_CLASSES * 4) as f64 / 1e6
+        + icm::IcmGpu::bytes(s) as f64 / 1e6
+        + leaf_bytes as f64 / 1e6
+        + removal::RemovalGpu::bytes(s, reach_blocks, eq_channels * NUM_CLASSES * NUM_CLASSES)
+            as f64
+            / 1e6
 }
 
 /// The least GPU memory (MB) a solve of this built game can run in: what the
@@ -800,7 +1111,12 @@ pub fn policy_need_mb(s: &PreflopSolver) -> f64 {
 
 /// The part of `minimum_need_mb` fixed by the built tree and its model.
 pub fn tree_need_mb(s: &PreflopSolver) -> f64 {
-    let Some(reach_blocks) = s.nodes.len().checked_add(s.n - 1).filter(|&len| len <= u32::MAX as usize) else {
+    let Some(reach_blocks) = s
+        .nodes
+        .len()
+        .checked_add(s.n - 1)
+        .filter(|&len| len <= u32::MAX as usize)
+    else {
         return f64::INFINITY;
     };
     if s.arena_len > u32::MAX as usize || (s.cfg.card_removal && s.multiway.is_none()) {
@@ -813,8 +1129,12 @@ pub fn tree_need_mb(s: &PreflopSolver) -> f64 {
         bytes += sp.bytes();
     }
     if let Some(t) = s.three_way.as_ref() {
-        let tw_terms = s.nodes.iter()
-            .filter(|nd| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3 && nd.side_pots.is_empty())
+        let tw_terms = s
+            .nodes
+            .iter()
+            .filter(|nd| {
+                nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3 && nd.side_pots.is_empty()
+            })
             .count();
         if tw_terms > 0 || sp.count > 0 {
             bytes += 2 * t.arrays().0.len() * 4 + tw_terms * 4;
@@ -827,9 +1147,14 @@ pub fn tree_need_mb(s: &PreflopSolver) -> f64 {
         let samples = 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
         let one = (NUM_CLASSES + 1) * 4;
         let original = mw.metadata_bytes() + mw_terms * 4 + samples + mw.blocks.len() * one;
-        let compact = MultiwayCompactPlan::build(&mw, s.n).unwrap_or_else(|_| MultiwayCompactPlan::union(mw.blocks.len()));
-        let optimized = mw.metadata_bytes() + mw_terms * 8 + mw.blocks.len() * 4 + samples
-            + compact.bytes + compact.capacity * one;
+        let compact = MultiwayCompactPlan::build(&mw, s.n)
+            .unwrap_or_else(|_| MultiwayCompactPlan::union(mw.blocks.len()));
+        let optimized = mw.metadata_bytes()
+            + mw_terms * 8
+            + mw.blocks.len() * 4
+            + samples
+            + compact.bytes
+            + compact.capacity * one;
         bytes += original.min(optimized);
     }
     base_need_mb(s, ValuePlan::build(s).blocks, reach_blocks) + bytes as f64 / 1e6
@@ -847,24 +1172,32 @@ pub fn minimum_need_of(cfg: &super::PreflopConfig, est: &super::TreeEstimate) ->
         return f64::INFINITY;
     }
     let balanced = super::balanced_family(&cfg.realization);
-    let value_blocks = 1.0 + (est.nodes - est.action_nodes) as f64
+    let value_blocks = 1.0
+        + (est.nodes - est.action_nodes) as f64
         + (g.level_widths[0] + g.level_widths[1]) as f64;
     // reaches, values, both arenas and the tree, as minimum_vram_mb
-    let mut bytes = reach_blocks * (nc + 1.0) * 4.0 + value_blocks * nc * 4.0
-        + 2.0 * arena * 4.0 + n * (np * 12.0 + 44.0) + 64e6;
+    let mut bytes = reach_blocks * (nc + 1.0) * 4.0
+        + value_blocks * nc * 4.0
+        + 2.0 * arena * 4.0
+        + n * (np * 12.0 + 44.0)
+        + 64e6;
     let eq_channels = if balanced { 3.0 } else { 1.0 };
     bytes += (eq_channels - 1.0) * nc * nc * 4.0;
     if cfg.realization == "leafnet" {
         bytes += g.leaf_terminals as f64 * (2.0 * nc * 4.0 + 12.0);
     }
     if cfg.card_removal {
-        bytes += reach_blocks * 13.0 * 4.0 + eq_channels * nc * nc * 4.0 + g.heads_up_terminals as f64 * 4.0;
+        bytes += reach_blocks * 13.0 * 4.0
+            + eq_channels * nc * nc * 4.0
+            + g.heads_up_terminals as f64 * 4.0;
     }
     bytes += 4.0; // the placeholder for locked strategies
     if g.side_pot_terminals > 0 {
         // SidePots::bytes: terminals, their starts, amounts and masks, the
         // equity table and the multiway list
-        bytes += (2 * g.side_pot_terminals + 1 + 2 * g.side_pots + g.side_pot_multiway.max(1)) as f64 * 4.0
+        bytes += (2 * g.side_pot_terminals + 1 + 2 * g.side_pots + g.side_pot_multiway.max(1))
+            as f64
+            * 4.0
             + nc * nc * 4.0;
     }
     if g.multiway_terminals > 0 {
@@ -876,7 +1209,11 @@ pub fn minimum_need_of(cfg: &super::PreflopConfig, est: &super::TreeEstimate) ->
         // MultiwayCompactPlan: each seat's own tables, if the map pays for itself
         let capacity = g.multiway_max_seat_tables as f64;
         let map = union * np * 4.0;
-        let (map, capacity) = if map < (union - capacity) * one { (map, capacity) } else { (0.0, union) };
+        let (map, capacity) = if map < (union - capacity) * one {
+            (map, capacity)
+        } else {
+            (0.0, union)
+        };
         let optimized = metadata + terms * 8.0 + union * 4.0 + samples + map + capacity * one;
         bytes += original.min(optimized);
     }
@@ -886,12 +1223,18 @@ pub fn minimum_need_of(cfg: &super::PreflopConfig, est: &super::TreeEstimate) ->
 // Host-only, opt-in diagnostic. Does not modify source layouts, reaches, arenas,
 // GPU allocations or launches. All temporary records are dropped before return.
 fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]) {
-    use std::collections::BTreeMap;
-    use std::time::Instant;
+    use std::{collections::BTreeMap, time::Instant};
     #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-    struct Key { len: u8, ordered_sources: [u32; 8] }
+    struct Key {
+        len: u8,
+        ordered_sources: [u32; 8],
+    }
     #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-    struct Record { key: Key, seat: u8, node: u32 }
+    struct Record {
+        key: Key,
+        seat: u8,
+        node: u32,
+    }
     #[derive(Default)]
     struct Counts {
         tasks: usize,
@@ -916,7 +1259,10 @@ fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]
             by[2] += usize::from(multiplicity > 1);
         }
         fn report(&self) -> serde_json::Value {
-            let bytes = self.duplicate_groups.checked_mul(NUM_CLASSES).and_then(|n| n.checked_mul(4));
+            let bytes = self
+                .duplicate_groups
+                .checked_mul(NUM_CLASSES)
+                .and_then(|n| n.checked_mul(4));
             let layouts: Vec<_> = [1usize, 7, 32].into_iter().map(|batch| {
                 serde_json::json!({
                     "particle_batch": batch,
@@ -963,14 +1309,25 @@ fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]
     for &node in terms {
         let live = s.nodes[node as usize].live;
         for p in 0..s.n {
-            if (live >> p) & 1 == 0 { continue; }
-            let mut key = Key { len: 0, ordered_sources: [0; 8] };
+            if (live >> p) & 1 == 0 {
+                continue;
+            }
+            let mut key = Key {
+                len: 0,
+                ordered_sources: [0; 8],
+            };
             for q in 0..s.n {
-                if q == p || (live >> q) & 1 == 0 { continue; }
+                if q == p || (live >> q) & 1 == 0 {
+                    continue;
+                }
                 key.ordered_sources[key.len as usize] = sources[node as usize * s.n + q];
                 key.len += 1;
             }
-            records.push(Record { key, seat: p as u8, node });
+            records.push(Record {
+                key,
+                seat: p as u8,
+                node,
+            });
         }
     }
     let collect_ms = start.elapsed().as_secs_f64() * 1000.0;
@@ -988,7 +1345,9 @@ fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]
     while at < records.len() {
         let key = records[at].key;
         let mut end = at + 1;
-        while end < records.len() && records[end].key == key { end += 1; }
+        while end < records.len() && records[end].key == key {
+            end += 1;
+        }
         let group = &records[at..end];
         union.add(group.len(), key.len as usize);
         let mut distinct_seats = 0usize;
@@ -996,7 +1355,9 @@ fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]
         while seat_at < group.len() {
             let p = group[seat_at].seat as usize;
             let mut seat_end = seat_at + 1;
-            while seat_end < group.len() && group[seat_end].seat as usize == p { seat_end += 1; }
+            while seat_end < group.len() && group[seat_end].seat as usize == p {
+                seat_end += 1;
+            }
             distinct_seats += 1;
             let count = seat_end - seat_at;
             seats[p].add(count, key.len as usize);
@@ -1009,7 +1370,9 @@ fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]
             }
             seat_at = seat_end;
         }
-        *cross_seat_count_histogram.entry(distinct_seats).or_default() += 1;
+        *cross_seat_count_histogram
+            .entry(distinct_seats)
+            .or_default() += 1;
         if distinct_seats > 1 {
             cross_seat.add(group.len(), key.len as usize);
             if cross_seat.examples.len() < 5 {
@@ -1026,28 +1389,37 @@ fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]
     let per_seat_unique_sum: usize = seats.iter().map(|s| s.groups).sum();
     let record_capacity = records.capacity();
     let record_payload_bytes = record_capacity.checked_mul(std::mem::size_of::<Record>());
-    let per_seat: Vec<_> = seats.iter().enumerate().map(|(p,c)| serde_json::json!({
-        "seat": p, "position": &s.cfg.positions[p], "counts": c.report(),
-    })).collect();
-    println!("preflop mw key stats: {}", serde_json::json!({
-        "diagnostic_only": true,
-        "model": s.multiway_equity_model(),
-        "particles": super::multiway::SAMPLES,
-        "multiway_terminals": terms.len(),
-        "per_traverser": per_seat,
-        "average_check_union": union.report(),
-        "cross_seat_groups_only": cross_seat.report(),
-        "union_group_distinct_seats_histogram": cross_seat_count_histogram,
-        "within_traverser_duplicate_tasks": tasks - per_seat_unique_sum,
-        "additional_frozen_cross_seat_duplicate_tasks": per_seat_unique_sum - union.groups,
-        "timing_ms": {"collect":collect_ms,"sort":sort_ms,"count":count_ms,"total_before_print":start.elapsed().as_secs_f64()*1000.0},
-        "host_memory_estimate": {
-            "record_bytes":std::mem::size_of::<Record>(), "record_capacity":record_capacity,
-            "dominant_record_payload_bytes":record_payload_bytes,
-            "note":"Payload estimate, not measured RSS: excludes allocator overhead, small histograms/examples/JSON. In-place unstable sort adds no second record array. All diagnostic storage drops on return."
-        },
-        "interpretation":"Static source identity only, not active-reach savings or a speedup measurement. Cross-seat reuse requires one frozen average-check reach snapshot; learning sweeps invalidate it. Cache bytes exclude maps, activity flags and scatter work. Null byte estimates mean arithmetic overflow."
-    }));
+    let per_seat: Vec<_> = seats
+        .iter()
+        .enumerate()
+        .map(|(p, c)| {
+            serde_json::json!({
+                "seat": p, "position": &s.cfg.positions[p], "counts": c.report(),
+            })
+        })
+        .collect();
+    println!(
+        "preflop mw key stats: {}",
+        serde_json::json!({
+            "diagnostic_only": true,
+            "model": s.multiway_equity_model(),
+            "particles": super::multiway::SAMPLES,
+            "multiway_terminals": terms.len(),
+            "per_traverser": per_seat,
+            "average_check_union": union.report(),
+            "cross_seat_groups_only": cross_seat.report(),
+            "union_group_distinct_seats_histogram": cross_seat_count_histogram,
+            "within_traverser_duplicate_tasks": tasks - per_seat_unique_sum,
+            "additional_frozen_cross_seat_duplicate_tasks": per_seat_unique_sum - union.groups,
+            "timing_ms": {"collect":collect_ms,"sort":sort_ms,"count":count_ms,"total_before_print":start.elapsed().as_secs_f64()*1000.0},
+            "host_memory_estimate": {
+                "record_bytes":std::mem::size_of::<Record>(), "record_capacity":record_capacity,
+                "dominant_record_payload_bytes":record_payload_bytes,
+                "note":"Payload estimate, not measured RSS: excludes allocator overhead, small histograms/examples/JSON. In-place unstable sort adds no second record array. All diagnostic storage drops on return."
+            },
+            "interpretation":"Static source identity only, not active-reach savings or a speedup measurement. Cross-seat reuse requires one frozen average-check reach snapshot; learning sweeps invalidate it. Cache bytes exclude maps, activity flags and scatter work. Null byte estimates mean arithmetic overflow."
+        })
+    );
 }
 
 impl PreflopGpu {
@@ -1057,13 +1429,22 @@ impl PreflopGpu {
 
     // The private switch permits same-batch union/compact regression tests.
     // Public construction always chooses the minimum-fit-safe layout.
-    fn new_with_layout(s: &PreflopSolver, budget_mb: u64, allow_compact: bool) -> Result<Self, String> {
+    fn new_with_layout(
+        s: &PreflopSolver,
+        budget_mb: u64,
+        allow_compact: bool,
+    ) -> Result<Self, String> {
         Self::new_with_layout_mode(s, budget_mb, allow_compact, false)
     }
 
     // The true value is used only by internal parity tests. Public construction
     // selects minimal metadata solely when the normal compatible plan needs it.
-    fn new_with_layout_mode(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool) -> Result<Self, String> {
+    fn new_with_layout_mode(
+        s: &PreflopSolver,
+        budget_mb: u64,
+        allow_compact: bool,
+        force_minimal: bool,
+    ) -> Result<Self, String> {
         Self::new_with_cohort_mode(s, budget_mb, allow_compact, force_minimal, false, false)
     }
 
@@ -1073,12 +1454,30 @@ impl PreflopGpu {
     }
 
     #[cfg(feature = "preflop-research")]
-    pub fn new_research_unrolled_cohorts(s: &PreflopSolver, budget_mb: u64) -> Result<Self, String> {
+    pub fn new_research_unrolled_cohorts(
+        s: &PreflopSolver,
+        budget_mb: u64,
+    ) -> Result<Self, String> {
         Self::new_with_cohort_mode(s, budget_mb, true, false, true, true)
     }
 
-    fn new_with_cohort_mode(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool) -> Result<Self, String> {
-        Self::new_with_cohort_limit(s, budget_mb, allow_compact, force_minimal, cohorts, unrolled, None)
+    fn new_with_cohort_mode(
+        s: &PreflopSolver,
+        budget_mb: u64,
+        allow_compact: bool,
+        force_minimal: bool,
+        cohorts: bool,
+        unrolled: bool,
+    ) -> Result<Self, String> {
+        Self::new_with_cohort_limit(
+            s,
+            budget_mb,
+            allow_compact,
+            force_minimal,
+            cohorts,
+            unrolled,
+            None,
+        )
     }
 
     #[cfg(feature = "preflop-research")]
@@ -1086,18 +1485,64 @@ impl PreflopGpu {
         Self::new_with_kernel_offsets(s, budget_mb, true, false, true, true, None, true)
     }
 
-    fn new_with_cohort_limit(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>) -> Result<Self, String> {
-        Self::new_with_kernel_offsets(s, budget_mb, allow_compact, force_minimal, cohorts, unrolled, _cohort_limit_mb, false)
+    fn new_with_cohort_limit(
+        s: &PreflopSolver,
+        budget_mb: u64,
+        allow_compact: bool,
+        force_minimal: bool,
+        cohorts: bool,
+        unrolled: bool,
+        _cohort_limit_mb: Option<u64>,
+    ) -> Result<Self, String> {
+        Self::new_with_kernel_offsets(
+            s,
+            budget_mb,
+            allow_compact,
+            force_minimal,
+            cohorts,
+            unrolled,
+            _cohort_limit_mb,
+            false,
+        )
     }
 
-    fn new_with_kernel_offsets(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool) -> Result<Self, String> {
-        Self::construct(s, budget_mb, allow_compact, force_minimal, cohorts, unrolled, _cohort_limit_mb, _narrow, None)
+    fn new_with_kernel_offsets(
+        s: &PreflopSolver,
+        budget_mb: u64,
+        allow_compact: bool,
+        force_minimal: bool,
+        cohorts: bool,
+        unrolled: bool,
+        _cohort_limit_mb: Option<u64>,
+        _narrow: bool,
+    ) -> Result<Self, String> {
+        Self::construct(
+            s,
+            budget_mb,
+            allow_compact,
+            force_minimal,
+            cohorts,
+            unrolled,
+            _cohort_limit_mb,
+            _narrow,
+            None,
+        )
     }
 
     /// `large` = None builds the normal plan exactly as before. Some swaps
     /// in large-game mode's block tables and scratch sizes (large_game.rs);
     /// the kernels and every other table are the same.
-    fn construct(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool, mut large: Option<large_game::Selected>) -> Result<Self, String> {
+    fn construct(
+        s: &PreflopSolver,
+        budget_mb: u64,
+        allow_compact: bool,
+        force_minimal: bool,
+        cohorts: bool,
+        unrolled: bool,
+        _cohort_limit_mb: Option<u64>,
+        _narrow: bool,
+        mut large: Option<large_game::Selected>,
+    ) -> Result<Self, String> {
         if large.is_some() && (cohorts || unrolled || _narrow) {
             return Err("large-game mode uses the normal plan's kernels".into());
         }
@@ -1106,7 +1551,9 @@ impl PreflopGpu {
         // built and read). The legacy pairwise product shares the heads-up
         // equity cache, so it declines them.
         if s.cfg.card_removal && s.multiway.is_none() {
-            return Err("blockers (card removal) need the coupled multiway model on the GPU".into());
+            return Err(
+                "blockers (card removal) need the coupled multiway model on the GPU".into(),
+            );
         }
         // ICM rewrites the terminal money per traverser, which only the
         // normal plan's kernels read.
@@ -1116,7 +1563,9 @@ impl PreflopGpu {
         // Side-pot terminals (unequal stacks) and the 3-way table have their
         // own kernels in the normal plan only; the shared-CDF throughput
         // variants decline them.
-        if (cohorts || _narrow) && (s.three_way.is_some() || s.nodes.iter().any(|nd| !nd.side_pots.is_empty())) {
+        if (cohorts || _narrow)
+            && (s.three_way.is_some() || s.nodes.iter().any(|nd| !nd.side_pots.is_empty()))
+        {
             return Err("side pots and the 3-way table use the normal GPU plan".into());
         }
         // The trust dial swaps seat modes per pass, which only the normal
@@ -1126,24 +1575,31 @@ impl PreflopGpu {
         }
         let reach_blocks = match large.as_ref() {
             Some(l) => l.plan.reach_blocks,
-            None => s.nodes.len().checked_add(s.n - 1)
+            None => s
+                .nodes
+                .len()
+                .checked_add(s.n - 1)
                 .filter(|&len| len <= u32::MAX as usize)
-                .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?,
+                .ok_or_else(|| {
+                    "reach table beyond 32-bit block indexing; solving on CPU".to_string()
+                })?,
         };
         let values = match large.as_mut() {
             Some(l) => l.plan.take_values(),
             None => ValuePlan::build(s),
         };
-        let eq_channels = if super::balanced_family(&s.cfg.realization) {3usize} else {1};
+        let eq_channels = if super::balanced_family(&s.cfg.realization) {
+            3usize
+        } else {
+            1
+        };
         // Large-game mode's figure already holds everything it allocates.
         let mut need = match large.as_ref() {
             Some(l) => l.fit.need_bytes as f64 / 1e6,
             None => base_need_mb(s, values.blocks, reach_blocks),
         };
         if need > budget_mb as f64 {
-            return Err(format!(
-                "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
-            ));
+            return Err(format!("needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"));
         }
         if s.nodes.iter().any(|nd| nd.actions.len() > MAX_NA) {
             return Err("a node has more than 16 actions".into());
@@ -1168,8 +1624,7 @@ impl PreflopGpu {
         // JIT from stale PTX. (&'static is what cudarc's CompileOptions
         // wants; one tiny leak per process is fine.)
         let (cc_maj, cc_min) = ctx.compute_capability().map_err(e)?;
-        let arch: &'static str =
-            Box::leak(format!("compute_{cc_maj}{cc_min}").into_boxed_str());
+        let arch: &'static str = Box::leak(format!("compute_{cc_maj}{cc_min}").into_boxed_str());
         static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> =
             std::sync::OnceLock::new();
         let ptx = PTX
@@ -1214,13 +1669,19 @@ impl PreflopGpu {
             live[i] = nd.live as i32;
             winner[i] = nd.winner as i32;
             let rake = s.rake_of(nd.pot); // cap 0 = uncapped, same as the CPU
-            // fold-win: matched pot only is raked (uncalled chips return)
+                                          // fold-win: matched pot only is raked (uncalled chips return)
             potf[i] = (nd.pot - s.fold_win_rake(nd)) as f32;
             pots[i] = (nd.pot - rake) as f32;
             potg[i] = nd.pot as f32;
             for q in 0..np {
                 inv[i * np + q] = nd.invested[q] as f32;
-                rw[i * np + q] = if super::balanced_family(&s.cfg.realization) && s.fit.is_none() {1.0} else if nd.r.is_empty() { 0.0 } else { nd.r[q] };
+                rw[i * np + q] = if super::balanced_family(&s.cfg.realization) && s.fit.is_none() {
+                    1.0
+                } else if nd.r.is_empty() {
+                    0.0
+                } else {
+                    nd.r[q]
+                };
             }
             if nd.kind != KIND_ACTION {
                 terms.push(i as u32);
@@ -1242,7 +1703,11 @@ impl PreflopGpu {
                 }
                 let spr = (min_left / nd.pot).max(0.0);
                 if spr > 1e-9 {
-                    calib[i] = if super::balanced_family(&s.cfg.realization) {2} else {1};
+                    calib[i] = if super::balanced_family(&s.cfg.realization) {
+                        2
+                    } else {
+                        1
+                    };
                 }
             }
         }
@@ -1295,7 +1760,9 @@ impl PreflopGpu {
             forced.resize(forced.len() + plan.mix_len, 0.0);
             need += rnr::bytes(s) as f64 / 1e6;
             if need > budget_mb as f64 {
-                return Err(format!("needs ~{need:.0} MB VRAM with the trust dial (budget {budget_mb} MB)"));
+                return Err(format!(
+                    "needs ~{need:.0} MB VRAM with the trust dial (budget {budget_mb} MB)"
+                ));
             }
             Some(plan)
         } else {
@@ -1305,11 +1772,18 @@ impl PreflopGpu {
         // Large-game mode: each part's slot tables, one after another.
         let (mut eq_plan, mut mw_plan) = match large.as_mut() {
             Some(l) => l.plan.take_slot_tables(np),
-            None => (EquityCachePlan::build(s, &reach_src), EquityCachePlan::multiway(s, &reach_src)),
+            None => (
+                EquityCachePlan::build(s, &reach_src),
+                EquityCachePlan::multiway(s, &reach_src),
+            ),
         };
-        let mw_terms: Vec<u32> = s.nodes.iter().enumerate()
+        let mw_terms: Vec<u32> = s
+            .nodes
+            .iter()
+            .enumerate()
             .filter(|(_, nd)| coupled_terminal(s, nd))
-            .map(|(i, _)| i as u32).collect();
+            .map(|(i, _)| i as u32)
+            .collect();
         let use_multiway = !mw_terms.is_empty();
         let sp = SidePots::build(s, use_multiway);
         // learned terminals start from the host's corrections (zero before
@@ -1317,17 +1791,36 @@ impl PreflopGpu {
         let (leaf_terms, leaf_seats, leaf_corr) = match s.leaf_terminals() {
             Some((nodes, seats, corr)) => (
                 nodes,
-                seats.iter().flat_map(|p| [p[0] as i32, p[1] as i32]).collect::<Vec<i32>>(),
-                if corr.is_empty() { vec![0f32; nodes.len().max(1) * 2 * NUM_CLASSES] } else { corr.to_vec() },
+                seats
+                    .iter()
+                    .flat_map(|p| [p[0] as i32, p[1] as i32])
+                    .collect::<Vec<i32>>(),
+                if corr.is_empty() {
+                    vec![0f32; nodes.len().max(1) * 2 * NUM_CLASSES]
+                } else {
+                    corr.to_vec()
+                },
             ),
             None => (&[][..], vec![0i32; 2], vec![0f32; 1]),
         };
         let tw_terms: Vec<u32> = if s.three_way.is_some() {
-            s.nodes.iter().enumerate()
-                .filter(|(_, nd)| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3 && nd.side_pots.is_empty())
-                .map(|(i, _)| i as u32).collect()
-        } else { Vec::new() };
-        let tw_table = s.three_way.as_ref().filter(|_| !tw_terms.is_empty() || sp.count > 0);
+            s.nodes
+                .iter()
+                .enumerate()
+                .filter(|(_, nd)| {
+                    nd.kind == KIND_POT_SHARE
+                        && nd.live.count_ones() == 3
+                        && nd.side_pots.is_empty()
+                })
+                .map(|(i, _)| i as u32)
+                .collect()
+        } else {
+            Vec::new()
+        };
+        let tw_table = s
+            .three_way
+            .as_ref()
+            .filter(|_| !tw_terms.is_empty() || sp.count > 0);
         let icm_gpu = icm::IcmGpu::new(&ctx, &stream, s, arch, &sp.terms, &sp.start, sp.count)?;
         if let Some(t) = tw_table {
             need += (2 * t.arrays().0.len() * 4 + tw_terms.len() * 4) as f64 / 1e6;
@@ -1337,17 +1830,27 @@ impl PreflopGpu {
         }
         // Side-pot terminals keep their CDF slots in the plans below, but the
         // ordinary coupled kernel skips them: pf_side_pot_multiway prices them.
-        let mw_ordinary: Vec<u32> = mw_terms.iter().copied()
-            .filter(|&i| s.nodes[i as usize].side_pots.is_empty()).collect();
+        let mw_ordinary: Vec<u32> = mw_terms
+            .iter()
+            .copied()
+            .filter(|&i| s.nodes[i as usize].side_pots.is_empty())
+            .collect();
         if use_multiway && std::env::var("PREFLOP_MW_KEY_STATS").as_deref() == Ok("1") {
             multiway_terminal_key_stats(s, &reach_src, &mw_terms);
         }
         let mut compact = if let Some(l) = large.as_mut() {
             // per part, with its own flag at launch; this is all their maps
-            MultiwayCompactPlan { capacity: l.plan.mw_capacity_max, map: std::mem::take(&mut l.plan.mw_compact), bytes: 0, enabled: false }
+            MultiwayCompactPlan {
+                capacity: l.plan.mw_capacity_max,
+                map: std::mem::take(&mut l.plan.mw_compact),
+                bytes: 0,
+                enabled: false,
+            }
         } else if use_multiway && allow_compact {
             MultiwayCompactPlan::build(&mw_plan, np)?
-        } else { MultiwayCompactPlan::union(mw_plan.blocks.len()) };
+        } else {
+            MultiwayCompactPlan::union(mw_plan.blocks.len())
+        };
         let mut mw_batch = 0usize;
         let mut mw_cache_len = 1usize;
         let mut mw_normalized_len = 1usize;
@@ -1368,13 +1871,26 @@ impl PreflopGpu {
             mw_active_len = l.plan.mw_union_max.max(1);
             mw_prob_len = l.plan.mw_terms_max.max(1);
         } else if use_multiway {
-            let mut fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4
-                + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + compact.bytes;
-            let reference_fixed = mw_plan.metadata_bytes() + mw_terms.len() * 4
+            let mut fixed = mw_plan.metadata_bytes()
+                + mw_terms.len() * 8
+                + mw_plan.blocks.len() * 4
+                + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4
+                + compact.bytes;
+            let reference_fixed = mw_plan.metadata_bytes()
+                + mw_terms.len() * 4
                 + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
-            let selected = deployed_compatible_multiway_plan(budget_mb, need, literal_reference_base_mb,
-                reference_fixed, fixed, mw_plan.blocks.len(), compact.capacity,
-                eq_plan.bytes() * eq_channels, !eq_plan.blocks.is_empty(), force_minimal)?;
+            let selected = deployed_compatible_multiway_plan(
+                budget_mb,
+                need,
+                literal_reference_base_mb,
+                reference_fixed,
+                fixed,
+                mw_plan.blocks.len(),
+                compact.capacity,
+                eq_plan.bytes() * eq_channels,
+                !eq_plan.blocks.is_empty(),
+                force_minimal,
+            )?;
             let Some(selected) = selected else {
                 let one_particle = compact.capacity * (NUM_CLASSES + 1) * 4;
                 return Err(format!("coupled multiway model needs at least ~{:.0} MB VRAM (budget {budget_mb} MB); solving the same model on CPU",
@@ -1405,11 +1921,16 @@ impl PreflopGpu {
             && need + (eq_plan.bytes() * eq_channels) as f64 / 1e6 <= budget_mb as f64;
         let use_eq_cache = match large.as_ref() {
             Some(l) => l.fit.eq_cache,
-            None => mw_reference.as_ref().map_or(eq_cache_fits, |r| r.use_eq_cache),
+            None => mw_reference
+                .as_ref()
+                .map_or(eq_cache_fits, |r| r.use_eq_cache),
         };
         if large.is_none() {
             if use_eq_cache && !eq_cache_fits {
-                return Err("reference HU equity cache does not fit the optimized layout; solving on CPU".into());
+                return Err(
+                    "reference HU equity cache does not fit the optimized layout; solving on CPU"
+                        .into(),
+                );
             }
             if use_eq_cache {
                 need += (eq_plan.bytes() * eq_channels) as f64 / 1e6;
@@ -1419,8 +1940,20 @@ impl PreflopGpu {
         }
         let eq_cache_len = match large.as_ref() {
             // the largest part's cache; each part fills it for itself
-            Some(l) => if use_eq_cache { l.plan.eq_union_max * NUM_CLASSES * eq_channels } else { 1 },
-            None => if use_eq_cache { eq_plan.blocks.len() * NUM_CLASSES * eq_channels } else { 1 },
+            Some(l) => {
+                if use_eq_cache {
+                    l.plan.eq_union_max * NUM_CLASSES * eq_channels
+                } else {
+                    1
+                }
+            }
+            None => {
+                if use_eq_cache {
+                    eq_plan.blocks.len() * NUM_CLASSES * eq_channels
+                } else {
+                    1
+                }
+            }
         };
 
         // Threads in a warp evaluate consecutive hero classes. Transpose so
@@ -1429,12 +1962,18 @@ impl PreflopGpu {
         let mut eq = vec![0f32; NUM_CLASSES * NUM_CLASSES * eq_channels];
         for i in 0..NUM_CLASSES {
             for j in 0..NUM_CLASSES {
-                let raw = if eq_channels==3 {s.balanced_raw_equity(i,j)} else {s.eq.eq(i,j)};
+                let raw = if eq_channels == 3 {
+                    s.balanced_raw_equity(i, j)
+                } else {
+                    s.eq.eq(i, j)
+                };
                 eq[j * NUM_CLASSES + i] = raw;
                 if eq_channels == 3 {
                     for channel in 1..3 {
-                        eq[channel*NUM_CLASSES*NUM_CLASSES + j*NUM_CLASSES+i] = s.fit.as_ref()
-                            .map_or(raw, |f| f.balanced_share(raw,i,j,channel==1));
+                        eq[channel * NUM_CLASSES * NUM_CLASSES + j * NUM_CLASSES + i] = s
+                            .fit
+                            .as_ref()
+                            .map_or(raw, |f| f.balanced_share(raw, i, j, channel == 1));
                     }
                 }
             }
@@ -1449,36 +1988,96 @@ impl PreflopGpu {
             Some(p) => ([regs, &p.regrets].concat(), [strat, &p.strat].concat()),
             None => (Vec::new(), Vec::new()),
         };
-        let (regs_dev, strat_dev): (&[f32], &[f32]) = if rnr_plan.is_some() { (&regs_dev, &strat_dev) } else { (regs, strat) };
+        let (regs_dev, strat_dev): (&[f32], &[f32]) = if rnr_plan.is_some() {
+            (&regs_dev, &strat_dev)
+        } else {
+            (regs, strat)
+        };
         let rnr_gpu = match rnr_plan {
             Some(p) => Some(Box::new(rnr::GpuRnr::new(&ctx, &stream, arch, p)?)),
             None => None,
         };
 
         let cohort_plan = if cohorts {
-            if !use_multiway || !compact.enabled || !use_mw_normalized || !use_mw_prepared || mw_batch!=32 {
+            if !use_multiway
+                || !compact.enabled
+                || !use_mw_normalized
+                || !use_mw_prepared
+                || mw_batch != 32
+            {
                 return Err("cohorts require the native compact normalized batch32 plan".into());
             }
             // Exact count of all 46 plain device allocations below. No replaced
             // CDF is ever allocated; optional research allocations are added by Plan.
-            let base_elements = [kind.len(), actor.len(), na.len(), off.len(), cstart.len(), s.children.len(),
-                live.len(), winner.len(), potf.len(), pots.len(), inv.len(), rw.len(), potg.len(), calib.len(), cbase.len(),
-                eq.len(), eq_plan.slots.len(), eq_plan.blocks.len(), eq_plan.work.len(), eq_cache_len,
-                s.multiway.as_ref().unwrap().order.len(),s.multiway.as_ref().unwrap().lower.len(),s.multiway.as_ref().unwrap().upper.len(),
-                mw_plan.slots.len(),mw_plan.blocks.len(),mw_plan.work.len(),mw_cache_len,mw_normalized_len,compact.map.len(),
-                mw_terms.len().max(1),mw_plan.blocks.len(),mw_terms.len().max(1),cprob.len(),act_nodes.len(),terms.len(),
-                src.len(),foff.len(),forced.len().max(1),regs.len(),strat.len(),reach_src.len(),reach_blocks*NUM_CLASSES,
-                reach_blocks,values.slots.len(),values.blocks*NUM_CLASSES,2*np*NUM_CLASSES].iter().sum::<usize>();
-            let plan=cohort_reuse::Plan::build(np,&mw_plan,compact.capacity,base_elements*4,
-                values.blocks*NUM_CLASSES*4,mw_terms.len().max(1)*4,_cohort_limit_mb.unwrap_or(budget_mb).min(budget_mb))?;
-            if _cohort_limit_mb.is_some() && plan.groups.iter().all(|g|g.len()==1) {
+            let base_elements = [
+                kind.len(),
+                actor.len(),
+                na.len(),
+                off.len(),
+                cstart.len(),
+                s.children.len(),
+                live.len(),
+                winner.len(),
+                potf.len(),
+                pots.len(),
+                inv.len(),
+                rw.len(),
+                potg.len(),
+                calib.len(),
+                cbase.len(),
+                eq.len(),
+                eq_plan.slots.len(),
+                eq_plan.blocks.len(),
+                eq_plan.work.len(),
+                eq_cache_len,
+                s.multiway.as_ref().unwrap().order.len(),
+                s.multiway.as_ref().unwrap().lower.len(),
+                s.multiway.as_ref().unwrap().upper.len(),
+                mw_plan.slots.len(),
+                mw_plan.blocks.len(),
+                mw_plan.work.len(),
+                mw_cache_len,
+                mw_normalized_len,
+                compact.map.len(),
+                mw_terms.len().max(1),
+                mw_plan.blocks.len(),
+                mw_terms.len().max(1),
+                cprob.len(),
+                act_nodes.len(),
+                terms.len(),
+                src.len(),
+                foff.len(),
+                forced.len().max(1),
+                regs.len(),
+                strat.len(),
+                reach_src.len(),
+                reach_blocks * NUM_CLASSES,
+                reach_blocks,
+                values.slots.len(),
+                values.blocks * NUM_CLASSES,
+                2 * np * NUM_CLASSES,
+            ]
+            .iter()
+            .sum::<usize>();
+            let plan = cohort_reuse::Plan::build(
+                np,
+                &mw_plan,
+                compact.capacity,
+                base_elements * 4,
+                values.blocks * NUM_CLASSES * 4,
+                mw_terms.len().max(1) * 4,
+                _cohort_limit_mb.unwrap_or(budget_mb).min(budget_mb),
+            )?;
+            if _cohort_limit_mb.is_some() && plan.groups.iter().all(|g| g.len() == 1) {
                 return Err("no shared cohort fits the available memory".into());
             }
-            mw_cache_len=plan.capacity*32*(NUM_CLASSES+1);
-            mw_normalized_len=plan.capacity*NUM_CLASSES;
-            need=plan.peak_bytes as f64/1e6;
+            mw_cache_len = plan.capacity * 32 * (NUM_CLASSES + 1);
+            mw_normalized_len = plan.capacity * NUM_CLASSES;
+            need = plan.peak_bytes as f64 / 1e6;
             Some(plan)
-        } else {None};
+        } else {
+            None
+        };
 
         if _narrow && (!cohorts || !unrolled) {
             return Err("narrow offsets require retained unrolled cohorts".into());
@@ -1491,7 +2090,12 @@ impl PreflopGpu {
             println!("preflop gpu: coupled multiway, {} particles, {} reach CDFs, {}-particle batches, {:.0} MB CDF scratch",
                 super::multiway::SAMPLES, mw_plan.blocks.len(), mw_batch, mw_cache_len as f64 * 4.0 / 1e6);
             if compact.enabled {
-                println!("preflop gpu: compact CDF slots {} of {}, {:.1} MB immutable map", compact.capacity, mw_plan.blocks.len(), compact.bytes as f64 / 1e6);
+                println!(
+                    "preflop gpu: compact CDF slots {} of {}, {:.1} MB immutable map",
+                    compact.capacity,
+                    mw_plan.blocks.len(),
+                    compact.bytes as f64 / 1e6
+                );
             }
             if !use_mw_normalized {
                 println!("preflop gpu: direct CDF normalization to preserve reference grouping or minimum-VRAM fit");
@@ -1517,27 +2121,30 @@ impl PreflopGpu {
         );
 
         if std::env::var("PREFLOP_GPU_LAYOUT_STATS").as_deref() == Ok("1") {
-            println!("preflop gpu layout: {}", serde_json::json!({
-                "baseline": "optimized_8e7e4b0",
-                "model": s.multiway_equity_model(), "nodes": n, "seats": np,
-                "budget_mb": budget_mb, "planned_need_mb": need,
-                "forced_nodes": n_forced, "frozen_nodes": n_frozen,
-                "forced_elements": forced.len(), "forced_bytes": forced_storage_bytes(forced.len())?,
-                "multiway_enabled": use_multiway, "multiway_batch": mw_batch,
-                "multiway_particles": super::multiway::SAMPLES,
-                "cdf_slots": if use_multiway { compact.capacity } else { 0 },
-                "cdf_allocated_bytes": mw_cache_len * std::mem::size_of::<f32>(),
-                "compact_cdf": compact.enabled, "normalized_cdf": use_mw_normalized,
-                "minimal_multiway_metadata": use_multiway && !use_mw_prepared,
-                "batch_policy": mw_reference_source,
-                "literal_reference_multiway_batch": mw_literal_reference.map(|r|r.batch),
-                "literal_reference_hu_cache_enabled": mw_literal_reference.map(|r|r.use_eq_cache),
-                "reference_multiway_batch": mw_reference.as_ref().map(|r| r.batch),
-                "reference_hu_cache_enabled": mw_reference.as_ref().map(|r| r.use_eq_cache),
-                "hu_equity_cache_enabled": use_eq_cache,
-                "hu_equity_cache_slots": if use_eq_cache { eq_plan.blocks.len() } else { 0 },
-                "hu_equity_cache_allocated_bytes": eq_cache_len * std::mem::size_of::<f32>(),
-            }));
+            println!(
+                "preflop gpu layout: {}",
+                serde_json::json!({
+                    "baseline": "optimized_8e7e4b0",
+                    "model": s.multiway_equity_model(), "nodes": n, "seats": np,
+                    "budget_mb": budget_mb, "planned_need_mb": need,
+                    "forced_nodes": n_forced, "frozen_nodes": n_frozen,
+                    "forced_elements": forced.len(), "forced_bytes": forced_storage_bytes(forced.len())?,
+                    "multiway_enabled": use_multiway, "multiway_batch": mw_batch,
+                    "multiway_particles": super::multiway::SAMPLES,
+                    "cdf_slots": if use_multiway { compact.capacity } else { 0 },
+                    "cdf_allocated_bytes": mw_cache_len * std::mem::size_of::<f32>(),
+                    "compact_cdf": compact.enabled, "normalized_cdf": use_mw_normalized,
+                    "minimal_multiway_metadata": use_multiway && !use_mw_prepared,
+                    "batch_policy": mw_reference_source,
+                    "literal_reference_multiway_batch": mw_literal_reference.map(|r|r.batch),
+                    "literal_reference_hu_cache_enabled": mw_literal_reference.map(|r|r.use_eq_cache),
+                    "reference_multiway_batch": mw_reference.as_ref().map(|r| r.batch),
+                    "reference_hu_cache_enabled": mw_reference.as_ref().map(|r| r.use_eq_cache),
+                    "hu_equity_cache_enabled": use_eq_cache,
+                    "hu_equity_cache_slots": if use_eq_cache { eq_plan.blocks.len() } else { 0 },
+                    "hu_equity_cache_allocated_bytes": eq_cache_len * std::mem::size_of::<f32>(),
+                })
+            );
         }
 
         let gpu = PreflopGpu {
@@ -1550,16 +2157,26 @@ impl PreflopGpu {
             // Separate entry points keep the generic table-size fallback's
             // register/local-memory budget independent of specialized kernels.
             f_terminal: func(match s.n {
-                2 => "pf_terminal_2", 6 => "pf_terminal_6", 8 => "pf_terminal_8",
+                2 => "pf_terminal_2",
+                6 => "pf_terminal_6",
+                8 => "pf_terminal_8",
                 _ => "pf_terminal",
             })?,
             f_reach_mass: func("pf_reach_mass")?,
             f_equities: func("pf_equities")?,
-            f_multiway_cdf: func(if use_mw_normalized { "pf_multiway_cdf" } else { "pf_multiway_cdf_direct" })?,
+            f_multiway_cdf: func(if use_mw_normalized {
+                "pf_multiway_cdf"
+            } else {
+                "pf_multiway_cdf_direct"
+            })?,
             f_multiway_normalize: func("pf_multiway_normalize")?,
             f_multiway_clear_active: func("pf_multiway_clear_active")?,
             f_multiway_prepare: func("pf_multiway_prepare")?,
-            f_multiway_terminal: func(if use_mw_prepared { "pf_multiway_terminal" } else { "pf_multiway_terminal_minimal" })?,
+            f_multiway_terminal: func(if use_mw_prepared {
+                "pf_multiway_terminal"
+            } else {
+                "pf_multiway_terminal_minimal"
+            })?,
             f_side_pot_terminal: func("pf_side_pot_terminal")?,
             f_leaf_terminal: func("pf_leaf_terminal")?,
             f_side_pot_multiway: func("pf_side_pot_multiway")?,
@@ -1584,14 +2201,22 @@ impl PreflopGpu {
             clip_lo,
             clip_hi,
             d_eq: stream.clone_htod(&eq).map_err(e)?,
-            eq_channels, eq_cache_stride: (eq_plan.blocks.len()*NUM_CLASSES) as u64,
+            eq_channels,
+            eq_cache_stride: (eq_plan.blocks.len() * NUM_CLASSES) as u64,
             d_eq_slots: stream.clone_htod(&eq_plan.slots).map_err(e)?,
             d_eq_blocks: stream.clone_htod(&eq_plan.blocks).map_err(e)?,
             d_eq_work: stream.clone_htod(&eq_plan.work).map_err(e)?,
             d_eq_cache: stream.alloc_zeros::<f32>(eq_cache_len).map_err(e)?,
             eq_spans: eq_plan.spans,
             use_eq_cache: use_eq_cache as i32,
-            d_mw_order: stream.clone_htod(s.multiway.as_ref().map(|m| m.order.as_slice()).unwrap_or(&[0])).map_err(e)?,
+            d_mw_order: stream
+                .clone_htod(
+                    s.multiway
+                        .as_ref()
+                        .map(|m| m.order.as_slice())
+                        .unwrap_or(&[0]),
+                )
+                .map_err(e)?,
             #[cfg(feature = "preflop-research")]
             research: None,
             #[cfg(feature = "preflop-research")]
@@ -1605,10 +2230,12 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_predictive: None,
             #[cfg(feature = "preflop-research")]
-            research_rm_plus_fresh: s.iteration == 0 && s.nodes.iter().enumerate().all(|(i, nd)| {
-                src[i] != 0 || (nd.data_off..nd.data_off + nd.actions.len()*NUM_CLASSES)
-                    .all(|ix| regs[ix] == 0.0 && strat[ix] == 0.0)
-            }),
+            research_rm_plus_fresh: s.iteration == 0
+                && s.nodes.iter().enumerate().all(|(i, nd)| {
+                    src[i] != 0
+                        || (nd.data_off..nd.data_off + nd.actions.len() * NUM_CLASSES)
+                            .all(|ix| regs[ix] == 0.0 && strat[ix] == 0.0)
+                }),
             #[cfg(feature = "preflop-research")]
             research_pair_control: None,
             #[cfg(feature = "preflop-research")]
@@ -1618,7 +2245,7 @@ impl PreflopGpu {
             research_exact_reuse: None,
             research_cohorts: None,
             throughput_narrow: narrow,
-            static_cdf:None,
+            static_cdf: None,
             #[cfg(feature = "preflop-research")]
             research_average_opponents: None,
             #[cfg(feature = "preflop-research")]
@@ -1633,21 +2260,57 @@ impl PreflopGpu {
             research_unit_probability: false,
             #[cfg(feature = "preflop-research")]
             research_unit_fill: None,
-            d_mw_lower: stream.clone_htod(s.multiway.as_ref().map(|m| m.lower.as_slice()).unwrap_or(&[0])).map_err(e)?,
-            d_mw_upper: stream.clone_htod(s.multiway.as_ref().map(|m| m.upper.as_slice()).unwrap_or(&[0])).map_err(e)?,
+            d_mw_lower: stream
+                .clone_htod(
+                    s.multiway
+                        .as_ref()
+                        .map(|m| m.lower.as_slice())
+                        .unwrap_or(&[0]),
+                )
+                .map_err(e)?,
+            d_mw_upper: stream
+                .clone_htod(
+                    s.multiway
+                        .as_ref()
+                        .map(|m| m.upper.as_slice())
+                        .unwrap_or(&[0]),
+                )
+                .map_err(e)?,
             d_mw_slots: stream.clone_htod(&mw_plan.slots).map_err(e)?,
             d_mw_blocks: stream.clone_htod(&mw_plan.blocks).map_err(e)?,
             d_mw_work: stream.clone_htod(&mw_plan.work).map_err(e)?,
             d_mw_cdf: stream.alloc_zeros::<f32>(mw_cache_len).map_err(e)?,
-            d_mw_normalized: if use_mw_prepared { stream.alloc_zeros::<f32>(mw_normalized_len).map_err(e)? } else { stream.null::<f32>().map_err(e)? },
+            d_mw_normalized: if use_mw_prepared {
+                stream.alloc_zeros::<f32>(mw_normalized_len).map_err(e)?
+            } else {
+                stream.null::<f32>().map_err(e)?
+            },
             use_mw_normalized,
             use_mw_prepared,
-            d_mw_compact: if use_mw_prepared { stream.clone_htod(&compact.map).map_err(e)? } else { stream.null::<u32>().map_err(e)? },
+            d_mw_compact: if use_mw_prepared {
+                stream.clone_htod(&compact.map).map_err(e)?
+            } else {
+                stream.null::<u32>().map_err(e)?
+            },
             mw_union_slots: mw_plan.blocks.len() as u32,
             use_mw_compact: compact.enabled as i32,
-            d_mw_terms: stream.clone_htod(if mw_ordinary.is_empty() { &[0u32][..] } else { mw_ordinary.as_slice() }).map_err(e)?,
-            d_mw_active: if use_mw_prepared { stream.alloc_zeros::<u32>(mw_active_len).map_err(e)? } else { stream.null::<u32>().map_err(e)? },
-            d_mw_prob: if use_mw_prepared { stream.alloc_zeros::<f32>(mw_prob_len).map_err(e)? } else { stream.null::<f32>().map_err(e)? },
+            d_mw_terms: stream
+                .clone_htod(if mw_ordinary.is_empty() {
+                    &[0u32][..]
+                } else {
+                    mw_ordinary.as_slice()
+                })
+                .map_err(e)?,
+            d_mw_active: if use_mw_prepared {
+                stream.alloc_zeros::<u32>(mw_active_len).map_err(e)?
+            } else {
+                stream.null::<u32>().map_err(e)?
+            },
+            d_mw_prob: if use_mw_prepared {
+                stream.alloc_zeros::<f32>(mw_prob_len).map_err(e)?
+            } else {
+                stream.null::<f32>().map_err(e)?
+            },
             mw_spans: mw_plan.spans,
             mw_batch: mw_batch as u32,
             mw_nterms: mw_ordinary.len() as u32,
@@ -1659,14 +2322,30 @@ impl PreflopGpu {
             d_sp_prob: stream.alloc_zeros::<f32>(sp.coupled.max(1)).map_err(e)?,
             sp_nterms: sp.count as u32,
             sp_ncoupled: sp.coupled as u32,
-            d_leaf_terms: stream.clone_htod(if leaf_terms.is_empty() { &[0u32][..] } else { leaf_terms }).map_err(e)?,
+            d_leaf_terms: stream
+                .clone_htod(if leaf_terms.is_empty() {
+                    &[0u32][..]
+                } else {
+                    leaf_terms
+                })
+                .map_err(e)?,
             d_leaf_seats: stream.clone_htod(&leaf_seats).map_err(e)?,
             d_leaf_corr: stream.clone_htod(&leaf_corr).map_err(e)?,
             leaf_nterms: leaf_terms.len() as u32,
             leaf_version: s.leaf_version(),
-            d_tw_terms: stream.clone_htod(if tw_terms.is_empty() { &[0u32][..] } else { tw_terms.as_slice() }).map_err(e)?,
-            d_tw_ew: stream.clone_htod(tw_table.map_or(&[0f32][..], |t| t.arrays().0)).map_err(e)?,
-            d_tw_w: stream.clone_htod(tw_table.map_or(&[0f32][..], |t| t.arrays().1)).map_err(e)?,
+            d_tw_terms: stream
+                .clone_htod(if tw_terms.is_empty() {
+                    &[0u32][..]
+                } else {
+                    tw_terms.as_slice()
+                })
+                .map_err(e)?,
+            d_tw_ew: stream
+                .clone_htod(tw_table.map_or(&[0f32][..], |t| t.arrays().0))
+                .map_err(e)?,
+            d_tw_w: stream
+                .clone_htod(tw_table.map_or(&[0f32][..], |t| t.arrays().1))
+                .map_err(e)?,
             tw_nterms: tw_terms.len() as u32,
             use_tw: tw_table.is_some() as i32,
             use_multiway: use_multiway as i32,
@@ -1691,7 +2370,9 @@ impl PreflopGpu {
                 .map_err(e)?,
             d_reach_mass: stream.alloc_zeros::<f32>(reach_blocks).map_err(e)?,
             d_val_slot: stream.clone_htod(&values.slots).map_err(e)?,
-            d_val: stream.alloc_zeros::<f32>(values.blocks * NUM_CLASSES).map_err(e)?,
+            d_val: stream
+                .alloc_zeros::<f32>(values.blocks * NUM_CLASSES)
+                .map_err(e)?,
             spans,
             nterms: terms.len() as u32,
             np: np as i32,
@@ -1719,22 +2400,48 @@ impl PreflopGpu {
             }
             None => gpu,
         };
-        let gpu = if let Some(plan)=cohort_plan {
-            let mut gpu=gpu;
-            gpu.enable_research_exact_cdf_reuse_variant(unrolled,narrow)?;
-            let storage=cohort_reuse::CohortReuse::allocate_variant(&gpu,plan,unrolled,narrow)?;
-            gpu.research_cohorts=Some(storage);gpu
-        } else {gpu};
+        let gpu = if let Some(plan) = cohort_plan {
+            let mut gpu = gpu;
+            gpu.enable_research_exact_cdf_reuse_variant(unrolled, narrow)?;
+            let storage =
+                cohort_reuse::CohortReuse::allocate_variant(&gpu, plan, unrolled, narrow)?;
+            gpu.research_cohorts = Some(storage);
+            gpu
+        } else {
+            gpu
+        };
         Ok(gpu)
     }
 
     /// Isolated research only. Must be configured before any learning/graph capture.
     #[cfg(feature = "preflop-research")]
-    pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
-        if self.icm.is_some() { return Err("research experiments do not support ICM games".into()); }
-        if self.rnr.is_some() { return Err("research experiments do not support the trust dial".into()); }
-        if self.learned.is_some() || self.interface.is_some() { return Err("learned continuation research cannot be combined with convergence experiments".into()); }
-        if self.research_cv.is_some() || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
+    pub fn configure_research(
+        &mut self,
+        experiment: super::convergence_research::Experiment,
+    ) -> Result<(), String> {
+        if self.icm.is_some() {
+            return Err("research experiments do not support ICM games".into());
+        }
+        if self.rnr.is_some() {
+            return Err("research experiments do not support the trust dial".into());
+        }
+        if self.learned.is_some() || self.interface.is_some() {
+            return Err(
+                "learned continuation research cannot be combined with convergence experiments"
+                    .into(),
+            );
+        }
+        if self.research_cv.is_some()
+            || self.research_behavioral.is_some()
+            || self.research_predictive.is_some()
+            || self.research_rm_plus.is_some()
+            || self.warmed
+            || self.eval_warmed
+            || self.research_history_units.is_some()
+            || self.research_root_ranges.is_some()
+        {
+            return Err("configure research before learning or evaluation; compact roots require full particles".into());
+        }
         self.research = Some(experiment);
         Ok(())
     }
@@ -1746,20 +2453,48 @@ impl PreflopGpu {
 
     #[cfg(feature = "preflop-research")]
     fn research_tables_select(&mut self, learning: bool, advance: bool) -> Result<(), String> {
-        if let Some(control)=&mut self.research_pair_control {control.learning=learning;}
-        let Some(r) = &mut self.research else { return Ok(()); };
-        self.research_samples = if learning { r.samples } else { super::multiway::SAMPLES as u32 };
-        if r.samples == super::multiway::SAMPLES as u32 || self.use_multiway == 0 { return Ok(()); }
-        let shift = if learning { if advance {r.next_offset()} else {r.offset} } else { 0 };
+        if let Some(control) = &mut self.research_pair_control {
+            control.learning = learning;
+        }
+        let Some(r) = &mut self.research else {
+            return Ok(());
+        };
+        self.research_samples = if learning {
+            r.samples
+        } else {
+            super::multiway::SAMPLES as u32
+        };
+        if r.samples == super::multiway::SAMPLES as u32 || self.use_multiway == 0 {
+            return Ok(());
+        }
+        let shift = if learning {
+            if advance {
+                r.next_offset()
+            } else {
+                r.offset
+            }
+        } else {
+            0
+        };
         // All three tables retain their allocation/address, so captured CUDA
         // graphs see the current sample set. Full checks restore canonical order.
         let rotate = |v: &[u32]| {
             let split = shift * NUM_CLASSES;
-            v[split..].iter().chain(&v[..split]).copied().collect::<Vec<_>>()
+            v[split..]
+                .iter()
+                .chain(&v[..split])
+                .copied()
+                .collect::<Vec<_>>()
         };
-        self.stream.memcpy_htod(&rotate(&r.deck.order), &mut self.d_mw_order).map_err(e)?;
-        self.stream.memcpy_htod(&rotate(&r.deck.lower), &mut self.d_mw_lower).map_err(e)?;
-        self.stream.memcpy_htod(&rotate(&r.deck.upper), &mut self.d_mw_upper).map_err(e)?;
+        self.stream
+            .memcpy_htod(&rotate(&r.deck.order), &mut self.d_mw_order)
+            .map_err(e)?;
+        self.stream
+            .memcpy_htod(&rotate(&r.deck.lower), &mut self.d_mw_lower)
+            .map_err(e)?;
+        self.stream
+            .memcpy_htod(&rotate(&r.deck.upper), &mut self.d_mw_upper)
+            .map_err(e)?;
         self.stream.synchronize().map_err(e)?;
         Ok(())
     }
@@ -1777,51 +2512,103 @@ impl PreflopGpu {
     /// 1 evaluates the average strategy; 2 is best response vs average.
     fn sweep(&mut self, p: i32, mode: i32) -> Result<(), String> {
         #[cfg(feature = "preflop-research")]
-        if self.research_predictive_sweep(p, mode)? { return Ok(()); }
-        if self.large.is_some() { return self.large_sweep(p, mode); }
+        if self.research_predictive_sweep(p, mode)? {
+            return Ok(());
+        }
+        if self.large.is_some() {
+            return self.large_sweep(p, mode);
+        }
         self.down(mode, p)?;
         self.terminals(p)?;
         self.up(p, mode)?;
         #[cfg(feature = "preflop-research")]
-        if mode == 0 { self.research_rm_plus_clip(p)?; }
+        if mode == 0 {
+            self.research_rm_plus_clip(p)?;
+        }
         Ok(())
     }
 
     #[cfg(feature = "preflop-research")]
-    pub(crate) fn research_set_root_ranges(&mut self,ranges:Vec<Vec<f32>>)->Result<(),String> {
-        if self.research_cv.is_some() || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some()
-            || ranges.len()!=self.np as usize || ranges.iter().any(|r|r.len()!=NUM_CLASSES
-                || r.iter().any(|x|!x.is_finite() || *x<0.0)
-                || (r.iter().map(|&x|x as f64).sum::<f64>()-1.0).abs()>1e-5) {
-            return Err("research roots require a fresh full-particle GPU and normalized seat ranges".into());
+    pub(crate) fn research_set_root_ranges(&mut self, ranges: Vec<Vec<f32>>) -> Result<(), String> {
+        if self.research_cv.is_some()
+            || self.research_behavioral.is_some()
+            || self.research_predictive.is_some()
+            || self.research_rm_plus.is_some()
+            || self.warmed
+            || self.eval_warmed
+            || self.research.is_some()
+            || self.research_root_ranges.is_some()
+            || self.research_pair_control.is_some()
+            || self.research_exploration.is_some()
+            || self.research_history_units.is_some()
+            || ranges.len() != self.np as usize
+            || ranges.iter().any(|r| {
+                r.len() != NUM_CLASSES
+                    || r.iter().any(|x| !x.is_finite() || *x < 0.0)
+                    || (r.iter().map(|&x| x as f64).sum::<f64>() - 1.0).abs() > 1e-5
+            })
+        {
+            return Err(
+                "research roots require a fresh full-particle GPU and normalized seat ranges"
+                    .into(),
+            );
         }
-        let flat:Vec<f32>=ranges.iter().flatten().copied().collect();
-        let device=self.stream.clone_htod(&flat).map_err(e)?;
-        self.research_root_ranges=Some((ranges,device));
+        let flat: Vec<f32> = ranges.iter().flatten().copied().collect();
+        let device = self.stream.clone_htod(&flat).map_err(e)?;
+        self.research_root_ranges = Some((ranges, device));
         Ok(())
     }
 
     /// Restrict offline learning without changing the saved model's constraints.
     /// A fresh unmasked engine must perform final best-response evaluation.
     #[cfg(feature = "preflop-research")]
-    pub(crate) fn research_restrict_learning(&mut self,s:&PreflopSolver,allowed:&std::collections::HashSet<usize>)->Result<(),String> {
-        if self.research_cv.is_some() || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() || allowed.is_empty()
-            || allowed.iter().any(|&i|i>=s.nodes.len() || s.nodes[i].kind!=KIND_ACTION) {
+    pub(crate) fn research_restrict_learning(
+        &mut self,
+        s: &PreflopSolver,
+        allowed: &std::collections::HashSet<usize>,
+    ) -> Result<(), String> {
+        if self.research_cv.is_some()
+            || self.research_behavioral.is_some()
+            || self.research_predictive.is_some()
+            || self.research_rm_plus.is_some()
+            || self.warmed
+            || self.eval_warmed
+            || self.research_learning_mask
+            || self.research_normalized_regret.is_some()
+            || self.research_pair_control.is_some()
+            || self.research_exploration.is_some()
+            || self.research_history_units.is_some()
+            || allowed.is_empty()
+            || allowed
+                .iter()
+                .any(|&i| i >= s.nodes.len() || s.nodes[i].kind != KIND_ACTION)
+        {
             return Err("fresh engine and nonempty action-node mask required".into());
         }
-        let mut src=self.stream.clone_dtoh(&self.d_src).map_err(e)?;
-        if src.len()!=s.nodes.len() {return Err("learning mask topology mismatch".into());}
-        let mut static_seats=vec![true;s.n];
-        let mut discount_nodes=Vec::new();
-        for (i,nd) in s.nodes.iter().enumerate() {
-            if nd.kind!=KIND_ACTION || src[i]!=0 {continue;}
-            if allowed.contains(&i) {static_seats[nd.actor as usize]=false;discount_nodes.push(i as u32);} else {src[i]=1;}
+        let mut src = self.stream.clone_dtoh(&self.d_src).map_err(e)?;
+        if src.len() != s.nodes.len() {
+            return Err("learning mask topology mismatch".into());
         }
-        if static_seats.iter().all(|x|*x) {return Err("mask contains no learning decisions".into());}
-        self.d_src=self.stream.clone_htod(&src).map_err(e)?;
-        self.research_discount_nodes=Some(self.stream.clone_htod(&discount_nodes).map_err(e)?);
-        self.static_seats=static_seats;
-        self.research_learning_mask=true;
+        let mut static_seats = vec![true; s.n];
+        let mut discount_nodes = Vec::new();
+        for (i, nd) in s.nodes.iter().enumerate() {
+            if nd.kind != KIND_ACTION || src[i] != 0 {
+                continue;
+            }
+            if allowed.contains(&i) {
+                static_seats[nd.actor as usize] = false;
+                discount_nodes.push(i as u32);
+            } else {
+                src[i] = 1;
+            }
+        }
+        if static_seats.iter().all(|x| *x) {
+            return Err("mask contains no learning decisions".into());
+        }
+        self.d_src = self.stream.clone_htod(&src).map_err(e)?;
+        self.research_discount_nodes = Some(self.stream.clone_htod(&discount_nodes).map_err(e)?);
+        self.static_seats = static_seats;
+        self.research_learning_mask = true;
         Ok(())
     }
 
@@ -1840,9 +2627,9 @@ impl PreflopGpu {
                 .map_err(e)?;
         }
         #[cfg(feature = "preflop-research")]
-        if let Some((_,ranges))=&self.research_root_ranges {
-            let mut root=self.d_reach.slice_mut(0..self.np as usize*NUM_CLASSES);
-            self.stream.memcpy_dtod(ranges,&mut root).map_err(e)?;
+        if let Some((_, ranges)) = &self.research_root_ranges {
+            let mut root = self.d_reach.slice_mut(0..self.np as usize * NUM_CLASSES);
+            self.stream.memcpy_dtod(ranges, &mut root).map_err(e)?;
         }
         for li in 0..self.spans.len() {
             let (start, count) = self.spans[li];
@@ -1852,7 +2639,13 @@ impl PreflopGpu {
             let (start, count) = (start as i32, count as i32);
             let policy = &self.d_regrets;
             #[cfg(feature = "preflop-research")]
-            let policy = if mode == 0 { self.research_predictive.as_ref().map_or(policy, |r| &r.policy) } else { policy };
+            let policy = if mode == 0 {
+                self.research_predictive
+                    .as_ref()
+                    .map_or(policy, |r| &r.policy)
+            } else {
+                policy
+            };
             unsafe {
                 self.stream
                     .launch_builder(&self.f_down)
@@ -1877,23 +2670,31 @@ impl PreflopGpu {
                     .map_err(e)?;
             }
             #[cfg(feature = "preflop-research")]
-            self.research_explore_reach(start,count,p,mode)?;
+            self.research_explore_reach(start, count, p, mode)?;
             #[cfg(feature = "preflop-research")]
-            self.research_behavioral_reach(start,count,mode)?;
+            self.research_behavioral_reach(start, count, mode)?;
             #[cfg(feature = "preflop-research")]
-            self.research_average_opponent_reach(start,count,p,mode)?;
+            self.research_average_opponent_reach(start, count, p, mode)?;
         }
         let blocks = self.d_reach_mass.len() as u32;
         unsafe {
-            self.stream.launch_builder(&self.f_reach_mass)
+            self.stream
+                .launch_builder(&self.f_reach_mass)
                 .arg(&self.d_reach)
                 .arg(&mut self.d_reach_mass)
-                .launch(LaunchConfig { block_dim: (128, 1, 1), ..Self::cfg(blocks) })
+                .launch(LaunchConfig {
+                    block_dim: (128, 1, 1),
+                    ..Self::cfg(blocks)
+                })
                 .map_err(e)?;
         }
         #[cfg(feature = "preflop-research")]
         self.interface_prepare()?;
-        let which = if mode == 0 { p as usize } else { self.np as usize };
+        let which = if mode == 0 {
+            p as usize
+        } else {
+            self.np as usize
+        };
         self.refresh_eq_cache(which)
     }
 
@@ -1905,19 +2706,26 @@ impl PreflopGpu {
             if count > 0 {
                 unsafe {
                     for channel in 0..self.eq_channels {
-                        let at = channel*NUM_CLASSES*NUM_CLASSES;
+                        let at = channel * NUM_CLASSES * NUM_CLASSES;
                         // With blockers the cache holds the removal-weighted
                         // sums pf_removal_heads_up reads.
                         let tables = self.removal.as_ref().map_or(&self.d_eq, |r| &r.d_eq_w);
-                        let table = tables.slice(at..at+NUM_CLASSES*NUM_CLASSES);
-                        let at = channel*self.eq_cache_stride as usize;
-                        let mut cache = self.d_eq_cache.slice_mut(at..at+self.eq_cache_stride as usize);
-                        self.stream.launch_builder(&self.f_equities)
-                            .arg(&self.d_eq_work).arg(&start)
-                            .arg(&self.d_eq_blocks).arg(&table)
-                            .arg(&self.d_reach).arg(&self.d_reach_mass)
+                        let table = tables.slice(at..at + NUM_CLASSES * NUM_CLASSES);
+                        let at = channel * self.eq_cache_stride as usize;
+                        let mut cache = self
+                            .d_eq_cache
+                            .slice_mut(at..at + self.eq_cache_stride as usize);
+                        self.stream
+                            .launch_builder(&self.f_equities)
+                            .arg(&self.d_eq_work)
+                            .arg(&start)
+                            .arg(&self.d_eq_blocks)
+                            .arg(&table)
+                            .arg(&self.d_reach)
+                            .arg(&self.d_reach_mass)
                             .arg(&mut cache)
-                            .launch(Self::cfg(count)).map_err(e)?;
+                            .launch(Self::cfg(count))
+                            .map_err(e)?;
                     }
                 }
             }
@@ -1978,34 +2786,76 @@ impl PreflopGpu {
                 .map_err(e)?;
             self.removal_heads_up(p)?;
             if self.sp_nterms > 0 {
-                self.stream.launch_builder(&self.f_side_pot_terminal)
-                    .arg(&self.d_sp_terms).arg(&p).arg(&self.np)
-                    .arg(&self.d_live).arg(&self.d_inv)
-                    .arg(&self.d_sp_start).arg(&self.d_sp_amount).arg(&self.d_sp_mask)
-                    .arg(&self.d_sp_bal).arg(&self.d_eq)
-                    .arg(&self.d_reach_src).arg(&self.d_reach).arg(&self.d_reach_mass)
-                    .arg(&self.use_multiway).arg(&self.use_tw).arg(&self.d_tw_ew).arg(&self.d_tw_w)
-                    .arg(&self.d_val_slot).arg(&mut self.d_val)
-                    .launch(LaunchConfig { grid_dim: (self.sp_nterms, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+                self.stream
+                    .launch_builder(&self.f_side_pot_terminal)
+                    .arg(&self.d_sp_terms)
+                    .arg(&p)
+                    .arg(&self.np)
+                    .arg(&self.d_live)
+                    .arg(&self.d_inv)
+                    .arg(&self.d_sp_start)
+                    .arg(&self.d_sp_amount)
+                    .arg(&self.d_sp_mask)
+                    .arg(&self.d_sp_bal)
+                    .arg(&self.d_eq)
+                    .arg(&self.d_reach_src)
+                    .arg(&self.d_reach)
+                    .arg(&self.d_reach_mass)
+                    .arg(&self.use_multiway)
+                    .arg(&self.use_tw)
+                    .arg(&self.d_tw_ew)
+                    .arg(&self.d_tw_w)
+                    .arg(&self.d_val_slot)
+                    .arg(&mut self.d_val)
+                    .launch(LaunchConfig {
+                        grid_dim: (self.sp_nterms, 1, 1),
+                        block_dim: (192, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
                     .map_err(e)?;
             }
             if self.leaf_nterms > 0 {
-                self.stream.launch_builder(&self.f_leaf_terminal)
-                    .arg(&self.d_leaf_terms).arg(&self.leaf_nterms).arg(&p).arg(&self.np)
-                    .arg(&self.d_leaf_seats).arg(&self.d_potg)
-                    .arg(&self.d_reach_src).arg(&self.d_reach_mass).arg(&self.d_leaf_corr)
-                    .arg(&self.d_val_slot).arg(&mut self.d_val)
-                    .launch(LaunchConfig { grid_dim: (self.leaf_nterms, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+                self.stream
+                    .launch_builder(&self.f_leaf_terminal)
+                    .arg(&self.d_leaf_terms)
+                    .arg(&self.leaf_nterms)
+                    .arg(&p)
+                    .arg(&self.np)
+                    .arg(&self.d_leaf_seats)
+                    .arg(&self.d_potg)
+                    .arg(&self.d_reach_src)
+                    .arg(&self.d_reach_mass)
+                    .arg(&self.d_leaf_corr)
+                    .arg(&self.d_val_slot)
+                    .arg(&mut self.d_val)
+                    .launch(LaunchConfig {
+                        grid_dim: (self.leaf_nterms, 1, 1),
+                        block_dim: (192, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
                     .map_err(e)?;
             }
             if self.tw_nterms > 0 {
-                self.stream.launch_builder(&self.f_three_way_terminal)
-                    .arg(&self.d_tw_terms).arg(&p).arg(&self.np)
-                    .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
-                    .arg(&self.d_tw_ew).arg(&self.d_tw_w)
-                    .arg(&self.d_reach_src).arg(&self.d_reach).arg(&self.d_reach_mass)
-                    .arg(&self.d_val_slot).arg(&mut self.d_val)
-                    .launch(LaunchConfig { grid_dim: (self.tw_nterms, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+                self.stream
+                    .launch_builder(&self.f_three_way_terminal)
+                    .arg(&self.d_tw_terms)
+                    .arg(&p)
+                    .arg(&self.np)
+                    .arg(&self.d_live)
+                    .arg(&self.d_pots)
+                    .arg(&self.d_inv)
+                    .arg(&self.d_tw_ew)
+                    .arg(&self.d_tw_w)
+                    .arg(&self.d_reach_src)
+                    .arg(&self.d_reach)
+                    .arg(&self.d_reach_mass)
+                    .arg(&self.d_val_slot)
+                    .arg(&mut self.d_val)
+                    .launch(LaunchConfig {
+                        grid_dim: (self.tw_nterms, 1, 1),
+                        block_dim: (192, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
                     .map_err(e)?;
             }
         }
@@ -2013,7 +2863,9 @@ impl PreflopGpu {
     }
 
     fn multiway_terminals(&mut self, p: i32, gate: i32) -> Result<(), String> {
-        if self.research_exact_reuse.is_some() { return self.exact_reuse_terminals(p, gate); }
+        if self.research_exact_reuse.is_some() {
+            return self.exact_reuse_terminals(p, gate);
+        }
         if self.use_multiway != 0 {
             let (work_start, work_count) = self.mw_spans[p as usize];
             if work_count > 0 {
@@ -2021,48 +2873,106 @@ impl PreflopGpu {
                 self.phase_mark("prepare", p)?;
                 // Minimal metadata has neither active flags nor prepared probabilities.
                 // Force gate=0 so direct CDF never reads the null active pointer.
-                let gate = if self.use_mw_prepared {gate} else {0};
+                let gate = if self.use_mw_prepared { gate } else { 0 };
                 let slot_count = self.d_mw_active.len() as u32;
                 unsafe {
                     // Fixed grid bounds and device-only state keep graph replay valid.
                     if self.use_mw_prepared {
-                    if gate != 0 {
-                    self.stream.launch_builder(&self.f_multiway_clear_active)
-                        .arg(&mut self.d_mw_active).arg(&slot_count)
-                        .launch(LaunchConfig { grid_dim: (slot_count.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
-                    }
-                    if self.mw_nterms > 0 {
-                    self.stream.launch_builder(&self.f_multiway_prepare)
-                        .arg(&self.d_mw_terms).arg(&self.mw_nterms).arg(&p).arg(&self.np)
-                        .arg(&self.d_live).arg(&self.d_reach_src).arg(&self.d_reach_mass)
-                        .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_mw_prob).arg(&gate)
-                        .launch(LaunchConfig { grid_dim: (self.mw_nterms.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
-                    }
-                    // Side-pot terminals mark the CDF slots their pots read.
-                    if self.sp_ncoupled > 0 {
-                    self.stream.launch_builder(&self.f_multiway_prepare)
-                        .arg(&self.d_sp_terms).arg(&self.sp_ncoupled).arg(&p).arg(&self.np)
-                        .arg(&self.d_live).arg(&self.d_reach_src).arg(&self.d_reach_mass)
-                        .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_sp_prob).arg(&gate)
-                        .launch(LaunchConfig { grid_dim: (self.sp_ncoupled.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
-                    }
+                        if gate != 0 {
+                            self.stream
+                                .launch_builder(&self.f_multiway_clear_active)
+                                .arg(&mut self.d_mw_active)
+                                .arg(&slot_count)
+                                .launch(LaunchConfig {
+                                    grid_dim: (slot_count.div_ceil(256), 1, 1),
+                                    block_dim: (256, 1, 1),
+                                    shared_mem_bytes: 0,
+                                })
+                                .map_err(e)?;
+                        }
+                        if self.mw_nterms > 0 {
+                            self.stream
+                                .launch_builder(&self.f_multiway_prepare)
+                                .arg(&self.d_mw_terms)
+                                .arg(&self.mw_nterms)
+                                .arg(&p)
+                                .arg(&self.np)
+                                .arg(&self.d_live)
+                                .arg(&self.d_reach_src)
+                                .arg(&self.d_reach_mass)
+                                .arg(&self.d_mw_slots)
+                                .arg(&mut self.d_mw_active)
+                                .arg(&mut self.d_mw_prob)
+                                .arg(&gate)
+                                .launch(LaunchConfig {
+                                    grid_dim: (self.mw_nterms.div_ceil(256), 1, 1),
+                                    block_dim: (256, 1, 1),
+                                    shared_mem_bytes: 0,
+                                })
+                                .map_err(e)?;
+                        }
+                        // Side-pot terminals mark the CDF slots their pots read.
+                        if self.sp_ncoupled > 0 {
+                            self.stream
+                                .launch_builder(&self.f_multiway_prepare)
+                                .arg(&self.d_sp_terms)
+                                .arg(&self.sp_ncoupled)
+                                .arg(&p)
+                                .arg(&self.np)
+                                .arg(&self.d_live)
+                                .arg(&self.d_reach_src)
+                                .arg(&self.d_reach_mass)
+                                .arg(&self.d_mw_slots)
+                                .arg(&mut self.d_mw_active)
+                                .arg(&mut self.d_sp_prob)
+                                .arg(&gate)
+                                .launch(LaunchConfig {
+                                    grid_dim: (self.sp_ncoupled.div_ceil(256), 1, 1),
+                                    block_dim: (256, 1, 1),
+                                    shared_mem_bytes: 0,
+                                })
+                                .map_err(e)?;
+                        }
                     }
                     // Rebuild for every terminals call, even when evaluation disables
                     // active gating. Test/manual reach replacement must not reuse stale data.
                     if self.use_mw_normalized {
                         #[cfg(test)]
                         self.phase_mark("normalize", p)?;
-                        self.stream.launch_builder(&self.f_multiway_normalize)
-                            .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
-                            .arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
+                        self.stream
+                            .launch_builder(&self.f_multiway_normalize)
+                            .arg(&self.d_mw_work)
+                            .arg(&work_start)
+                            .arg(&self.d_mw_blocks)
+                            .arg(&self.d_reach)
+                            .arg(&self.d_reach_mass)
+                            .arg(&self.d_mw_active)
+                            .arg(&gate)
+                            .arg(&self.use_mw_compact)
                             .arg(&mut self.d_mw_normalized)
-                            .launch(LaunchConfig { grid_dim: (work_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                            .launch(LaunchConfig {
+                                grid_dim: (work_count, 1, 1),
+                                block_dim: (192, 1, 1),
+                                shared_mem_bytes: 0,
+                            })
+                            .map_err(e)?;
                     }
                     #[cfg(feature = "preflop-research")]
                     if self.research_unit_probability {
-                        self.stream.launch_builder(self.research_unit_fill.as_ref().ok_or("missing research fill kernel")?)
-                            .arg(&mut self.d_mw_prob).arg(&self.mw_nterms)
-                            .launch(LaunchConfig {grid_dim:(self.mw_nterms.div_ceil(256),1,1),block_dim:(256,1,1),shared_mem_bytes:0}).map_err(e)?;
+                        self.stream
+                            .launch_builder(
+                                self.research_unit_fill
+                                    .as_ref()
+                                    .ok_or("missing research fill kernel")?,
+                            )
+                            .arg(&mut self.d_mw_prob)
+                            .arg(&self.mw_nterms)
+                            .launch(LaunchConfig {
+                                grid_dim: (self.mw_nterms.div_ceil(256), 1, 1),
+                                block_dim: (256, 1, 1),
+                                shared_mem_bytes: 0,
+                            })
+                            .map_err(e)?;
                     }
                 }
                 #[cfg(not(feature = "preflop-research"))]
@@ -2070,50 +2980,122 @@ impl PreflopGpu {
                 #[cfg(feature = "preflop-research")]
                 let samples = self.research_samples;
                 #[cfg(feature = "preflop-research")]
-                self.research_pair_project(p,gate)?;
+                self.research_pair_project(p, gate)?;
                 for sample_start in (0..samples).step_by(self.mw_batch as usize) {
                     let sample_count = self.mw_batch.min(samples - sample_start);
                     if self.static_cdf.is_some() {
-                        static_cdf::ordinary::launch(self,p,gate,work_start,work_count,sample_start,sample_count,samples)?;
+                        static_cdf::ordinary::launch(
+                            self,
+                            p,
+                            gate,
+                            work_start,
+                            work_count,
+                            sample_start,
+                            sample_count,
+                            samples,
+                        )?;
                         continue;
                     }
                     unsafe {
                         #[cfg(test)]
                         self.phase_mark("cdf", p)?;
-                        self.stream.launch_builder(&self.f_multiway_cdf)
-                            .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
+                        self.stream
+                            .launch_builder(&self.f_multiway_cdf)
+                            .arg(&self.d_mw_work)
+                            .arg(&work_start)
+                            .arg(&self.d_mw_blocks)
                             .arg(&self.d_mw_order)
-                            .arg(if self.use_mw_normalized { &self.d_mw_normalized } else { &self.d_reach })
-                            .arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
-                            .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
-                            .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                            .arg(if self.use_mw_normalized {
+                                &self.d_mw_normalized
+                            } else {
+                                &self.d_reach
+                            })
+                            .arg(&self.d_reach_mass)
+                            .arg(&self.d_mw_active)
+                            .arg(&gate)
+                            .arg(&self.use_mw_compact)
+                            .arg(&mut self.d_mw_cdf)
+                            .arg(&sample_start)
+                            .arg(&sample_count)
+                            .arg(&self.mw_batch)
+                            .launch(LaunchConfig {
+                                grid_dim: (work_count, sample_count.div_ceil(4), 1),
+                                block_dim: (128, 1, 1),
+                                shared_mem_bytes: 0,
+                            })
+                            .map_err(e)?;
                         #[cfg(test)]
                         self.phase_mark("coupled_terminals", p)?;
                         if self.mw_nterms > 0 {
-                        self.stream.launch_builder(&self.f_multiway_terminal)
-                            .arg(&self.d_mw_terms).arg(&p).arg(&self.np)
-                            .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
-                            .arg(&self.d_reach_src).arg(if self.use_mw_prepared { &self.d_mw_prob } else { &self.d_reach_mass })
-                            .arg(&self.d_mw_slots).arg(&self.d_mw_compact).arg(&self.mw_union_slots).arg(&self.use_mw_compact).arg(&self.d_mw_cdf)
-                            .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
-                            .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
-                            .arg(&self.d_val_slot).arg(&mut self.d_val)
-                            .launch(LaunchConfig { block_dim: (192, 1, 1), ..Self::cfg(self.mw_nterms) }).map_err(e)?;
+                            self.stream
+                                .launch_builder(&self.f_multiway_terminal)
+                                .arg(&self.d_mw_terms)
+                                .arg(&p)
+                                .arg(&self.np)
+                                .arg(&self.d_live)
+                                .arg(&self.d_pots)
+                                .arg(&self.d_inv)
+                                .arg(&self.d_reach_src)
+                                .arg(if self.use_mw_prepared {
+                                    &self.d_mw_prob
+                                } else {
+                                    &self.d_reach_mass
+                                })
+                                .arg(&self.d_mw_slots)
+                                .arg(&self.d_mw_compact)
+                                .arg(&self.mw_union_slots)
+                                .arg(&self.use_mw_compact)
+                                .arg(&self.d_mw_cdf)
+                                .arg(&self.d_mw_lower)
+                                .arg(&self.d_mw_upper)
+                                .arg(&sample_start)
+                                .arg(&sample_count)
+                                .arg(&self.mw_batch)
+                                .arg(&samples)
+                                .arg(&self.d_val_slot)
+                                .arg(&mut self.d_val)
+                                .launch(LaunchConfig {
+                                    block_dim: (192, 1, 1),
+                                    ..Self::cfg(self.mw_nterms)
+                                })
+                                .map_err(e)?;
                         }
                         if self.sp_ncoupled > 0 {
-                        self.stream.launch_builder(&self.f_side_pot_multiway)
-                            .arg(&self.d_sp_terms).arg(&p).arg(&self.np)
-                            .arg(&self.d_live).arg(&self.d_sp_start).arg(&self.d_sp_amount).arg(&self.d_sp_mask)
-                            .arg(&self.d_reach_src).arg(&self.d_reach_mass)
-                            .arg(&self.d_mw_slots).arg(&self.d_mw_compact).arg(&self.mw_union_slots).arg(&self.use_mw_compact).arg(&self.d_mw_cdf)
-                            .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
-                            .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
-                            .arg(&self.use_tw).arg(&self.d_val_slot).arg(&mut self.d_val)
-                            .launch(LaunchConfig { grid_dim: (self.sp_ncoupled, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                            self.stream
+                                .launch_builder(&self.f_side_pot_multiway)
+                                .arg(&self.d_sp_terms)
+                                .arg(&p)
+                                .arg(&self.np)
+                                .arg(&self.d_live)
+                                .arg(&self.d_sp_start)
+                                .arg(&self.d_sp_amount)
+                                .arg(&self.d_sp_mask)
+                                .arg(&self.d_reach_src)
+                                .arg(&self.d_reach_mass)
+                                .arg(&self.d_mw_slots)
+                                .arg(&self.d_mw_compact)
+                                .arg(&self.mw_union_slots)
+                                .arg(&self.use_mw_compact)
+                                .arg(&self.d_mw_cdf)
+                                .arg(&self.d_mw_lower)
+                                .arg(&self.d_mw_upper)
+                                .arg(&sample_start)
+                                .arg(&sample_count)
+                                .arg(&self.mw_batch)
+                                .arg(&samples)
+                                .arg(&self.use_tw)
+                                .arg(&self.d_val_slot)
+                                .arg(&mut self.d_val)
+                                .launch(LaunchConfig {
+                                    grid_dim: (self.sp_ncoupled, 1, 1),
+                                    block_dim: (192, 1, 1),
+                                    shared_mem_bytes: 0,
+                                })
+                                .map_err(e)?;
                         }
                     }
                     #[cfg(feature = "preflop-research")]
-                    self.research_pair_correct(p,sample_start,sample_count,samples)?;
+                    self.research_pair_correct(p, sample_start, sample_count, samples)?;
                 }
             }
         }
@@ -2124,14 +3106,27 @@ impl PreflopGpu {
     /// stay available for another read-only evaluation of this seat.
     fn up(&mut self, p: i32, mode: i32) -> Result<(), String> {
         #[cfg(test)]
-        self.phase_mark(match mode { 0 => "up_learn", 1 => "up_average", _ => "up_br" }, p)?;
+        self.phase_mark(
+            match mode {
+                0 => "up_learn",
+                1 => "up_average",
+                _ => "up_br",
+            },
+            p,
+        )?;
         for li in (0..self.spans.len()).rev() {
             #[cfg(feature = "preflop-research")]
-            if self.research_behavioral_up(p,li,mode)? {continue;}
+            if self.research_behavioral_up(p, li, mode)? {
+                continue;
+            }
             #[cfg(feature = "preflop-research")]
-            if mode==0 && self.research_normalized_up(p,li)? {continue;}
+            if mode == 0 && self.research_normalized_up(p, li)? {
+                continue;
+            }
             #[cfg(feature = "preflop-research")]
-            if mode==0 && self.research_fixed_units_up(p,li)? {continue;}
+            if mode == 0 && self.research_fixed_units_up(p, li)? {
+                continue;
+            }
             let (start, count) = self.spans[li];
             if count == 0 {
                 continue;
@@ -2219,17 +3214,16 @@ impl PreflopGpu {
                 // The topology and seat policies are fixed for this engine.
                 // Capture one alternating update at a time so stop checks
                 // still run between seats, exactly as with eager launches.
-                self.stream.begin_capture(
-                    sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
-                ).map_err(e)?;
+                self.stream
+                    .begin_capture(sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL)
+                    .map_err(e)?;
                 let result = self.sweep(p, 0);
                 let graph = self.stream.end_capture(
                     sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
                 ).map_err(e)?;
                 result?;
-                self.learning_graphs[p as usize] = Some(
-                    graph.ok_or_else(|| "preflop graph capture failed".to_string())?
-                );
+                self.learning_graphs[p as usize] =
+                    Some(graph.ok_or_else(|| "preflop graph capture failed".to_string())?);
             }
             if let Some(graph) = &self.learning_graphs[p as usize] {
                 graph.launch().map_err(e)?;
@@ -2247,23 +3241,30 @@ impl PreflopGpu {
         let neg = 0.5f32;
         let sd = ((t / (t + 1.0)).powi(2)) as f32;
         #[cfg(feature = "preflop-research")]
-        let (pos, neg, sd) = self.research.as_ref().map_or((pos, neg, sd), |r| r.factors(*iteration));
+        let (pos, neg, sd) = self
+            .research
+            .as_ref()
+            .map_or((pos, neg, sd), |r| r.factors(*iteration));
         #[cfg(feature = "preflop-research")]
         let (pos, neg, sd) = if self.research_predictive.is_some() {
             (1.0f32, 1.0f32, (t / (t + 1.0)).powi(2) as f32)
         } else if self.research_rm_plus.is_some() {
             (1.0f32, 1.0f32, (t / (t + 1.0)) as f32)
-        } else { (pos, neg, sd) };
+        } else {
+            (pos, neg, sd)
+        };
         // per action node (not flat over the arena): a frozen actor's
         // strategy sums are its play and must not decay â€” same rule as the
         // CPU's iterate()
         #[cfg(test)]
         self.phase_mark("discount", -1)?;
         let n_act = self.n_act as i32;
-        let discount_nodes=&self.d_act_nodes;
+        let discount_nodes = &self.d_act_nodes;
         #[cfg(feature = "preflop-research")]
-        let (discount_nodes,n_act)=self.research_discount_nodes.as_ref()
-            .map_or((discount_nodes,n_act),|nodes|(nodes,nodes.len() as i32));
+        let (discount_nodes, n_act) = self
+            .research_discount_nodes
+            .as_ref()
+            .map_or((discount_nodes, n_act), |nodes| (nodes, nodes.len() as i32));
         unsafe {
             self.stream
                 .launch_builder(&self.f_discount)
@@ -2304,7 +3305,9 @@ impl PreflopGpu {
     /// Per-player best-response gaps and average-strategy EVs (bb).
     pub fn gaps_and_evs(&mut self) -> Result<(Vec<f64>, Vec<f64>), String> {
         #[cfg(feature = "preflop-research")]
-        if self.research_learning_mask {return Err("research learning mask: evaluate using a fresh unmasked engine".into());}
+        if self.research_learning_mask {
+            return Err("research learning mask: evaluate using a fresh unmasked engine".into());
+        }
         if self.rnr.is_some() {
             return self.rnr_gaps_and_evs();
         }
@@ -2315,15 +3318,19 @@ impl PreflopGpu {
         // Graphs capture addresses, not strategy values: solves can continue
         // between checks without rebuilding this immutable-topology graph.
         if self.eval_warmed && self.eval_graph.is_none() {
-            self.stream.begin_capture(
-                sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
-            ).map_err(e)?;
+            self.stream
+                .begin_capture(sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL)
+                .map_err(e)?;
             let result = self.queue_evaluation();
-            let graph = self.stream.end_capture(
-                sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
-            ).map_err(e)?;
+            let graph = self
+                .stream
+                .end_capture(
+                    sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
+                )
+                .map_err(e)?;
             result?;
-            self.eval_graph = Some(graph.ok_or_else(|| "preflop evaluation graph capture failed".to_string())?);
+            self.eval_graph =
+                Some(graph.ok_or_else(|| "preflop evaluation graph capture failed".to_string())?);
         }
         if let Some(graph) = &self.eval_graph {
             graph.launch().map_err(e)?;
@@ -2334,12 +3341,16 @@ impl PreflopGpu {
         self.phase_mark("end", -1)?;
         let roots = self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?;
         self.eval_warmed = true;
-        let dot = |_p:usize, values: &[f32]| {
+        let dot = |_p: usize, values: &[f32]| {
             let mut total = 0f64;
             for h in 0..NUM_CLASSES {
-                let weight=class_prob(h);
+                let weight = class_prob(h);
                 #[cfg(feature = "preflop-research")]
-                let weight=self.research_root_ranges.as_ref().map(|r|r.0[_p][h]).unwrap_or(weight);
+                let weight = self
+                    .research_root_ranges
+                    .as_ref()
+                    .map(|r| r.0[_p][h])
+                    .unwrap_or(weight);
                 total += weight as f64 * values[h] as f64;
             }
             total
@@ -2348,8 +3359,8 @@ impl PreflopGpu {
         let mut evs = Vec::with_capacity(self.np as usize);
         for p in 0..self.np as usize {
             let off = 2 * p * NUM_CLASSES;
-            let br = dot(p,&roots[off..off + NUM_CLASSES]);
-            let avg = dot(p,&roots[off + NUM_CLASSES..off + 2 * NUM_CLASSES]);
+            let br = dot(p, &roots[off..off + NUM_CLASSES]);
+            let avg = dot(p, &roots[off + NUM_CLASSES..off + 2 * NUM_CLASSES]);
             gaps.push(br - avg);
             evs.push(avg);
         }
@@ -2357,13 +3368,27 @@ impl PreflopGpu {
     }
 
     fn queue_evaluation(&mut self) -> Result<(), String> {
-        if self.large.is_some() { return self.large_queue_evaluation(); }
+        if self.large.is_some() {
+            return self.large_queue_evaluation();
+        }
         self.down(1, -1)?;
-        if self.research_cohorts.is_some() { return self.queue_cohort_evaluation(); }
+        if self.research_cohorts.is_some() {
+            return self.queue_cohort_evaluation();
+        }
         for p in 0..self.np {
             // Average reaches are typically dense: avoid mask atomics here.
             self.terminals_masked(p, 0)?;
-            for (slot, mode) in [if self.constrained_br[p as usize] { 3 } else { 2 }, 1].into_iter().enumerate() {
+            for (slot, mode) in [
+                if self.constrained_br[p as usize] {
+                    3
+                } else {
+                    2
+                },
+                1,
+            ]
+            .into_iter()
+            .enumerate()
+            {
                 self.up(p, mode)?;
                 #[cfg(test)]
                 self.phase_mark("root_copy", p)?;
@@ -2391,8 +3416,14 @@ impl PreflopGpu {
         let Some(buf) = snapshot.as_mut() else {
             // Page locking can be unavailable even when ordinary RAM is
             // available. Keep the original transactional download fallback.
-            let regs = self.stream.clone_dtoh(&self.d_regrets.slice(0..self.arena_len)).map_err(e)?;
-            let strat = self.stream.clone_dtoh(&self.d_strat.slice(0..self.arena_len)).map_err(e)?;
+            let regs = self
+                .stream
+                .clone_dtoh(&self.d_regrets.slice(0..self.arena_len))
+                .map_err(e)?;
+            let strat = self
+                .stream
+                .clone_dtoh(&self.d_strat.slice(0..self.arena_len))
+                .map_err(e)?;
             self.rnr_sync_to_cpu(s)?;
             unsafe {
                 s.regrets.slice_mut().copy_from_slice(&regs);
@@ -2402,8 +3433,12 @@ impl PreflopGpu {
         };
         let (regs, strat) = buf.as_mut_slice().split_at_mut(self.arena_len);
         // the main arenas only: the trust dial's free arenas follow them
-        self.stream.memcpy_dtoh(&self.d_regrets.slice(0..self.arena_len), regs).map_err(e)?;
-        self.stream.memcpy_dtoh(&self.d_strat.slice(0..self.arena_len), strat).map_err(e)?;
+        self.stream
+            .memcpy_dtoh(&self.d_regrets.slice(0..self.arena_len), regs)
+            .map_err(e)?;
+        self.stream
+            .memcpy_dtoh(&self.d_strat.slice(0..self.arena_len), strat)
+            .map_err(e)?;
         self.stream.synchronize().map_err(e)?;
         self.rnr_sync_to_cpu(s)?;
         // SAFETY: &mut PreflopSolver â†’ no concurrent traversal
@@ -2419,14 +3454,18 @@ impl PreflopGpu {
     /// changed since the last upload). Captured
     /// sweeps read the same buffer, so they see the new values.
     pub fn upload_leaf_corr(&mut self, s: &PreflopSolver) -> Result<(), String> {
-        let Some((nodes, _, corr)) = s.leaf_terminals() else { return Ok(()) };
+        let Some((nodes, _, corr)) = s.leaf_terminals() else {
+            return Ok(());
+        };
         if s.leaf_version() == self.leaf_version || corr.is_empty() {
             return Ok(());
         }
         if nodes.len() as u32 != self.leaf_nterms || corr.len() != self.d_leaf_corr.len() {
             return Err("learned terminals changed under the GPU engine".into());
         }
-        self.stream.memcpy_htod(corr, &mut self.d_leaf_corr).map_err(e)?;
+        self.stream
+            .memcpy_htod(corr, &mut self.d_leaf_corr)
+            .map_err(e)?;
         self.stream.synchronize().map_err(e)?;
         self.leaf_version = s.leaf_version();
         Ok(())
@@ -2457,9 +3496,16 @@ struct PhaseEventTrace {
 
 #[cfg(test)]
 impl PhaseEventTrace {
-    fn mark(trace: &mut Option<Self>, stream: &CudaStream, phase: &'static str, seat: i32) -> Result<(), String> {
+    fn mark(
+        trace: &mut Option<Self>,
+        stream: &CudaStream,
+        phase: &'static str,
+        seat: i32,
+    ) -> Result<(), String> {
         if let Some(trace) = trace {
-            let event = trace.events.get(trace.marks.len())
+            let event = trace
+                .events
+                .get(trace.marks.len())
                 .ok_or_else(|| "phase event pool exhausted".to_string())?;
             event.record(stream).map_err(e)?;
             trace.marks.push((phase, seat));
@@ -2479,7 +3525,9 @@ impl PreflopGpu {
         assert!(self.phase_trace.is_none(), "nested phase profiling");
         // Host hooks are bypassed by graphs. Eager launch the same operations
         // with lazy kernels already warm; never change numerical state here.
-        for graph in &mut self.learning_graphs { *graph = None; }
+        for graph in &mut self.learning_graphs {
+            *graph = None;
+        }
         self.eval_graph = None;
         self.warmed = false;
         self.eval_warmed = false;
@@ -2487,30 +3535,47 @@ impl PreflopGpu {
         let capacity = self.np as usize * (2 * batches + 16) + 8;
         let mut events = Vec::with_capacity(capacity);
         for _ in 0..capacity {
-            events.push(self._ctx.new_event(Some(sys::CUevent_flags::CU_EVENT_DEFAULT)).map_err(e)?);
+            events.push(
+                self._ctx
+                    .new_event(Some(sys::CUevent_flags::CU_EVENT_DEFAULT))
+                    .map_err(e)?,
+            );
         }
-        self.phase_trace = Some(PhaseEventTrace { events, marks: Vec::with_capacity(capacity) });
+        self.phase_trace = Some(PhaseEventTrace {
+            events,
+            marks: Vec::with_capacity(capacity),
+        });
         Ok(())
     }
 
     fn phase_profile_end(&mut self) -> Result<serde_json::Value, String> {
         self.stream.synchronize().map_err(e)?;
-        let trace = self.phase_trace.take().ok_or_else(|| "phase profiling not active".to_string())?;
+        let trace = self
+            .phase_trace
+            .take()
+            .ok_or_else(|| "phase profiling not active".to_string())?;
         assert!(trace.marks.len() >= 2);
         assert_eq!(trace.marks.last().unwrap().0, "end");
         let mut phases = std::collections::BTreeMap::<(&str, i32), (f64, usize)>::new();
-        for (i, &(phase, seat)) in trace.marks[..trace.marks.len()-1].iter().enumerate() {
+        for (i, &(phase, seat)) in trace.marks[..trace.marks.len() - 1].iter().enumerate() {
             assert_ne!(phase, "end", "one operation per phase trace");
-            let ms = trace.events[i].elapsed_ms(&trace.events[i+1]).map_err(e)? as f64;
+            let ms = trace.events[i]
+                .elapsed_ms(&trace.events[i + 1])
+                .map_err(e)? as f64;
             assert!(ms.is_finite() && ms >= 0.0);
             let row = phases.entry((phase, seat)).or_default();
-            row.0 += ms; row.1 += 1;
+            row.0 += ms;
+            row.1 += 1;
         }
-        let total = trace.events[0].elapsed_ms(&trace.events[trace.marks.len()-1]).map_err(e)?;
+        let total = trace.events[0]
+            .elapsed_ms(&trace.events[trace.marks.len() - 1])
+            .map_err(e)?;
         let rows: Vec<_> = phases.iter().map(|((phase,seat),(ms,count))|
             serde_json::json!({"phase":phase,"seat":seat,"ms":ms,"intervals":count})).collect();
-        Ok(serde_json::json!({"execution":"eager_cuda_events","gpu_ms":total,
-            "interval_sum_ms":phases.values().map(|x|x.0).sum::<f64>(),"rows":rows}))
+        Ok(
+            serde_json::json!({"execution":"eager_cuda_events","gpu_ms":total,
+            "interval_sum_ms":phases.values().map(|x|x.0).sum::<f64>(),"rows":rows}),
+        )
     }
 }
 
@@ -2526,192 +3591,395 @@ mod tests {
             "positions":["CO","BTN","SB","BB"],"stack":5.0,"posts":[0.0,0.0,0.5,1.0],
             "limp":true,"open_raises":[2.0],"raise_mults":[3.0],"max_raises":1,
             "add_allin":false,"rake_pct":5.0,"rake_cap":1.0,"realization":"raw"
-        })).unwrap();
-        let mut results=Vec::new();
-        let mut metadata=Vec::new();
-        for minimal in [false,true] {
-            let mut s=PreflopSolver::new(cfg.clone(),eq.clone()).unwrap();
-            let mut gpu=PreflopGpu::new_with_layout_mode(&s,2000,true,minimal).unwrap();
-            assert_eq!(!gpu.use_mw_prepared,minimal);
+        }))
+        .unwrap();
+        let mut results = Vec::new();
+        let mut metadata = Vec::new();
+        for minimal in [false, true] {
+            let mut s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+            let mut gpu = PreflopGpu::new_with_layout_mode(&s, 2000, true, minimal).unwrap();
+            assert_eq!(!gpu.use_mw_prepared, minimal);
             if minimal {
-                assert!(!gpu.use_mw_normalized && gpu.use_mw_compact==0);
-                assert_eq!((gpu.d_mw_active.len(),gpu.d_mw_prob.len(),gpu.d_mw_normalized.len(),gpu.d_mw_compact.len()),(0,0,0,0));
+                assert!(!gpu.use_mw_normalized && gpu.use_mw_compact == 0);
+                assert_eq!(
+                    (
+                        gpu.d_mw_active.len(),
+                        gpu.d_mw_prob.len(),
+                        gpu.d_mw_normalized.len(),
+                        gpu.d_mw_compact.len()
+                    ),
+                    (0, 0, 0, 0)
+                );
             }
-            metadata.push((gpu.mw_batch,gpu.use_eq_cache));
-            let mut checkpoints=Vec::new();
+            metadata.push((gpu.mw_batch, gpu.use_eq_cache));
+            let mut checkpoints = Vec::new();
             for _ in 0..3 {
                 gpu.iterate(&mut s).unwrap();
-                let (g,e)=gpu.gaps_and_evs().unwrap();
+                let (g, e) = gpu.gaps_and_evs().unwrap();
                 checkpoints.push((
-                    gpu.stream.clone_dtoh(&gpu.d_regrets).unwrap().iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
-                    gpu.stream.clone_dtoh(&gpu.d_strat).unwrap().iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
-                    g.iter().map(|x|x.to_bits()).collect::<Vec<_>>(),e.iter().map(|x|x.to_bits()).collect::<Vec<_>>()));
+                    gpu.stream
+                        .clone_dtoh(&gpu.d_regrets)
+                        .unwrap()
+                        .iter()
+                        .map(|x| x.to_bits())
+                        .collect::<Vec<_>>(),
+                    gpu.stream
+                        .clone_dtoh(&gpu.d_strat)
+                        .unwrap()
+                        .iter()
+                        .map(|x| x.to_bits())
+                        .collect::<Vec<_>>(),
+                    g.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
+                    e.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
+                ));
             }
-            assert!(gpu.learning_graphs.iter().any(|g|g.is_some()) && gpu.eval_graph.is_some());
-            for g in &mut gpu.learning_graphs {*g=None;} gpu.eval_graph=None;
-            let target=s.nodes.iter().position(|n|n.kind==KIND_POT_SHARE && n.live.count_ones()==3).unwrap();
-            let live:Vec<_>=(0..s.n).filter(|p|s.nodes[target].live&(1<<p)!=0).collect();
-            let folded=(0..s.n).find(|p|s.nodes[target].live&(1<<p)==0).unwrap();
-            let p=live[0];
-            let sources=gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
-            let slots=gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
-            let at=slots[target] as usize*NUM_CLASSES;
-            let mut terminals=Vec::new();
+            assert!(gpu.learning_graphs.iter().any(|g| g.is_some()) && gpu.eval_graph.is_some());
+            for g in &mut gpu.learning_graphs {
+                *g = None;
+            }
+            gpu.eval_graph = None;
+            let target = s
+                .nodes
+                .iter()
+                .position(|n| n.kind == KIND_POT_SHARE && n.live.count_ones() == 3)
+                .unwrap();
+            let live: Vec<_> = (0..s.n)
+                .filter(|p| s.nodes[target].live & (1 << p) != 0)
+                .collect();
+            let folded = (0..s.n)
+                .find(|p| s.nodes[target].live & (1 << p) == 0)
+                .unwrap();
+            let p = live[0];
+            let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
+            let slots = gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
+            let at = slots[target] as usize * NUM_CLASSES;
+            let mut terminals = Vec::new();
             // Same distributions for positive -> own-zero -> live-zero ->
             // folded-zero -> positive. Own zero must not affect counterfactual value.
-            for (zero,gate) in [(None,1),(Some(p),1),(Some(live[1]),1),(Some(folded),1),(None,0)] {
-                let mut reach=vec![0f32;gpu.d_reach.len()];
-                for (block,r) in reach.chunks_exact_mut(NUM_CLASSES).enumerate() {
-                    let h=block*17%NUM_CLASSES;
-                    r[h]=0.03125;r[(h+53)%NUM_CLASSES]=0.0625;r[(h+107)%NUM_CLASSES]=0.125;
+            for (zero, gate) in [
+                (None, 1),
+                (Some(p), 1),
+                (Some(live[1]), 1),
+                (Some(folded), 1),
+                (None, 0),
+            ] {
+                let mut reach = vec![0f32; gpu.d_reach.len()];
+                for (block, r) in reach.chunks_exact_mut(NUM_CLASSES).enumerate() {
+                    let h = block * 17 % NUM_CLASSES;
+                    r[h] = 0.03125;
+                    r[(h + 53) % NUM_CLASSES] = 0.0625;
+                    r[(h + 107) % NUM_CLASSES] = 0.125;
                 }
-                if let Some(q)=zero {let off=sources[target*s.n+q] as usize*NUM_CLASSES;reach[off..off+NUM_CLASSES].fill(0.0);}
-                gpu.d_reach=gpu.stream.clone_htod(&reach).unwrap();
-                unsafe {gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
-                    .launch(LaunchConfig {block_dim:(128,1,1),..PreflopGpu::cfg((reach.len()/NUM_CLASSES) as u32)}).unwrap();}
-                gpu.d_mw_cdf=gpu.stream.clone_htod(&vec![f32::NAN;gpu.d_mw_cdf.len()]).unwrap();
-                gpu.d_val=gpu.stream.clone_htod(&vec![123456f32;gpu.d_val.len()]).unwrap();
-                gpu.terminals_masked(p as i32,gate).unwrap();
-                let actual=gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
-                let local:Vec<Vec<f32>>=(0..s.n).map(|q|{let off=sources[target*s.n+q] as usize*NUM_CLASSES;reach[off..off+NUM_CLASSES].to_vec()}).collect();
-                let mut expected=vec![0f32;NUM_CLASSES];s.terminal_value(target,p,&local,&mut expected);
-                for h in 0..NUM_CLASSES {assert!(actual[at+h].is_finite() && (actual[at+h]-expected[h]).abs()<2e-5);}
-                if zero.is_some() && zero!=Some(p) {assert!(actual[at..at+NUM_CLASSES].iter().all(|x|*x==0.0));}
-                terminals.push(actual[at..at+NUM_CLASSES].iter().map(|x|x.to_bits()).collect::<Vec<_>>());
+                if let Some(q) = zero {
+                    let off = sources[target * s.n + q] as usize * NUM_CLASSES;
+                    reach[off..off + NUM_CLASSES].fill(0.0);
+                }
+                gpu.d_reach = gpu.stream.clone_htod(&reach).unwrap();
+                unsafe {
+                    gpu.stream
+                        .launch_builder(&gpu.f_reach_mass)
+                        .arg(&gpu.d_reach)
+                        .arg(&mut gpu.d_reach_mass)
+                        .launch(LaunchConfig {
+                            block_dim: (128, 1, 1),
+                            ..PreflopGpu::cfg((reach.len() / NUM_CLASSES) as u32)
+                        })
+                        .unwrap();
+                }
+                gpu.d_mw_cdf = gpu
+                    .stream
+                    .clone_htod(&vec![f32::NAN; gpu.d_mw_cdf.len()])
+                    .unwrap();
+                gpu.d_val = gpu
+                    .stream
+                    .clone_htod(&vec![123456f32; gpu.d_val.len()])
+                    .unwrap();
+                gpu.terminals_masked(p as i32, gate).unwrap();
+                let actual = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
+                let local: Vec<Vec<f32>> = (0..s.n)
+                    .map(|q| {
+                        let off = sources[target * s.n + q] as usize * NUM_CLASSES;
+                        reach[off..off + NUM_CLASSES].to_vec()
+                    })
+                    .collect();
+                let mut expected = vec![0f32; NUM_CLASSES];
+                s.terminal_value(target, p, &local, &mut expected);
+                for h in 0..NUM_CLASSES {
+                    assert!(
+                        actual[at + h].is_finite() && (actual[at + h] - expected[h]).abs() < 2e-5
+                    );
+                }
+                if zero.is_some() && zero != Some(p) {
+                    assert!(actual[at..at + NUM_CLASSES].iter().all(|x| *x == 0.0));
+                }
+                terminals.push(
+                    actual[at..at + NUM_CLASSES]
+                        .iter()
+                        .map(|x| x.to_bits())
+                        .collect::<Vec<_>>(),
+                );
             }
-            assert_eq!(terminals[0],terminals[1],"own zero must not prune counterfactual values");
-            assert_eq!(terminals[0],terminals[4],"ungated positive recovery must discard stale zero state");
-            results.push((checkpoints,terminals));
+            assert_eq!(
+                terminals[0], terminals[1],
+                "own zero must not prune counterfactual values"
+            );
+            assert_eq!(
+                terminals[0], terminals[4],
+                "ungated positive recovery must discard stale zero state"
+            );
+            results.push((checkpoints, terminals));
         }
-        assert_eq!(metadata[0],metadata[1],"same batch/cache required for exact control");
-        assert_eq!(results[0],results[1]);
+        assert_eq!(
+            metadata[0], metadata[1],
+            "same batch/cache required for exact control"
+        );
+        assert_eq!(results[0], results[1]);
     }
 
     #[test]
     #[ignore = "supplementary real integer-MB low-memory constructor boundary"]
     fn coupled_minimal_metadata_retains_former_union_budget_fit() {
-        let eq=phase_test_equity();
-        let mut chosen=None;
+        let eq = phase_test_equity();
+        let mut chosen = None;
         for n in 4usize..=6 {
-            let mut posts=vec![0.0;n];posts[n-2]=0.5;posts[n-1]=1.0;
-            let cfg:PreflopConfig=serde_json::from_value(serde_json::json!({
+            let mut posts = vec![0.0; n];
+            posts[n - 2] = 0.5;
+            posts[n - 1] = 1.0;
+            let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
                 "positions":(0..n).map(|p|format!("P{p}")).collect::<Vec<_>>(),
                 "stack":20.0,"posts":posts,"limp":true,"open_raises":[2.0,3.0],
                 "raise_mults":[3.0],"max_raises":2,"add_allin":false,
                 "rake_pct":5.0,"rake_cap":1.0,"realization":"raw"
-            })).unwrap();
-            let s=PreflopSolver::new(cfg.clone(),eq.clone()).unwrap();
-            if s.nodes.len()>250000 {continue;}
-            let src=reach_sources(&s);let mw=EquityCachePlan::multiway(&s,&src);let hu=EquityCachePlan::build(&s,&src);
-            let compact=MultiwayCompactPlan::build(&mw,s.n).unwrap();
-            if !compact.enabled {continue;}
-            let terms=s.nodes.iter().filter(|n|n.kind==KIND_POT_SHARE && n.live.count_ones()>=3).count();
-            let literal_base=minimum_vram_mb(&s,ValuePlan::build(&s).blocks);
-            let base=literal_base+forced_storage_bytes(0).unwrap() as f64/1e6;
-            let fixed=mw.metadata_bytes()+terms*4+3*crate::preflop::multiway::SAMPLES*NUM_CLASSES*4;
-            let extra=terms*4+mw.blocks.len()*4;
-            let first=(base+(fixed+mw.blocks.len()*680) as f64/1e6).ceil() as u64;
-            let last=(base+(fixed+mw.blocks.len()*680*32) as f64/1e6).ceil() as u64;
-            for budget in first..=last {
-                let union=deployed_compatible_multiway_plan(budget,base,literal_base,fixed,fixed+extra,mw.blocks.len(),mw.blocks.len(),hu.bytes(),!hu.blocks.is_empty(),false).unwrap();
-                let Some(union)=union else {continue;};let union=union.plan;
-                if !union.minimal_metadata {continue;}
-                let compact_plan=deployed_compatible_multiway_plan(budget,base,literal_base,fixed,fixed+extra+compact.bytes,mw.blocks.len(),compact.capacity,hu.bytes(),!hu.blocks.is_empty(),false).unwrap().unwrap().plan;
-                if compact_plan.minimal_metadata {continue;}
-                chosen=Some((cfg.clone(),budget,union.storage.batch,union.reference.unwrap().use_eq_cache));break;
+            }))
+            .unwrap();
+            let s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+            if s.nodes.len() > 250000 {
+                continue;
             }
-            if chosen.is_some(){break;}
+            let src = reach_sources(&s);
+            let mw = EquityCachePlan::multiway(&s, &src);
+            let hu = EquityCachePlan::build(&s, &src);
+            let compact = MultiwayCompactPlan::build(&mw, s.n).unwrap();
+            if !compact.enabled {
+                continue;
+            }
+            let terms = s
+                .nodes
+                .iter()
+                .filter(|n| n.kind == KIND_POT_SHARE && n.live.count_ones() >= 3)
+                .count();
+            let literal_base = minimum_vram_mb(&s, ValuePlan::build(&s).blocks);
+            let base = literal_base + forced_storage_bytes(0).unwrap() as f64 / 1e6;
+            let fixed = mw.metadata_bytes()
+                + terms * 4
+                + 3 * crate::preflop::multiway::SAMPLES * NUM_CLASSES * 4;
+            let extra = terms * 4 + mw.blocks.len() * 4;
+            let first = (base + (fixed + mw.blocks.len() * 680) as f64 / 1e6).ceil() as u64;
+            let last = (base + (fixed + mw.blocks.len() * 680 * 32) as f64 / 1e6).ceil() as u64;
+            for budget in first..=last {
+                let union = deployed_compatible_multiway_plan(
+                    budget,
+                    base,
+                    literal_base,
+                    fixed,
+                    fixed + extra,
+                    mw.blocks.len(),
+                    mw.blocks.len(),
+                    hu.bytes(),
+                    !hu.blocks.is_empty(),
+                    false,
+                )
+                .unwrap();
+                let Some(union) = union else {
+                    continue;
+                };
+                let union = union.plan;
+                if !union.minimal_metadata {
+                    continue;
+                }
+                let compact_plan = deployed_compatible_multiway_plan(
+                    budget,
+                    base,
+                    literal_base,
+                    fixed,
+                    fixed + extra + compact.bytes,
+                    mw.blocks.len(),
+                    compact.capacity,
+                    hu.bytes(),
+                    !hu.blocks.is_empty(),
+                    false,
+                )
+                .unwrap()
+                .unwrap()
+                .plan;
+                if compact_plan.minimal_metadata {
+                    continue;
+                }
+                chosen = Some((
+                    cfg.clone(),
+                    budget,
+                    union.storage.batch,
+                    union.reference.unwrap().use_eq_cache,
+                ));
+                break;
+            }
+            if chosen.is_some() {
+                break;
+            }
         }
-        let (cfg,budget,batch,cache)=chosen.expect("bounded fixture must cross an integer-MB metadata boundary");
-        let mut results=Vec::new();
-        for allow_compact in [false,true] {
-            let mut s=PreflopSolver::new(cfg.clone(),eq.clone()).unwrap();
+        let (cfg, budget, batch, cache) =
+            chosen.expect("bounded fixture must cross an integer-MB metadata boundary");
+        let mut results = Vec::new();
+        for allow_compact in [false, true] {
+            let mut s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
             // Normal planner, no forced minimal override: union must automatically
             // retain its old fit while compact may keep the preferred metadata.
-            let mut gpu=PreflopGpu::new_with_layout(&s,budget,allow_compact).unwrap();
-            assert_eq!(gpu.use_mw_prepared,allow_compact);assert_eq!(gpu.mw_batch as usize,batch);
-            assert_eq!(gpu.use_eq_cache!=0,cache);
-            gpu.iterate(&mut s).unwrap();let (g,e)=gpu.gaps_and_evs().unwrap();
-            results.push((gpu.stream.clone_dtoh(&gpu.d_regrets).unwrap().iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
-                gpu.stream.clone_dtoh(&gpu.d_strat).unwrap().iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
-                g.iter().map(|x|x.to_bits()).collect::<Vec<_>>(),e.iter().map(|x|x.to_bits()).collect::<Vec<_>>()));
+            let mut gpu = PreflopGpu::new_with_layout(&s, budget, allow_compact).unwrap();
+            assert_eq!(gpu.use_mw_prepared, allow_compact);
+            assert_eq!(gpu.mw_batch as usize, batch);
+            assert_eq!(gpu.use_eq_cache != 0, cache);
+            gpu.iterate(&mut s).unwrap();
+            let (g, e) = gpu.gaps_and_evs().unwrap();
+            results.push((
+                gpu.stream
+                    .clone_dtoh(&gpu.d_regrets)
+                    .unwrap()
+                    .iter()
+                    .map(|x| x.to_bits())
+                    .collect::<Vec<_>>(),
+                gpu.stream
+                    .clone_dtoh(&gpu.d_strat)
+                    .unwrap()
+                    .iter()
+                    .map(|x| x.to_bits())
+                    .collect::<Vec<_>>(),
+                g.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
+                e.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
+            ));
         }
-        assert_eq!(results[0],results[1]);
+        assert_eq!(results[0], results[1]);
         eprintln!("minimal metadata boundary: {budget} MB, batch {batch}, HU cache {cache}");
     }
     #[test]
     fn coupled_hu_cached_and_direct_terminal_bits_match() {
-        let eq=phase_test_equity();
-        let cfg:PreflopConfig=serde_json::from_value(serde_json::json!({
+        let eq = phase_test_equity();
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
             "positions":["CO","BTN","SB","BB"],"stack":5.0,"posts":[0.0,0.0,0.5,1.0],
             "limp":true,"open_raises":[2.0],"raise_mults":[3.0],"max_raises":1,
             "add_allin":false,"rake_pct":5.0,"rake_cap":1.0,"realization":"raw"
-        })).unwrap();
-        let s=PreflopSolver::new(cfg,eq).unwrap();
-        let mut gpu=PreflopGpu::new(&s,2000).unwrap();
-        assert_eq!(gpu.use_eq_cache,1);
-        let mut reach=vec![0f32;gpu.d_reach.len()];
-        for (block,r) in reach.chunks_exact_mut(NUM_CLASSES).enumerate() {
-            for (h,x) in r.iter_mut().enumerate() {*x=if (block+h)%7==0 {0.0} else {((h*13+block*3)%31+1) as f32/4096.0};}
+        }))
+        .unwrap();
+        let s = PreflopSolver::new(cfg, eq).unwrap();
+        let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
+        assert_eq!(gpu.use_eq_cache, 1);
+        let mut reach = vec![0f32; gpu.d_reach.len()];
+        for (block, r) in reach.chunks_exact_mut(NUM_CLASSES).enumerate() {
+            for (h, x) in r.iter_mut().enumerate() {
+                *x = if (block + h) % 7 == 0 {
+                    0.0
+                } else {
+                    ((h * 13 + block * 3) % 31 + 1) as f32 / 4096.0
+                };
+            }
         }
-        gpu.d_reach=gpu.stream.clone_htod(&reach).unwrap();
-        unsafe {gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
-            .launch(LaunchConfig {block_dim:(128,1,1),..PreflopGpu::cfg((reach.len()/NUM_CLASSES) as u32)}).unwrap();}
+        gpu.d_reach = gpu.stream.clone_htod(&reach).unwrap();
+        unsafe {
+            gpu.stream
+                .launch_builder(&gpu.f_reach_mass)
+                .arg(&gpu.d_reach)
+                .arg(&mut gpu.d_reach_mass)
+                .launch(LaunchConfig {
+                    block_dim: (128, 1, 1),
+                    ..PreflopGpu::cfg((reach.len() / NUM_CLASSES) as u32)
+                })
+                .unwrap();
+        }
         // Manual reach replacement bypasses down(), which normally refreshes
         // the HU cache. Populate the all-seat span before comparing dispatches.
-        let (start,count)=gpu.eq_spans[s.n];assert!(count>0);
-        unsafe {gpu.stream.launch_builder(&gpu.f_equities)
-            .arg(&gpu.d_eq_work).arg(&start).arg(&gpu.d_eq_blocks).arg(&gpu.d_eq)
-            .arg(&gpu.d_reach).arg(&gpu.d_reach_mass).arg(&mut gpu.d_eq_cache)
-            .launch(PreflopGpu::cfg(count)).unwrap();}
-        let slots=gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
+        let (start, count) = gpu.eq_spans[s.n];
+        assert!(count > 0);
+        unsafe {
+            gpu.stream
+                .launch_builder(&gpu.f_equities)
+                .arg(&gpu.d_eq_work)
+                .arg(&start)
+                .arg(&gpu.d_eq_blocks)
+                .arg(&gpu.d_eq)
+                .arg(&gpu.d_reach)
+                .arg(&gpu.d_reach_mass)
+                .arg(&mut gpu.d_eq_cache)
+                .launch(PreflopGpu::cfg(count))
+                .unwrap();
+        }
+        let slots = gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
         for p in 0..s.n {
-            let mut answers=Vec::new();
+            let mut answers = Vec::new();
             // Only dispatch changes. Cache allocation remains valid and no graph
             // exists; all reaches, masses, terminals and coupled grouping are fixed.
-            for enabled in [1,0] {
-                gpu.use_eq_cache=enabled;
+            for enabled in [1, 0] {
+                gpu.use_eq_cache = enabled;
                 gpu.terminals(p as i32).unwrap();
-                let values=gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
-                let mut hu=Vec::new();
-                for (nd,n) in s.nodes.iter().enumerate().filter(|(_,n)|n.kind==KIND_POT_SHARE && n.live.count_ones()==2) {
-                    let _=n;let at=slots[nd] as usize*NUM_CLASSES;
-                    hu.extend(values[at..at+NUM_CLASSES].iter().map(|x|x.to_bits()));
+                let values = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
+                let mut hu = Vec::new();
+                for (nd, n) in s
+                    .nodes
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, n)| n.kind == KIND_POT_SHARE && n.live.count_ones() == 2)
+                {
+                    let _ = n;
+                    let at = slots[nd] as usize * NUM_CLASSES;
+                    hu.extend(values[at..at + NUM_CLASSES].iter().map(|x| x.to_bits()));
                 }
-                assert!(!hu.is_empty());answers.push(hu);
+                assert!(!hu.is_empty());
+                answers.push(hu);
             }
-            assert_eq!(answers[0],answers[1],"HU cache changes terminal bits for seat {p}");
+            assert_eq!(
+                answers[0], answers[1],
+                "HU cache changes terminal bits for seat {p}"
+            );
         }
     }
 
     fn phase_test_equity() -> Arc<crate::preflop::equity::EquityTable> {
-        let path = std::env::var("PREFLOP_PHASE_EQ").unwrap_or_else(|_|
-            concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin").to_string());
+        let path = std::env::var("PREFLOP_PHASE_EQ").unwrap_or_else(|_| {
+            concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin").to_string()
+        });
         let bytes = std::fs::read(&path).expect("phase tests require an existing equity cache");
         assert!(bytes.len() >= 4, "invalid equity cache");
         let samples = u32::from_le_bytes(bytes[..4].try_into().unwrap());
-        Arc::new(crate::preflop::equity::EquityTable::load_or_build(&path, samples))
+        Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            &path, samples,
+        ))
     }
 
     fn assert_phase_counts(profile: &serde_json::Value, np: usize, batches: usize, average: bool) {
         let count = |phase: &str| -> usize {
-            profile["rows"].as_array().unwrap().iter()
+            profile["rows"]
+                .as_array()
+                .unwrap()
+                .iter()
                 .filter(|r| r["phase"].as_str() == Some(phase))
-                .map(|r| r["intervals"].as_u64().unwrap() as usize).sum()
+                .map(|r| r["intervals"].as_u64().unwrap() as usize)
+                .sum()
         };
-        for phase in ["prepare", "normalize", "ordinary_terminals"] { assert_eq!(count(phase), np, "{phase}"); }
-        for phase in ["cdf", "coupled_terminals"] { assert_eq!(count(phase), np*batches, "{phase}"); }
+        for phase in ["prepare", "normalize", "ordinary_terminals"] {
+            assert_eq!(count(phase), np, "{phase}");
+        }
+        for phase in ["cdf", "coupled_terminals"] {
+            assert_eq!(count(phase), np * batches, "{phase}");
+        }
         assert_eq!(count("down"), if average { 1 } else { np });
         assert_eq!(count("up_learn"), if average { 0 } else { np });
         assert_eq!(count("up_average"), if average { np } else { 0 });
         assert_eq!(count("up_br"), if average { np } else { 0 });
-        assert_eq!(count("root_copy"), if average { 2*np } else { 0 });
+        assert_eq!(count("root_copy"), if average { 2 * np } else { 0 });
         assert_eq!(count("discount"), if average { 0 } else { 1 });
         let total = profile["gpu_ms"].as_f64().unwrap();
         let sum = profile["interval_sum_ms"].as_f64().unwrap();
         assert!(total.is_finite() && total >= 0.0 && sum.is_finite() && sum >= 0.0);
         // Independent event timestamp differences have finite resolution.
-        assert!((total-sum).abs() < 1.0 + total*0.001);
+        assert!((total - sum).abs() < 1.0 + total * 0.001);
     }
 
     #[test]
@@ -2721,7 +3989,8 @@ mod tests {
             "positions":["CO","BTN","SB","BB"], "stack":5.0, "posts":[0.0,0.0,0.5,1.0],
             "limp":true, "open_raises":[2.0], "raise_mults":[3.0], "max_raises":1,
             "add_allin":false, "rake_pct":5.0, "rake_cap":1.0, "realization":"raw"
-        })).unwrap();
+        }))
+        .unwrap();
         let mut results = Vec::new();
         for profiling in [false, true] {
             let mut s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
@@ -2730,22 +3999,46 @@ mod tests {
             let batches = crate::preflop::multiway::SAMPLES.div_ceil(gpu.mw_batch as usize);
             let mut rounds = Vec::new();
             for _ in 0..2 {
-                if profiling { gpu.phase_profile_begin().unwrap(); }
+                if profiling {
+                    gpu.phase_profile_begin().unwrap();
+                }
                 gpu.iterate(&mut s).unwrap();
-                if profiling { assert_phase_counts(&gpu.phase_profile_end().unwrap(), s.n, batches, false); }
-                if profiling { gpu.phase_profile_begin().unwrap(); }
+                if profiling {
+                    assert_phase_counts(&gpu.phase_profile_end().unwrap(), s.n, batches, false);
+                }
+                if profiling {
+                    gpu.phase_profile_begin().unwrap();
+                }
                 let (gaps, evs) = gpu.gaps_and_evs().unwrap();
-                if profiling { assert_phase_counts(&gpu.phase_profile_end().unwrap(), s.n, batches, true); }
+                if profiling {
+                    assert_phase_counts(&gpu.phase_profile_end().unwrap(), s.n, batches, true);
+                }
                 rounds.push((
-                    gpu.stream.clone_dtoh(&gpu.d_regrets).unwrap().iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
-                    gpu.stream.clone_dtoh(&gpu.d_strat).unwrap().iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
-                    gaps.iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
-                    evs.iter().map(|x|x.to_bits()).collect::<Vec<_>>()));
+                    gpu.stream
+                        .clone_dtoh(&gpu.d_regrets)
+                        .unwrap()
+                        .iter()
+                        .map(|x| x.to_bits())
+                        .collect::<Vec<_>>(),
+                    gpu.stream
+                        .clone_dtoh(&gpu.d_strat)
+                        .unwrap()
+                        .iter()
+                        .map(|x| x.to_bits())
+                        .collect::<Vec<_>>(),
+                    gaps.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
+                    evs.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
+                ));
             }
-            if !profiling { assert!(gpu.eval_graph.is_some()); }
+            if !profiling {
+                assert!(gpu.eval_graph.is_some());
+            }
             results.push(rounds);
         }
-        assert_eq!(results[0], results[1], "event instrumentation changed numerical outputs");
+        assert_eq!(
+            results[0], results[1],
+            "event instrumentation changed numerical outputs"
+        );
     }
 
     /// Supplementary diagnostic only. Does not write/save its input or modify
@@ -2753,51 +4046,78 @@ mod tests {
     #[test]
     #[ignore = "opt-in eager CUDA phase profiling; requires frozen input and idle GPU"]
     fn profile_coupled_gpu_phases_from_frozen_input() {
-        let input = std::env::var("PREFLOP_PHASE_INPUT").expect("set PREFLOP_PHASE_INPUT to a frozen JSON or .gtop file");
+        let input = std::env::var("PREFLOP_PHASE_INPUT")
+            .expect("set PREFLOP_PHASE_INPUT to a frozen JSON or .gtop file");
         let eq = phase_test_equity();
         let mut s = if input.ends_with(".gtop") {
             PreflopSolver::load_game(&input, eq).unwrap()
         } else {
-            let v: serde_json::Value = serde_json::from_slice(&std::fs::read(&input).unwrap()).unwrap();
+            let v: serde_json::Value =
+                serde_json::from_slice(&std::fs::read(&input).unwrap()).unwrap();
             let cfg = serde_json::from_value(v.get("config").unwrap_or(&v).clone()).unwrap();
             PreflopSolver::new(cfg, eq).unwrap()
         };
-        let number = |name: &str, default: usize| std::env::var(name).map(|x|x.parse::<usize>().expect(name)).unwrap_or(default);
+        let number = |name: &str, default: usize| {
+            std::env::var(name)
+                .map(|x| x.parse::<usize>().expect(name))
+                .unwrap_or(default)
+        };
         let budget = number("PREFLOP_PHASE_BUDGET_MB", 23000);
         let warmup = number("PREFLOP_PHASE_WARMUP", 2);
         let repeats = number("PREFLOP_PHASE_REPEATS", 3);
         assert!(repeats > 0 && repeats <= 100 && warmup <= 100);
         let mut gpu = PreflopGpu::new(&s, budget.try_into().unwrap()).unwrap();
         assert_ne!(gpu.use_multiway, 0, "this profile is for coupled multiway");
-        println!("PREFLOP_PHASE {}", serde_json::json!({"operation":"metadata","input":input,
+        println!(
+            "PREFLOP_PHASE {}",
+            serde_json::json!({"operation":"metadata","input":input,
             "model":s.multiway_equity_model(),"nodes":s.nodes.len(),"seats":s.n,
             "initial_iteration":s.iteration,"warmup":warmup,"repeats":repeats,"budget_mb":budget,
             "batch":gpu.mw_batch,"normalized":gpu.use_mw_normalized,"compact":gpu.use_mw_compact != 0,
-            "cdf_bytes":gpu.d_mw_cdf.len()*4,"normalized_bytes":gpu.d_mw_normalized.len()*4}));
-        for _ in 0..warmup { gpu.iterate(&mut s).unwrap(); }
+            "cdf_bytes":gpu.d_mw_cdf.len()*4,"normalized_bytes":gpu.d_mw_normalized.len()*4})
+        );
+        for _ in 0..warmup {
+            gpu.iterate(&mut s).unwrap();
+        }
         gpu.gaps_and_evs().unwrap(); // warm evaluation-only kernels too
         for sample in 0..repeats {
             gpu.phase_profile_begin().unwrap();
             let started = std::time::Instant::now();
             gpu.iterate(&mut s).unwrap();
-            let wall_ms = started.elapsed().as_secs_f64()*1000.0;
+            let wall_ms = started.elapsed().as_secs_f64() * 1000.0;
             let phases = gpu.phase_profile_end().unwrap();
-            println!("PREFLOP_PHASE {}", serde_json::json!({"operation":"iteration","sample":sample,
-                "iteration":s.iteration,"wall_ms":wall_ms,"phases":phases}));
+            println!(
+                "PREFLOP_PHASE {}",
+                serde_json::json!({"operation":"iteration","sample":sample,
+                "iteration":s.iteration,"wall_ms":wall_ms,"phases":phases})
+            );
             gpu.phase_profile_begin().unwrap();
             let started = std::time::Instant::now();
-            let (gaps,evs) = gpu.gaps_and_evs().unwrap();
-            let wall_ms = started.elapsed().as_secs_f64()*1000.0;
+            let (gaps, evs) = gpu.gaps_and_evs().unwrap();
+            let wall_ms = started.elapsed().as_secs_f64() * 1000.0;
             let phases = gpu.phase_profile_end().unwrap();
-            println!("PREFLOP_PHASE {}", serde_json::json!({"operation":"average_check","sample":sample,
-                "iteration":s.iteration,"wall_ms":wall_ms,"phases":phases,"gaps":gaps,"evs":evs}));
+            println!(
+                "PREFLOP_PHASE {}",
+                serde_json::json!({"operation":"average_check","sample":sample,
+                "iteration":s.iteration,"wall_ms":wall_ms,"phases":phases,"gaps":gaps,"evs":evs})
+            );
         }
         gpu.sync_to_cpu(&mut s).unwrap();
-        let (regret,strategy) = s.arena_snapshot();
-        let fingerprint = regret.iter().chain(&strategy).fold(0xcbf29ce484222325u64, |h,x|
-            x.to_bits().to_le_bytes().iter().fold(h,|h,b|(h ^ *b as u64).wrapping_mul(0x100000001b3)));
-        println!("PREFLOP_PHASE {}", serde_json::json!({"operation":"result","iteration":s.iteration,
-            "arena_hash":format!("{fingerprint:016x}"),"execution":"eager_cuda_events"}));
+        let (regret, strategy) = s.arena_snapshot();
+        let fingerprint = regret
+            .iter()
+            .chain(&strategy)
+            .fold(0xcbf29ce484222325u64, |h, x| {
+                x.to_bits()
+                    .to_le_bytes()
+                    .iter()
+                    .fold(h, |h, b| (h ^ *b as u64).wrapping_mul(0x100000001b3))
+            });
+        println!(
+            "PREFLOP_PHASE {}",
+            serde_json::json!({"operation":"result","iteration":s.iteration,
+            "arena_hash":format!("{fingerprint:016x}"),"execution":"eager_cuda_events"})
+        );
     }
 
     #[test]
@@ -2812,10 +4132,15 @@ mod tests {
             assert_eq!(plan.batch, 1);
             assert!(plan.cache_len * 4 <= available);
         }
-        let at_boundary = multiway_batch_plan(normalized + particle, slots).unwrap().unwrap();
+        let at_boundary = multiway_batch_plan(normalized + particle, slots)
+            .unwrap()
+            .unwrap();
         assert_eq!(at_boundary.normalized_bytes, normalized);
         assert_eq!(at_boundary.batch, 1);
-        assert_eq!(at_boundary.cache_len * 4 + normalized, normalized + particle);
+        assert_eq!(
+            at_boundary.cache_len * 4 + normalized,
+            normalized + particle
+        );
         // Even if direct division could fit two particles, prefer normalization
         // once at least one normalized particle fits; this is not a size tuner.
         let preferred = multiway_batch_plan(2 * particle, slots).unwrap().unwrap();
@@ -2843,33 +4168,47 @@ mod tests {
         assert!(multiway_batch_plan(usize::MAX, usize::MAX).is_err());
     }
 
-
     #[test]
     #[ignore = "targeted one-particle CUDA boundary/parity test; run explicitly in release"]
     fn coupled_minimum_budget_direct_and_normalized_paths_match() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            path, 20000,
+        ));
         let mut chosen = None;
         // Search only small/medium CPU-built fixtures; no repeated GPU allocation
         // is used to locate the integer-MB boundary.
         for n in [4usize, 5, 6] {
-            let mut posts = vec![0.0; n]; posts[n - 2] = 0.5; posts[n - 1] = 1.0;
+            let mut posts = vec![0.0; n];
+            posts[n - 2] = 0.5;
+            posts[n - 1] = 1.0;
             let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
                 "positions": (0..n).map(|p| format!("P{p}")).collect::<Vec<_>>(),
                 "stack":20.0, "posts":posts, "limp":true, "open_raises":[2.0,3.0],
                 "raise_mults":[3.0], "max_raises":2, "add_allin":false,
                 "rake_pct":5.0, "rake_cap":1.0, "realization":"raw"
-            })).unwrap();
+            }))
+            .unwrap();
             let s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
-            if s.nodes.len() > 250_000 { continue; }
+            if s.nodes.len() > 250_000 {
+                continue;
+            }
             let sources = reach_sources(&s);
             let mw = EquityCachePlan::multiway(&s, &sources);
             let compact = MultiwayCompactPlan::build(&mw, s.n).unwrap();
             let slots = compact.capacity;
-            if slots < 3000 { continue; } // >2MB normalization interval
-            let terms = s.nodes.iter().filter(|nd|
-                nd.kind == KIND_POT_SHARE && nd.live.count_ones() >= 3).count();
-            let fixed = mw.metadata_bytes() + terms * 8 + mw.blocks.len() * 4 + compact.bytes
+            if slots < 3000 {
+                continue;
+            } // >2MB normalization interval
+            let terms = s
+                .nodes
+                .iter()
+                .filter(|nd| nd.kind == KIND_POT_SHARE && nd.live.count_ones() >= 3)
+                .count();
+            let fixed = mw.metadata_bytes()
+                + terms * 8
+                + mw.blocks.len() * 4
+                + compact.bytes
                 + 3 * crate::preflop::multiway::SAMPLES * NUM_CLASSES * 4;
             let base = minimum_vram_mb(&s, ValuePlan::build(&s).blocks) * 1e6 + fixed as f64;
             let particle = slots * (NUM_CLASSES + 1) * 4;
@@ -2880,8 +4219,12 @@ mod tests {
             let last = ((base + normalized as f64 + 2.0 * particle as f64) / 1e6).floor() as u64;
             for budget in first..=last {
                 let remaining = (budget as f64 * 1e6 - base).max(0.0) as usize;
-                let Some(plan) = multiway_batch_plan(remaining, slots).unwrap() else { continue; };
-                if plan.batch != 1 { continue; }
+                let Some(plan) = multiway_batch_plan(remaining, slots).unwrap() else {
+                    continue;
+                };
+                if plan.batch != 1 {
+                    continue;
+                }
                 let need = base + (plan.cache_len * 4 + plan.normalized_bytes) as f64;
                 let eq_cached = !eq_plan.blocks.is_empty()
                     && need + eq_plan.bytes() as f64 <= budget as f64 * 1e6;
@@ -2894,7 +4237,9 @@ mod tests {
                     }
                 }
             }
-            if chosen.is_some() { break; }
+            if chosen.is_some() {
+                break;
+            }
         }
         let (cfg, direct_budget, normalized_budget, slots, nodes) = chosen
             .expect("medium fixture must admit both integer-MB paths with batch1 and identical HU cache mode");
@@ -2906,7 +4251,8 @@ mod tests {
         // starts from the same fresh state; neither budget is mocked/overridden.
         for (budget, expect_normalized) in [(direct_budget, false), (normalized_budget, true)] {
             let mut s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
-            let mut gpu = PreflopGpu::new(&s, budget).expect("actual constructor must retain minimum fit");
+            let mut gpu =
+                PreflopGpu::new(&s, budget).expect("actual constructor must retain minimum fit");
             assert_eq!(gpu.use_mw_normalized, expect_normalized);
             assert_eq!(gpu.mw_batch, 1);
             assert_eq!(gpu.use_multiway, 1);
@@ -2917,21 +4263,43 @@ mod tests {
             for _ in 0..3 {
                 gpu.iterate(&mut s).unwrap();
                 let (gaps, evs) = gpu.gaps_and_evs().unwrap();
-                let regret_bits: Vec<u32> = gpu.stream.clone_dtoh(&gpu.d_regrets).unwrap().iter().map(|x| x.to_bits()).collect();
-                let strategy_bits: Vec<u32> = gpu.stream.clone_dtoh(&gpu.d_strat).unwrap().iter().map(|x| x.to_bits()).collect();
-                records.push((regret_bits, strategy_bits,
+                let regret_bits: Vec<u32> = gpu
+                    .stream
+                    .clone_dtoh(&gpu.d_regrets)
+                    .unwrap()
+                    .iter()
+                    .map(|x| x.to_bits())
+                    .collect();
+                let strategy_bits: Vec<u32> = gpu
+                    .stream
+                    .clone_dtoh(&gpu.d_strat)
+                    .unwrap()
+                    .iter()
+                    .map(|x| x.to_bits())
+                    .collect();
+                records.push((
+                    regret_bits,
+                    strategy_bits,
                     gaps.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
-                    evs.iter().map(|x| x.to_bits()).collect::<Vec<_>>()));
+                    evs.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
+                ));
             }
             assert!(gpu.learning_graphs.iter().any(|g| g.is_some()));
             assert!(gpu.eval_graph.is_some());
             snapshots.push(records);
             // Drop captured graphs before replacing any of their input buffers.
-            for graph in &mut gpu.learning_graphs { *graph = None; }
+            for graph in &mut gpu.learning_graphs {
+                *graph = None;
+            }
             gpu.eval_graph = None;
-            let target = s.nodes.iter().position(|nd|
-                nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3).unwrap();
-            let live: Vec<usize> = (0..s.n).filter(|&p| s.nodes[target].live & (1 << p) != 0).collect();
+            let target = s
+                .nodes
+                .iter()
+                .position(|nd| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3)
+                .unwrap();
+            let live: Vec<usize> = (0..s.n)
+                .filter(|&p| s.nodes[target].live & (1 << p) != 0)
+                .collect();
             let (p, other) = (live[0], live[1]);
             let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
             let value_slots = gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
@@ -2946,7 +4314,8 @@ mod tests {
                 for (block, r) in reaches.chunks_exact_mut(NUM_CLASSES).enumerate() {
                     let scale = [1.0f32 / 32.0, 1.0 / 16.0, 1.0 / 8.0][(block + phase) % 3];
                     let h = (block * 17 + phase * 11) % NUM_CLASSES;
-                    r[h] = scale; r[(h + 53) % NUM_CLASSES] = 2.0 * scale;
+                    r[h] = scale;
+                    r[(h + 53) % NUM_CLASSES] = 2.0 * scale;
                     r[(h + 107) % NUM_CLASSES] = 4.0 * scale;
                 }
                 if zero {
@@ -2954,90 +4323,169 @@ mod tests {
                     reaches[off..off + NUM_CLASSES].fill(0.0);
                 }
                 if phase == 2 {
-                    assert!(gpu.stream.clone_dtoh(&gpu.d_mw_active).unwrap().iter().all(|&x| x == 0));
+                    assert!(gpu
+                        .stream
+                        .clone_dtoh(&gpu.d_mw_active)
+                        .unwrap()
+                        .iter()
+                        .all(|&x| x == 0));
                 }
                 gpu.d_reach = gpu.stream.clone_htod(&reaches).unwrap();
                 unsafe {
-                    gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
-                        .launch(LaunchConfig { block_dim: (128,1,1),
-                            ..PreflopGpu::cfg((reaches.len() / NUM_CLASSES) as u32) }).unwrap();
+                    gpu.stream
+                        .launch_builder(&gpu.f_reach_mass)
+                        .arg(&gpu.d_reach)
+                        .arg(&mut gpu.d_reach_mass)
+                        .launch(LaunchConfig {
+                            block_dim: (128, 1, 1),
+                            ..PreflopGpu::cfg((reaches.len() / NUM_CLASSES) as u32)
+                        })
+                        .unwrap();
                 }
-                gpu.d_val = gpu.stream.clone_htod(&vec![123456.0f32; gpu.d_val.len()]).unwrap();
-                gpu.d_mw_cdf = gpu.stream.clone_htod(&vec![f32::NAN; gpu.d_mw_cdf.len()]).unwrap();
+                gpu.d_val = gpu
+                    .stream
+                    .clone_htod(&vec![123456.0f32; gpu.d_val.len()])
+                    .unwrap();
+                gpu.d_mw_cdf = gpu
+                    .stream
+                    .clone_htod(&vec![f32::NAN; gpu.d_mw_cdf.len()])
+                    .unwrap();
                 if expect_normalized {
-                    gpu.d_mw_normalized = gpu.stream.clone_htod(&vec![f32::NAN; gpu.d_mw_normalized.len()]).unwrap();
+                    gpu.d_mw_normalized = gpu
+                        .stream
+                        .clone_htod(&vec![f32::NAN; gpu.d_mw_normalized.len()])
+                        .unwrap();
                 }
                 gpu.terminals_masked(p as i32, gate).unwrap();
                 let actual = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
-                let local: Vec<Vec<f32>> = (0..s.n).map(|q| {
-                    let off = sources[target * s.n + q] as usize * NUM_CLASSES;
-                    reaches[off..off + NUM_CLASSES].to_vec()
-                }).collect();
+                let local: Vec<Vec<f32>> = (0..s.n)
+                    .map(|q| {
+                        let off = sources[target * s.n + q] as usize * NUM_CLASSES;
+                        reaches[off..off + NUM_CLASSES].to_vec()
+                    })
+                    .collect();
                 let mut expected = vec![0f32; NUM_CLASSES];
                 s.terminal_value(target, p, &local, &mut expected);
                 for h in 0..NUM_CLASSES {
-                    assert!(actual[base + h].is_finite() && (actual[base + h] - expected[h]).abs() < 2e-5,
-                        "budget {budget}, phase {phase}, h {h}: {} vs {}", actual[base + h], expected[h]);
+                    assert!(
+                        actual[base + h].is_finite()
+                            && (actual[base + h] - expected[h]).abs() < 2e-5,
+                        "budget {budget}, phase {phase}, h {h}: {} vs {}",
+                        actual[base + h],
+                        expected[h]
+                    );
                 }
-                if zero { assert!(actual[base..base + NUM_CLASSES].iter().all(|&x| x == 0.0)); }
-                terminal_records.push(actual[base..base + NUM_CLASSES].iter().map(|x| x.to_bits()).collect::<Vec<_>>());
+                if zero {
+                    assert!(actual[base..base + NUM_CLASSES].iter().all(|&x| x == 0.0));
+                }
+                terminal_records.push(
+                    actual[base..base + NUM_CLASSES]
+                        .iter()
+                        .map(|x| x.to_bits())
+                        .collect::<Vec<_>>(),
+                );
             }
             terminal_snapshots.push(terminal_records);
         }
-        assert_eq!(cache_modes[0], cache_modes[1], "HU cache mode must not confound the comparison");
+        assert_eq!(
+            cache_modes[0], cache_modes[1],
+            "HU cache mode must not confound the comparison"
+        );
         for (step, (a, b)) in snapshots[0].iter().zip(&snapshots[1]).enumerate() {
             for (label, x, y) in [("regrets", &a.0, &b.0), ("strategy", &a.1, &b.1)] {
                 assert_eq!(x.len(), y.len());
                 if let Some(i) = x.iter().zip(y).position(|(u, v)| u != v) {
-                    panic!("{label} differs at iteration {}, index {i}: {:08x} vs {:08x}", step + 1, x[i], y[i]);
+                    panic!(
+                        "{label} differs at iteration {}, index {i}: {:08x} vs {:08x}",
+                        step + 1,
+                        x[i],
+                        y[i]
+                    );
                 }
             }
             assert_eq!(a.2, b.2, "gap bits differ at iteration {}", step + 1);
             assert_eq!(a.3, b.3, "EV bits differ at iteration {}", step + 1);
         }
-        assert_eq!(terminal_snapshots[0], terminal_snapshots[1], "direct stale/zero/ungated terminal behavior must match");
+        assert_eq!(
+            terminal_snapshots[0], terminal_snapshots[1],
+            "direct stale/zero/ungated terminal behavior must match"
+        );
     }
 
     #[test]
     fn compact_slot_map_is_bijective_and_preserves_minimum_fit() {
-        let rows = [vec![0u32,2,3,6,7,9], vec![1,2,5,7], vec![0,1,3,8,9]];
-        let mut work = Vec::new(); let mut spans = Vec::new();
-        for row in &rows { spans.push((work.len() as u32, row.len() as u32)); work.extend(row); }
-        spans.push((work.len() as u32, 10)); work.extend(0..10u32);
-        let plan = EquityCachePlan { slots: (0..10).collect(), blocks: (0..10).collect(), work, spans };
+        let rows = [
+            vec![0u32, 2, 3, 6, 7, 9],
+            vec![1, 2, 5, 7],
+            vec![0, 1, 3, 8, 9],
+        ];
+        let mut work = Vec::new();
+        let mut spans = Vec::new();
+        for row in &rows {
+            spans.push((work.len() as u32, row.len() as u32));
+            work.extend(row);
+        }
+        spans.push((work.len() as u32, 10));
+        work.extend(0..10u32);
+        let plan = EquityCachePlan {
+            slots: (0..10).collect(),
+            blocks: (0..10).collect(),
+            work,
+            spans,
+        };
         let compact = MultiwayCompactPlan::build(&plan, 3).unwrap();
         assert!(compact.enabled);
-        assert_eq!(compact.capacity, 6, "trailing union span is not a simultaneous traverser");
+        assert_eq!(
+            compact.capacity, 6,
+            "trailing union span is not a simultaneous traverser"
+        );
         assert_eq!(compact.bytes, 3 * 10 * 4);
         for p in 0..3 {
             for global in 0..10 {
-                let expected = rows[p].iter().position(|&x| x == global as u32).map(|x| x as u32).unwrap_or(u32::MAX);
+                let expected = rows[p]
+                    .iter()
+                    .position(|&x| x == global as u32)
+                    .map(|x| x as u32)
+                    .unwrap_or(u32::MAX);
                 assert_eq!(compact.map[p * 10 + global], expected);
             }
         }
         let old_minimum = 10 * (NUM_CLASSES + 1) * 4;
         let new_minimum = compact.bytes + compact.capacity * (NUM_CLASSES + 1) * 4;
         assert!(new_minimum < old_minimum);
-        assert!(multiway_batch_plan(old_minimum - compact.bytes, compact.capacity).unwrap().is_some());
+        assert!(
+            multiway_batch_plan(old_minimum - compact.bytes, compact.capacity)
+                .unwrap()
+                .is_some()
+        );
         let dense = EquityCachePlan {
-            slots: (0..10).collect(), blocks: (0..10).collect(),
-            work: (0..3).flat_map(|_| 0..10u32).collect(), spans: vec![(0,10),(10,10),(20,10)],
+            slots: (0..10).collect(),
+            blocks: (0..10).collect(),
+            work: (0..3).flat_map(|_| 0..10u32).collect(),
+            spans: vec![(0, 10), (10, 10), (20, 10)],
         };
         let fallback = MultiwayCompactPlan::build(&dense, 3).unwrap();
-        assert!(!fallback.enabled, "do not spend mapping memory when minimum fit worsens");
-        assert_eq!(fallback.capacity, 10); assert_eq!(fallback.bytes, 0);
+        assert!(
+            !fallback.enabled,
+            "do not spend mapping memory when minimum fit worsens"
+        );
+        assert_eq!(fallback.capacity, 10);
+        assert_eq!(fallback.bytes, 0);
         assert_eq!(fallback.map.len(), 1);
     }
 
     #[test]
     fn coupled_compact_and_union_storage_have_identical_outputs() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            path, 20000,
+        ));
         let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
             "positions":["CO","BTN","SB","BB"], "stack":5.0, "posts":[0.0,0.0,0.5,1.0],
             "limp":true, "open_raises":[2.0], "raise_mults":[3.0], "max_raises":1,
             "add_allin":false, "rake_pct":5.0, "rake_cap":1.0, "realization":"raw"
-        })).unwrap();
+        }))
+        .unwrap();
         let mut results = Vec::new();
         let mut metadata = Vec::new();
         for allow_compact in [false, true] {
@@ -3048,12 +4496,20 @@ mod tests {
             assert!(mapping.enabled, "fixture must exercise compact storage");
             // Validate every actual terminal/seat reference against the inverse
             // work-span mapping before involving a CUDA kernel.
-            for (nd, node) in s.nodes.iter().enumerate().filter(|(_, n)|
-                n.kind == KIND_POT_SHARE && n.live.count_ones() >= 3) {
+            for (nd, node) in s
+                .nodes
+                .iter()
+                .enumerate()
+                .filter(|(_, n)| n.kind == KIND_POT_SHARE && n.live.count_ones() >= 3)
+            {
                 for p in 0..s.n {
-                    if node.live & (1 << p) == 0 { continue; }
+                    if node.live & (1 << p) == 0 {
+                        continue;
+                    }
                     for q in 0..s.n {
-                        if p == q || node.live & (1 << q) == 0 { continue; }
+                        if p == q || node.live & (1 << q) == 0 {
+                            continue;
+                        }
                         let global = plan.slots[sources[nd * s.n + q] as usize] as usize;
                         let local = mapping.map[p * plan.blocks.len() + global] as usize;
                         let (start, count) = plan.spans[p];
@@ -3064,72 +4520,117 @@ mod tests {
             }
             let mut gpu = PreflopGpu::new_with_layout(&s, 2000, allow_compact).unwrap();
             assert_eq!(gpu.use_mw_compact != 0, allow_compact);
-            assert_eq!(gpu.mw_batch, 32); assert!(gpu.use_mw_normalized);
-            metadata.push((gpu.use_eq_cache, gpu.d_mw_cdf.len(), gpu.d_mw_normalized.len()));
+            assert_eq!(gpu.mw_batch, 32);
+            assert!(gpu.use_mw_normalized);
+            metadata.push((
+                gpu.use_eq_cache,
+                gpu.d_mw_cdf.len(),
+                gpu.d_mw_normalized.len(),
+            ));
             let mut snapshots = Vec::new();
             for _ in 0..3 {
                 gpu.iterate(&mut s).unwrap();
                 let (gaps, evs) = gpu.gaps_and_evs().unwrap();
                 snapshots.push((
-                    gpu.stream.clone_dtoh(&gpu.d_regrets).unwrap().iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
-                    gpu.stream.clone_dtoh(&gpu.d_strat).unwrap().iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
+                    gpu.stream
+                        .clone_dtoh(&gpu.d_regrets)
+                        .unwrap()
+                        .iter()
+                        .map(|x| x.to_bits())
+                        .collect::<Vec<_>>(),
+                    gpu.stream
+                        .clone_dtoh(&gpu.d_strat)
+                        .unwrap()
+                        .iter()
+                        .map(|x| x.to_bits())
+                        .collect::<Vec<_>>(),
                     gaps.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
-                    evs.iter().map(|x| x.to_bits()).collect::<Vec<_>>()));
+                    evs.iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
+                ));
             }
             assert!(gpu.eval_graph.is_some());
-            for graph in &mut gpu.learning_graphs { *graph = None; } gpu.eval_graph = None;
+            for graph in &mut gpu.learning_graphs {
+                *graph = None;
+            }
+            gpu.eval_graph = None;
             // Alternate differently sized seat spans. Poisoning the same compact
             // capacity catches stale reads beyond the new seat's populated span.
             let mut terminal_values = Vec::new();
-            for (p, gate) in [(0usize,1i32),(3,0),(1,1),(0,0)] {
-                gpu.d_mw_cdf = gpu.stream.clone_htod(&vec![f32::NAN; gpu.d_mw_cdf.len()]).unwrap();
-                gpu.d_mw_normalized = gpu.stream.clone_htod(&vec![f32::NAN; gpu.d_mw_normalized.len()]).unwrap();
-                gpu.d_val = gpu.stream.clone_htod(&vec![123456.0f32; gpu.d_val.len()]).unwrap();
+            for (p, gate) in [(0usize, 1i32), (3, 0), (1, 1), (0, 0)] {
+                gpu.d_mw_cdf = gpu
+                    .stream
+                    .clone_htod(&vec![f32::NAN; gpu.d_mw_cdf.len()])
+                    .unwrap();
+                gpu.d_mw_normalized = gpu
+                    .stream
+                    .clone_htod(&vec![f32::NAN; gpu.d_mw_normalized.len()])
+                    .unwrap();
+                gpu.d_val = gpu
+                    .stream
+                    .clone_htod(&vec![123456.0f32; gpu.d_val.len()])
+                    .unwrap();
                 gpu.terminals_masked(p as i32, gate).unwrap();
                 let actual = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
-                assert!(actual.iter().all(|x| x.is_finite()), "compact stale read: p {p}, gate {gate}");
+                assert!(
+                    actual.iter().all(|x| x.is_finite()),
+                    "compact stale read: p {p}, gate {gate}"
+                );
                 terminal_values.push(actual.iter().map(|x| x.to_bits()).collect::<Vec<_>>());
             }
             results.push((snapshots, terminal_values));
         }
         assert_eq!(metadata[0].0, metadata[1].0);
         assert!(metadata[1].1 < metadata[0].1 && metadata[1].2 < metadata[0].2);
-        for (step, (a,b)) in results[0].0.iter().zip(&results[1].0).enumerate() {
-            for (label,x,y) in [("regret",&a.0,&b.0),("strategy",&a.1,&b.1)] {
-                assert_eq!(x.len(),y.len());
-                if let Some(i)=x.iter().zip(y).position(|(u,v)|u!=v) {
-                    panic!("{label} differs at iteration {}, index {i}: {:08x} vs {:08x}",step+1,x[i],y[i]);
+        for (step, (a, b)) in results[0].0.iter().zip(&results[1].0).enumerate() {
+            for (label, x, y) in [("regret", &a.0, &b.0), ("strategy", &a.1, &b.1)] {
+                assert_eq!(x.len(), y.len());
+                if let Some(i) = x.iter().zip(y).position(|(u, v)| u != v) {
+                    panic!(
+                        "{label} differs at iteration {}, index {i}: {:08x} vs {:08x}",
+                        step + 1,
+                        x[i],
+                        y[i]
+                    );
                 }
             }
-            assert_eq!(a.2,b.2,"gap bits differ at step {step}");
-            assert_eq!(a.3,b.3,"EV bits differ at step {step}");
+            assert_eq!(a.2, b.2, "gap bits differ at step {step}");
+            assert_eq!(a.3, b.3, "EV bits differ at step {step}");
         }
-        for (state,(a,b)) in results[0].1.iter().zip(&results[1].1).enumerate() {
-            assert_eq!(a.len(),b.len());
-            if let Some(i)=a.iter().zip(b).position(|(u,v)|u!=v) {
-                panic!("terminal storage differs at state {state}, index {i}: {:08x} vs {:08x}",a[i],b[i]);
+        for (state, (a, b)) in results[0].1.iter().zip(&results[1].1).enumerate() {
+            assert_eq!(a.len(), b.len());
+            if let Some(i) = a.iter().zip(b).position(|(u, v)| u != v) {
+                panic!(
+                    "terminal storage differs at state {state}, index {i}: {:08x} vs {:08x}",
+                    a[i], b[i]
+                );
             }
         }
     }
 
-
     #[test]
     fn coupled_terminal_matches_cpu_across_particle_batches() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            path, 20000,
+        ));
         let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
             "positions":["BTN","SB","BB"], "stack":5.0, "posts":[0.0,0.5,1.0],
             "limp":true, "open_raises":[2.0], "raise_mults":[3.0], "max_raises":1,
             "add_allin":false, "rake_pct":5.0, "rake_cap":1.0, "realization":"raw"
-        })).unwrap();
+        }))
+        .unwrap();
         // Exercise every exact opponent-count specialization O=2..8.
         for n in 3usize..=9 {
             let mut cfg = cfg.clone();
             if n != 3 {
                 cfg.positions = (0..n).map(|p| format!("P{p}")).collect();
-                cfg.positions[n-2] = "SB".into(); cfg.positions[n-1] = "BB".into();
-                cfg.posts = vec![0.0; n]; cfg.posts[n-2] = 0.5; cfg.posts[n-1] = 1.0;
-                cfg.open_raises.clear(); cfg.stack = 2.0;
+                cfg.positions[n - 2] = "SB".into();
+                cfg.positions[n - 1] = "BB".into();
+                cfg.posts = vec![0.0; n];
+                cfg.posts[n - 2] = 0.5;
+                cfg.posts[n - 1] = 1.0;
+                cfg.open_raises.clear();
+                cfg.stack = 2.0;
             }
             let s = PreflopSolver::new(cfg, eq.clone()).unwrap();
             assert_eq!(s.multiway_equity_model(), "coupled_deck_v1");
@@ -3137,21 +4638,41 @@ mod tests {
             assert_eq!(gpu.use_multiway, 1);
             let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
             let slots = gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
-            let target = s.nodes.iter().position(|n| n.kind == KIND_POT_SHARE && n.live.count_ones() as usize == s.n).unwrap();
+            let target = s
+                .nodes
+                .iter()
+                .position(|n| n.kind == KIND_POT_SHARE && n.live.count_ones() as usize == s.n)
+                .unwrap();
             gpu.down(1, 0).unwrap();
             let mut reaches = gpu.stream.clone_dtoh(&gpu.d_reach).unwrap();
             // Unit counterfactual mass keeps a strict absolute tolerance meaningful
             // even at the nine-seat terminal after many preceding calls.
             for r in reaches.chunks_exact_mut(NUM_CLASSES) {
-                let mass: f32 = r.iter().sum(); if mass > 0.0 { for x in r { *x /= mass; } }
+                let mass: f32 = r.iter().sum();
+                if mass > 0.0 {
+                    for x in r {
+                        *x /= mass;
+                    }
+                }
             }
             gpu.d_reach = gpu.stream.clone_htod(&reaches).unwrap();
-            unsafe { gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
-                .launch(LaunchConfig { block_dim: (128,1,1), ..PreflopGpu::cfg((reaches.len()/NUM_CLASSES) as u32) }).unwrap(); }
-            let local: Vec<Vec<f32>> = (0..s.n).map(|p| {
-                let base = sources[target * s.n + p] as usize * NUM_CLASSES;
-                reaches[base..base + NUM_CLASSES].to_vec()
-            }).collect();
+            unsafe {
+                gpu.stream
+                    .launch_builder(&gpu.f_reach_mass)
+                    .arg(&gpu.d_reach)
+                    .arg(&mut gpu.d_reach_mass)
+                    .launch(LaunchConfig {
+                        block_dim: (128, 1, 1),
+                        ..PreflopGpu::cfg((reaches.len() / NUM_CLASSES) as u32)
+                    })
+                    .unwrap();
+            }
+            let local: Vec<Vec<f32>> = (0..s.n)
+                .map(|p| {
+                    let base = sources[target * s.n + p] as usize * NUM_CLASSES;
+                    reaches[base..base + NUM_CLASSES].to_vec()
+                })
+                .collect();
             // Seven exercises a partial final batch; one verifies bounded scratch
             // never silently switches to the old equity formula.
             for batch in [32u32, 7, 1] {
@@ -3164,20 +4685,32 @@ mod tests {
                     s.terminal_value(target, p, &local, &mut expected);
                     let base = slots[target] as usize * NUM_CLASSES;
                     for h in 0..NUM_CLASSES {
-                        assert!((actual[base + h] - expected[h]).abs() < 2e-5,
-                            "n {n}, batch {batch}, p {p}, h {h}: {} vs {}", actual[base + h], expected[h]);
+                        assert!(
+                            (actual[base + h] - expected[h]).abs() < 2e-5,
+                            "n {n}, batch {batch}, p {p}, h {h}: {} vs {}",
+                            actual[base + h],
+                            expected[h]
+                        );
                     }
-                    terminal_bits.push(actual[base..base + NUM_CLASSES].iter().map(|x| x.to_bits()).collect());
+                    terminal_bits.push(
+                        actual[base..base + NUM_CLASSES]
+                            .iter()
+                            .map(|x| x.to_bits())
+                            .collect(),
+                    );
                 }
                 // Optional exact GPU-control evidence: run this same test patch
                 // before/after kernel specialization and compare every f32 bit.
                 // Different batch sizes may legitimately round differently, so
                 // compare control/candidate only at the same (n, batch).
                 if std::env::var("PREFLOP_MW_TERMINAL_BITS").as_deref() == Ok("1") {
-                    println!("PREFLOP_MW_TERMINAL_BITS {}", serde_json::json!({
-                        "seats": n, "opponents": n-1, "batch": batch,
-                        "model": s.multiway_equity_model(), "bits_by_seat": terminal_bits,
-                    }));
+                    println!(
+                        "PREFLOP_MW_TERMINAL_BITS {}",
+                        serde_json::json!({
+                            "seats": n, "opponents": n-1, "batch": batch,
+                            "model": s.multiway_equity_model(), "bits_by_seat": terminal_bits,
+                        })
+                    );
                 }
             }
         }
@@ -3186,28 +4719,44 @@ mod tests {
     #[test]
     fn coupled_active_slots_preserve_counterfactual_zero_reach_and_reset_masks() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            path, 20000,
+        ));
         let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
             "positions":["CO","BTN","SB","BB"], "stack":2.0,
             "posts":[0.0,0.0,0.5,1.0], "limp":true, "open_raises":[],
             "raise_mults":[], "max_raises":1, "add_allin":false,
             "rake_pct":5.0, "rake_cap":1.0, "realization":"raw"
-        })).unwrap();
+        }))
+        .unwrap();
         let s = PreflopSolver::new(cfg, eq).unwrap();
         let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
         assert_eq!(gpu.use_multiway, 1);
         // Three live seats plus a folded opponent distinguishes pot eligibility
         // from the counterfactual reach product, which includes the folded seat.
-        let target = s.nodes.iter().position(|nd|
-            nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3).unwrap();
-        let live: Vec<usize> = (0..s.n).filter(|&q| s.nodes[target].live & (1 << q) != 0).collect();
-        let folded = (0..s.n).find(|&q| s.nodes[target].live & (1 << q) == 0).unwrap();
+        let target = s
+            .nodes
+            .iter()
+            .position(|nd| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3)
+            .unwrap();
+        let live: Vec<usize> = (0..s.n)
+            .filter(|&q| s.nodes[target].live & (1 << q) != 0)
+            .collect();
+        let folded = (0..s.n)
+            .find(|&q| s.nodes[target].live & (1 << q) == 0)
+            .unwrap();
         let (p, other) = (live[0], live[1]);
         let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
         let value_slots = gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
         let cdf_slots = gpu.stream.clone_dtoh(&gpu.d_mw_slots).unwrap();
         let source = |q: usize| sources[target * s.n + q] as usize;
-        assert_eq!((0..s.n).map(|q| source(q)).collect::<std::collections::HashSet<_>>().len(), s.n);
+        assert_eq!(
+            (0..s.n)
+                .map(|q| source(q))
+                .collect::<std::collections::HashSet<_>>()
+                .len(),
+            s.n
+        );
         // Isolate one multiway terminal, so every expected active slot is known.
         // Retain the production slot mapping and ordinary terminal kernel.
         gpu.d_mw_terms = gpu.stream.clone_htod(&[target as u32]).unwrap();
@@ -3228,7 +4777,11 @@ mod tests {
             let cases = [
                 ("positive", p, None),
                 ("zero own reach", p, Some(p)),
-                ("zero live opponent after changing traverser", other, Some(p)),
+                (
+                    "zero live opponent after changing traverser",
+                    other,
+                    Some(p),
+                ),
                 ("positive after zero", p, None),
                 ("zero live opponent", p, Some(other)),
                 ("positive different traverser", other, None),
@@ -3243,32 +4796,56 @@ mod tests {
                 }
                 gpu.d_reach = gpu.stream.clone_htod(&reaches).unwrap();
                 unsafe {
-                    gpu.stream.launch_builder(&gpu.f_reach_mass)
-                        .arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
-                        .launch(LaunchConfig { block_dim: (128,1,1),
-                            ..PreflopGpu::cfg((reaches.len() / NUM_CLASSES) as u32) }).unwrap();
+                    gpu.stream
+                        .launch_builder(&gpu.f_reach_mass)
+                        .arg(&gpu.d_reach)
+                        .arg(&mut gpu.d_reach_mass)
+                        .launch(LaunchConfig {
+                            block_dim: (128, 1, 1),
+                            ..PreflopGpu::cfg((reaches.len() / NUM_CLASSES) as u32)
+                        })
+                        .unwrap();
                 }
                 // Missing first-batch zero writes and reads of ungathered CDFs
                 // must fail conspicuously instead of inheriting plausible data.
-                gpu.d_val = gpu.stream.clone_htod(&vec![123456.0f32; gpu.d_val.len()]).unwrap();
-                gpu.d_mw_cdf = gpu.stream.clone_htod(&vec![f32::NAN; gpu.d_mw_cdf.len()]).unwrap();
+                gpu.d_val = gpu
+                    .stream
+                    .clone_htod(&vec![123456.0f32; gpu.d_val.len()])
+                    .unwrap();
+                gpu.d_mw_cdf = gpu
+                    .stream
+                    .clone_htod(&vec![f32::NAN; gpu.d_mw_cdf.len()])
+                    .unwrap();
                 gpu.terminals(traverser as i32).unwrap();
                 let actual = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
-                let local: Vec<Vec<f32>> = (0..s.n).map(|q| {
-                    let off = source(q) * NUM_CLASSES;
-                    reaches[off..off + NUM_CLASSES].to_vec()
-                }).collect();
+                let local: Vec<Vec<f32>> = (0..s.n)
+                    .map(|q| {
+                        let off = source(q) * NUM_CLASSES;
+                        reaches[off..off + NUM_CLASSES].to_vec()
+                    })
+                    .collect();
                 let mut expected = vec![0f32; NUM_CLASSES];
                 s.terminal_value(target, traverser, &local, &mut expected);
                 let zero_opponent = zero_seat.is_some_and(|q| q != traverser);
                 if zero_opponent {
-                    assert!(actual[base..base + NUM_CLASSES].iter().all(|&v| v == 0.0), "{label}, batch {batch}");
+                    assert!(
+                        actual[base..base + NUM_CLASSES].iter().all(|&v| v == 0.0),
+                        "{label}, batch {batch}"
+                    );
                 } else {
-                    assert!(expected.iter().any(|v| v.abs() > 1e-4), "nontrivial fixture required");
+                    assert!(
+                        expected.iter().any(|v| v.abs() > 1e-4),
+                        "nontrivial fixture required"
+                    );
                 }
                 for h in 0..NUM_CLASSES {
-                    assert!(actual[base + h].is_finite() && (actual[base + h] - expected[h]).abs() < 2e-5,
-                        "{label}, batch {batch}, h {h}: {} vs {}", actual[base + h], expected[h]);
+                    assert!(
+                        actual[base + h].is_finite()
+                            && (actual[base + h] - expected[h]).abs() < 2e-5,
+                        "{label}, batch {batch}, h {h}: {} vs {}",
+                        actual[base + h],
+                        expected[h]
+                    );
                 }
                 let active = gpu.stream.clone_dtoh(&gpu.d_mw_active).unwrap();
                 let prob = gpu.stream.clone_dtoh(&gpu.d_mw_prob).unwrap();
@@ -3276,10 +4853,15 @@ mod tests {
                 let mut expected_active = vec![0u32; active.len()];
                 if !zero_opponent {
                     for &q in &live {
-                        if q != traverser { expected_active[cdf_slots[source(q)] as usize] = 1; }
+                        if q != traverser {
+                            expected_active[cdf_slots[source(q)] as usize] = 1;
+                        }
                     }
                 }
-                assert_eq!(active, expected_active, "stale or missing slot mark: {label}, batch {batch}");
+                assert_eq!(
+                    active, expected_active,
+                    "stale or missing slot mark: {label}, batch {batch}"
+                );
             }
         }
     }
@@ -3287,16 +4869,22 @@ mod tests {
     #[test]
     fn coupled_normalized_reach_refreshes_nonunit_inputs_and_ungated_evaluation() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            path, 20000,
+        ));
         let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
             "positions":["BTN","SB","BB"], "stack":2.0, "posts":[0.0,0.5,1.0],
             "limp":true, "open_raises":[], "raise_mults":[], "max_raises":1,
             "add_allin":false, "rake_pct":5.0, "rake_cap":1.0, "realization":"raw"
-        })).unwrap();
+        }))
+        .unwrap();
         let s = PreflopSolver::new(cfg, eq).unwrap();
         let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
-        let target = s.nodes.iter().position(|nd|
-            nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3).unwrap();
+        let target = s
+            .nodes
+            .iter()
+            .position(|nd| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3)
+            .unwrap();
         let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
         let value_slots = gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
         let slot_blocks = gpu.stream.clone_dtoh(&gpu.d_mw_blocks).unwrap();
@@ -3312,7 +4900,7 @@ mod tests {
             for (phase, gate, zero_opponent, poison) in [
                 (0usize, 1i32, false, true),
                 (1, 1, true, false),
-                (2, 0, false, true), // empty stale active mask must be ignored
+                (2, 0, false, true),  // empty stale active mask must be ignored
                 (3, 0, false, false), // old finite normalized values must refresh
                 (4, 1, false, true),
                 (5, 0, true, false),
@@ -3333,21 +4921,41 @@ mod tests {
                     reaches[off..off + NUM_CLASSES].fill(0.0);
                 }
                 if phase == 2 {
-                    assert!(gpu.stream.clone_dtoh(&gpu.d_mw_active).unwrap().iter().all(|&x| x == 0),
-                        "preceding gated zero case must leave an empty mask");
+                    assert!(
+                        gpu.stream
+                            .clone_dtoh(&gpu.d_mw_active)
+                            .unwrap()
+                            .iter()
+                            .all(|&x| x == 0),
+                        "preceding gated zero case must leave an empty mask"
+                    );
                 }
                 gpu.d_reach = gpu.stream.clone_htod(&reaches).unwrap();
                 unsafe {
-                    gpu.stream.launch_builder(&gpu.f_reach_mass)
-                        .arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
-                        .launch(LaunchConfig { block_dim: (128,1,1),
-                            ..PreflopGpu::cfg((reaches.len() / NUM_CLASSES) as u32) }).unwrap();
+                    gpu.stream
+                        .launch_builder(&gpu.f_reach_mass)
+                        .arg(&gpu.d_reach)
+                        .arg(&mut gpu.d_reach_mass)
+                        .launch(LaunchConfig {
+                            block_dim: (128, 1, 1),
+                            ..PreflopGpu::cfg((reaches.len() / NUM_CLASSES) as u32)
+                        })
+                        .unwrap();
                 }
                 if poison {
-                    gpu.d_mw_normalized = gpu.stream.clone_htod(&vec![f32::NAN; gpu.d_mw_normalized.len()]).unwrap();
+                    gpu.d_mw_normalized = gpu
+                        .stream
+                        .clone_htod(&vec![f32::NAN; gpu.d_mw_normalized.len()])
+                        .unwrap();
                 }
-                gpu.d_mw_cdf = gpu.stream.clone_htod(&vec![f32::NAN; gpu.d_mw_cdf.len()]).unwrap();
-                gpu.d_val = gpu.stream.clone_htod(&vec![123456.0f32; gpu.d_val.len()]).unwrap();
+                gpu.d_mw_cdf = gpu
+                    .stream
+                    .clone_htod(&vec![f32::NAN; gpu.d_mw_cdf.len()])
+                    .unwrap();
+                gpu.d_val = gpu
+                    .stream
+                    .clone_htod(&vec![123456.0f32; gpu.d_val.len()])
+                    .unwrap();
                 gpu.terminals_masked(p as i32, gate).unwrap();
                 let mass = gpu.stream.clone_dtoh(&gpu.d_reach_mass).unwrap();
                 let active = gpu.stream.clone_dtoh(&gpu.d_mw_active).unwrap();
@@ -3358,27 +4966,45 @@ mod tests {
                 for &slot in &work[start as usize..(start + count) as usize] {
                     let slot = slot as usize;
                     let block = slot_blocks[slot] as usize;
-                    if (gate != 0 && active[slot] == 0) || mass[block] <= 0.0 { continue; }
+                    if (gate != 0 && active[slot] == 0) || mass[block] <= 0.0 {
+                        continue;
+                    }
                     assert_ne!(mass[block], 1.0, "non-unit mass fixture required");
                     for h in 0..NUM_CLASSES {
                         let expected = reaches[block * NUM_CLASSES + h] / mass[block];
-                        let storage_slot = if gpu.use_mw_compact != 0 { compact_slots[p * gpu.mw_union_slots as usize + slot] as usize } else { slot };
-                        assert_eq!(normalized[storage_slot * NUM_CLASSES + h].to_bits(), expected.to_bits(),
-                            "phase {phase}, gate {gate}, batch {batch}, slot {slot}, h {h}");
+                        let storage_slot = if gpu.use_mw_compact != 0 {
+                            compact_slots[p * gpu.mw_union_slots as usize + slot] as usize
+                        } else {
+                            slot
+                        };
+                        assert_eq!(
+                            normalized[storage_slot * NUM_CLASSES + h].to_bits(),
+                            expected.to_bits(),
+                            "phase {phase}, gate {gate}, batch {batch}, slot {slot}, h {h}"
+                        );
                     }
                     checked += 1;
                 }
-                if !zero_opponent { assert!(checked > 0); }
-                let local: Vec<Vec<f32>> = (0..s.n).map(|q| {
-                    let off = sources[target * s.n + q] as usize * NUM_CLASSES;
-                    reaches[off..off + NUM_CLASSES].to_vec()
-                }).collect();
+                if !zero_opponent {
+                    assert!(checked > 0);
+                }
+                let local: Vec<Vec<f32>> = (0..s.n)
+                    .map(|q| {
+                        let off = sources[target * s.n + q] as usize * NUM_CLASSES;
+                        reaches[off..off + NUM_CLASSES].to_vec()
+                    })
+                    .collect();
                 let mut expected = vec![0f32; NUM_CLASSES];
                 s.terminal_value(target, p, &local, &mut expected);
                 let actual = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
                 for h in 0..NUM_CLASSES {
-                    assert!(actual[base + h].is_finite() && (actual[base + h] - expected[h]).abs() < 2e-5,
-                        "phase {phase}, gate {gate}, batch {batch}, h {h}: {} vs {}", actual[base + h], expected[h]);
+                    assert!(
+                        actual[base + h].is_finite()
+                            && (actual[base + h] - expected[h]).abs() < 2e-5,
+                        "phase {phase}, gate {gate}, batch {batch}, h {h}: {} vs {}",
+                        actual[base + h],
+                        expected[h]
+                    );
                 }
                 if zero_opponent {
                     assert!(actual[base..base + NUM_CLASSES].iter().all(|&x| x == 0.0));
@@ -3387,8 +5013,10 @@ mod tests {
         }
     }
 
-
-    fn legacy_solver(cfg: PreflopConfig, eq: Arc<crate::preflop::equity::EquityTable>) -> Result<PreflopSolver, String> {
+    fn legacy_solver(
+        cfg: PreflopConfig,
+        eq: Arc<crate::preflop::equity::EquityTable>,
+    ) -> Result<PreflopSolver, String> {
         let mut s = PreflopSolver::new(cfg, eq)?;
         s.set_multiway_equity_model("legacy_product")?;
         Ok(s)
@@ -3396,17 +5024,22 @@ mod tests {
     #[test]
     fn reach_mass_preserves_original_addition_tree() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            path, 20000,
+        ));
         let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
             "positions":["SB","BB"], "stack":10.0, "posts":[0.5,1.0],
             "open_raises":[2.5], "raise_mults":[3.0], "max_raises":1,
             "realization":"static"
-        })).unwrap();
+        }))
+        .unwrap();
         let s = legacy_solver(cfg, eq).unwrap();
         let gpu = PreflopGpu::new(&s, 2000).unwrap();
         let mut inputs = vec![0f32; 16 * NUM_CLASSES];
-        let patterns = [0u32, 0x80000000, 1, 0x80000001, 0x3dcccccd,
-            0xbdcccccd, 0x358637bd, 0x49742400, 0xc9742400];
+        let patterns = [
+            0u32, 0x80000000, 1, 0x80000001, 0x3dcccccd, 0xbdcccccd, 0x358637bd, 0x49742400,
+            0xc9742400,
+        ];
         for (i, v) in inputs.iter_mut().enumerate() {
             *v = f32::from_bits(patterns[(i * 17 + i / NUM_CLASSES) % patterns.len()]);
         }
@@ -3417,46 +5050,75 @@ mod tests {
         let mut expected = Vec::new();
         for values in inputs.chunks_exact(NUM_CLASSES) {
             let mut sums = [0f32; 256];
-            for (dst, value) in sums.iter_mut().zip(values) { *dst += value; }
+            for (dst, value) in sums.iter_mut().zip(values) {
+                *dst += value;
+            }
             for step in [128, 64, 32, 16, 8, 4, 2, 1] {
-                for h in 0..step { sums[h] += sums[h + step]; }
+                for h in 0..step {
+                    sums[h] += sums[h + step];
+                }
             }
             expected.push(sums[0].to_bits());
         }
         let input = gpu.stream.clone_htod(&inputs).unwrap();
         let mut output = gpu.stream.alloc_zeros::<f32>(16).unwrap();
         unsafe {
-            gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&input).arg(&mut output)
-                .launch(LaunchConfig { block_dim: (128, 1, 1), ..PreflopGpu::cfg(16) }).unwrap();
+            gpu.stream
+                .launch_builder(&gpu.f_reach_mass)
+                .arg(&input)
+                .arg(&mut output)
+                .launch(LaunchConfig {
+                    block_dim: (128, 1, 1),
+                    ..PreflopGpu::cfg(16)
+                })
+                .unwrap();
         }
         let actual = gpu.stream.clone_dtoh(&output).unwrap();
-        assert_eq!(actual.into_iter().map(f32::to_bits).collect::<Vec<_>>(), expected);
+        assert_eq!(
+            actual.into_iter().map(f32::to_bits).collect::<Vec<_>>(),
+            expected
+        );
     }
 
     #[test]
     fn compact_reach_has_unique_writers_and_fits_smaller_budget() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            path, 20000,
+        ));
         let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
             "positions":["UTG","HJ","CO","BTN","SB","BB"], "stack":100.0,
             "posts":[0.0,0.0,0.0,0.0,0.5,1.0], "limp":true,
             "open_raises":[2.5,4.0], "raise_mults":[3.0], "max_raises":3,
             "allin_threshold":0.85, "add_allin":false, "rake_pct":5.0,
             "rake_cap":3.0, "realization":"static"
-        })).unwrap();
+        }))
+        .unwrap();
         let mut s = legacy_solver(cfg, eq).unwrap();
         let values = ValuePlan::build(&s);
         assert_eq!(values.slots[0], 0);
         assert!(values.blocks < s.nodes.len());
-        assert!(values.slots.iter().all(|&slot| (slot as usize) < values.blocks));
-        let terminal: std::collections::HashSet<_> = s.nodes.iter().enumerate()
-            .filter(|(_, n)| n.kind != KIND_ACTION).map(|(i, _)| values.slots[i]).collect();
-        assert_eq!(terminal.len(), s.nodes.iter().filter(|n| n.kind != KIND_ACTION).count());
+        assert!(values
+            .slots
+            .iter()
+            .all(|&slot| (slot as usize) < values.blocks));
+        let terminal: std::collections::HashSet<_> = s
+            .nodes
+            .iter()
+            .enumerate()
+            .filter(|(_, n)| n.kind != KIND_ACTION)
+            .map(|(i, _)| values.slots[i])
+            .collect();
+        assert_eq!(
+            terminal.len(),
+            s.nodes.iter().filter(|n| n.kind != KIND_ACTION).count()
+        );
         let mut previous = std::collections::HashSet::new();
         let mut used = terminal.clone();
         for &(start, count) in &values.spans {
             let nodes = &values.action_nodes[start as usize..(start + count) as usize];
-            let writes: std::collections::HashSet<_> = nodes.iter().map(|&n| values.slots[n as usize]).collect();
+            let writes: std::collections::HashSet<_> =
+                nodes.iter().map(|&n| values.slots[n as usize]).collect();
             assert_eq!(writes.len(), count as usize);
             assert!(writes.is_disjoint(&terminal));
             assert!(writes.is_disjoint(&previous));
@@ -3475,9 +5137,13 @@ mod tests {
         let blocks = gpu.d_reach.len() / NUM_CLASSES;
         assert!(sources.iter().all(|&source| (source as usize) < blocks));
         let mut written = std::collections::HashSet::new();
-        for q in 0..s.n { assert!(written.insert(sources[q])); }
+        for q in 0..s.n {
+            assert!(written.insert(sources[q]));
+        }
         for (i, node) in s.nodes.iter().enumerate() {
-            if node.kind != KIND_ACTION { continue; }
+            if node.kind != KIND_ACTION {
+                continue;
+            }
             let actor = node.actor as usize;
             for a in 0..node.actions.len() {
                 let c = s.child(i, a);
@@ -3486,14 +5152,21 @@ mod tests {
                     let child = sources[c * s.n + q];
                     if q == actor {
                         assert_ne!(parent, child);
-                        assert!(written.insert(child), "two action edges must not share a writable block");
+                        assert!(
+                            written.insert(child),
+                            "two action edges must not share a writable block"
+                        );
                     } else {
                         assert_eq!(parent, child, "unchanged reach must retain its source");
                     }
                 }
             }
         }
-        assert_eq!(written.len(), blocks, "every allocated reach block has exactly one writer");
+        assert_eq!(
+            written.len(),
+            blocks,
+            "every allocated reach block has exactly one writer"
+        );
         gpu.iterate(&mut s).unwrap();
         gpu.sync_to_cpu(&mut s).unwrap();
     }
@@ -3501,12 +5174,15 @@ mod tests {
     #[test]
     fn captured_learning_matches_eager_and_preserves_stop() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            path, 20000,
+        ));
         let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
             "positions":["SB","BB"], "stack":25.0, "posts":[0.5,1.0],
             "limp":true, "open_raises":[2.0,2.5], "raise_mults":[3.0],
             "max_raises":3, "add_allin":true, "realization":"static"
-        })).unwrap();
+        }))
+        .unwrap();
         let mut a = legacy_solver(cfg.clone(), eq.clone()).unwrap();
         let mut b = legacy_solver(cfg, eq).unwrap();
         a.iteration = 37;
@@ -3545,7 +5221,8 @@ mod tests {
             "positions":["BTN","SB","BB"],"stack":5.0,"posts":[0.0,0.5,1.0],
             "limp":true,"open_raises":[2.0],"raise_mults":[3.0],"max_raises":1,
             "add_allin":false,"rake_pct":5.0,"rake_cap":1.0,"realization":"raw"
-        })).unwrap();
+        }))
+        .unwrap();
         for model in [super::super::multiway::MODEL] {
             let mut reference = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
             let mut host = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
@@ -3562,21 +5239,34 @@ mod tests {
                 // Host metadata may intentionally be an older published clock;
                 // poison it here to detect any accidental shared-solver read.
                 host.iteration = 10_000 + pass;
-                assert!(detached.try_iterate_counter(&mut counter, Some(&stop)).unwrap());
+                assert!(detached
+                    .try_iterate_counter(&mut counter, Some(&stop))
+                    .unwrap());
                 old.iterate(&mut reference).unwrap();
                 assert_eq!(counter, reference.iteration);
                 assert_eq!(host.iteration, 10_000 + pass);
                 assert_eq!(host.arena_snapshot(), frozen_host);
-                assert_eq!(detached.gaps_and_evs().unwrap(), old.gaps_and_evs().unwrap());
+                assert_eq!(
+                    detached.gaps_and_evs().unwrap(),
+                    old.gaps_and_evs().unwrap()
+                );
                 if pass == 1 {
                     let before = detached.stream.clone_dtoh(&detached.d_regrets).unwrap();
                     let before_sums = detached.stream.clone_dtoh(&detached.d_strat).unwrap();
                     let prior_counter = counter;
                     stop.store(true, Ordering::Relaxed);
-                    assert!(!detached.try_iterate_counter(&mut counter, Some(&stop)).unwrap());
+                    assert!(!detached
+                        .try_iterate_counter(&mut counter, Some(&stop))
+                        .unwrap());
                     assert_eq!(counter, prior_counter);
-                    assert_eq!(detached.stream.clone_dtoh(&detached.d_regrets).unwrap(), before);
-                    assert_eq!(detached.stream.clone_dtoh(&detached.d_strat).unwrap(), before_sums);
+                    assert_eq!(
+                        detached.stream.clone_dtoh(&detached.d_regrets).unwrap(),
+                        before
+                    );
+                    assert_eq!(
+                        detached.stream.clone_dtoh(&detached.d_strat).unwrap(),
+                        before_sums
+                    );
                     stop.store(false, Ordering::Relaxed);
                 }
             }
@@ -3614,7 +5304,8 @@ mod tests {
         let mut expected_gaps = Vec::new();
         let mut expected_evs = Vec::new();
         for p in 0..gpu.np {
-            gpu.sweep(p, if gpu.constrained_br[p as usize] { 3 } else { 2 }).unwrap();
+            gpu.sweep(p, if gpu.constrained_br[p as usize] { 3 } else { 2 })
+                .unwrap();
             let br = gpu.root_ev().unwrap();
             gpu.sweep(p, 1).unwrap();
             let avg = gpu.root_ev().unwrap();
@@ -3625,18 +5316,30 @@ mod tests {
         for _ in 0..2 {
             let (gaps, evs) = gpu.gaps_and_evs().unwrap();
             assert!(gaps.iter().chain(&evs).all(|v| v.is_finite()));
-            assert_eq!(gaps.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), expected_gaps);
-            assert_eq!(evs.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), expected_evs);
+            assert_eq!(
+                gaps.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                expected_gaps
+            );
+            assert_eq!(
+                evs.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                expected_evs
+            );
         }
         gpu.sync_to_cpu(s).unwrap();
         assert_eq!(iteration, s.iteration);
-        assert_eq!(before, s.arena_snapshot(), "evaluation must not change learning state");
+        assert_eq!(
+            before,
+            s.arena_snapshot(),
+            "evaluation must not change learning state"
+        );
     }
 
     #[test]
     fn cached_evaluation_matches_full_sweeps_exactly() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(
+            path, 20000,
+        ));
         for n in [2, 3] {
             for realization in ["raw", "static", "calibrated", "balanced"] {
                 let mut posts = vec![0.0; n];
@@ -3648,7 +5351,8 @@ mod tests {
                     "open_raises": [2.0, 3.0], "raise_mults": [2.5],
                     "max_raises": 2, "add_allin": true, "rake_pct": 5.0,
                     "rake_cap": 1.0, "realization": realization,
-                })).unwrap();
+                }))
+                .unwrap();
                 let mut s = legacy_solver(cfg, eq.clone()).unwrap();
                 if realization == "calibrated" {
                     assert!(s.fit.is_some(), "test requires the calibrated fit");
@@ -3657,21 +5361,30 @@ mod tests {
 
                 s.lock_point(&[], None).unwrap();
                 let mut buckets = vec![None; NUM_BUCKETS];
-                buckets[super::super::BUCKET_VS_RAISE as usize] = Some(BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
-                    call: vec![0.5; NUM_CLASSES], raise: vec![0.1; NUM_CLASSES],
-                    jam: vec![0.0; NUM_CLASSES], raise_size: "max".into(),
+                buckets[super::super::BUCKET_VS_RAISE as usize] = Some(BucketPolicy {
+                    raise_multiples: Vec::new(),
+                    raise_sizes: Vec::new(),
+                    call: vec![0.5; NUM_CLASSES],
+                    raise: vec![0.1; NUM_CLASSES],
+                    jam: vec![0.0; NUM_CLASSES],
+                    raise_size: "max".into(),
                 });
                 let mut profiles = vec![None; n];
                 profiles[1] = Some(SeatProfile {
-                    name: "test profile".into(), buckets, vs_raise_bands: None,
-                    postflop: None, limp_defense: None, response: None,
+                    name: "test profile".into(),
+                    buckets,
+                    vs_raise_bands: None,
+                    postflop: None,
+                    limp_defense: None,
+                    response: None,
                 });
                 s.set_table(vec![false; n], profiles).unwrap();
                 assert_cached_evaluation(&mut s);
 
                 let mut adaptive = s.seat_profiles.clone();
                 adaptive[1].as_mut().unwrap().response = Some(super::super::ProfileResponse {
-                    adaptive_from: Some(0.25), ..Default::default()
+                    adaptive_from: Some(0.25),
+                    ..Default::default()
                 });
                 s.set_table(vec![false; n], adaptive).unwrap();
                 assert_cached_evaluation(&mut s);
@@ -3974,70 +5687,133 @@ mod forced_budget_cuda_tests {
 #[cfg(test)]
 mod compatibility_batch_tests {
     use super::*;
-    fn original_oracle(budget:u64,base:f64,fixed:usize,slots:usize,eq:usize,has_eq:bool)->Option<(usize,bool)> {
-        let per_particle=slots*(NUM_CLASSES+1)*4;
-        let remaining=(budget as f64*1e6-base*1e6-fixed as f64).max(0.0) as usize;
-        let batch=(remaining/per_particle).min(32).min(super::super::multiway::SAMPLES);
-        if batch==0{return None;}
-        let need=base+(fixed+per_particle*batch) as f64/1e6;
-        Some((batch,has_eq && need+eq as f64/1e6<=budget as f64))
+    fn original_oracle(
+        budget: u64,
+        base: f64,
+        fixed: usize,
+        slots: usize,
+        eq: usize,
+        has_eq: bool,
+    ) -> Option<(usize, bool)> {
+        let per_particle = slots * (NUM_CLASSES + 1) * 4;
+        let remaining = (budget as f64 * 1e6 - base * 1e6 - fixed as f64).max(0.0) as usize;
+        let batch = (remaining / per_particle)
+            .min(32)
+            .min(super::super::multiway::SAMPLES);
+        if batch == 0 {
+            return None;
+        }
+        let need = base + (fixed + per_particle * batch) as f64 / 1e6;
+        Some((batch, has_eq && need + eq as f64 / 1e6 <= budget as f64))
     }
     #[test]
     fn compatibility_reference_matches_original_union_budget_arithmetic() {
-        for slots in [1usize,1000,846156] {for budget in [1u64,19_000,21_000,23_000] {
-            for (base,fixed,eq,has_eq) in [(0.,0,0,false),(64.,100_000,2_000_000,true),(5330.,171_096,302_708_744,true)] {
-                let got=reference_multiway_plan(budget,base,fixed,slots,eq,has_eq).unwrap().map(|p|(p.batch,p.use_eq_cache));
-                assert_eq!(got,original_oracle(budget,base,fixed,slots,eq,has_eq));
+        for slots in [1usize, 1000, 846156] {
+            for budget in [1u64, 19_000, 21_000, 23_000] {
+                for (base, fixed, eq, has_eq) in [
+                    (0., 0, 0, false),
+                    (64., 100_000, 2_000_000, true),
+                    (5330., 171_096, 302_708_744, true),
+                ] {
+                    let got = reference_multiway_plan(budget, base, fixed, slots, eq, has_eq)
+                        .unwrap()
+                        .map(|p| (p.batch, p.use_eq_cache));
+                    assert_eq!(got, original_oracle(budget, base, fixed, slots, eq, has_eq));
+                }
             }
-        }}
+        }
     }
     #[test]
     fn compatibility_compaction_keeps_reference_batch_and_cache_at_19_21_23gb() {
         // Algebraically reduced fixed costs reproduce the observed modeled
         // six-seat planner totals; this is a pure planner test, not a GPU claim.
-        for budget in [19_000,21_000,23_000] {
-            let p=compatible_multiway_plan(budget,5330.,171_096,26_008_848,846156,432300,302_708_744,true).unwrap().unwrap();
-            let r=original_oracle(budget,5330.,171_096,846156,302_708_744,true).unwrap();
-            assert_eq!((p.storage.batch,p.reference.as_ref().unwrap().use_eq_cache),r);
-            assert!(p.storage.normalized_bytes>0);
-            let bytes=26_008_848+p.storage.normalized_bytes+p.storage.cache_len*4+if r.1{302_708_744}else{0};
-            assert!(5330.+bytes as f64/1e6<=budget as f64);
-            if budget==23_000 {assert_eq!(p.storage.batch,30);}
+        for budget in [19_000, 21_000, 23_000] {
+            let p = compatible_multiway_plan(
+                budget,
+                5330.,
+                171_096,
+                26_008_848,
+                846156,
+                432300,
+                302_708_744,
+                true,
+            )
+            .unwrap()
+            .unwrap();
+            let r = original_oracle(budget, 5330., 171_096, 846156, 302_708_744, true).unwrap();
+            assert_eq!(
+                (p.storage.batch, p.reference.as_ref().unwrap().use_eq_cache),
+                r
+            );
+            assert!(p.storage.normalized_bytes > 0);
+            let bytes = 26_008_848
+                + p.storage.normalized_bytes
+                + p.storage.cache_len * 4
+                + if r.1 { 302_708_744 } else { 0 };
+            assert!(5330. + bytes as f64 / 1e6 <= budget as f64);
+            if budget == 23_000 {
+                assert_eq!(p.storage.batch, 30);
+            }
         }
     }
     #[test]
     fn compatibility_drops_normalization_to_keep_required_grouping() {
         // 2.5 MB available: original can fit 3 x 680,000-byte particles, but
         // adding a 676,000-byte normalized table would force a smaller batch.
-        let p=compatible_multiway_plan(3,0.5,0,0,1000,1000,0,false).unwrap().unwrap();
-        assert_eq!(p.storage.batch,3);assert_eq!(p.storage.normalized_bytes,0);
+        let p = compatible_multiway_plan(3, 0.5, 0, 0, 1000, 1000, 0, false)
+            .unwrap()
+            .unwrap();
+        assert_eq!(p.storage.batch, 3);
+        assert_eq!(p.storage.normalized_bytes, 0);
         // More room within the same original batch makes normalization safe
         // only if it actually fits; normalization is not a priority over B.
-        let p=compatible_multiway_plan(4,0.1,0,0,1000,500,0,false).unwrap().unwrap();
-        assert_eq!(p.storage.batch,5);assert!(p.storage.normalized_bytes>0);
+        let p = compatible_multiway_plan(4, 0.1, 0, 0, 1000, 500, 0, false)
+            .unwrap()
+            .unwrap();
+        assert_eq!(p.storage.batch, 5);
+        assert!(p.storage.normalized_bytes > 0);
     }
     #[test]
     fn compatibility_keeps_hu_cache_and_refuses_extra_metadata_regression() {
-        let no_cache=compatible_multiway_plan(3,0.5,0,0,1000,500,500_000,true).unwrap().unwrap();
+        let no_cache = compatible_multiway_plan(3, 0.5, 0, 0, 1000, 500, 500_000, true)
+            .unwrap()
+            .unwrap();
         assert!(!no_cache.reference.unwrap().use_eq_cache); // compaction's free room must not toggle it
-        let cached=compatible_multiway_plan(3,0.5,0,0,1000,1000,400_000,true).unwrap().unwrap();
-        assert!(cached.reference.unwrap().use_eq_cache);assert_eq!(cached.storage.batch,3);
-        assert_eq!(cached.storage.normalized_bytes,0);
-        let p=compatible_multiway_plan(3,0.5,0,100_000,1000,1000,400_000,true).unwrap().unwrap();
-        assert!(p.minimal_metadata);assert_eq!(p.storage.batch,3);assert!(p.reference.unwrap().use_eq_cache);
+        let cached = compatible_multiway_plan(3, 0.5, 0, 0, 1000, 1000, 400_000, true)
+            .unwrap()
+            .unwrap();
+        assert!(cached.reference.unwrap().use_eq_cache);
+        assert_eq!(cached.storage.batch, 3);
+        assert_eq!(cached.storage.normalized_bytes, 0);
+        let p = compatible_multiway_plan(3, 0.5, 0, 100_000, 1000, 1000, 400_000, true)
+            .unwrap()
+            .unwrap();
+        assert!(p.minimal_metadata);
+        assert_eq!(p.storage.batch, 3);
+        assert!(p.reference.unwrap().use_eq_cache);
         // Extra direct-CDF metadata cannot fit at B: keep B with original layout.
-        let p=compatible_multiway_plan(3,0.5,0,500_000,1000,1000,0,false).unwrap().unwrap();
-        assert!(p.minimal_metadata);assert_eq!(p.storage.batch,3);assert_eq!(p.storage.normalized_bytes,0);
+        let p = compatible_multiway_plan(3, 0.5, 0, 500_000, 1000, 1000, 0, false)
+            .unwrap()
+            .unwrap();
+        assert!(p.minimal_metadata);
+        assert_eq!(p.storage.batch, 3);
+        assert_eq!(p.storage.normalized_bytes, 0);
     }
     #[test]
     fn compatibility_capacity_extension_has_no_fabricated_reference() {
         // Old union needs 680k/particle and has only 600k; compact fits.
-        let p=compatible_multiway_plan(1,0.4,0,0,1000,500,0,false).unwrap().unwrap();
-        assert!(p.reference.is_none());assert_eq!(p.storage.batch,1);assert_eq!(p.storage.normalized_bytes,0);
-        assert!(compatible_multiway_plan(1,0.9,0,0,1000,500,0,false).unwrap().is_none());
-        assert!(reference_multiway_plan(23_000,0.,0,usize::MAX,0,false).is_err());
-        assert!(compatible_multiway_plan(23_000,0.,0,0,1000,usize::MAX,0,false).is_err());
-        assert!(reference_multiway_plan(1,f64::NAN,0,1,0,false).is_err());
+        let p = compatible_multiway_plan(1, 0.4, 0, 0, 1000, 500, 0, false)
+            .unwrap()
+            .unwrap();
+        assert!(p.reference.is_none());
+        assert_eq!(p.storage.batch, 1);
+        assert_eq!(p.storage.normalized_bytes, 0);
+        assert!(compatible_multiway_plan(1, 0.9, 0, 0, 1000, 500, 0, false)
+            .unwrap()
+            .is_none());
+        assert!(reference_multiway_plan(23_000, 0., 0, usize::MAX, 0, false).is_err());
+        assert!(compatible_multiway_plan(23_000, 0., 0, 0, 1000, usize::MAX, 0, false).is_err());
+        assert!(reference_multiway_plan(1, f64::NAN, 0, 1, 0, false).is_err());
     }
 }
 
@@ -4048,67 +5824,136 @@ mod deployed_reference_tests {
     fn deployed_reference_retains_literal_choices_with_accurate_compact_budget() {
         // Fixed terms are folded into base for this measured-cost host fixture.
         // HU cost includes 13,564,508 metadata bytes, not just equity entries.
-        let accurate=5316.606588;let literal=4902.313904;let fixed_extra=25_837_752;
-        let hu=316_273_252;let u=846156;let c=432300;
-        for (budget,old_b,old_hu,corrected_b,corrected_hu,expected_bytes) in [
-            (19000,24,false,23,true,12_689_815_140u64),
-            (21000,27,true,27,false,13_887_980_392),
-            (23000,31,false,30,true,14_747_563_140),
+        let accurate = 5316.606588;
+        let literal = 4902.313904;
+        let fixed_extra = 25_837_752;
+        let hu = 316_273_252;
+        let u = 846156;
+        let c = 432300;
+        for (budget, old_b, old_hu, corrected_b, corrected_hu, expected_bytes) in [
+            (19000, 24, false, 23, true, 12_689_815_140u64),
+            (21000, 27, true, 27, false, 13_887_980_392),
+            (23000, 31, false, 30, true, 14_747_563_140),
         ] {
-            let old=reference_multiway_plan(budget,literal,0,u,hu,true).unwrap().unwrap();
-            let corrected=reference_multiway_plan(budget,accurate,0,u,hu,true).unwrap().unwrap();
-            assert_eq!((old.batch,old.use_eq_cache),(old_b,old_hu));
-            assert_eq!((corrected.batch,corrected.use_eq_cache),(corrected_b,corrected_hu));
-            let selected=deployed_compatible_multiway_plan(budget,accurate,literal,0,fixed_extra,u,c,hu,true,false).unwrap().unwrap();
-            assert_eq!(selected.reference_source,"deployed_prepass");assert_eq!(selected.literal_reference,Some(old));
-            assert_eq!(selected.plan.reference,Some(old));assert_eq!(selected.plan.storage.batch,old_b);
-            assert!(!selected.plan.minimal_metadata && selected.plan.storage.normalized_bytes>0);
-            let physical=accurate*1e6+(fixed_extra+selected.plan.storage.cache_len*4
-                +selected.plan.storage.normalized_bytes+if old_hu {hu}else{0}) as f64;
-            assert_eq!(physical.round() as u64,expected_bytes);
-            assert!(physical<=budget as f64*1e6);
+            let old = reference_multiway_plan(budget, literal, 0, u, hu, true)
+                .unwrap()
+                .unwrap();
+            let corrected = reference_multiway_plan(budget, accurate, 0, u, hu, true)
+                .unwrap()
+                .unwrap();
+            assert_eq!((old.batch, old.use_eq_cache), (old_b, old_hu));
+            assert_eq!(
+                (corrected.batch, corrected.use_eq_cache),
+                (corrected_b, corrected_hu)
+            );
+            let selected = deployed_compatible_multiway_plan(
+                budget,
+                accurate,
+                literal,
+                0,
+                fixed_extra,
+                u,
+                c,
+                hu,
+                true,
+                false,
+            )
+            .unwrap()
+            .unwrap();
+            assert_eq!(selected.reference_source, "deployed_prepass");
+            assert_eq!(selected.literal_reference, Some(old));
+            assert_eq!(selected.plan.reference, Some(old));
+            assert_eq!(selected.plan.storage.batch, old_b);
+            assert!(!selected.plan.minimal_metadata && selected.plan.storage.normalized_bytes > 0);
+            let physical = accurate * 1e6
+                + (fixed_extra
+                    + selected.plan.storage.cache_len * 4
+                    + selected.plan.storage.normalized_bytes
+                    + if old_hu { hu } else { 0 }) as f64;
+            assert_eq!(physical.round() as u64, expected_bytes);
+            assert!(physical <= budget as f64 * 1e6);
         }
     }
     #[test]
     fn deployed_reference_only_changes_when_exact_target_cannot_fit() {
         // Literal B4 fits compact storage despite corrected union choosing B3.
-        let p=deployed_compatible_multiway_plan(3,0.5,0.,0,0,1000,500,400_000,true,false).unwrap().unwrap();
-        assert_eq!(p.reference_source,"deployed_prepass");assert_eq!(p.plan.storage.batch,4);
+        let p =
+            deployed_compatible_multiway_plan(3, 0.5, 0., 0, 0, 1000, 500, 400_000, true, false)
+                .unwrap()
+                .unwrap();
+        assert_eq!(p.reference_source, "deployed_prepass");
+        assert_eq!(p.plan.storage.batch, 4);
         assert!(!p.plan.reference.unwrap().use_eq_cache);
         // No compaction: accurate B4 CDF itself exceeds budget even in minimal
         // metadata. Corrected B3/cache-on can fit via original-layout fallback.
-        let p=deployed_compatible_multiway_plan(3,0.5,0.,0,100_000,1000,1000,400_000,true,false).unwrap().unwrap();
-        assert_eq!(p.reference_source,"corrected_budget_fallback");
-        assert_eq!(p.literal_reference.unwrap().batch,4);assert_eq!(p.plan.storage.batch,3);
+        let p = deployed_compatible_multiway_plan(
+            3, 0.5, 0., 0, 100_000, 1000, 1000, 400_000, true, false,
+        )
+        .unwrap()
+        .unwrap();
+        assert_eq!(p.reference_source, "corrected_budget_fallback");
+        assert_eq!(p.literal_reference.unwrap().batch, 4);
+        assert_eq!(p.plan.storage.batch, 3);
         assert!(p.plan.minimal_metadata && p.plan.reference.unwrap().use_eq_cache);
-        let physical=0.5e6+(p.plan.storage.cache_len*4+400_000) as f64;
-        assert!(physical<=3e6);
+        let physical = 0.5e6 + (p.plan.storage.cache_len * 4 + 400_000) as f64;
+        assert!(physical <= 3e6);
         // Literal B5 wins over optional normalization at the required B.
-        let p=deployed_compatible_multiway_plan(4,0.5,0.,0,0,1000,1000,0,false,false).unwrap().unwrap();
-        assert_eq!(p.reference_source,"deployed_prepass");assert_eq!(p.plan.storage.batch,5);
-        assert_eq!(p.plan.storage.normalized_bytes,0);
+        let p = deployed_compatible_multiway_plan(4, 0.5, 0., 0, 0, 1000, 1000, 0, false, false)
+            .unwrap()
+            .unwrap();
+        assert_eq!(p.reference_source, "deployed_prepass");
+        assert_eq!(p.plan.storage.batch, 5);
+        assert_eq!(p.plan.storage.normalized_bytes, 0);
     }
     #[test]
     fn deployed_reference_keeps_no_forced_policy_four_byte_boundary() {
         // The pre-pass allocator omitted even the four-byte empty placeholder.
         // Compact storage can safely preserve B1 across that accounting edge.
-        let corrected=reference_multiway_plan(1,0.320004,0,1000,0,false).unwrap();
+        let corrected = reference_multiway_plan(1, 0.320004, 0, 1000, 0, false).unwrap();
         assert!(corrected.is_none());
-        let p=deployed_compatible_multiway_plan(1,0.320004,0.32,0,0,1000,500,0,false,false).unwrap().unwrap();
-        assert_eq!(p.reference_source,"deployed_prepass");assert_eq!(p.plan.storage.batch,1);
-        let actual=0.320004e6+(p.plan.storage.cache_len*4+p.plan.storage.normalized_bytes) as f64;
-        assert!(actual<=1e6);
+        let p =
+            deployed_compatible_multiway_plan(1, 0.320004, 0.32, 0, 0, 1000, 500, 0, false, false)
+                .unwrap()
+                .unwrap();
+        assert_eq!(p.reference_source, "deployed_prepass");
+        assert_eq!(p.plan.storage.batch, 1);
+        let actual =
+            0.320004e6 + (p.plan.storage.cache_len * 4 + p.plan.storage.normalized_bytes) as f64;
+        assert!(actual <= 1e6);
     }
     #[test]
     fn deployed_reference_identifies_capacity_extension_and_total_no_fit() {
-        let p=deployed_compatible_multiway_plan(3,2.5,0.,0,0,1000,500,0,false,false).unwrap().unwrap();
-        assert_eq!(p.reference_source,"capacity_extension");assert!(p.plan.reference.is_none());
-        assert_eq!(p.literal_reference.unwrap().batch,4);assert_eq!(p.plan.storage.batch,1);
-        assert!(!p.plan.minimal_metadata && p.plan.storage.normalized_bytes==0);
-        assert!(2.5e6+p.plan.storage.cache_len as f64*4.<=3e6);
-        assert!(deployed_compatible_multiway_plan(3,2.9,0.,0,0,1000,500,0,false,false).unwrap().is_none());
-        assert!(deployed_compatible_multiway_plan(3,0.4,0.5,0,0,1000,500,0,false,false).is_err());
-        assert!(deployed_compatible_multiway_plan(3,f64::NAN,0.,0,0,1000,500,0,false,false).is_err());
+        let p = deployed_compatible_multiway_plan(3, 2.5, 0., 0, 0, 1000, 500, 0, false, false)
+            .unwrap()
+            .unwrap();
+        assert_eq!(p.reference_source, "capacity_extension");
+        assert!(p.plan.reference.is_none());
+        assert_eq!(p.literal_reference.unwrap().batch, 4);
+        assert_eq!(p.plan.storage.batch, 1);
+        assert!(!p.plan.minimal_metadata && p.plan.storage.normalized_bytes == 0);
+        assert!(2.5e6 + p.plan.storage.cache_len as f64 * 4. <= 3e6);
+        assert!(
+            deployed_compatible_multiway_plan(3, 2.9, 0., 0, 0, 1000, 500, 0, false, false)
+                .unwrap()
+                .is_none()
+        );
+        assert!(
+            deployed_compatible_multiway_plan(3, 0.4, 0.5, 0, 0, 1000, 500, 0, false, false)
+                .is_err()
+        );
+        assert!(deployed_compatible_multiway_plan(
+            3,
+            f64::NAN,
+            0.,
+            0,
+            0,
+            1000,
+            500,
+            0,
+            false,
+            false
+        )
+        .is_err());
     }
 }
 

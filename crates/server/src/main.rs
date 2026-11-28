@@ -1,19 +1,28 @@
 //! Local web server hosting the solver and the browser UI.
 
-use axum::extract::{Query, State};
-use axum::http::StatusCode;
-use axum::routing::{get, post};
-use axum::{Json, Router};
+use std::{
+    net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr},
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc, Mutex,
+    },
+};
+
+use axum::{
+    extract::{Query, State},
+    http::StatusCode,
+    routing::{get, post},
+    Json, Router,
+};
 use serde::{Deserialize, Serialize};
-use solver::cfr::{Algorithm, Solver};
-use solver::game::{Spot, SpotConfig};
-use solver::query::PathStep;
-use solver::range::Range;
-use solver::store::Storage;
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use solver::{
+    cfr::{Algorithm, Solver},
+    game::{Spot, SpotConfig},
+    query::PathStep,
+    range::Range,
+    store::Storage,
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+};
 
 type ApiError = (StatusCode, String);
 
@@ -33,17 +42,17 @@ mod preflop_preview_tests;
 #[cfg(test)]
 mod postflop_context_tests;
 #[cfg(test)]
-mod trust_tests;
+mod preflop_memory_tests;
+#[cfg(test)]
+mod preflop_stop_tests;
 #[cfg(test)]
 mod preflop_trust_tests;
 #[cfg(test)]
 mod save_resume_tests;
 #[cfg(test)]
-mod preflop_memory_tests;
-#[cfg(test)]
-mod preflop_stop_tests;
-#[cfg(test)]
 mod stop_tests;
+#[cfg(test)]
+mod trust_tests;
 
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
@@ -84,7 +93,9 @@ fn lock_unpoisoned<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
 /// worker yields to registered waiters between iterations.
 static PF_WAITERS: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 
-fn pf_solver_lock(m: &Mutex<solver::preflop::PreflopSolver>) -> std::sync::MutexGuard<'_, solver::preflop::PreflopSolver> {
+fn pf_solver_lock(
+    m: &Mutex<solver::preflop::PreflopSolver>,
+) -> std::sync::MutexGuard<'_, solver::preflop::PreflopSolver> {
     PF_WAITERS.fetch_add(1, Ordering::SeqCst);
     let g = lock_unpoisoned(m);
     PF_WAITERS.fetch_sub(1, Ordering::SeqCst);
@@ -274,14 +285,19 @@ impl PfSize {
         let (gpu_tree_mb, gpu_policy_mb, gpu_large_tree_mb, gpu_large_policy_mb) =
             (0.0, 0.0, f64::INFINITY, f64::INFINITY);
         PfSize {
-            arena_mb: s.arena_mb(), nodes: s.nodes.len(),
-            gpu_tree_mb, gpu_policy_mb, gpu_large_tree_mb, gpu_large_policy_mb,
+            arena_mb: s.arena_mb(),
+            nodes: s.nodes.len(),
+            gpu_tree_mb,
+            gpu_policy_mb,
+            gpu_large_tree_mb,
+            gpu_large_policy_mb,
         }
     }
 
     fn plan(&self) -> PfEnginePlan {
         pf_engine_plan(
-            self.arena_mb, self.nodes,
+            self.arena_mb,
+            self.nodes,
             self.gpu_tree_mb + self.gpu_policy_mb,
             self.gpu_large_tree_mb + self.gpu_large_policy_mb,
         )
@@ -343,7 +359,10 @@ fn pf_card() -> PfCard {
         }
         match solver::gpu::vram_info_mb() {
             // the same budget the solve will get
-            Some((_, total_mb)) => PfCard::Ready { budget_mb: gpu_budget().0, total_mb },
+            Some((_, total_mb)) => PfCard::Ready {
+                budget_mb: gpu_budget().0,
+                total_mb,
+            },
             None => PfCard::Missing,
         }
     }
@@ -351,7 +370,12 @@ fn pf_card() -> PfCard {
     PfCard::NoEngine
 }
 
-fn pf_engine_plan(arena_mb: f64, nodes: usize, gpu_need_mb: f64, gpu_large_mb: f64) -> PfEnginePlan {
+fn pf_engine_plan(
+    arena_mb: f64,
+    nodes: usize,
+    gpu_need_mb: f64,
+    gpu_large_mb: f64,
+) -> PfEnginePlan {
     pf_engine_plan_on(pf_card(), arena_mb, nodes, gpu_need_mb, gpu_large_mb)
 }
 
@@ -359,12 +383,21 @@ fn pf_engine_plan(arena_mb: f64, nodes: usize, gpu_need_mb: f64, gpu_large_mb: f
 /// its large-game mode needs (infinite when the mode does not cover the
 /// game). The normal solve is used whenever it fits, as the solve does.
 fn pf_engine_plan_on(
-    card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64, gpu_large_mb: f64,
+    card: PfCard,
+    arena_mb: f64,
+    nodes: usize,
+    gpu_need_mb: f64,
+    gpu_large_mb: f64,
 ) -> PfEnginePlan {
     // in the GB that Windows and a card's box use (1024 MB), like the lab
     let gb = |mb: f64| format!("{:.1} GB", mb * 1e6 / (1u64 << 30) as f64);
     let tree_mb = nodes as f64 * PF_TREE_BYTES_PER_NODE / 1e6;
-    let mut plan = PfEnginePlan { engine: "cpu", ram_mb: arena_mb + tree_mb, gpu_need_mb, ..Default::default() };
+    let mut plan = PfEnginePlan {
+        engine: "cpu",
+        ram_mb: arena_mb + tree_mb,
+        gpu_need_mb,
+        ..Default::default()
+    };
     let (budget_mb, total_mb) = match card {
         PfCard::NoEngine => {
             plan.card = "unsupported";
@@ -381,7 +414,10 @@ fn pf_engine_plan_on(
             plan.reason = "no NVIDIA GPU found".into();
             return plan;
         }
-        PfCard::Ready { budget_mb, total_mb } => (budget_mb as f64, total_mb as f64),
+        PfCard::Ready {
+            budget_mb,
+            total_mb,
+        } => (budget_mb as f64, total_mb as f64),
     };
     plan.gpu_free_mb = budget_mb;
     plan.gpu_total_mb = total_mb;
@@ -414,13 +450,15 @@ fn pf_engine_plan_on(
         plan.card = "too_big";
         plan.reason = format!(
             "too big for this GPU (needs {} of GPU memory, it has {})",
-            gb(gpu_need_mb), gb(empty_mb)
+            gb(gpu_need_mb),
+            gb(empty_mb)
         );
     } else if gpu_need_mb > budget_mb {
         plan.card = "busy";
         plan.reason = format!(
             "the GPU has too little memory free right now (needs {}, {} free)",
-            gb(gpu_need_mb), gb(budget_mb)
+            gb(gpu_need_mb),
+            gb(budget_mb)
         );
     }
     plan
@@ -717,7 +755,10 @@ fn gpu_budget() -> (u64, bool) {
     {
         if gpu_enabled() {
             if let Some((free_mb, _total)) = solver::gpu::vram_info_mb() {
-                return (manual.unwrap_or(free_mb.saturating_sub(GPU_MARGIN_MB)), true);
+                return (
+                    manual.unwrap_or(free_mb.saturating_sub(GPU_MARGIN_MB)),
+                    true,
+                );
             }
         }
     }
@@ -816,8 +857,7 @@ fn node_budget(cap_mb: f64, config: &SpotConfig, storage: Storage) -> usize {
                 .filter(|&i| {
                     r.weights[i] > 0.0 && {
                         let (c1, c2) = solver::cards::combo_from_index(i);
-                        (solver::cards::card_mask(c1) | solver::cards::card_mask(c2))
-                            & board_mask
+                        (solver::cards::card_mask(c1) | solver::cards::card_mask(c2)) & board_mask
                             == 0
                     }
                 })
@@ -831,7 +871,11 @@ fn node_budget(cap_mb: f64, config: &SpotConfig, storage: Storage) -> usize {
         Storage::Compressed => 4.0, // two i16 arenas
     };
     let per_node = 0.25 * 2.0 * nh_min as f64 * per_entry
-        + if storage == Storage::Compressed { 16.0 } else { 0.0 };
+        + if storage == Storage::Compressed {
+            16.0
+        } else {
+            0.0
+        };
     let cap_bytes = cap_mb.max(0.0) * 1e6;
     let arena_budget = (cap_bytes * 4.0) / per_node;
     // The tree itself (64-byte Node + child slots + actions, ~100 B/node)
@@ -864,11 +908,10 @@ async fn build_spot(
     let storage = storage_from_env();
     let cap_mb = mem_cap_mb() + old_arena_credit_mb(&state) + multiway_api::arena_credit_mb();
     let node_cap = node_budget(cap_mb, &config, storage);
-    let spot =
-        tokio::task::spawn_blocking(move || Spot::new_with_limit(config, Some(node_cap)))
-            .await
-            .map_err(|e| bad_request(e.to_string()))?
-            .map_err(bad_request)?;
+    let spot = tokio::task::spawn_blocking(move || Spot::new_with_limit(config, Some(node_cap)))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?
+        .map_err(bad_request)?;
 
     let arena_mb = spot.arena_bytes_for(storage) as f64 / 1e6;
     let tree_mb = spot.tree_bytes() as f64 / 1e6;
@@ -892,10 +935,9 @@ async fn build_spot(
     .await
     .map_err(|e| bad_request(e.to_string()))?;
 
-    let solver =
-        tokio::task::spawn_blocking(move || Solver::with_storage(Arc::new(spot), storage))
-            .await
-            .map_err(|e| bad_request(e.to_string()))?;
+    let solver = tokio::task::spawn_blocking(move || Solver::with_storage(Arc::new(spot), storage))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
 
     let session = Session {
         solver: Arc::new(Mutex::new(solver)),
@@ -968,8 +1010,13 @@ async fn start_solve(
         let mut solver = lock_unpoisoned(&session.solver);
         // A loaded save can already select PCFR+ without prediction arenas.
         // Gate the effective algorithm even when the request omits it.
-        let algo = req.algorithm.as_deref().map(Algorithm::parse)
-            .transpose().map_err(bad_request)?.unwrap_or(solver.algo);
+        let algo = req
+            .algorithm
+            .as_deref()
+            .map(Algorithm::parse)
+            .transpose()
+            .map_err(bad_request)?
+            .unwrap_or(solver.algo);
         // PCFR+ allocates a third, regret-sized arena pair on its first
         // iteration — outside the build-time gate, which sized the spot for
         // two. Re-check the cap here so a spot admitted near the limit can't
@@ -1011,7 +1058,11 @@ async fn start_solve(
     let sweep_levels = match &req.sweep {
         None => None,
         Some(levels) => {
-            let levels = if levels.is_empty() { DEFAULT_SWEEP.to_vec() } else { levels.clone() };
+            let levels = if levels.is_empty() {
+                DEFAULT_SWEEP.to_vec()
+            } else {
+                levels.clone()
+            };
             if levels.len() > 21 {
                 return Err(bad_request("a trust sweep takes at most 21 levels"));
             }
@@ -1022,11 +1073,18 @@ async fn start_solve(
     {
         let mut solver = lock_unpoisoned(&session.solver);
         if sweep_levels.is_some() && solver.read_villain().is_none() {
-            return Err(bad_request("a trust sweep needs a villain profile lock: lock a villain first"));
+            return Err(bad_request(
+                "a trust sweep needs a villain profile lock: lock a villain first",
+            ));
         }
         if let Some(levels) = &sweep_levels {
-            if let Some(t) = levels.iter().find(|t| !t.is_finite() || !(0.0..=1.0).contains(*t)) {
-                return Err(bad_request(format!("trust must be between 0 and 1, got {t}")));
+            if let Some(t) = levels
+                .iter()
+                .find(|t| !t.is_finite() || !(0.0..=1.0).contains(*t))
+            {
+                return Err(bad_request(format!(
+                    "trust must be between 0 and 1, got {t}"
+                )));
             }
         }
         if let Some(t) = first_trust {
@@ -1053,7 +1111,12 @@ async fn start_solve(
             status.trust = Some(t);
         }
         if let Some(levels) = sweep_levels {
-            status.trust_sweep = Some(TrustSweep { levels, current: 0, running: true, points: Vec::new() });
+            status.trust_sweep = Some(TrustSweep {
+                levels,
+                current: 0,
+                running: true,
+                points: Vec::new(),
+            });
         }
     }
 
@@ -1163,7 +1226,11 @@ fn finish_level(
         return false;
     };
     if let Some(r) = readout {
-        sw.points.push(SweepPoint { readout: r, iterations, seconds });
+        sw.points.push(SweepPoint {
+            readout: r,
+            iterations,
+            seconds,
+        });
     }
     sw.current += 1;
     if sw.current >= sw.levels.len() {
@@ -1197,18 +1264,34 @@ fn end_sweep(app: &AppState) {
 fn measure_at_stop(app: &AppState, iteration: u32) -> bool {
     iteration > 0
         && !app.discard_solve.load(Ordering::Relaxed)
-        && app.status.lock().unwrap().history.last().map(|h| h.iteration) != Some(iteration)
+        && app
+            .status
+            .lock()
+            .unwrap()
+            .history
+            .last()
+            .map(|h| h.iteration)
+            != Some(iteration)
 }
 
 /// A stopped solve's last exploitability measurement, taken on the
 /// strategies it stops with.
-fn record_last_measurement(st: &mut StatusInfo, iteration: u32, exploit: f64, pot: f64, elapsed: f64) {
+fn record_last_measurement(
+    st: &mut StatusInfo,
+    iteration: u32,
+    exploit: f64,
+    pot: f64,
+    elapsed: f64,
+) {
     let pct = exploit / pot * 100.0;
     st.iteration = iteration;
     st.exploit_chips = exploit;
     st.exploit_pct = pct;
     st.elapsed_secs = elapsed;
-    st.history.push(HistoryPoint { iteration, exploit_pct: pct });
+    st.history.push(HistoryPoint {
+        iteration,
+        exploit_pct: pct,
+    });
 }
 
 /// CPU solve loop. `base` is the solver's cumulative iteration at the start
@@ -1232,7 +1315,8 @@ fn cpu_solve_loop(
                 let note = finish_fits(&mut s);
                 s.ensure_symmetric();
                 // the number shown for a stopped solve belongs to what it leaves
-                let last = measure_at_stop(app, s.iteration).then(|| (s.iteration, s.exploitability()));
+                let last =
+                    measure_at_stop(app, s.iteration).then(|| (s.iteration, s.exploitability()));
                 (note, last)
             };
             end_sweep(app);
@@ -1281,7 +1365,13 @@ fn cpu_solve_loop(
                 drop(st);
                 let mut s = lock_unpoisoned(&solver);
                 let readout = s.trust_readout().ok();
-                if finish_level(&mut s, app, readout, run_it, level_start.elapsed().as_secs_f64()) {
+                if finish_level(
+                    &mut s,
+                    app,
+                    readout,
+                    run_it,
+                    level_start.elapsed().as_secs_f64(),
+                ) {
                     base = s.iteration;
                     level_start = std::time::Instant::now();
                     continue;
@@ -1332,8 +1422,10 @@ fn gpu_solve_loop(
         // fits restart their node's average before the arenas are uploaded
         s.prepare_fits();
         let cap_mb = gpu_budget().0;
-        (GpuSolver::new_with_budget(&s, cap_mb * 1_000_000)?,
-            s.spot.tree.config.starting_pot)
+        (
+            GpuSolver::new_with_budget(&s, cap_mb * 1_000_000)?,
+            s.spot.tree.config.starting_pot,
+        )
     };
     {
         let mut st = app.status.lock().unwrap();
@@ -1432,13 +1524,22 @@ fn gpu_solve_inner(
                 } else {
                     Vec::new()
                 };
-                let on_target = fits.iter().all(|f| f.max_error as f64 <= solver::fit::FIT_TOLERANCE);
-                let mut finished = (pct <= req.target_exploit_pct && on_target) || run_it >= req.max_iterations;
+                let on_target = fits
+                    .iter()
+                    .all(|f| f.max_error as f64 <= solver::fit::FIT_TOLERANCE);
+                let mut finished =
+                    (pct <= req.target_exploit_pct && on_target) || run_it >= req.max_iterations;
                 if finished {
                     // readout on the device (~0.04 s); a sweep moves on to
                     // its next level without a download
                     let readout = gpu.trust_readout(&s).ok();
-                    if finish_level(&mut s, app, readout, run_it, level_start.elapsed().as_secs_f64()) {
+                    if finish_level(
+                        &mut s,
+                        app,
+                        readout,
+                        run_it,
+                        level_start.elapsed().as_secs_f64(),
+                    ) {
                         gpu.update_locks(&s)?;
                         base = gpu.iteration;
                         level_start = std::time::Instant::now();
@@ -1664,7 +1765,9 @@ impl PfBuildOptions {
     fn model(&self) -> Result<&str, ApiError> {
         match self.multiway_model.as_deref().unwrap_or("coupled_deck_v1") {
             model @ ("coupled_deck_v1" | "three_way_table_v1") => Ok(model),
-            _ => Err(bad_request("unsupported fresh-build multiway_model; use coupled_deck_v1 or three_way_table_v1")),
+            _ => Err(bad_request(
+                "unsupported fresh-build multiway_model; use coupled_deck_v1 or three_way_table_v1",
+            )),
         }
     }
 }
@@ -1740,8 +1843,10 @@ async fn pf_estimate(
     .map_err(bad_request)?;
     let (est, (gpu_need_mb, gpu_large_mb)) = est;
     let arena_mb = est.arena_len as f64 * 8.0 / 1e6;
-    let (limit_nodes, limit_mb) =
-        (solver::preflop::limit_nodes(), solver::preflop::limit_arena_mb());
+    let (limit_nodes, limit_mb) = (
+        solver::preflop::limit_nodes(),
+        solver::preflop::limit_arena_mb(),
+    );
     let ok = !est.truncated && est.nodes <= limit_nodes && arena_mb <= limit_mb;
     Ok(Json(serde_json::json!({
         "nodes": est.nodes,
@@ -1843,8 +1948,15 @@ fn pf_finish_preflop(
     st.published_iteration = s.iteration;
     st.stop_reason = reason.into();
     st.phase = "idle".into();
-    if let Some(error) = error { st.error = error; }
-    st.state = if end == PfEnd::Done {"done"} else {"stopped"}.into();
+    if let Some(error) = error {
+        st.error = error;
+    }
+    st.state = if end == PfEnd::Done {
+        "done"
+    } else {
+        "stopped"
+    }
+    .into();
 }
 
 #[derive(Clone, Serialize)]
@@ -1901,8 +2013,14 @@ struct PfPublished<T> {
 
 fn pf_session(
     state: &AppState,
-) -> Result<(Arc<Mutex<solver::preflop::PreflopSolver>>, Arc<AtomicBool>, Arc<Mutex<PreflopStatus>>), ApiError>
-{
+) -> Result<
+    (
+        Arc<Mutex<solver::preflop::PreflopSolver>>,
+        Arc<AtomicBool>,
+        Arc<Mutex<PreflopStatus>>,
+    ),
+    ApiError,
+> {
     state
         .preflop
         .lock()
@@ -1928,8 +2046,7 @@ fn pf_reject_if_running(status: &Mutex<PreflopStatus>) -> Result<(), ApiError> {
     if status.lock().unwrap().state == "running" {
         return Err((
             StatusCode::CONFLICT,
-            "a solve is running — STOP it or let it finish before changing the table"
-                .to_string(),
+            "a solve is running — STOP it or let it finish before changing the table".to_string(),
         ));
     }
     Ok(())
@@ -1985,389 +2102,447 @@ async fn pf_solve(
         // instant too: even a panicked worker's last act is setting a
         // non-"running" state.
         let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let max = req.iterations.max(1);
-        let check = req.check_every.max(1);
-        let mut done = 0u32;
-        // cooperative stop: the CPU traversal polls this at its fan-out
-        // nodes and the GPU engine between per-player sweeps, so STOP lands
-        // within a fraction of an iteration instead of after a whole one
-        // (plus a full accuracy pass) on big games
-        lock_unpoisoned(&solver).set_stop_flag(Some(stop.clone()));
-        // ...and cleared on every exit (normal, stopped, panic) so a later
-        // browse/export/hero traversal never sees a stale "stop" and bails
-        struct ClearStop(Arc<Mutex<solver::preflop::PreflopSolver>>);
-        impl Drop for ClearStop {
-            fn drop(&mut self) {
-                // A concurrent snapshot reader may briefly own this lock. Do
-                // not leave a stopped flag attached merely because it won.
-                lock_unpoisoned(&self.0).set_stop_flag(None);
-            }
-        }
-        let _clear_stop = ClearStop(solver.clone());
-
-        // GPU when built with the feature, enabled, and the game fits the
-        // VRAM budget; anything else — including a mid-solve CUDA error —
-        // falls back to the CPU + system RAM without losing progress.
-        #[cfg(feature = "gpu")]
-        // no card (or no CUDA runtime) is the processor's job, not an error
-        let mut gpu: Option<solver::preflop::gpu::PreflopGpu> = if gpu_enabled() && solver::gpu::vram_info_mb().is_some() {
-            let budget = gpu_budget().0;
-            let s = lock_unpoisoned(&solver);
-            match solver::preflop::gpu::PreflopGpu::new_throughput(&s, budget) {
-                Ok((g,selection)) => {
-                    let mut st = status.lock().unwrap();
-                    st.gpu = true;
-                    st.gpu_note = if selection.mode == "large_game" {
-                        "Large-game GPU mode".into()
-                    } else if selection.mode == "retained_cohorts" {
-                        "Shared GPU evaluation".into()
-                    } else if selection.static_cdf {
-                        "Memory-efficient GPU evaluation".into()
-                    } else {
-                        format!("Standard GPU evaluation: {}",selection.fallback_reason.as_deref().unwrap_or("shared evaluation unavailable"))
-                    };
-                    println!("preflop solving on GPU: {}",serde_json::to_string(&selection).unwrap());
-                    Some(g)
+            let max = req.iterations.max(1);
+            let check = req.check_every.max(1);
+            let mut done = 0u32;
+            // cooperative stop: the CPU traversal polls this at its fan-out
+            // nodes and the GPU engine between per-player sweeps, so STOP lands
+            // within a fraction of an iteration instead of after a whole one
+            // (plus a full accuracy pass) on big games
+            lock_unpoisoned(&solver).set_stop_flag(Some(stop.clone()));
+            // ...and cleared on every exit (normal, stopped, panic) so a later
+            // browse/export/hero traversal never sees a stale "stop" and bails
+            struct ClearStop(Arc<Mutex<solver::preflop::PreflopSolver>>);
+            impl Drop for ClearStop {
+                fn drop(&mut self) {
+                    // A concurrent snapshot reader may briefly own this lock. Do
+                    // not leave a stopped flag attached merely because it won.
+                    lock_unpoisoned(&self.0).set_stop_flag(None);
                 }
-                Err(err) => {
-                    println!("preflop gpu unavailable ({err}); solving on CPU");
-                    let mut st = status.lock().unwrap();
-                    st.gpu = false;
-                    // the plan's plain reason when it saw this coming
-                    st.gpu_note = match st.size.map(|size| size.plan()) {
-                        Some(plan) if plan.engine == "cpu" => {
-                            format!("Solving on the CPU: {}.", plan.reason)
+            }
+            let _clear_stop = ClearStop(solver.clone());
+
+            // GPU when built with the feature, enabled, and the game fits the
+            // VRAM budget; anything else — including a mid-solve CUDA error —
+            // falls back to the CPU + system RAM without losing progress.
+            #[cfg(feature = "gpu")]
+            // no card (or no CUDA runtime) is the processor's job, not an error
+            let mut gpu: Option<solver::preflop::gpu::PreflopGpu> =
+                if gpu_enabled() && solver::gpu::vram_info_mb().is_some() {
+                    let budget = gpu_budget().0;
+                    let s = lock_unpoisoned(&solver);
+                    match solver::preflop::gpu::PreflopGpu::new_throughput(&s, budget) {
+                        Ok((g, selection)) => {
+                            let mut st = status.lock().unwrap();
+                            st.gpu = true;
+                            st.gpu_note = if selection.mode == "large_game" {
+                                "Large-game GPU mode".into()
+                            } else if selection.mode == "retained_cohorts" {
+                                "Shared GPU evaluation".into()
+                            } else if selection.static_cdf {
+                                "Memory-efficient GPU evaluation".into()
+                            } else {
+                                format!(
+                                    "Standard GPU evaluation: {}",
+                                    selection
+                                        .fallback_reason
+                                        .as_deref()
+                                        .unwrap_or("shared evaluation unavailable")
+                                )
+                            };
+                            println!(
+                                "preflop solving on GPU: {}",
+                                serde_json::to_string(&selection).unwrap()
+                            );
+                            Some(g)
                         }
-                        _ => format!(
-                            "Solving on the CPU: the GPU could not take this game ({err})."
-                        ),
-                    };
-                    None
-                }
-            }
-        } else {
-            None
-        };
-
-        // The host solver remains the last coherent published snapshot while
-        // device work runs. Only the device worker advances this private clock.
-        #[cfg(feature = "gpu")]
-        let mut gpu_iteration = lock_unpoisoned(&solver).iteration;
-
-        loop {
-            pf_yield_to_waiters();
-            // STOP ends the solve with one last accuracy check (the checkpoint
-            // code below) on the strategies it stops with, so the gap it
-            // reports is the gap of what is left on screen. There is no check
-            // when the session is going away or nothing was solved yet.
-            let stopping = stop.load(Ordering::Relaxed);
-            let check_at_stop = stopping && !abandon.load(Ordering::Relaxed) && {
-                #[cfg(feature = "gpu")]
-                let on_device = gpu.is_some().then_some(gpu_iteration);
-                #[cfg(not(feature = "gpu"))]
-                let on_device: Option<u32> = None;
-                on_device.unwrap_or_else(|| lock_unpoisoned(&solver).iteration) > 0
-            };
-            if stopping && !check_at_stop {
-                #[cfg(feature = "gpu")]
-                if let Some(g) = gpu.as_ref() {
-                    let mut s = lock_unpoisoned(&solver);
-                    if let Err(err) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
-                        // final download failed: browse/save keep serving
-                        // the last successful checkpoint — say so instead
-                        // of silently presenting stale data as current
-                        println!(
-                            "preflop gpu final sync failed ({err}); \
-                             CPU data is from the last checkpoint"
-                        );
-                        let mut st = status.lock().unwrap();
-                        st.gpu = false;
-                        st.gpu_note = format!(
-                            "GPU final sync failed: {err} — browse/save show \
-                             the last completed checkpoint"
-                        );
-                        s.iteration = st.published_iteration;
-                    } else {
-                        status.lock().unwrap().published_iteration = s.iteration;
+                        Err(err) => {
+                            println!("preflop gpu unavailable ({err}); solving on CPU");
+                            let mut st = status.lock().unwrap();
+                            st.gpu = false;
+                            // the plan's plain reason when it saw this coming
+                            st.gpu_note = match st.size.map(|size| size.plan()) {
+                                Some(plan) if plan.engine == "cpu" => {
+                                    format!("Solving on the CPU: {}.", plan.reason)
+                                }
+                                _ => format!(
+                                    "Solving on the CPU: the GPU could not take this game ({err})."
+                                ),
+                            };
+                            None
+                        }
                     }
+                } else {
+                    None
+                };
+
+            // The host solver remains the last coherent published snapshot while
+            // device work runs. Only the device worker advances this private clock.
+            #[cfg(feature = "gpu")]
+            let mut gpu_iteration = lock_unpoisoned(&solver).iteration;
+
+            loop {
+                pf_yield_to_waiters();
+                // STOP ends the solve with one last accuracy check (the checkpoint
+                // code below) on the strategies it stops with, so the gap it
+                // reports is the gap of what is left on screen. There is no check
+                // when the session is going away or nothing was solved yet.
+                let stopping = stop.load(Ordering::Relaxed);
+                let check_at_stop = stopping && !abandon.load(Ordering::Relaxed) && {
+                    #[cfg(feature = "gpu")]
+                    let on_device = gpu.is_some().then_some(gpu_iteration);
+                    #[cfg(not(feature = "gpu"))]
+                    let on_device: Option<u32> = None;
+                    on_device.unwrap_or_else(|| lock_unpoisoned(&solver).iteration) > 0
+                };
+                if stopping && !check_at_stop {
+                    #[cfg(feature = "gpu")]
+                    if let Some(g) = gpu.as_ref() {
+                        let mut s = lock_unpoisoned(&solver);
+                        if let Err(err) =
+                            pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| {
+                                g.sync_to_cpu(s)
+                            })
+                        {
+                            // final download failed: browse/save keep serving
+                            // the last successful checkpoint — say so instead
+                            // of silently presenting stale data as current
+                            println!(
+                                "preflop gpu final sync failed ({err}); \
+                             CPU data is from the last checkpoint"
+                            );
+                            let mut st = status.lock().unwrap();
+                            st.gpu = false;
+                            st.gpu_note = format!(
+                                "GPU final sync failed: {err} — browse/save show \
+                             the last completed checkpoint"
+                            );
+                            s.iteration = st.published_iteration;
+                        } else {
+                            status.lock().unwrap().published_iteration = s.iteration;
+                        }
+                    }
+                    let mut s = lock_unpoisoned(&solver);
+                    // learned realization: leave the game priced with the net's
+                    // output at the strategies it stops with, as a reload prices it
+                    s.leaf_settle(false);
+                    pf_finish_preflop(&mut s, &status, "stopped", PfEnd::Interrupted, None);
+                    return;
                 }
                 let mut s = lock_unpoisoned(&solver);
-                // learned realization: leave the game priced with the net's
-                // output at the strategies it stops with, as a reload prices it
-                s.leaf_settle(false);
-                pf_finish_preflop(&mut s, &status, "stopped", PfEnd::Interrupted, None);
-                return;
-            }
-            let mut s = lock_unpoisoned(&solver);
-            // an accuracy check answers to `abandon` alone (see below)
-            s.set_stop_flag(Some(stop.clone()));
-            if !stopping {
-            // false: the pass was cut short by STOP, some seats swept
-            #[cfg(feature = "gpu")]
-            let completed = {
-                let mut completed;
-                let mut failed: Option<String> = None;
-                match gpu.as_mut() {
-                    Some(g) => {
-                        // GPU state is self-contained after construction. Do not
-                        // make each click wait for another full device iteration.
-                        drop(s);
-                        let result = g.try_iterate_counter(&mut gpu_iteration, Some(&stop));
-                        s = lock_unpoisoned(&solver);
-                        completed = matches!(result, Ok(true));
-                        match result {
-                            Err(err) => failed = Some(err),
-                            // learned realization: refresh the flop
-                            // corrections from the device's averages
-                            Ok(true) if s.leaf_refresh_due(gpu_iteration) => {
-                                match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
-                                    Ok(()) => {
-                                        s.refresh_leaf_values();
-                                        if let Err(err) = g.upload_leaf_corr(&s) {
-                                            failed = Some(format!("learned correction upload failed: {err}"));
-                                        }
-                                    }
-                                    Err(err) => failed = Some(format!("learned correction sync failed: {err}")),
-                                }
-                            }
-                            Ok(_) => {}
-                        }
-                    }
-                    None => {
-                        completed = s.try_iterate();
-                    }
-                }
-                if let Some(err) = failed {
-                    println!("preflop gpu failed mid-solve ({err}); continuing on CPU");
-                    if let Some(g) = gpu.take() {
-                        if let Err(e2) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
-                            println!(
-                                "preflop gpu sync after failure also failed ({e2}); \
-                                 CPU resumes from the last checkpoint"
-                            );
-                        }
-                    }
-                    {
-                        let mut st = status.lock().unwrap();
-                        st.gpu = false;
-                        st.gpu_note =
-                            format!("GPU failed mid-solve: {err} — continuing on CPU");
-                    }
-                    // the device's pass is lost; this one decides
-                    completed = s.try_iterate();
-                }
-                completed
-            };
-            #[cfg(not(feature = "gpu"))]
-            let completed = s.try_iterate();
-            if stop.load(Ordering::Relaxed) {
-                // STOP: nothing to publish here, the loop head takes over. A
-                // pass cut short moved the strategies without moving the
-                // iteration count, so the net's output for this iteration no
-                // longer belongs to them.
-                if !completed {
-                    s.leaf_mark_moved();
-                }
-                drop(s);
-                continue;
-            }
-            done += 1;
-            let checkpoint = done % check == 0 || done >= max;
-            if !checkpoint {
-                #[cfg(feature = "gpu")]
-                let iteration = if gpu.is_some() { gpu_iteration } else { s.iteration };
-                #[cfg(not(feature = "gpu"))]
-                let iteration = s.iteration;
-                // Real learned preview: no extra CFR or accuracy pass. A GPU
-                // download stages BOTH arenas transactionally for coherent reads.
-                #[cfg(feature = "gpu")]
-                let published = if let Some(g) = gpu.as_ref() {
-                    if pf_preview_due(done, req.early_preview) {
-                        status.lock().unwrap().phase = "publishing".into();
-                        match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
-                            Ok(()) => true,
-                            Err(err) => {
-                                status.lock().unwrap().preview_note = format!(
-                                    "Early preview unavailable ({err}); keeping the previous snapshot.");
-                                false
-                            }
-                        }
-                    } else { false }
-                } else { true }; // CPU arenas already contain the completed pass.
-                #[cfg(not(feature = "gpu"))]
-                let published = true;
-                let mut st = status.lock().unwrap();
-                st.iteration = iteration;
-                st.phase = "iterating".into();
-                if published {
-                    st.published_iteration = iteration;
-                    st.preview_note.clear();
-                }
-                drop(st);
-                drop(s);
-                continue;
-            }
-            }
-            #[cfg(feature = "gpu")]
-            let iteration = if gpu.is_some() { gpu_iteration } else { s.iteration };
-            #[cfg(not(feature = "gpu"))]
-            let iteration = s.iteration;
-            {
-                // Announce accuracy work before it runs. GPU measurement leaves
-                // the published host snapshot available; CPU work holds it.
-                {
-                    let mut st = status.lock().unwrap();
-                    st.iteration = iteration;
-                    st.phase = if stopping {"final_check"} else {"measuring"}.into();
-                }
-                // STOP does not cut an accuracy check short: the check that is
-                // running becomes the solve's last one. Only `abandon` does.
-                s.set_stop_flag(Some(abandon.clone()));
-                #[cfg(feature = "gpu")]
-                let (gaps, evs) = {
-                    // a failed checkpoint download counts as a GPU failure
-                    // too: the device can no longer keep the CPU in sync,
-                    // so fall back instead of silently serving stale data
-                    let mut gpu_err: Option<String> = None;
-                    let mut ge_gpu: Option<(Vec<f64>, Vec<f64>)> = None;
-                    if let Some(g) = gpu.as_mut() {
-                        // Learned realization: measure against the net's output
-                        // at this snapshot's strategies (the gap a reload of it
-                        // reports), not the blend the solve iterates on.
-                        let leaf_ready = if s.leaf_terminals().is_some() {
-                            let synced = if s.leaf_values_stale_at(gpu_iteration) {
-                                pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s))
-                                    .map_err(|err| format!("learned correction sync failed: {err}"))
-                            } else {
-                                Ok(())
-                            };
-                            synced.and_then(|()| {
-                                s.leaf_measure_begin();
-                                g.upload_leaf_corr(&s)
-                                    .map_err(|err| format!("learned correction upload failed: {err}"))
-                            })
-                        } else {
-                            Ok(())
-                        };
-                        match leaf_ready {
-                            Err(err) => {
-                                s.leaf_measure_end();
-                                gpu_err = Some(err);
-                            }
-                            Ok(()) => {
-                                // Accuracy uses device buffers only. Readers may keep
-                                // using the previous host snapshot while it is measured.
+                // an accuracy check answers to `abandon` alone (see below)
+                s.set_stop_flag(Some(stop.clone()));
+                if !stopping {
+                    // false: the pass was cut short by STOP, some seats swept
+                    #[cfg(feature = "gpu")]
+                    let completed = {
+                        let mut completed;
+                        let mut failed: Option<String> = None;
+                        match gpu.as_mut() {
+                            Some(g) => {
+                                // GPU state is self-contained after construction. Do not
+                                // make each click wait for another full device iteration.
                                 drop(s);
-                                let measured = g.gaps_and_evs();
+                                let result = g.try_iterate_counter(&mut gpu_iteration, Some(&stop));
                                 s = lock_unpoisoned(&solver);
-                                // back to the corrections the solve iterates on
-                                s.leaf_measure_end();
-                                let restored = g.upload_leaf_corr(&s)
-                                    .map_err(|err| format!("learned correction upload failed: {err}"));
-                                match measured.and_then(|ge| restored.map(|()| ge)) {
-                                    Ok(ge) => {
-                                        // keep browse/export in sync with the device
-                                        match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
-                                            Ok(()) => ge_gpu = Some(ge),
+                                completed = matches!(result, Ok(true));
+                                match result {
+                                    Err(err) => failed = Some(err),
+                                    // learned realization: refresh the flop
+                                    // corrections from the device's averages
+                                    Ok(true) if s.leaf_refresh_due(gpu_iteration) => {
+                                        match pf_publish_gpu_snapshot(
+                                            &mut s,
+                                            &status,
+                                            gpu_iteration,
+                                            |s| g.sync_to_cpu(s),
+                                        ) {
+                                            Ok(()) => {
+                                                s.refresh_leaf_values();
+                                                if let Err(err) = g.upload_leaf_corr(&s) {
+                                                    failed = Some(format!(
+                                                        "learned correction upload failed: {err}"
+                                                    ));
+                                                }
+                                            }
                                             Err(err) => {
-                                                gpu_err =
-                                                    Some(format!("checkpoint sync failed: {err}"))
+                                                failed = Some(format!(
+                                                    "learned correction sync failed: {err}"
+                                                ))
                                             }
                                         }
                                     }
-                                    Err(err) => gpu_err = Some(err),
+                                    Ok(_) => {}
+                                }
+                            }
+                            None => {
+                                completed = s.try_iterate();
+                            }
+                        }
+                        if let Some(err) = failed {
+                            println!("preflop gpu failed mid-solve ({err}); continuing on CPU");
+                            if let Some(g) = gpu.take() {
+                                if let Err(e2) =
+                                    pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| {
+                                        g.sync_to_cpu(s)
+                                    })
+                                {
+                                    println!(
+                                        "preflop gpu sync after failure also failed ({e2}); \
+                                 CPU resumes from the last checkpoint"
+                                    );
+                                }
+                            }
+                            {
+                                let mut st = status.lock().unwrap();
+                                st.gpu = false;
+                                st.gpu_note =
+                                    format!("GPU failed mid-solve: {err} — continuing on CPU");
+                            }
+                            // the device's pass is lost; this one decides
+                            completed = s.try_iterate();
+                        }
+                        completed
+                    };
+                    #[cfg(not(feature = "gpu"))]
+                    let completed = s.try_iterate();
+                    if stop.load(Ordering::Relaxed) {
+                        // STOP: nothing to publish here, the loop head takes over. A
+                        // pass cut short moved the strategies without moving the
+                        // iteration count, so the net's output for this iteration no
+                        // longer belongs to them.
+                        if !completed {
+                            s.leaf_mark_moved();
+                        }
+                        drop(s);
+                        continue;
+                    }
+                    done += 1;
+                    let checkpoint = done % check == 0 || done >= max;
+                    if !checkpoint {
+                        #[cfg(feature = "gpu")]
+                        let iteration = if gpu.is_some() {
+                            gpu_iteration
+                        } else {
+                            s.iteration
+                        };
+                        #[cfg(not(feature = "gpu"))]
+                        let iteration = s.iteration;
+                        // Real learned preview: no extra CFR or accuracy pass. A GPU
+                        // download stages BOTH arenas transactionally for coherent reads.
+                        #[cfg(feature = "gpu")]
+                        let published = if let Some(g) = gpu.as_ref() {
+                            if pf_preview_due(done, req.early_preview) {
+                                status.lock().unwrap().phase = "publishing".into();
+                                match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| {
+                                    g.sync_to_cpu(s)
+                                }) {
+                                    Ok(()) => true,
+                                    Err(err) => {
+                                        status.lock().unwrap().preview_note = format!(
+                                    "Early preview unavailable ({err}); keeping the previous snapshot.");
+                                        false
+                                    }
+                                }
+                            } else {
+                                false
+                            }
+                        } else {
+                            true
+                        }; // CPU arenas already contain the completed pass.
+                        #[cfg(not(feature = "gpu"))]
+                        let published = true;
+                        let mut st = status.lock().unwrap();
+                        st.iteration = iteration;
+                        st.phase = "iterating".into();
+                        if published {
+                            st.published_iteration = iteration;
+                            st.preview_note.clear();
+                        }
+                        drop(st);
+                        drop(s);
+                        continue;
+                    }
+                }
+                #[cfg(feature = "gpu")]
+                let iteration = if gpu.is_some() {
+                    gpu_iteration
+                } else {
+                    s.iteration
+                };
+                #[cfg(not(feature = "gpu"))]
+                let iteration = s.iteration;
+                {
+                    // Announce accuracy work before it runs. GPU measurement leaves
+                    // the published host snapshot available; CPU work holds it.
+                    {
+                        let mut st = status.lock().unwrap();
+                        st.iteration = iteration;
+                        st.phase = if stopping { "final_check" } else { "measuring" }.into();
+                    }
+                    // STOP does not cut an accuracy check short: the check that is
+                    // running becomes the solve's last one. Only `abandon` does.
+                    s.set_stop_flag(Some(abandon.clone()));
+                    #[cfg(feature = "gpu")]
+                    let (gaps, evs) = {
+                        // a failed checkpoint download counts as a GPU failure
+                        // too: the device can no longer keep the CPU in sync,
+                        // so fall back instead of silently serving stale data
+                        let mut gpu_err: Option<String> = None;
+                        let mut ge_gpu: Option<(Vec<f64>, Vec<f64>)> = None;
+                        if let Some(g) = gpu.as_mut() {
+                            // Learned realization: measure against the net's output
+                            // at this snapshot's strategies (the gap a reload of it
+                            // reports), not the blend the solve iterates on.
+                            let leaf_ready = if s.leaf_terminals().is_some() {
+                                let synced = if s.leaf_values_stale_at(gpu_iteration) {
+                                    pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| {
+                                        g.sync_to_cpu(s)
+                                    })
+                                    .map_err(|err| format!("learned correction sync failed: {err}"))
+                                } else {
+                                    Ok(())
+                                };
+                                synced.and_then(|()| {
+                                    s.leaf_measure_begin();
+                                    g.upload_leaf_corr(&s).map_err(|err| {
+                                        format!("learned correction upload failed: {err}")
+                                    })
+                                })
+                            } else {
+                                Ok(())
+                            };
+                            match leaf_ready {
+                                Err(err) => {
+                                    s.leaf_measure_end();
+                                    gpu_err = Some(err);
+                                }
+                                Ok(()) => {
+                                    // Accuracy uses device buffers only. Readers may keep
+                                    // using the previous host snapshot while it is measured.
+                                    drop(s);
+                                    let measured = g.gaps_and_evs();
+                                    s = lock_unpoisoned(&solver);
+                                    // back to the corrections the solve iterates on
+                                    s.leaf_measure_end();
+                                    let restored = g.upload_leaf_corr(&s).map_err(|err| {
+                                        format!("learned correction upload failed: {err}")
+                                    });
+                                    match measured.and_then(|ge| restored.map(|()| ge)) {
+                                        Ok(ge) => {
+                                            // keep browse/export in sync with the device
+                                            match pf_publish_gpu_snapshot(
+                                                &mut s,
+                                                &status,
+                                                gpu_iteration,
+                                                |s| g.sync_to_cpu(s),
+                                            ) {
+                                                Ok(()) => ge_gpu = Some(ge),
+                                                Err(err) => {
+                                                    gpu_err = Some(format!(
+                                                        "checkpoint sync failed: {err}"
+                                                    ))
+                                                }
+                                            }
+                                        }
+                                        Err(err) => gpu_err = Some(err),
+                                    }
                                 }
                             }
                         }
-                    }
-                    if let Some(err) = gpu_err {
-                        println!("preflop gpu checkpoint failed ({err}); on CPU");
-                        if let Some(g) = gpu.take() {
-                            if let Err(e2) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
-                                println!(
-                                    "preflop gpu sync after failure also failed ({e2}); \
+                        if let Some(err) = gpu_err {
+                            println!("preflop gpu checkpoint failed ({err}); on CPU");
+                            if let Some(g) = gpu.take() {
+                                if let Err(e2) =
+                                    pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| {
+                                        g.sync_to_cpu(s)
+                                    })
+                                {
+                                    println!(
+                                        "preflop gpu sync after failure also failed ({e2}); \
                                      CPU resumes from the last checkpoint"
-                                );
+                                    );
+                                }
+                            }
+                            let mut st = status.lock().unwrap();
+                            st.gpu = false;
+                            st.gpu_note = format!("GPU failed: {err} — continuing on CPU");
+                            drop(st);
+                            pf_measured_gaps(&mut s)
+                        } else {
+                            match ge_gpu {
+                                Some(ge) => ge,
+                                None => pf_measured_gaps(&mut s),
                             }
                         }
-                        let mut st = status.lock().unwrap();
-                        st.gpu = false;
-                        st.gpu_note = format!("GPU failed: {err} — continuing on CPU");
-                        drop(st);
-                        pf_measured_gaps(&mut s)
-                    } else {
-                        match ge_gpu {
-                            Some(ge) => ge,
-                            None => pf_measured_gaps(&mut s),
-                        }
-                    }
-                };
-                #[cfg(not(feature = "gpu"))]
-                let (gaps, evs) = pf_measured_gaps(&mut s);
-                // the trust dial's readout (hero mode with a dial), measured
-                // on the same snapshot as the gaps
-                #[cfg(feature = "gpu")]
-                let trust_readout = match gpu.as_mut() {
-                    Some(g) => g.trust_readout().and_then(|r| {
-                        r.map_err(|err| println!("preflop gpu trust readout failed ({err})")).ok()
-                    }),
-                    None => s.trust_readout().ok(),
-                };
-                #[cfg(not(feature = "gpu"))]
-                let trust_readout = s.trust_readout().ok();
-                // Convergence is measured on the seats still LEARNING: a
-                // frozen or fully-ruled seat's gap is its bleed against its
-                // pinned strategy and never converges, so summing it made
-                // the target unreachable in table/hero mode (every such solve
-                // ran to max iterations) and turned the "BR gap" readout into
-                // a bleed total.
-                let live = s.live_seats();
-                // Failed GPU transfers can leave an older host snapshot for
-                // CPU evaluation; label the generation actually measured.
-                let iteration = s.iteration;
-                // Update the snapshot tag while holding the same solver lock as
-                // its arenas. Node/export cannot observe mixed generations.
-                status.lock().unwrap().published_iteration = s.iteration;
-                if abandon.load(Ordering::Relaxed) {
-                    // the accuracy pass was cut short — its numbers are
-                    // partial; the loop head ends the solve without them
-                    stop.store(true, Ordering::Relaxed);
-                    continue;
-                }
-                // a STOP that came during the check: this was the last one
-                let stopping = stopping || stop.load(Ordering::Relaxed);
-                let total: f64 = gaps
-                    .iter()
-                    .zip(&live)
-                    .filter(|(_, l)| **l)
-                    .map(|(g, _)| g)
-                    .sum();
-                let mut st = status.lock().unwrap();
-                st.iteration = iteration;
-                st.phase = "iterating".into();
-                st.accuracy_iteration = Some(iteration);
-                st.preview_note.clear();
-                st.gaps = gaps;
-                st.gap_total = total;
-                st.evs = evs;
-                st.trust_readout = trust_readout;
-                if total < req.target_gap || done >= max || stopping {
-                    let (reason, end) = if total < req.target_gap {
-                        ("target_reached", PfEnd::Done)
-                    } else if done >= max {
-                        ("iteration_limit", PfEnd::Done)
-                    } else {
-                        ("stopped", PfEnd::Stopped)
                     };
-                    drop(st);
-                    // learned realization: the finished game is priced as it
-                    // was just measured, and as a reload will price it
-                    s.leaf_settle(false);
-                    pf_finish_preflop(&mut s, &status, reason, end, None);
-                    return;
+                    #[cfg(not(feature = "gpu"))]
+                    let (gaps, evs) = pf_measured_gaps(&mut s);
+                    // the trust dial's readout (hero mode with a dial), measured
+                    // on the same snapshot as the gaps
+                    #[cfg(feature = "gpu")]
+                    let trust_readout = match gpu.as_mut() {
+                        Some(g) => g.trust_readout().and_then(|r| {
+                            r.map_err(|err| println!("preflop gpu trust readout failed ({err})"))
+                                .ok()
+                        }),
+                        None => s.trust_readout().ok(),
+                    };
+                    #[cfg(not(feature = "gpu"))]
+                    let trust_readout = s.trust_readout().ok();
+                    // Convergence is measured on the seats still LEARNING: a
+                    // frozen or fully-ruled seat's gap is its bleed against its
+                    // pinned strategy and never converges, so summing it made
+                    // the target unreachable in table/hero mode (every such solve
+                    // ran to max iterations) and turned the "BR gap" readout into
+                    // a bleed total.
+                    let live = s.live_seats();
+                    // Failed GPU transfers can leave an older host snapshot for
+                    // CPU evaluation; label the generation actually measured.
+                    let iteration = s.iteration;
+                    // Update the snapshot tag while holding the same solver lock as
+                    // its arenas. Node/export cannot observe mixed generations.
+                    status.lock().unwrap().published_iteration = s.iteration;
+                    if abandon.load(Ordering::Relaxed) {
+                        // the accuracy pass was cut short — its numbers are
+                        // partial; the loop head ends the solve without them
+                        stop.store(true, Ordering::Relaxed);
+                        continue;
+                    }
+                    // a STOP that came during the check: this was the last one
+                    let stopping = stopping || stop.load(Ordering::Relaxed);
+                    let total: f64 = gaps
+                        .iter()
+                        .zip(&live)
+                        .filter(|(_, l)| **l)
+                        .map(|(g, _)| g)
+                        .sum();
+                    let mut st = status.lock().unwrap();
+                    st.iteration = iteration;
+                    st.phase = "iterating".into();
+                    st.accuracy_iteration = Some(iteration);
+                    st.preview_note.clear();
+                    st.gaps = gaps;
+                    st.gap_total = total;
+                    st.evs = evs;
+                    st.trust_readout = trust_readout;
+                    if total < req.target_gap || done >= max || stopping {
+                        let (reason, end) = if total < req.target_gap {
+                            ("target_reached", PfEnd::Done)
+                        } else if done >= max {
+                            ("iteration_limit", PfEnd::Done)
+                        } else {
+                            ("stopped", PfEnd::Stopped)
+                        };
+                        drop(st);
+                        // learned realization: the finished game is priced as it
+                        // was just measured, and as a reload will price it
+                        s.leaf_settle(false);
+                        pf_finish_preflop(&mut s, &status, reason, end, None);
+                        return;
+                    }
                 }
             }
-        }
         }));
         if let Err(p) = result {
             let msg = panic_msg(p.as_ref());
@@ -2376,7 +2551,13 @@ async fn pf_solve(
             // working instead of panicking on a poisoned lock
             solver.clear_poison();
             let mut s = lock_unpoisoned(&solver);
-            pf_finish_preflop(&mut s, &status, "error", PfEnd::Interrupted, Some(format!("solve crashed: {msg}")));
+            pf_finish_preflop(
+                &mut s,
+                &status,
+                "error",
+                PfEnd::Interrupted,
+                Some(format!("solve crashed: {msg}")),
+            );
         }
     });
     session.worker = Some(handle);
@@ -2482,7 +2663,9 @@ async fn pf_table(
     })
     .await
     .map_err(|e| bad_request(e.to_string()))??;
-    Ok(Json(serde_json::json!({"ok": true, "overrides": overrides})))
+    Ok(Json(
+        serde_json::json!({"ok": true, "overrides": overrides}),
+    ))
 }
 
 #[derive(Deserialize)]
@@ -2496,7 +2679,9 @@ struct PfGenerateRequest {
     adaptive_from: Option<f64>,
 }
 
-fn default_adaptive_from() -> Option<f64> { Some(0.25) }
+fn default_adaptive_from() -> Option<f64> {
+    Some(0.25)
+}
 
 /// Pure model inspection. It does not acquire or replace either live solver.
 #[derive(Deserialize)]
@@ -2543,17 +2728,23 @@ async fn pf_leafnets() -> Result<Json<serde_json::Value>, ApiError> {
 }
 
 async fn pf_capabilities() -> Json<serde_json::Value> {
-    Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true,"early_preview_v1":true,"fresh_build_multiway_models":["coupled_deck_v1","three_way_table_v1"]}))
+    Json(
+        serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true,"early_preview_v1":true,"fresh_build_multiway_models":["coupled_deck_v1","three_way_table_v1"]}),
+    )
 }
 
 async fn pf_model_evidence(
     Json(req): Json<PfModelEvidenceRequest>,
 ) -> Result<Json<solver::preflop::evidence::ModelEvidence>, ApiError> {
-    let context=solver::preflop::evidence::EvidenceContext {
-        bucket:req.bucket,cold:req.cold,limp_context:req.limp_context,context:req.context,
+    let context = solver::preflop::evidence::EvidenceContext {
+        bucket: req.bucket,
+        cold: req.cold,
+        limp_context: req.limp_context,
+        context: req.context,
     };
-    solver::preflop::evidence::profile_evidence(&req.cfg,req.seat,&req.profile,&context)
-        .map(Json).map_err(bad_request)
+    solver::preflop::evidence::profile_evidence(&req.cfg, req.seat, &req.profile, &context)
+        .map(Json)
+        .map_err(bad_request)
 }
 
 async fn pf_generate(
@@ -2563,20 +2754,35 @@ async fn pf_generate(
     let (solver, _, _) = pf_session(&state)?;
     let out = tokio::task::spawn_blocking(move || {
         let s = pf_solver_lock(&solver);
-        let name = if req.name.is_empty() { "custom" } else { &req.name };
+        let name = if req.name.is_empty() {
+            "custom"
+        } else {
+            &req.name
+        };
         let (mut profile, implied) = s.generate_profile(req.seat, &req.stats, name)?;
-        if req.adaptive_from.is_some_and(|f| !f.is_finite() || f <= 0.0 || f > 1.0) {
+        if req
+            .adaptive_from
+            .is_some_and(|f| !f.is_finite() || f <= 0.0 || f > 1.0)
+        {
             return Err("adaptive_from must be a stack fraction in (0, 1]".to_string());
         }
-        profile.response.get_or_insert_with(Default::default).adaptive_from = req.adaptive_from;
-        let mut implied=serde_json::to_value(implied).map_err(|e|e.to_string())?;
-        implied["model_evidence"]=serde_json::to_value(solver::preflop::evidence::generated_evidence(&s.cfg,req.seat,&profile)).map_err(|e|e.to_string())?;
+        profile
+            .response
+            .get_or_insert_with(Default::default)
+            .adaptive_from = req.adaptive_from;
+        let mut implied = serde_json::to_value(implied).map_err(|e| e.to_string())?;
+        implied["model_evidence"] = serde_json::to_value(
+            solver::preflop::evidence::generated_evidence(&s.cfg, req.seat, &profile),
+        )
+        .map_err(|e| e.to_string())?;
         Ok((profile, implied))
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
-    Ok(Json(serde_json::json!({"profile": out.0, "implied": out.1})))
+    Ok(Json(
+        serde_json::json!({"profile": out.0, "implied": out.1}),
+    ))
 }
 
 #[derive(Deserialize)]
@@ -2610,7 +2816,10 @@ async fn profile_locks(
             None => format!("Profile locks · {who}"),
         };
         let summary = s.record_lock_edit(|s| {
-            Ok((s.lock_profile_context(req.player, &req.stats, req.aggressor, req.pot_type)?, label))
+            Ok((
+                s.lock_profile_context(req.player, &req.stats, req.aggressor, req.pot_type)?,
+                label,
+            ))
         })?;
         Ok::<_, String>((summary, s.lock_history()))
     })
@@ -2630,7 +2839,9 @@ async fn profile_locks_clear(
     let (solver, lock_gen) = session_solver(&state)?;
     let (n, history) = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        let n = s.record_lock_edit(|s| Ok((s.clear_profile_locks(), "Clear profile locks".to_string())))?;
+        let n = s.record_lock_edit(|s| {
+            Ok((s.clear_profile_locks(), "Clear profile locks".to_string()))
+        })?;
         Ok::<_, String>((n, s.lock_history()))
     })
     .await
@@ -2656,8 +2867,18 @@ async fn set_trust(
     State(state): State<Arc<AppState>>,
     Json(req): Json<TrustRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    if state.status.lock().unwrap().trust_sweep.as_ref().is_some_and(|w| w.running) {
-        return Err((StatusCode::CONFLICT, "a trust sweep is running: stop it first".to_string()));
+    if state
+        .status
+        .lock()
+        .unwrap()
+        .trust_sweep
+        .as_ref()
+        .is_some_and(|w| w.running)
+    {
+        return Err((
+            StatusCode::CONFLICT,
+            "a trust sweep is running: stop it first".to_string(),
+        ));
     }
     let (solver, lock_gen) = session_solver(&state)?;
     let villain = tokio::task::spawn_blocking(move || {
@@ -2674,7 +2895,9 @@ async fn set_trust(
     st.trust = req.trust;
     // the readout describes the old level until the next solve ends
     st.trust_readout = None;
-    Ok(Json(serde_json::json!({"trust": req.trust, "villain": villain})))
+    Ok(Json(
+        serde_json::json!({"trust": req.trust, "villain": villain}),
+    ))
 }
 
 /// Locks changed under the readout: it no longer describes the solve, and
@@ -2726,7 +2949,9 @@ async fn pf_save_game(
     .await
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
-    Ok(Json(serde_json::json!({ "ok": true, "iteration": iteration })))
+    Ok(Json(
+        serde_json::json!({ "ok": true, "iteration": iteration }),
+    ))
 }
 
 async fn pf_load_game(
@@ -2737,7 +2962,8 @@ async fn pf_load_game(
     pf_stop_and_join(&state).await?;
     let path = pf_game_path(&req.name).map_err(bad_request)?;
     let loaded = tokio::task::spawn_blocking(move || {
-        let loaded = solver::preflop::PreflopSolver::load_game(path.to_str().unwrap(), preflop_equity())?;
+        let loaded =
+            solver::preflop::PreflopSolver::load_game(path.to_str().unwrap(), preflop_equity())?;
         let size = PfSize::of(&loaded);
         Ok::<_, String>((loaded, size))
     })
@@ -2837,14 +3063,20 @@ async fn pf_list_games() -> Json<serde_json::Value> {
             let p = e.path();
             if p.extension().and_then(|x| x.to_str()) == Some("gtop") {
                 if let Some(stem) = p.file_stem().and_then(|x| x.to_str()) {
-                    let t = e.metadata().and_then(|m| m.modified()).unwrap_or(std::time::UNIX_EPOCH);
+                    let t = e
+                        .metadata()
+                        .and_then(|m| m.modified())
+                        .unwrap_or(std::time::UNIX_EPOCH);
                     entries.push((stem.to_string(), t));
                 }
             }
         }
     }
     entries.sort_by(|a, b| b.1.cmp(&a.1)); // newest first
-    Json(serde_json::json!(entries.into_iter().map(|(n, _)| n).collect::<Vec<_>>()))
+    Json(serde_json::json!(entries
+        .into_iter()
+        .map(|(n, _)| n)
+        .collect::<Vec<_>>()))
 }
 
 // ---------------------------------------------------------------------------
@@ -2942,7 +3174,11 @@ fn report_node_stats(
                 wt += w;
             }
         }
-        let (ev, eq) = if wt > 1e-12 { (wev / wt, weq / wt) } else { (0.0, 0.0) };
+        let (ev, eq) = if wt > 1e-12 {
+            (wev / wt, weq / wt)
+        } else {
+            (0.0, 0.0)
+        };
         let eqr = if eq > 0.02 { ev / (pot * eq) } else { 0.0 };
         players.push(serde_json::json!({"ev": ev, "eq": eq, "eqr": eqr}));
     }
@@ -2958,8 +3194,10 @@ fn report_node_stats(
                 }
             }
         }
-        let freqs: Vec<f64> =
-            sums.iter().map(|s| if total > 1e-12 { s / total } else { 0.0 }).collect();
+        let freqs: Vec<f64> = sums
+            .iter()
+            .map(|s| if total > 1e-12 { s / total } else { 0.0 })
+            .collect();
         serde_json::json!({
             "actor": actor,
             "actions": view.actions.iter().map(|a| a.label.clone()).collect::<Vec<_>>(),
@@ -2992,7 +3230,9 @@ async fn report_run(
     }
     let (pot, stack) = (req.spot.starting_pot, req.spot.effective_stack);
     if !(pot.is_finite() && pot > 0.0 && stack.is_finite() && stack > 0.0) {
-        return Err(bad_request("pot and stacks must be positive finite numbers"));
+        return Err(bad_request(
+            "pot and stacks must be positive finite numbers",
+        ));
     }
     if let Some(v) = &req.villain {
         if v.player > 1 {
@@ -3001,8 +3241,13 @@ async fn report_run(
         if v.aggressor.is_some_and(|p| p > 1) {
             return Err(bad_request("aggressor must be 0 (OOP) or 1 (IP)"));
         }
-        if let Some(t) = v.trust.filter(|t| !t.is_finite() || !(0.0..=1.0).contains(t)) {
-            return Err(bad_request(format!("trust must be between 0 and 1, got {t}")));
+        if let Some(t) = v
+            .trust
+            .filter(|t| !t.is_finite() || !(0.0..=1.0).contains(t))
+        {
+            return Err(bad_request(format!(
+                "trust must be between 0 and 1, got {t}"
+            )));
         }
         if let Some(data) = &v.stats.contextual_betting {
             data.validate().map_err(bad_request)?;
@@ -3031,78 +3276,78 @@ async fn report_run(
         // /api/reports/run returned 409 until a server restart. The panic is
         // recorded as the report error instead.
         let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let mut rows: Vec<serde_json::Value> = Vec::new();
-        let mut err = String::new();
-        let mut stopped = false;
-        // Claim the report file up front (empty partial): the first periodic
-        // write below overwrites a same-named file anyway, and the panic
-        // path outside may only annotate a file that belongs to THIS run.
-        let _ = write_report(&path, &req, &rows, false);
-        // The same node budget + arena gate the BUILD TREE path applies:
-        // reports.js sends the SETUP fields straight here without building,
-        // so an oversized sizing config must abort cheaply mid-build instead
-        // of OOMing the server once per flop. The config is identical for
-        // every flop (only the board changes), so a refused first flop fails
-        // the whole report fast through the existing error break, before any
-        // solving starts. The cap is snapshotted once so every flop is judged
-        // against the same budget; no old-arena credit — the report never
-        // drops the browse session, whose memory MemAvailable already
-        // excludes.
-        let storage = Storage::Compressed;
-        let cap_mb = mem_cap_mb();
-        for (i, (board, weight)) in flops.iter().enumerate() {
-            if app.report_stop.load(Ordering::Relaxed) {
-                stopped = true;
-                break;
-            }
-            {
-                let mut r = app.report.lock().unwrap();
-                r.done = i;
-                r.board = board.clone();
-                r.seconds = t0.elapsed().as_secs_f64();
-            }
-            let b = match solve_board(
-                &app.report_stop,
-                &req.spot,
-                board,
-                req.villain.as_ref(),
-                req.max_iterations,
-                req.target,
-                storage,
-                cap_mb,
-                Some(&lines_dir),
-            ) {
-                Ok(b) => b,
-                Err(BoardErr::Stopped) => {
+            let mut rows: Vec<serde_json::Value> = Vec::new();
+            let mut err = String::new();
+            let mut stopped = false;
+            // Claim the report file up front (empty partial): the first periodic
+            // write below overwrites a same-named file anyway, and the panic
+            // path outside may only annotate a file that belongs to THIS run.
+            let _ = write_report(&path, &req, &rows, false);
+            // The same node budget + arena gate the BUILD TREE path applies:
+            // reports.js sends the SETUP fields straight here without building,
+            // so an oversized sizing config must abort cheaply mid-build instead
+            // of OOMing the server once per flop. The config is identical for
+            // every flop (only the board changes), so a refused first flop fails
+            // the whole report fast through the existing error break, before any
+            // solving starts. The cap is snapshotted once so every flop is judged
+            // against the same budget; no old-arena credit — the report never
+            // drops the browse session, whose memory MemAvailable already
+            // excludes.
+            let storage = Storage::Compressed;
+            let cap_mb = mem_cap_mb();
+            for (i, (board, weight)) in flops.iter().enumerate() {
+                if app.report_stop.load(Ordering::Relaxed) {
                     stopped = true;
                     break;
                 }
-                Err(BoardErr::Failed(e)) => {
-                    err = e;
-                    break;
+                {
+                    let mut r = app.report.lock().unwrap();
+                    r.done = i;
+                    r.board = board.clone();
+                    r.seconds = t0.elapsed().as_secs_f64();
                 }
-            };
-            rows.push(b.row(board, *weight));
-            // a report that was open in the tab must not serve stale boards
-            app.report_cache.lock().unwrap().clear();
-            if rows.len() % 8 == 0 {
-                let _ = write_report(&path, &req, &rows, false);
+                let b = match solve_board(
+                    &app.report_stop,
+                    &req.spot,
+                    board,
+                    req.villain.as_ref(),
+                    req.max_iterations,
+                    req.target,
+                    storage,
+                    cap_mb,
+                    Some(&lines_dir),
+                ) {
+                    Ok(b) => b,
+                    Err(BoardErr::Stopped) => {
+                        stopped = true;
+                        break;
+                    }
+                    Err(BoardErr::Failed(e)) => {
+                        err = e;
+                        break;
+                    }
+                };
+                rows.push(b.row(board, *weight));
+                // a report that was open in the tab must not serve stale boards
+                app.report_cache.lock().unwrap().clear();
+                if rows.len() % 8 == 0 {
+                    let _ = write_report(&path, &req, &rows, false);
+                }
             }
-        }
-        let done = rows.len();
-        // a user STOP is not an error, but the report is NOT complete: the
-        // library must show it as PARTIAL, not pass it off as a full study
-        if let Err(e) = write_report(&path, &req, &rows, err.is_empty() && !stopped) {
-            if err.is_empty() {
-                err = e;
+            let done = rows.len();
+            // a user STOP is not an error, but the report is NOT complete: the
+            // library must show it as PARTIAL, not pass it off as a full study
+            if let Err(e) = write_report(&path, &req, &rows, err.is_empty() && !stopped) {
+                if err.is_empty() {
+                    err = e;
+                }
             }
-        }
-        // the file must say WHY it is partial once the transient status is
-        // gone (only the panic path used to stamp an error)
-        if !err.is_empty() {
-            mark_report_failed(&path, &err);
-        }
-        (done, err)
+            // the file must say WHY it is partial once the transient status is
+            // gone (only the panic path used to stamp an error)
+            if !err.is_empty() {
+                mark_report_failed(&path, &err);
+            }
+            (done, err)
         }));
         let mut r = lock_unpoisoned(&app.report);
         r.running = false;
@@ -3165,7 +3410,12 @@ fn claim_report(state: &AppState, name: &str, total: usize) -> Result<(), ApiErr
         return Err((StatusCode::CONFLICT, "a report is already running".into()));
     }
     state.report_stop.store(false, Ordering::Relaxed);
-    *r = ReportStatus { running: true, name: name.to_string(), total, ..Default::default() };
+    *r = ReportStatus {
+        running: true,
+        name: name.to_string(),
+        total,
+        ..Default::default()
+    };
     Ok(())
 }
 
@@ -3228,7 +3478,8 @@ fn solve_board(
     // STRICT build (this is a new tree, not a saved one), under the
     // node budget derived from the memory cap.
     let node_cap = node_budget(cap_mb, &cfg, storage);
-    let built = Spot::new_with_limit(cfg, Some(node_cap)).map_err(|e| BoardErr::Failed(format!("{board}: {e}")))?;
+    let built = Spot::new_with_limit(cfg, Some(node_cap))
+        .map_err(|e| BoardErr::Failed(format!("{board}: {e}")))?;
     let arena_mb = built.arena_bytes_for(storage) as f64 / 1e6;
     if arena_mb > cap_mb {
         return Err(BoardErr::Failed(format!(
@@ -3272,7 +3523,11 @@ fn solve_board(
                     }
                 }
             }
-            Err(e) => return Err(BoardErr::Failed(format!("villain lock failed on {board}: {e}"))),
+            Err(e) => {
+                return Err(BoardErr::Failed(format!(
+                    "villain lock failed on {board}: {e}"
+                )))
+            }
         }
     }
     solver.ensure_symmetric();
@@ -3351,23 +3606,38 @@ fn load_report_lines(state: &AppState, name: &str) -> Result<Arc<LoadedReport>, 
     }
     let dir = report_lines_dir(name)?;
     let mut flops = Vec::new();
-    for row in v.get("flops").and_then(|f| f.as_array()).cloned().unwrap_or_default() {
-        let Some(board) = row.get("board").and_then(|b| b.as_str()) else { continue };
+    for row in v
+        .get("flops")
+        .and_then(|f| f.as_array())
+        .cloned()
+        .unwrap_or_default()
+    {
+        let Some(board) = row.get("board").and_then(|b| b.as_str()) else {
+            continue;
+        };
         let p = dir.join(format!("{board}.json"));
-        let Ok(text) = std::fs::read_to_string(&p) else { continue };
+        let Ok(text) = std::fs::read_to_string(&p) else {
+            continue;
+        };
         let lines: std::collections::HashMap<String, solver::report::LineSummary> =
             serde_json::from_str(&text).map_err(|e| format!("{board}: {e}"))?;
         flops.push(FlopLines {
             board: board.to_string(),
             weight: row.get("weight").and_then(|w| w.as_u64()).unwrap_or(1) as u32,
-            exploit_pct: row.get("exploit_pct").and_then(|x| x.as_f64()).unwrap_or(0.0),
+            exploit_pct: row
+                .get("exploit_pct")
+                .and_then(|x| x.as_f64())
+                .unwrap_or(0.0),
             lines,
         });
     }
     if flops.is_empty() {
         return Err("no per-board line summaries found for this report".into());
     }
-    let loaded = Arc::new(LoadedReport { name: name.to_string(), flops });
+    let loaded = Arc::new(LoadedReport {
+        name: name.to_string(),
+        flops,
+    });
     let mut cache = state.report_cache.lock().unwrap();
     cache.retain(|r| r.name != name);
     if cache.len() >= REPORT_CACHE_SIZE {
@@ -3434,7 +3704,11 @@ async fn report_lines(
         .map_err(bad_request)?;
     let key = req.line.trim().to_string();
     // prefixes: "", "a0", "a0,c", ...
-    let steps: Vec<&str> = if key.is_empty() { Vec::new() } else { key.split(',').collect() };
+    let steps: Vec<&str> = if key.is_empty() {
+        Vec::new()
+    } else {
+        key.split(',').collect()
+    };
     let mut history = Vec::new();
     for i in 0..=steps.len() {
         let k = steps[..i].join(",");
@@ -3478,42 +3752,45 @@ fn report_solve(
     #[cfg(feature = "gpu")]
     if gpu_enabled() {
         match solver::gpu::GpuSolver::new(solver) {
-          Err(e) => {
-            // LOUD fallback: a report silently crawling on CPU because the
-            // trees don't fit VRAM is the worst way to lose an afternoon
-            println!(
-                "report: GPU unavailable for {} ({e}); solving on CPU",
-                solver.spot.config.board
-            );
-          }
-          Ok(mut gpu) => {
-            loop {
-                if stop.load(Ordering::Relaxed) {
-                    let _ = gpu.sync_to_cpu(solver);
-                    return (gpu.iteration, -1.0, "gpu");
-                }
-                if gpu.iterate().is_err() {
-                    println!("report: GPU failed mid-solve on {}; continuing on CPU", solver.spot.config.board);
-                    break; // fall through to CPU
-                }
-                // max_iterations is an ADDITIONAL iteration budget, just
-                // like the CPU path (adaptation starts at a nonzero base).
-                let it = gpu.iteration - base;
-                if it % 20 == 0 || it >= max_iterations {
-                    let e = match gpu.exploitability(solver) {
-                        Ok(e) => e,
-                        Err(_) => break,
-                    };
-                    let pct = e / pot * 100.0;
-                    if pct <= target || it >= max_iterations {
-                        if gpu.sync_to_cpu(solver).is_ok() {
-                            return (gpu.iteration, pct, "gpu");
+            Err(e) => {
+                // LOUD fallback: a report silently crawling on CPU because the
+                // trees don't fit VRAM is the worst way to lose an afternoon
+                println!(
+                    "report: GPU unavailable for {} ({e}); solving on CPU",
+                    solver.spot.config.board
+                );
+            }
+            Ok(mut gpu) => {
+                loop {
+                    if stop.load(Ordering::Relaxed) {
+                        let _ = gpu.sync_to_cpu(solver);
+                        return (gpu.iteration, -1.0, "gpu");
+                    }
+                    if gpu.iterate().is_err() {
+                        println!(
+                            "report: GPU failed mid-solve on {}; continuing on CPU",
+                            solver.spot.config.board
+                        );
+                        break; // fall through to CPU
+                    }
+                    // max_iterations is an ADDITIONAL iteration budget, just
+                    // like the CPU path (adaptation starts at a nonzero base).
+                    let it = gpu.iteration - base;
+                    if it % 20 == 0 || it >= max_iterations {
+                        let e = match gpu.exploitability(solver) {
+                            Ok(e) => e,
+                            Err(_) => break,
+                        };
+                        let pct = e / pot * 100.0;
+                        if pct <= target || it >= max_iterations {
+                            if gpu.sync_to_cpu(solver).is_ok() {
+                                return (gpu.iteration, pct, "gpu");
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
-          }
         }
     }
     loop {
@@ -3567,11 +3844,17 @@ fn write_report(
 /// run that died; every failure here is swallowed (the report status already
 /// carries the error).
 fn mark_report_failed(path: &std::path::Path, error: &str) {
-    let Ok(text) = std::fs::read_to_string(path) else { return };
-    let Ok(mut v) = serde_json::from_str::<serde_json::Value>(&text) else { return };
+    let Ok(text) = std::fs::read_to_string(path) else {
+        return;
+    };
+    let Ok(mut v) = serde_json::from_str::<serde_json::Value>(&text) else {
+        return;
+    };
     v["complete"] = serde_json::Value::Bool(false);
     v["error"] = serde_json::Value::String(error.to_string());
-    let Ok(out) = serde_json::to_string(&v) else { return };
+    let Ok(out) = serde_json::to_string(&v) else {
+        return;
+    };
     let tmp = path.with_extension("json.tmp");
     if std::fs::write(&tmp, out).is_ok() {
         let _ = std::fs::rename(&tmp, path);
@@ -3634,13 +3917,17 @@ struct ReportSummary {
 fn strip_run_id(s: &str) -> Option<&str> {
     let rest = s.strip_prefix("overnight-")?;
     let b = rest.as_bytes();
-    if b.len() < 16 || b[8] != b'-' || b[15] != b'-' { return None; }
+    if b.len() < 16 || b[8] != b'-' || b[15] != b'-' {
+        return None;
+    }
     if !b[..8].iter().all(|c| c.is_ascii_digit()) || !b[9..15].iter().all(|c| c.is_ascii_digit()) {
         return None;
     }
     let tail = &rest[16..];
     let end = tail.find(' ')?;
-    if end == 0 || !tail[..end].bytes().all(|c| c.is_ascii_hexdigit()) { return None; }
+    if end == 0 || !tail[..end].bytes().all(|c| c.is_ascii_hexdigit()) {
+        return None;
+    }
     Some(tail[end..].trim_start())
 }
 
@@ -3650,17 +3937,25 @@ fn strip_run_id(s: &str) -> Option<&str> {
 fn split_game(name: &str) -> Option<((u32, String, f64), &str)> {
     let (players, rest) = name.split_once(' ')?;
     let players: u32 = players.strip_suffix("-max")?.parse().ok()?;
-    if !(2..=10).contains(&players) { return None; }
+    if !(2..=10).contains(&players) {
+        return None;
+    }
     let (depth, rest) = rest.trim_start().split_once(' ')?;
     let bb: f64 = depth.strip_suffix("bb")?.parse().ok()?;
-    if !(bb.is_finite() && bb > 0.0) { return None; }
+    if !(bb.is_finite() && bb > 0.0) {
+        return None;
+    }
     let (stakes, rest) = rest.trim_start().split_once(' ')?;
     let stakes = stakes.trim_start_matches('$').trim_end_matches(':');
     let mut parts = stakes.split(['-', '/']);
     let (small, big) = (parts.next()?, parts.next()?);
-    if parts.next().is_some() { return None; }
+    if parts.next().is_some() {
+        return None;
+    }
     let (small, big): (f64, f64) = (small.parse().ok()?, big.parse().ok()?);
-    if !(small > 0.0 && big > 0.0) { return None; }
+    if !(small > 0.0 && big > 0.0) {
+        return None;
+    }
     Some(((players, format!("{small}/{big}"), bb), rest.trim_start()))
 }
 
@@ -3683,7 +3978,11 @@ fn report_title(name: &str) -> (Option<(u32, String, f64)>, String) {
         game
     });
     for suffix in [
-        " - GTO postflop", " - fish station", " - fish folder", " - TAG station", " - TAG folder",
+        " - GTO postflop",
+        " - fish station",
+        " - fish folder",
+        " - TAG station",
+        " - TAG folder",
     ] {
         if let Some(t) = title.strip_suffix(suffix) {
             title = t.trim_end().to_string();
@@ -3743,13 +4042,24 @@ fn report_summary(v: &serde_json::Value, size: Option<f64>) -> ReportSummary {
         stack: num("effective_stack"),
         rake_pct: num("rake_pct"),
         rake_cap: num("rake_cap"),
-        max_raises: spot.and_then(|s| s.get("max_raises")).and_then(|x| x.as_u64()),
-        target: v.get("target_pct").and_then(|x| x.as_f64()).and_then(finite),
+        max_raises: spot
+            .and_then(|s| s.get("max_raises"))
+            .and_then(|x| x.as_u64()),
+        target: v
+            .get("target_pct")
+            .and_then(|x| x.as_f64())
+            .and_then(finite),
         size: size.and_then(finite),
         oop_sizes: size_menu(spot, "oop"),
         ip_sizes: size_menu(spot, "ip"),
-        sweep_sizes: v.get("grid").and_then(|g| g.as_array())
-            .map(|g| g.iter().filter_map(|x| x.as_f64().and_then(finite)).collect())
+        sweep_sizes: v
+            .get("grid")
+            .and_then(|g| g.as_array())
+            .map(|g| {
+                g.iter()
+                    .filter_map(|x| x.as_f64().and_then(finite))
+                    .collect()
+            })
             .unwrap_or_default(),
     }
 }
@@ -3760,7 +4070,8 @@ async fn report_list() -> Json<serde_json::Value> {
     // whole library parsed at once would be gigabytes.
     let mut out: Vec<serde_json::Value> = Vec::new();
     // name of a per-size variant -> size, from the variant tables of the sweeps
-    let mut variant_sizes: std::collections::HashMap<String, f64> = std::collections::HashMap::new();
+    let mut variant_sizes: std::collections::HashMap<String, f64> =
+        std::collections::HashMap::new();
     // entries whose size was not known when they were read (the sweep may come
     // later in the directory listing): patched once every file has been seen
     let mut pending_sizes: Vec<(usize, String)> = Vec::new();
@@ -3770,13 +4081,22 @@ async fn report_list() -> Json<serde_json::Value> {
             if p.extension().and_then(|x| x.to_str()) != Some("json") {
                 continue;
             }
-            let Ok(text) = std::fs::read_to_string(&p) else { continue };
-            let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) else { continue };
+            let Ok(text) = std::fs::read_to_string(&p) else {
+                continue;
+            };
+            let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) else {
+                continue;
+            };
             // A per-size variant's report file does not repeat the size it
             // swept; its parent sweep's variant table does. Read that instead
             // of the name suffix.
             if v.get("kind").and_then(|k| k.as_str()) == Some("sweep") {
-                for var in v.get("variants").and_then(|x| x.as_array()).into_iter().flatten() {
+                for var in v
+                    .get("variants")
+                    .and_then(|x| x.as_array())
+                    .into_iter()
+                    .flatten()
+                {
                     let name = var.get("name").and_then(|x| x.as_str());
                     let size = var.get("size").and_then(|x| x.as_f64());
                     if let (Some(name), Some(size)) = (name, size) {
@@ -3809,7 +4129,9 @@ async fn report_list() -> Json<serde_json::Value> {
     }
     // sweeps read after their variants: fill in the size the parent names
     for (i, name) in pending_sizes {
-        let Some(size) = variant_sizes.get(&name).copied().filter(|s| s.is_finite()) else { continue };
+        let Some(size) = variant_sizes.get(&name).copied().filter(|s| s.is_finite()) else {
+            continue;
+        };
         if let Some(summary) = out.get_mut(i).and_then(|e| e.get_mut("summary")) {
             summary["size"] = serde_json::json!(size);
         }
@@ -3826,13 +4148,18 @@ struct ReportName {
 async fn report_get(Json(req): Json<ReportName>) -> Result<Json<serde_json::Value>, ApiError> {
     let path = report_path(&req.name).map_err(bad_request)?;
     let text = std::fs::read_to_string(&path).map_err(|e| bad_request(e.to_string()))?;
-    Ok(Json(serde_json::from_str(&text).map_err(|e| bad_request(e.to_string()))?))
+    Ok(Json(
+        serde_json::from_str(&text).map_err(|e| bad_request(e.to_string()))?,
+    ))
 }
 
 async fn report_delete(Json(req): Json<ReportName>) -> Result<Json<serde_json::Value>, ApiError> {
     let path = report_path(&req.name).map_err(bad_request)?;
     // a size sweep owns its per-size variant reports
-    if let Some(v) = std::fs::read_to_string(&path).ok().and_then(|t| serde_json::from_str::<serde_json::Value>(&t).ok()) {
+    if let Some(v) = std::fs::read_to_string(&path)
+        .ok()
+        .and_then(|t| serde_json::from_str::<serde_json::Value>(&t).ok())
+    {
         if v.get("kind").and_then(|k| k.as_str()) == Some("sweep") {
             for name in sweep::variant_names(&v) {
                 if let (Ok(p), Ok(dir)) = (report_path(&name), report_lines_dir(&name)) {
@@ -3851,7 +4178,9 @@ async fn report_delete(Json(req): Json<ReportName>) -> Result<Json<serde_json::V
 
 // ----- Range Lab reference charts (local, never bundled; see rangelab.rs) -----
 
-async fn rl_blocking<T: Send + 'static>(f: impl FnOnce(&rangelab::Library) -> T + Send + 'static) -> Result<T, ApiError> {
+async fn rl_blocking<T: Send + 'static>(
+    f: impl FnOnce(&rangelab::Library) -> T + Send + 'static,
+) -> Result<T, ApiError> {
     tokio::task::spawn_blocking(move || f(&rangelab::library()))
         .await
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))
@@ -3869,8 +4198,12 @@ struct RlSituationsRequest {
     depth: f64,
 }
 
-async fn rl_situations(Json(req): Json<RlSituationsRequest>) -> Result<Json<serde_json::Value>, ApiError> {
-    Ok(Json(rl_blocking(move |lib| lib.situations(&req.tag, &req.variant, req.depth)).await?))
+async fn rl_situations(
+    Json(req): Json<RlSituationsRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    Ok(Json(
+        rl_blocking(move |lib| lib.situations(&req.tag, &req.variant, req.depth)).await?,
+    ))
 }
 
 #[derive(Deserialize)]
@@ -3883,19 +4216,42 @@ async fn rl_spot(Json(req): Json<RlSpotRequest>) -> Result<Json<serde_json::Valu
     rl_blocking(move |lib| lib.spot(req.id))
         .await?
         .map(Json)
-        .ok_or_else(|| (StatusCode::NOT_FOUND, "no such pre-solved GTO chart (the data files may have changed; reload the list)".to_string()))
+        .ok_or_else(|| {
+            (
+                StatusCode::NOT_FOUND,
+                "no such pre-solved GTO chart (the data files may have changed; reload the list)"
+                    .to_string(),
+            )
+        })
 }
 
-async fn rl_match(Json(req): Json<rangelab::MatchRequest>) -> Result<Json<serde_json::Value>, ApiError> {
-    Ok(Json(rl_blocking(move |lib| serde_json::json!({"spot": lib.find(&req).and_then(|id| lib.spot(id))})).await?))
+async fn rl_match(
+    Json(req): Json<rangelab::MatchRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    Ok(Json(
+        rl_blocking(
+            move |lib| serde_json::json!({"spot": lib.find(&req).and_then(|id| lib.spot(id))}),
+        )
+        .await?,
+    ))
 }
 
-async fn rl_tree(Json(req): Json<rangelab::TreeRequest>) -> Result<Json<serde_json::Value>, ApiError> {
-    rl_blocking(move |lib| lib.tree(&req)).await?.map(Json).map_err(bad_request)
+async fn rl_tree(
+    Json(req): Json<rangelab::TreeRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    rl_blocking(move |lib| lib.tree(&req))
+        .await?
+        .map(Json)
+        .map_err(bad_request)
 }
 
-async fn rl_export(Json(req): Json<rangelab::TreeRequest>) -> Result<Json<serde_json::Value>, ApiError> {
-    rl_blocking(move |lib| lib.export(&req)).await?.map(Json).map_err(bad_request)
+async fn rl_export(
+    Json(req): Json<rangelab::TreeRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    rl_blocking(move |lib| lib.export(&req))
+        .await?
+        .map(Json)
+        .map_err(bad_request)
 }
 
 async fn pf_archetypes() -> Json<serde_json::Value> {
@@ -3905,10 +4261,15 @@ async fn pf_archetypes() -> Json<serde_json::Value> {
         .collect();
     // Separate opt-in entry: no rewrite of the installed source or saved
     // profiles. Derive the unchanged situations from the same measured pool.
-    if let Some(mut candidate) = list.iter().find(|a| a["name"] == "Data · Ignition · NL10 regular · Pool").cloned() {
+    if let Some(mut candidate) = list
+        .iter()
+        .find(|a| a["name"] == "Data · Ignition · NL10 regular · Pool")
+        .cloned()
+    {
         if candidate["stats"]["dataset"].is_object() {
             candidate["name"] = serde_json::json!("Data · Ignition · NL10 regular · Contextual v1");
-            candidate["stats"]["dataset"]["contextual_reraise"] = serde_json::json!(solver::preflop::contextual::MODEL_ID);
+            candidate["stats"]["dataset"]["contextual_reraise"] =
+                serde_json::json!(solver::preflop::contextual::MODEL_ID);
             candidate["note"] = serde_json::json!("Experimental contextual re-raise model v1. Uses actual prior entry, raise depth and call price. Retrospective Ignition NL10 evaluation: 9.3% lower log loss, not a win-rate estimate. Supported on 3–6 player tables without antes, with 0.5/1 blinds; other formats retain the existing measured fallback. Opening, vs-limp and single-raise policies stay with the measured pool. Older profiles and saved games are unchanged.");
             list.push(candidate);
         }
@@ -4054,7 +4415,13 @@ fn scenario_path(name: &str) -> Result<std::path::PathBuf, String> {
     // name inside the file is kept verbatim)
     let clean: String = name
         .chars()
-        .map(|c| if c == '/' || c == '\\' || c == ':' { '-' } else { c })
+        .map(|c| {
+            if c == '/' || c == '\\' || c == ':' {
+                '-'
+            } else {
+                c
+            }
+        })
         .filter(|c| c.is_alphanumeric() || " -_.,:%$+()".contains(*c))
         .collect();
     if clean.trim().is_empty() {
@@ -4076,8 +4443,16 @@ async fn pf_scenarios_list() -> Json<serde_json::Value> {
         }
     }
     out.sort_by(|a, b| {
-        a.get("name").and_then(|x| x.as_str()).unwrap_or("").to_lowercase()
-            .cmp(&b.get("name").and_then(|x| x.as_str()).unwrap_or("").to_lowercase())
+        a.get("name")
+            .and_then(|x| x.as_str())
+            .unwrap_or("")
+            .to_lowercase()
+            .cmp(
+                &b.get("name")
+                    .and_then(|x| x.as_str())
+                    .unwrap_or("")
+                    .to_lowercase(),
+            )
     });
     Json(serde_json::json!(out))
 }
@@ -4098,8 +4473,11 @@ async fn pf_scenario_save(
     let mut v = req.scenario;
     v["name"] = serde_json::Value::String(req.name.trim().to_string());
     std::fs::create_dir_all("saves/scenarios").map_err(|e| bad_request(e.to_string()))?;
-    std::fs::write(&path, serde_json::to_vec_pretty(&v).map_err(|e| bad_request(e.to_string()))?)
-        .map_err(|e| bad_request(e.to_string()))?;
+    std::fs::write(
+        &path,
+        serde_json::to_vec_pretty(&v).map_err(|e| bad_request(e.to_string()))?,
+    )
+    .map_err(|e| bad_request(e.to_string()))?;
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
@@ -4150,7 +4528,9 @@ async fn pf_unlock(
         let mut s = pf_solver_lock(&solver);
         pf_reject_if_running(&status)?;
         let removed = s.unlock_point(&req.path).map_err(bad_request)?;
-        if removed { status.lock().unwrap().invalidate_accuracy(s.iteration); }
+        if removed {
+            status.lock().unwrap().invalidate_accuracy(s.iteration);
+        }
         Ok::<_, ApiError>(removed)
     })
     .await
@@ -4172,7 +4552,10 @@ async fn pf_node(
             result.exportable = false;
         }
         let publication = status.lock().unwrap().publication();
-        Ok::<_, String>(PfPublished { result, publication })
+        Ok::<_, String>(PfPublished {
+            result,
+            publication,
+        })
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
@@ -4193,7 +4576,10 @@ async fn pf_export(
         }
         let result = s.export_spot(&req.path)?;
         let publication = status.lock().unwrap().publication();
-        Ok(PfPublished { result, publication })
+        Ok(PfPublished {
+            result,
+            publication,
+        })
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
@@ -4210,7 +4596,10 @@ async fn pf_export3(
         let s = pf_solver_lock(&solver);
         let result = s.export_spot_3way(&req.path)?;
         let publication = status.lock().unwrap().publication();
-        Ok::<_, String>(PfPublished { result, publication })
+        Ok::<_, String>(PfPublished {
+            result,
+            publication,
+        })
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
@@ -4304,7 +4693,11 @@ async fn lock_node(
     let (solver, lock_gen) = session_solver(&state)?;
     let (frozen, history) = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        let at = if req.label.is_empty() { s.path_description(&req.path)? } else { req.label.clone() };
+        let at = if req.label.is_empty() {
+            s.path_description(&req.path)?
+        } else {
+            req.label.clone()
+        };
         let frozen = s.record_lock_edit(|s| {
             let frozen = if req.lock_path_own {
                 // the target first: a refused lock leaves nothing frozen
@@ -4322,7 +4715,9 @@ async fn lock_node(
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
     clear_trust_readout(&state);
-    Ok(Json(serde_json::json!({"ok": true, "frozen": frozen, "history": history})))
+    Ok(Json(
+        serde_json::json!({"ok": true, "frozen": frozen, "history": history}),
+    ))
 }
 
 #[derive(Deserialize)]
@@ -4351,7 +4746,11 @@ async fn start_fit(
     let (solver, lock_gen) = session_solver(&state)?;
     let (frozen, fits, history) = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        let at = if req.label.is_empty() { s.path_description(&req.path)? } else { req.label.clone() };
+        let at = if req.label.is_empty() {
+            s.path_description(&req.path)?
+        } else {
+            req.label.clone()
+        };
         let fit_label = format!("{at} (least exploitable)");
         let frozen = s.record_lock_edit(|s| {
             let frozen = if req.lock_path_own {
@@ -4376,7 +4775,9 @@ async fn start_fit(
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
     state.status.lock().unwrap().fits = fits.clone();
-    Ok(Json(serde_json::json!({"ok": true, "frozen": frozen, "fits": fits, "history": history})))
+    Ok(Json(
+        serde_json::json!({"ok": true, "frozen": frozen, "fits": fits, "history": history}),
+    ))
 }
 
 #[derive(Deserialize)]
@@ -4405,7 +4806,9 @@ async fn cancel_fit(
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
     state.status.lock().unwrap().fits = fits.clone();
-    Ok(Json(serde_json::json!({"ok": true, "removed": removed, "fits": fits})))
+    Ok(Json(
+        serde_json::json!({"ok": true, "removed": removed, "fits": fits}),
+    ))
 }
 
 async fn list_fits(
@@ -4434,7 +4837,9 @@ async fn unlock_node(
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
     clear_trust_readout(&state);
-    Ok(Json(serde_json::json!({"ok": true, "removed": removed, "history": history})))
+    Ok(Json(
+        serde_json::json!({"ok": true, "removed": removed, "history": history}),
+    ))
 }
 
 async fn lock_history(
@@ -4449,13 +4854,22 @@ async fn lock_history(
 
 /// Undo (or redo) the most recent lock edit. `label` names the edit
 /// stepped over; null when there was nothing to step.
-async fn lock_history_step(state: Arc<AppState>, undo: bool) -> Result<Json<serde_json::Value>, ApiError> {
+async fn lock_history_step(
+    state: Arc<AppState>,
+    undo: bool,
+) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, lock_gen) = session_solver(&state)?;
     let (label, history) = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        let label = if undo { s.undo_lock_edit() } else { s.redo_lock_edit() };
+        let label = if undo {
+            s.undo_lock_edit()
+        } else {
+            s.redo_lock_edit()
+        };
         // a refused step may have cleared the history: report it either way
-        label.map(|l| (l, s.lock_history())).map_err(|e| (e, s.lock_history()))
+        label
+            .map(|l| (l, s.lock_history()))
+            .map_err(|e| (e, s.lock_history()))
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
@@ -4464,14 +4878,20 @@ async fn lock_history_step(state: Arc<AppState>, undo: bool) -> Result<Json<serd
         lock_gen.fetch_add(1, Ordering::Relaxed);
         clear_trust_readout(&state);
     }
-    Ok(Json(serde_json::json!({"ok": true, "label": label, "history": history})))
+    Ok(Json(
+        serde_json::json!({"ok": true, "label": label, "history": history}),
+    ))
 }
 
-async fn lock_undo(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::Value>, ApiError> {
+async fn lock_undo(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
     lock_history_step(state, true).await
 }
 
-async fn lock_redo(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::Value>, ApiError> {
+async fn lock_redo(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
     lock_history_step(state, false).await
 }
 
@@ -4488,11 +4908,14 @@ async fn list_locks_detail(
 }
 
 /// Remove every lock (and running fit) as one undoable edit.
-async fn clear_locks(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::Value>, ApiError> {
+async fn clear_locks(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, lock_gen) = session_solver(&state)?;
     let (removed, fits, history) = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        let removed = s.record_lock_edit(|s| Ok((s.clear_all_locks(), "Clear all locks".to_string())))?;
+        let removed =
+            s.record_lock_edit(|s| Ok((s.clear_all_locks(), "Clear all locks".to_string())))?;
         Ok::<_, String>((removed, s.fits_view(), s.lock_history()))
     })
     .await
@@ -4501,12 +4924,12 @@ async fn clear_locks(State(state): State<Arc<AppState>>) -> Result<Json<serde_js
     lock_gen.fetch_add(1, Ordering::Relaxed);
     state.status.lock().unwrap().fits = fits;
     clear_trust_readout(&state);
-    Ok(Json(serde_json::json!({"ok": true, "removed": removed, "history": history})))
+    Ok(Json(
+        serde_json::json!({"ok": true, "removed": removed, "history": history}),
+    ))
 }
 
-async fn list_locks(
-    State(state): State<Arc<AppState>>,
-) -> Result<Json<Vec<String>>, ApiError> {
+async fn list_locks(State(state): State<Arc<AppState>>) -> Result<Json<Vec<String>>, ApiError> {
     let solver = {
         let guard = state.session.lock().unwrap();
         guard
@@ -4557,7 +4980,9 @@ struct ParseRangeResponse {
     compact: String,
 }
 
-async fn parse_range(Json(req): Json<ParseRangeRequest>) -> Result<Json<ParseRangeResponse>, ApiError> {
+async fn parse_range(
+    Json(req): Json<ParseRangeRequest>,
+) -> Result<Json<ParseRangeResponse>, ApiError> {
     let range = Range::parse(&req.text).map_err(bad_request)?;
     Ok(Json(ParseRangeResponse {
         combos: range.num_combos(),
@@ -4696,7 +5121,10 @@ fn peek_save(path: &str, cap_mb: f64, storage: Storage) -> Result<Spot, String> 
     // a save without the shape switch predates the check-through fix (the
     // loader in solver::save does the same): rebuild it the way it was built
     let mut config = header.config;
-    config.tree.carry_aggressor_through_checks.get_or_insert(true);
+    config
+        .tree
+        .carry_aggressor_through_checks
+        .get_or_insert(true);
     let spot = Spot::new_lenient_with_limit(config, Some(node_cap))?;
     // Malformed lock entries would panic at the first query once installed:
     // refuse them HERE, while the current session (and its unsaved solve)
@@ -4785,12 +5213,10 @@ async fn load_solve(
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?;
-    let solver = tokio::task::spawn_blocking(move || {
-        Solver::load_with_storage(&path_str, storage)
-    })
-    .await
-    .map_err(|e| bad_request(e.to_string()))?
-    .map_err(bad_request)?;
+    let solver = tokio::task::spawn_blocking(move || Solver::load_with_storage(&path_str, storage))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?
+        .map_err(bad_request)?;
 
     let spot = &solver.spot;
     let info = tree_info(spot, solver.arena_bytes() as f64 / 1e6);
@@ -4976,8 +5402,8 @@ async fn main() {
     // browser heuristically caches them for a while and users run stale JS
     // after an update (with a working index.html). no-cache = always
     // revalidate (Last-Modified makes that a cheap 304).
-    let serve_dir = tower_http::services::ServeDir::new("web")
-        .append_index_html_on_directories(true);
+    let serve_dir =
+        tower_http::services::ServeDir::new("web").append_index_html_on_directories(true);
     async fn no_cache(mut res: axum::response::Response) -> axum::response::Response {
         res.headers_mut().insert(
             axum::http::header::CACHE_CONTROL,
@@ -4995,7 +5421,10 @@ async fn main() {
         .route("/api/node", post(get_node))
         .route("/api/exploit", post(exploit_view))
         .route("/api/lock", post(lock_node))
-        .route("/api/profile_locks", post(profile_locks).delete(profile_locks_clear))
+        .route(
+            "/api/profile_locks",
+            post(profile_locks).delete(profile_locks_clear),
+        )
         .route("/api/trust", post(set_trust))
         .route("/api/reports/run", post(report_run))
         .route("/api/reports/status", get(report_status))
@@ -5031,10 +5460,22 @@ async fn main() {
         .route("/api/preflop/export", post(pf_export))
         .route("/api/preflop/export3", post(pf_export3))
         // Nine empirical profiles can legitimately exceed Axum's 2 MiB default.
-        .route("/api/preflop/table", post(pf_table).layer(axum::extract::DefaultBodyLimit::max(64 * 1024 * 1024)))
-        .route("/api/preflop/generate", post(pf_generate).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
-        .route("/api/preflop/contextual-preview", post(pf_contextual_preview))
-        .route("/api/preflop/model-evidence", post(pf_model_evidence).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
+        .route(
+            "/api/preflop/table",
+            post(pf_table).layer(axum::extract::DefaultBodyLimit::max(64 * 1024 * 1024)),
+        )
+        .route(
+            "/api/preflop/generate",
+            post(pf_generate).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)),
+        )
+        .route(
+            "/api/preflop/contextual-preview",
+            post(pf_contextual_preview),
+        )
+        .route(
+            "/api/preflop/model-evidence",
+            post(pf_model_evidence).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)),
+        )
         .route("/api/preflop/capabilities", get(pf_capabilities))
         .route("/api/preflop/leafnets", get(pf_leafnets))
         .route("/api/preflop/archetypes", get(pf_archetypes))
@@ -5050,7 +5491,10 @@ async fn main() {
         .route("/api/preflop/hero", post(pf_hero))
         .route("/api/preflop/trust", post(pf_trust))
         .route("/api/preflop/profiles", get(pf_profiles_list))
-        .route("/api/preflop/profiles/save", post(pf_profile_save).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
+        .route(
+            "/api/preflop/profiles/save",
+            post(pf_profile_save).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)),
+        )
         .route("/api/preflop/profiles/get", post(pf_profile_get))
         .route("/api/preflop/scenarios", get(pf_scenarios_list))
         .route("/api/preflop/scenarios/save", post(pf_scenario_save))
@@ -5058,9 +5502,18 @@ async fn main() {
         .route("/api/preflop/lock", post(pf_lock))
         .route("/api/preflop/unlock", post(pf_unlock))
         // Aggregate research artifacts share the app's local-only listener.
-        .nest_service("/research/preflop-evolution", tower_http::services::ServeDir::new("research/preflop-evolution"))
-        .nest_service("/research/ignition-reraise", tower_http::services::ServeDir::new("research/ignition-reraise"))
-        .nest_service("/research/ignition-action-sizes", tower_http::services::ServeDir::new("research/ignition-action-sizes"))
+        .nest_service(
+            "/research/preflop-evolution",
+            tower_http::services::ServeDir::new("research/preflop-evolution"),
+        )
+        .nest_service(
+            "/research/ignition-reraise",
+            tower_http::services::ServeDir::new("research/ignition-reraise"),
+        )
+        .nest_service(
+            "/research/ignition-action-sizes",
+            tower_http::services::ServeDir::new("research/ignition-action-sizes"),
+        )
         .nest_service("/docs", tower_http::services::ServeDir::new("docs"))
         .merge(multiway_api::routes())
         .fallback_service(serve_dir)
@@ -5152,7 +5605,10 @@ mod report_summary_tests {
         });
         let s = report_summary(&variant, Some(12.5));
         assert_eq!(s.title, "BTN vs BB sweep");
-        assert_eq!((s.players, s.stakes.as_deref(), s.bb), (Some(6), Some("2/5"), Some(100.0)));
+        assert_eq!(
+            (s.players, s.stakes.as_deref(), s.bb),
+            (Some(6), Some("2/5"), Some(100.0))
+        );
         assert_eq!(s.size, Some(12.5));
     }
 
@@ -5162,16 +5618,31 @@ mod report_summary_tests {
         assert_eq!(s.title, "old report");
         assert!(s.pot.is_none() && s.rake_pct.is_none() && s.oop_sizes.is_empty());
         let json = serde_json::to_value(&s).unwrap();
-        assert_eq!(json.as_object().unwrap().len(), 1, "only the title is known");
+        assert_eq!(
+            json.as_object().unwrap().len(),
+            1,
+            "only the title is known"
+        );
     }
 
     #[test]
     fn malformed_names_keep_a_readable_title() {
         for name in [
-            "", " ", "6-max", "6-max 100bb", "6-max 100bb 2-5:", "6-max 100bb 2-5: 1% rake",
-            "6-max xbb 2-5: BTN vs BB", "99-max 100bb 2-5: BTN vs BB", "6-max 0bb 2-5: BTN vs BB",
-            "6-max 100bb 0-5: BTN vs BB", "overnight-2026-a1b2c3 x", "overnight-20261030-093012",
-            "overnight-20261030-093012-zzzz no space", "… · 🂡 vs 🂢", "-max 100bb 2-5: x",
+            "",
+            " ",
+            "6-max",
+            "6-max 100bb",
+            "6-max 100bb 2-5:",
+            "6-max 100bb 2-5: 1% rake",
+            "6-max xbb 2-5: BTN vs BB",
+            "99-max 100bb 2-5: BTN vs BB",
+            "6-max 0bb 2-5: BTN vs BB",
+            "6-max 100bb 0-5: BTN vs BB",
+            "overnight-2026-a1b2c3 x",
+            "overnight-20261030-093012",
+            "overnight-20261030-093012-zzzz no space",
+            "… · 🂡 vs 🂢",
+            "-max 100bb 2-5: x",
         ] {
             let (game, title) = report_title(name);
             if !name.trim().is_empty() {
@@ -5197,19 +5668,27 @@ mod scenario_filename_tests {
     fn scenario_names_cannot_create_windows_alternate_streams() {
         let name = "8-max 150bb $2/2: limps + 10%, 9 cap rake";
         let path = scenario_path(name).unwrap();
-        assert_eq!(path.parent().unwrap(), std::path::Path::new("saves/scenarios"));
-        assert_eq!(path.file_name().unwrap().to_str().unwrap(),
-                   "8-max 150bb $2-2- limps + 10%, 9 cap rake.json");
+        assert_eq!(
+            path.parent().unwrap(),
+            std::path::Path::new("saves/scenarios")
+        );
+        assert_eq!(
+            path.file_name().unwrap().to_str().unwrap(),
+            "8-max 150bb $2-2- limps + 10%, 9 cap rake.json"
+        );
         assert!(!path.file_name().unwrap().to_str().unwrap().contains(':'));
     }
 }
 
 #[cfg(test)]
 mod allin_threshold_tests {
-    use super::*;
-    use axum::body::{to_bytes, Body};
-    use axum::http::Request;
+    use axum::{
+        body::{to_bytes, Body},
+        http::Request,
+    };
     use tower::ServiceExt;
+
+    use super::*;
 
     /// Minimal valid `SpotRequest`; `allin_threshold` is added per case.
     const BASE: &str = r#"{
@@ -5267,25 +5746,36 @@ mod allin_threshold_tests {
     #[test]
     fn message_names_the_unit_and_the_offending_value() {
         let err = check_allin_threshold_percent(0.85).unwrap_err();
-        assert!(err.contains("percent"), "message should name the unit: {err}");
+        assert!(
+            err.contains("percent"),
+            "message should name the unit: {err}"
+        );
         assert!(err.contains("0.85"), "message should echo the value: {err}");
     }
 
     #[test]
     fn percent_values_convert_once_and_round_trip() {
         for (literal, percent) in [
-            ("1", 1.0), ("85", 85.0), ("100", 100.0),
+            ("1", 1.0),
+            ("85", 85.0),
+            ("100", 100.0),
             (r#"{"percent":0.85}"#, 0.85),
             (r#"{"percent":0.001}"#, 0.001),
             (r#"{"percent":1}"#, 1.0),
         ] {
             let req = parse_with_threshold(literal).unwrap();
-            assert_eq!(req.to_spot_config().unwrap().tree.allin_threshold, percent / 100.0);
+            assert_eq!(
+                req.to_spot_config().unwrap().tree.allin_threshold,
+                percent / 100.0
+            );
             let echoed = serde_json::to_value(&req).unwrap();
             let restored: SpotRequest = serde_json::from_value(echoed.clone()).unwrap();
             assert_eq!(restored.allin_threshold, percent);
             if percent < 1.0 {
-                assert_eq!(echoed["allin_threshold"], serde_json::json!({"percent": percent}));
+                assert_eq!(
+                    echoed["allin_threshold"],
+                    serde_json::json!({"percent": percent})
+                );
             } else {
                 assert_eq!(echoed["allin_threshold"], serde_json::json!(percent));
             }
@@ -5296,9 +5786,18 @@ mod allin_threshold_tests {
 
     #[test]
     fn explicit_percent_is_strict_and_finite() {
-        for literal in [r#"{"percent":0}"#, r#"{"percent":-0.85}"#,
-            r#"{"percent":101}"#, r#"{"percent":0.85,"fraction":0.85}"#,
-            r#"{"fraction":0.85}"#, r#"{"percent":"85"}"#, "null", "true", "[]", "\"85\""] {
+        for literal in [
+            r#"{"percent":0}"#,
+            r#"{"percent":-0.85}"#,
+            r#"{"percent":101}"#,
+            r#"{"percent":0.85,"fraction":0.85}"#,
+            r#"{"fraction":0.85}"#,
+            r#"{"percent":"85"}"#,
+            "null",
+            "true",
+            "[]",
+            "\"85\"",
+        ] {
             assert!(parse_with_threshold(literal).is_err(), "{literal}");
         }
         for value in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
@@ -5320,22 +5819,40 @@ mod allin_threshold_tests {
             let tree = TreeBuilder::build(&cfg.tree, &board, [6, 3]).unwrap();
             let root = &tree.nodes[0];
             let start = root.actions_start as usize;
-            (tree.nodes.len(), tree.actions[start..start + root.num_children as usize].to_vec())
+            (
+                tree.nodes.len(),
+                tree.actions[start..start + root.num_children as usize].to_vec(),
+            )
         };
         let normal = summarize(&req);
-        assert_eq!(normal, (1_454_457, vec![Action::Check, Action::Bet(19.8), Action::Bet(45.0)]));
+        assert_eq!(
+            normal,
+            (
+                1_454_457,
+                vec![Action::Check, Action::Bet(19.8), Action::Bet(45.0)]
+            )
+        );
         req.allin_threshold = 85.0;
         assert_eq!(summarize(&req), normal);
         // Bypass the new wire validation to reproduce the pre-fix 0.85 / 100.
         req.allin_threshold = 0.85;
-        assert_eq!(summarize(&req), (31_761, vec![Action::Check, Action::Bet(300.0)]));
+        assert_eq!(
+            summarize(&req),
+            (31_761, vec![Action::Check, Action::Bet(300.0)])
+        );
         assert!(parse_with_threshold("0.85").is_err());
     }
 
     async fn post_json(app: Router, path: &str, body: serde_json::Value) -> (StatusCode, String) {
-        let response = app.oneshot(Request::post(path)
-            .header("content-type", "application/json")
-            .body(Body::from(body.to_string())).unwrap()).await.unwrap();
+        let response = app
+            .oneshot(
+                Request::post(path)
+                    .header("content-type", "application/json")
+                    .body(Body::from(body.to_string()))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
         let status = response.status();
         let body = to_bytes(response.into_body(), usize::MAX).await.unwrap();
         (status, String::from_utf8(body.to_vec()).unwrap())
@@ -5344,13 +5861,30 @@ mod allin_threshold_tests {
     #[test]
     fn lock_edit_labels_say_what_and_where() {
         use solver::query::{HandEdit, LockMode};
-        assert_eq!(lock_edit_label(&LockMode::Freeze, "Ks7h2d root", 0), "Lock as solved · Ks7h2d root");
-        assert_eq!(lock_edit_label(&LockMode::Range { freqs: vec![1.0] }, "x", 1),
-            "Lock frequencies · x (+1 earlier decision frozen)");
-        let edits = |n: usize| (0..n).map(|_| HandEdit { combo: "AsAh".into(), freqs: vec![1.0] }).collect();
-        assert_eq!(lock_edit_label(&LockMode::Hands { edits: edits(1) }, "x", 2),
-            "Lock AsAh · x (+2 earlier decisions frozen)");
-        assert_eq!(lock_edit_label(&LockMode::Hands { edits: edits(4) }, "x", 0), "Lock 4 combos · x");
+        assert_eq!(
+            lock_edit_label(&LockMode::Freeze, "Ks7h2d root", 0),
+            "Lock as solved · Ks7h2d root"
+        );
+        assert_eq!(
+            lock_edit_label(&LockMode::Range { freqs: vec![1.0] }, "x", 1),
+            "Lock frequencies · x (+1 earlier decision frozen)"
+        );
+        let edits = |n: usize| {
+            (0..n)
+                .map(|_| HandEdit {
+                    combo: "AsAh".into(),
+                    freqs: vec![1.0],
+                })
+                .collect()
+        };
+        assert_eq!(
+            lock_edit_label(&LockMode::Hands { edits: edits(1) }, "x", 2),
+            "Lock AsAh · x (+2 earlier decisions frozen)"
+        );
+        assert_eq!(
+            lock_edit_label(&LockMode::Hands { edits: edits(4) }, "x", 0),
+            "Lock 4 combos · x"
+        );
     }
 
     #[tokio::test]
@@ -5367,7 +5901,11 @@ mod allin_threshold_tests {
         body["board"] = serde_json::json!("Ks7h2d3c4s");
         let (status, response) = post_json(app.clone(), "/api/spot", body).await;
         assert_eq!(status, StatusCode::OK, "{response}");
-        let locks = || lock_unpoisoned(&lock_unpoisoned(&state.session).as_ref().unwrap().solver).locks.len();
+        let locks = || {
+            lock_unpoisoned(&lock_unpoisoned(&state.session).as_ref().unwrap().solver)
+                .locks
+                .len()
+        };
         let json = |s: &str| serde_json::from_str::<serde_json::Value>(s).unwrap();
 
         // OOP checks, IP's decision: lock it and freeze the check before it
@@ -5377,31 +5915,49 @@ mod allin_threshold_tests {
         assert_eq!(status, StatusCode::OK, "{response}");
         let out = json(&response);
         assert_eq!(out["frozen"], 1);
-        assert_eq!(out["history"]["undo"][0], "Lock as solved · Ks7h2d3c4s Check (+1 earlier decision frozen)");
+        assert_eq!(
+            out["history"]["undo"][0],
+            "Lock as solved · Ks7h2d3c4s Check (+1 earlier decision frozen)"
+        );
         assert_eq!(locks(), 2);
 
-        let (status, response) = post_json(app.clone(), "/api/unlock", serde_json::json!({"path": []})).await;
+        let (status, response) =
+            post_json(app.clone(), "/api/unlock", serde_json::json!({"path": []})).await;
         assert_eq!(status, StatusCode::OK, "{response}");
-        assert_eq!(json(&response)["history"]["undo"][0], "Unlock · Ks7h2d3c4s root");
+        assert_eq!(
+            json(&response)["history"]["undo"][0],
+            "Unlock · Ks7h2d3c4s root"
+        );
         assert_eq!(locks(), 1);
 
-        let (_, response) = post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
+        let (_, response) =
+            post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
         assert_eq!(json(&response)["label"], "Unlock · Ks7h2d3c4s root");
         assert_eq!(locks(), 2);
-        let (_, response) = post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
+        let (_, response) =
+            post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
         assert_eq!(locks(), 0);
-        assert_eq!(json(&response)["history"]["redo"].as_array().unwrap().len(), 2);
-        let (_, response) = post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
+        assert_eq!(
+            json(&response)["history"]["redo"].as_array().unwrap().len(),
+            2
+        );
+        let (_, response) =
+            post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
         assert!(json(&response)["label"].is_null(), "nothing left to undo");
-        let (_, response) = post_json(app.clone(), "/api/locks/redo", serde_json::json!(null)).await;
-        assert!(json(&response)["label"].as_str().unwrap().starts_with("Lock as solved"));
+        let (_, response) =
+            post_json(app.clone(), "/api/locks/redo", serde_json::json!(null)).await;
+        assert!(json(&response)["label"]
+            .as_str()
+            .unwrap()
+            .starts_with("Lock as solved"));
         assert_eq!(locks(), 2);
 
         // a refused lock changes nothing and keeps redo
         let bad = serde_json::json!({"path": [{"type": "action", "index": 9}], "mode": {"kind": "freeze"}});
         let (status, _) = post_json(app.clone(), "/api/lock", bad).await;
         assert_eq!(status, StatusCode::BAD_REQUEST);
-        let (_, response) = post_json(app.clone(), "/api/locks/redo", serde_json::json!(null)).await;
+        let (_, response) =
+            post_json(app.clone(), "/api/locks/redo", serde_json::json!(null)).await;
         assert_eq!(json(&response)["label"], "Unlock · Ks7h2d3c4s root");
         assert_eq!(locks(), 1);
     }
@@ -5422,8 +5978,11 @@ mod allin_threshold_tests {
         assert_eq!(status, StatusCode::OK, "{response}");
         let json = |s: &str| serde_json::from_str::<serde_json::Value>(s).unwrap();
         let list = || async {
-            let response = app.clone().oneshot(Request::get("/api/locks/list").body(Body::empty()).unwrap())
-                .await.unwrap();
+            let response = app
+                .clone()
+                .oneshot(Request::get("/api/locks/list").body(Body::empty()).unwrap())
+                .await
+                .unwrap();
             assert_eq!(response.status(), StatusCode::OK);
             let body = to_bytes(response.into_body(), usize::MAX).await.unwrap();
             serde_json::from_slice::<serde_json::Value>(&body).unwrap()
@@ -5432,11 +5991,17 @@ mod allin_threshold_tests {
 
         // OOP checks, IP bets, OOP's answer: lock it and keep OOP's own earlier
         // decision (the check). IP's bet between them stays free.
-        let at = serde_json::json!([{"type": "action", "index": 0}, {"type": "action", "index": 1}]);
-        let lock = serde_json::json!({"path": at, "mode": {"kind": "freeze"}, "lock_path_own": true});
+        let at =
+            serde_json::json!([{"type": "action", "index": 0}, {"type": "action", "index": 1}]);
+        let lock =
+            serde_json::json!({"path": at, "mode": {"kind": "freeze"}, "lock_path_own": true});
         let (status, response) = post_json(app.clone(), "/api/lock", lock).await;
         assert_eq!(status, StatusCode::OK, "{response}");
-        assert_eq!(json(&response)["frozen"], 1, "only OOP's check, not IP's bet");
+        assert_eq!(
+            json(&response)["frozen"],
+            1,
+            "only OOP's check, not IP's bet"
+        );
         let view = list().await;
         let locks = view["locks"].as_array().unwrap();
         assert_eq!(locks.len(), 2, "{view}");
@@ -5450,16 +6015,21 @@ mod allin_threshold_tests {
         assert_eq!(locks[1]["kind"], "manual");
         assert_eq!(locks[1]["line"].as_array().unwrap().len(), 2);
         assert_eq!(locks[1]["line"][0], "Check");
-        assert_eq!(locks[1]["actions"].as_array().unwrap().len(), locks[1]["freqs"].as_array().unwrap().len());
+        assert_eq!(
+            locks[1]["actions"].as_array().unwrap().len(),
+            locks[1]["freqs"].as_array().unwrap().len()
+        );
         assert_eq!(view["profile"], serde_json::json!([0, 0]));
 
         // clear all is one edit: one undo brings both locks back
-        let (status, response) = post_json(app.clone(), "/api/locks/clear", serde_json::json!(null)).await;
+        let (status, response) =
+            post_json(app.clone(), "/api/locks/clear", serde_json::json!(null)).await;
         assert_eq!(status, StatusCode::OK, "{response}");
         assert_eq!(json(&response)["removed"], 2);
         assert_eq!(json(&response)["history"]["undo"][0], "Clear all locks");
         assert_eq!(list().await["locks"].as_array().unwrap().len(), 0);
-        let (_, response) = post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
+        let (_, response) =
+            post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
         assert_eq!(json(&response)["label"], "Clear all locks");
         assert_eq!(list().await["locks"].as_array().unwrap().len(), 2);
     }
@@ -5475,15 +6045,31 @@ mod allin_threshold_tests {
         body["board"] = serde_json::json!("Ks7h2d3c4s");
         let (status, response) = post_json(app.clone(), "/api/spot", body.clone()).await;
         assert_eq!(status, StatusCode::OK, "{response}");
-        let original = lock_unpoisoned(&state.session).as_ref().unwrap().solver.clone();
+        let original = lock_unpoisoned(&state.session)
+            .as_ref()
+            .unwrap()
+            .solver
+            .clone();
         for literal in ["0.85", "0", "-1", "100.1", "null", r#"{"percent":0}"#] {
             body["allin_threshold"] = serde_json::from_str(literal).unwrap();
             let (status, error) = post_json(app.clone(), "/api/spot", body.clone()).await;
-            assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{literal}: {error}");
-            let current = lock_unpoisoned(&state.session).as_ref().unwrap().solver.clone();
+            assert_eq!(
+                status,
+                StatusCode::UNPROCESSABLE_ENTITY,
+                "{literal}: {error}"
+            );
+            let current = lock_unpoisoned(&state.session)
+                .as_ref()
+                .unwrap()
+                .solver
+                .clone();
             assert!(Arc::ptr_eq(&original, &current));
-            let (status, error) = post_json(app.clone(), "/api/reports/run",
-                serde_json::json!({"name":"unit-check", "spot":body})).await;
+            let (status, error) = post_json(
+                app.clone(),
+                "/api/reports/run",
+                serde_json::json!({"name":"unit-check", "spot":body}),
+            )
+            .await;
             assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{error}");
             assert!(!lock_unpoisoned(&state.report).running);
             assert!(lock_unpoisoned(&state.report).name.is_empty());
@@ -5536,10 +6122,13 @@ mod bind_addr_tests {
             let addr = bind_addr(Some(host), 0).unwrap();
             let listener = match tokio::net::TcpListener::bind(addr).await {
                 Ok(listener) => listener,
-                Err(error) if host == "::" && matches!(
-                    error.kind(),
-                    std::io::ErrorKind::AddrNotAvailable | std::io::ErrorKind::Unsupported
-                ) => {
+                Err(error)
+                    if host == "::"
+                        && matches!(
+                            error.kind(),
+                            std::io::ErrorKind::AddrNotAvailable | std::io::ErrorKind::Unsupported
+                        ) =>
+                {
                     eprintln!("IPv6 unavailable on this host: {error}");
                     continue;
                 }
@@ -5547,7 +6136,9 @@ mod bind_addr_tests {
             };
             let shown = browser_addr(listener.local_addr().unwrap());
             std::net::TcpStream::connect_timeout(&shown, std::time::Duration::from_secs(1))
-                .unwrap_or_else(|error| panic!("advertised address {shown} is unreachable: {error}"));
+                .unwrap_or_else(|error| {
+                    panic!("advertised address {shown} is unreachable: {error}")
+                });
         }
     }
 

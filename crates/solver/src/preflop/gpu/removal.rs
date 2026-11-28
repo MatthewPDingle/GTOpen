@@ -19,8 +19,12 @@ pub(super) struct RemovalGpu {
 /// Heads-up pot-share terminals without side pots, the ones the CPU prices
 /// with the opponent's range conditioned on the hero's cards.
 fn heads_up_terminals(s: &PreflopSolver) -> Vec<u32> {
-    s.nodes.iter().enumerate()
-        .filter(|(_, nd)| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 && nd.side_pots.is_empty())
+    s.nodes
+        .iter()
+        .enumerate()
+        .filter(|(_, nd)| {
+            nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 && nd.side_pots.is_empty()
+        })
         .map(|(i, _)| i as u32)
         .collect()
 }
@@ -37,18 +41,26 @@ impl RemovalGpu {
     /// `eq` is the host copy of the equity tables as uploaded to `d_eq`
     /// (channels x 169 x 169, opponent class major).
     pub(super) fn new(
-        ctx: &Arc<CudaContext>, stream: &Arc<CudaStream>, s: &PreflopSolver, arch: &'static str,
-        reach_blocks: usize, eq: &[f32],
+        ctx: &Arc<CudaContext>,
+        stream: &Arc<CudaStream>,
+        s: &PreflopSolver,
+        arch: &'static str,
+        reach_blocks: usize,
+        eq: &[f32],
     ) -> Result<Option<Self>, String> {
         if !s.cfg.card_removal {
             return Ok(None);
         }
-        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> = std::sync::OnceLock::new();
+        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> =
+            std::sync::OnceLock::new();
         let ptx = PTX
             .get_or_init(|| {
                 cudarc::nvrtc::compile_ptx_with_opts(
                     include_str!("removal.cu"),
-                    cudarc::nvrtc::CompileOptions { arch: Some(arch), ..Default::default() },
+                    cudarc::nvrtc::CompileOptions {
+                        arch: Some(arch),
+                        ..Default::default()
+                    },
                 )
                 .map_err(e)
             })
@@ -82,25 +94,55 @@ impl PreflopGpu {
     /// repriced against the conditioned opponent range. Runs right after
     /// pf_terminal, before the kernels that add to its values.
     pub(super) fn removal_heads_up(&mut self, p: i32) -> Result<(), String> {
-        let Some(r) = &mut self.removal else { return Ok(()) };
+        let Some(r) = &mut self.removal else {
+            return Ok(());
+        };
         let blocks = self.d_reach_mass.len() as u32;
         unsafe {
-            self.stream.launch_builder(&r.f_rank_mass)
-                .arg(&self.d_reach).arg(&blocks).arg(&mut r.d_rank_mass)
-                .launch(LaunchConfig { grid_dim: (blocks.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 })
+            self.stream
+                .launch_builder(&r.f_rank_mass)
+                .arg(&self.d_reach)
+                .arg(&blocks)
+                .arg(&mut r.d_rank_mass)
+                .launch(LaunchConfig {
+                    grid_dim: (blocks.div_ceil(256), 1, 1),
+                    block_dim: (256, 1, 1),
+                    shared_mem_bytes: 0,
+                })
                 .map_err(e)?;
             if r.hu_count > 0 {
                 let count = r.hu_count as i32;
-                self.stream.launch_builder(&r.f_heads_up)
-                    .arg(&r.d_hu_terms).arg(&count).arg(&p).arg(&self.np)
-                    .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv).arg(&self.d_rw)
-                    .arg(&self.d_potg).arg(&self.d_calib).arg(&self.d_cbase)
-                    .arg(&self.clip_lo).arg(&self.clip_hi)
+                self.stream
+                    .launch_builder(&r.f_heads_up)
+                    .arg(&r.d_hu_terms)
+                    .arg(&count)
+                    .arg(&p)
+                    .arg(&self.np)
+                    .arg(&self.d_live)
+                    .arg(&self.d_pots)
+                    .arg(&self.d_inv)
+                    .arg(&self.d_rw)
+                    .arg(&self.d_potg)
+                    .arg(&self.d_calib)
+                    .arg(&self.d_cbase)
+                    .arg(&self.clip_lo)
+                    .arg(&self.clip_hi)
                     .arg(&r.d_eq_w)
-                    .arg(&self.d_reach_src).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&r.d_rank_mass)
-                    .arg(&self.d_eq_slots).arg(&self.d_eq_cache).arg(&self.use_eq_cache).arg(&self.eq_cache_stride)
-                    .arg(&self.d_val_slot).arg(&mut self.d_val)
-                    .launch(LaunchConfig { grid_dim: (r.hu_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+                    .arg(&self.d_reach_src)
+                    .arg(&self.d_reach)
+                    .arg(&self.d_reach_mass)
+                    .arg(&r.d_rank_mass)
+                    .arg(&self.d_eq_slots)
+                    .arg(&self.d_eq_cache)
+                    .arg(&self.use_eq_cache)
+                    .arg(&self.eq_cache_stride)
+                    .arg(&self.d_val_slot)
+                    .arg(&mut self.d_val)
+                    .launch(LaunchConfig {
+                        grid_dim: (r.hu_count, 1, 1),
+                        block_dim: (192, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
                     .map_err(e)?;
             }
         }
@@ -110,14 +152,28 @@ impl PreflopGpu {
     /// Rescale every terminal from the plain reach product to each class's
     /// own conditioned one. Runs after every other terminal kernel.
     pub(super) fn removal_scale(&mut self, p: i32) -> Result<(), String> {
-        let Some(r) = &self.removal else { return Ok(()) };
+        let Some(r) = &self.removal else {
+            return Ok(());
+        };
         let count = self.nterms as i32;
         unsafe {
-            self.stream.launch_builder(&r.f_scale)
-                .arg(&self.d_terms).arg(&count).arg(&p).arg(&self.np)
-                .arg(&self.d_reach_src).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&r.d_rank_mass)
-                .arg(&self.d_val_slot).arg(&mut self.d_val)
-                .launch(LaunchConfig { grid_dim: (self.nterms, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+            self.stream
+                .launch_builder(&r.f_scale)
+                .arg(&self.d_terms)
+                .arg(&count)
+                .arg(&p)
+                .arg(&self.np)
+                .arg(&self.d_reach_src)
+                .arg(&self.d_reach)
+                .arg(&self.d_reach_mass)
+                .arg(&r.d_rank_mass)
+                .arg(&self.d_val_slot)
+                .arg(&mut self.d_val)
+                .launch(LaunchConfig {
+                    grid_dim: (self.nterms, 1, 1),
+                    block_dim: (192, 1, 1),
+                    shared_mem_bytes: 0,
+                })
                 .map_err(e)?;
         }
         Ok(())

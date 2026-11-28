@@ -2,19 +2,26 @@
 //! cargo test --release -p solver --features gpu --test preflop_perf -- --ignored --nocapture
 #![cfg(feature = "gpu")]
 
-use solver::preflop::equity::EquityTable;
-use solver::preflop::{gpu::PreflopGpu, PreflopConfig, PreflopSolver};
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
+
+use solver::preflop::{equity::EquityTable, gpu::PreflopGpu, PreflopConfig, PreflopSolver};
 
 fn config(n: usize) -> PreflopConfig {
     let mut posts = vec![0.0; n];
     posts[n - 2] = 0.5;
     posts[n - 1] = 1.0;
-    PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: (0..n).map(|p| format!("P{p}")).collect(),
-        stack: if n == 8 { 150.0 } else { 100.0 }, stacks: None,
+        stack: if n == 8 { 150.0 } else { 100.0 },
+        stacks: None,
         posts,
         ante: 0.0,
         limp: true,
@@ -29,7 +36,10 @@ fn config(n: usize) -> PreflopConfig {
         realization: if n == 6 { "static" } else { "calibrated" }.into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     }
 }
 

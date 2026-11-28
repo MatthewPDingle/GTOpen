@@ -1,17 +1,31 @@
 #![cfg(feature = "gpu")]
-use solver::preflop::equity::EquityTable;
-use solver::preflop::{gpu::PreflopGpu, PreflopConfig, PreflopSolver};
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
+
+use solver::preflop::{equity::EquityTable, gpu::PreflopGpu, PreflopConfig, PreflopSolver};
 
 #[test]
 #[ignore] // manual benchmark: cargo test --release --features gpu --test gpu_bench -- --ignored --nocapture
 fn bench_gpu_six_max() {
     let eq = Arc::new(EquityTable::build(20000));
-    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
-        positions: vec!["UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0, stacks: None,
+        positions: vec![
+            "UTG".into(),
+            "HJ".into(),
+            "CO".into(),
+            "BTN".into(),
+            "SB".into(),
+            "BB".into(),
+        ],
+        stack: 100.0,
+        stacks: None,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -26,18 +40,31 @@ fn bench_gpu_six_max() {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     };
     let mut cpu = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
     println!("nodes: {}", cpu.nodes.len());
     let t0 = Instant::now();
-    for _ in 0..30 { cpu.iterate(); }
-    println!("CPU (pruned, {} threads): {:.2} it/s", rayon::current_num_threads(), 30.0 / t0.elapsed().as_secs_f64());
+    for _ in 0..30 {
+        cpu.iterate();
+    }
+    println!(
+        "CPU (pruned, {} threads): {:.2} it/s",
+        rayon::current_num_threads(),
+        30.0 / t0.elapsed().as_secs_f64()
+    );
 
     let mut gs = PreflopSolver::new(cfg, eq).unwrap();
     let mut g = PreflopGpu::new(&gs, 20_000).expect("gpu init");
-    for _ in 0..5 { g.iterate(&mut gs).unwrap(); } // warm
+    for _ in 0..5 {
+        g.iterate(&mut gs).unwrap();
+    } // warm
     let t0 = Instant::now();
-    for _ in 0..30 { g.iterate(&mut gs).unwrap(); }
+    for _ in 0..30 {
+        g.iterate(&mut gs).unwrap();
+    }
     println!("GPU 4090: {:.2} it/s", 30.0 / t0.elapsed().as_secs_f64());
 }

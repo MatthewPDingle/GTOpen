@@ -7,10 +7,16 @@
 //! orbit representatives, so an unmaterialized save is a valid-looking file
 //! whose non-canonical runouts hold stale arenas.
 
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{permute_card, Algorithm, LockMode, PathStep, Solver, Spot, SpotConfig};
-use std::path::{Path, PathBuf};
-use std::sync::Arc;
+use std::{
+    path::{Path, PathBuf},
+    sync::Arc,
+};
+
+use solver::{
+    permute_card,
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    Algorithm, LockMode, PathStep, Solver, Spot, SpotConfig,
+};
 
 const MAGIC_LEN: usize = 10; // b"GTOSOLVE2\n"
 
@@ -96,8 +102,7 @@ fn header_json(path: &Path) -> serde_json::Value {
 /// solved with, not whatever defaults the loading process happens to have.
 #[test]
 fn engine_settings_round_trip() {
-    let (path, iteration) =
-        solve_saved(tiny_config(), "settings", Algorithm::CfrPlus, false);
+    let (path, iteration) = solve_saved(tiny_config(), "settings", Algorithm::CfrPlus, false);
     // The header grew fields; the on-disk version tag must not move.
     assert!(std::fs::read(&path).unwrap().starts_with(b"GTOSOLVE2\n"));
     let loaded = Solver::load(path.to_str().unwrap()).unwrap();
@@ -113,7 +118,12 @@ fn engine_settings_round_trip() {
 #[test]
 fn algorithm_tags_round_trip() {
     for algo in [Algorithm::Dcfr, Algorithm::CfrPlus, Algorithm::PcfrPlus] {
-        assert_eq!(Algorithm::parse(algo.name()), Ok(algo), "tag {:?}", algo.name());
+        assert_eq!(
+            Algorithm::parse(algo.name()),
+            Ok(algo),
+            "tag {:?}",
+            algo.name()
+        );
     }
     assert_eq!(Algorithm::CfrPlus.name(), "cfr+");
     assert_eq!(Algorithm::parse("CFR+"), Ok(Algorithm::CfrPlus));
@@ -126,8 +136,7 @@ fn algorithm_tags_round_trip() {
 /// defaults (dcfr + isomorphism), not with the loading process's choice.
 #[test]
 fn legacy_header_without_engine_settings_uses_defaults() {
-    let (path, iteration) =
-        solve_saved(tiny_config(), "legacy", Algorithm::CfrPlus, false);
+    let (path, iteration) = solve_saved(tiny_config(), "legacy", Algorithm::CfrPlus, false);
     doctor_header(&path, |h| {
         let obj = h.as_object_mut().unwrap();
         obj.remove("algo");
@@ -185,14 +194,19 @@ fn save_materializes_isomorphic_siblings() {
     solver.save(path.to_str().unwrap()).unwrap();
 
     let mut loaded = Solver::load(path.to_str().unwrap()).unwrap();
-    assert!(loaded.use_isomorphism, "header should round-trip the switch");
+    assert!(
+        loaded.use_isomorphism,
+        "header should round-trip the switch"
+    );
     // read every branch as stored: no remapping to the representative
     loaded.use_isomorphism = false;
     let runout = |card: &str| {
         vec![
             PathStep::Action { index: 0 },
             PathStep::Action { index: 0 },
-            PathStep::Card { card: card.to_string() },
+            PathStep::Card {
+                card: card.to_string(),
+            },
         ]
     };
     let (path_h, path_c) = (runout("4h"), runout("4c"));
@@ -248,7 +262,10 @@ fn save_materializes_isomorphic_siblings() {
     let walk_c = loaded.walk_path(&path_c).unwrap();
     let node_h = &loaded.spot.tree.nodes[walk_h.node_idx as usize];
     let node_c = &loaded.spot.tree.nodes[walk_c.node_idx as usize];
-    assert_eq!(node_h.player, node_c.player, "mirrored runouts must act on the same seat");
+    assert_eq!(
+        node_h.player, node_c.player,
+        "mirrored runouts must act on the same seat"
+    );
     let p = node_h.player as usize;
     let na = node_h.num_children as usize;
     assert_eq!(na, node_c.num_children as usize);
@@ -278,8 +295,7 @@ fn save_materializes_isomorphic_siblings() {
 /// were never materialized is repaired by its first re-save.
 #[test]
 fn resaving_a_loaded_solver_is_stable() {
-    let (first, iteration) =
-        solve_saved(tiny_config(), "resave_first", Algorithm::PcfrPlus, false);
+    let (first, iteration) = solve_saved(tiny_config(), "resave_first", Algorithm::PcfrPlus, false);
     let mut loaded = Solver::load(first.to_str().unwrap()).unwrap();
     let second = temp_path("resave_second");
     loaded.save(second.to_str().unwrap()).unwrap();
@@ -307,12 +323,18 @@ fn resaving_a_locked_solver_is_stable() {
     for _ in 0..40 {
         solver.iterate();
     }
-    solver.lock_node(&[], LockMode::Freeze, "root".into()).unwrap();
+    solver
+        .lock_node(&[], LockMode::Freeze, "root".into())
+        .unwrap();
     let mut locks = 1;
     for index in 0..solver.spot.tree.nodes[0].num_children as usize {
         // the first child path that lands on another action node
         if solver
-            .lock_node(&[PathStep::Action { index }], LockMode::Freeze, "child".into())
+            .lock_node(
+                &[PathStep::Action { index }],
+                LockMode::Freeze,
+                "child".into(),
+            )
             .is_ok()
         {
             locks += 1;
@@ -331,10 +353,16 @@ fn resaving_a_locked_solver_is_stable() {
         .map(|entry| entry[0].as_u64().unwrap() as u32)
         .collect();
     assert_eq!(saved.len(), 2);
-    assert!(saved.windows(2).all(|w| w[0] < w[1]), "locks not in node order: {saved:?}");
+    assert!(
+        saved.windows(2).all(|w| w[0] < w[1]),
+        "locks not in node order: {saved:?}"
+    );
 
     let mut loaded = Solver::load(first.to_str().unwrap()).unwrap();
-    assert!(loaded.use_isomorphism, "header should round-trip the switch");
+    assert!(
+        loaded.use_isomorphism,
+        "header should round-trip the switch"
+    );
     assert_eq!(loaded.locks, solver.locks);
     let second = temp_path("resave_locks_second");
     loaded.save(second.to_str().unwrap()).unwrap();

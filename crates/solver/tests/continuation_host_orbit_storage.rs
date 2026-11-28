@@ -1,11 +1,13 @@
 //! Storage-only prototype: retain explicit GPU traversal and restore every bit.
 #![cfg(feature = "preflop-research")]
+use std::{sync::Arc, time::Instant};
+
 use solver::{
     gpu::{plan::GpuPlan, GpuSolver, SymmetricContinuationGpu},
+    parse_sizes,
     store::Store,
+    Algorithm, Solver, Spot, SpotConfig, StreetSizing, TreeConfig,
 };
-use solver::{parse_sizes, Algorithm, Solver, Spot, SpotConfig, StreetSizing, TreeConfig};
-use std::{sync::Arc, time::Instant};
 
 fn data(s: &Store) -> &[f32] {
     let Store::F32(a) = s else {

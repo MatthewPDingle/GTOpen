@@ -17,8 +17,10 @@
 //! mirroring the CPU's `chance_node` exactly. Without isomorphism the same
 //! tables degenerate to identity orbits.
 
-use crate::game::{Dealt, Spot};
-use crate::tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL};
+use crate::{
+    game::{Dealt, Spot},
+    tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL},
+};
 
 #[derive(Clone, Copy, Default)]
 pub struct LevelSpan {
@@ -176,8 +178,7 @@ impl GpuPlan {
                     };
                     cc_start[ni] = cc_card.len() as u32;
                     for c in 0..52u8 {
-                        let child =
-                            spot.tree.children[node.children_start as usize + c as usize];
+                        let child = spot.tree.children[node.children_start as usize + c as usize];
                         if child == SENTINEL || it.dealt.contains(c) {
                             continue;
                         }
@@ -233,7 +234,9 @@ impl GpuPlan {
         let mut cfv_slot = vec![u32::MAX; n];
         let mut cfv_blocks = parity_max[0] + parity_max[1];
         for (ni, node) in spot.tree.nodes.iter().enumerate() {
-            if !reached[ni] { continue; }
+            if !reached[ni] {
+                continue;
+            }
             if node.kind == KIND_ACTION || node.kind == KIND_CHANCE {
                 let l = level[ni] as usize;
                 cfv_slot[ni] = (base[l % 2] + used[l]) as u32;
@@ -398,7 +401,10 @@ impl GpuPlan {
         let full_elements = spot.tree.data_size[0] + spot.tree.data_size[1];
         let packed_elements = (arena_elements[0] + arena_elements[1]) as u64;
         if full_elements - packed_elements < full_elements / 20 {
-            arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];
+            arena_elements = [
+                spot.tree.data_size[0] as usize,
+                spot.tree.data_size[1] as usize,
+            ];
             for (ni, node) in spot.tree.nodes.iter().enumerate() {
                 node_data_off[ni] = node.data_offset;
             }
@@ -496,7 +502,10 @@ impl GpuPlan {
 
     /// Direct whole-arena transfers avoid host snapshots when VRAM is ample.
     pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
-        self.arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];
+        self.arena_elements = [
+            spot.tree.data_size[0] as usize,
+            spot.tree.data_size[1] as usize,
+        ];
         for (i, node) in spot.tree.nodes.iter().enumerate() {
             self.node_data_off[i] = node.data_offset;
         }
@@ -506,7 +515,8 @@ impl GpuPlan {
     pub fn staging_bytes(&self) -> u64 {
         (self.reach_blocks[0] as u64 * self.nh[0] as u64
             + self.reach_blocks[1] as u64 * self.nh[1] as u64
-            + self.cfv_blocks as u64 * self.nh_max as u64) * 4
+            + self.cfv_blocks as u64 * self.nh_max as u64)
+            * 4
     }
 }
 
@@ -519,19 +529,23 @@ mod tests {
     fn river_bounds_match_strength_comparisons() {
         for board in ["KsQs2d", "Qs7h2dKh", "AsKsQsJsTs"] {
             let sizing = || StreetSizing {
-                bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![],
+                bet: parse_sizes("50").unwrap(),
+                raise: vec![],
+                donk: vec![],
             };
             let spot = Spot::new(SpotConfig {
                 board: board.into(),
                 range_oop: "AA,KK,QQ,JJ,TT,99,AKs,AQs,JTs,87s,AKo".into(),
                 range_ip: "AA,QQ,TT,77,55,AQs,KQs,QJs,98s,AQo".into(),
                 tree: TreeConfig {
-                    starting_pot: 10.0, effective_stack: 20.0,
+                    starting_pot: 10.0,
+                    effective_stack: 20.0,
                     oop: [sizing(), sizing(), sizing()],
                     ip: [sizing(), sizing(), sizing()],
                     ..Default::default()
                 },
-            }).unwrap();
+            })
+            .unwrap();
             for iso in [false, true] {
                 let plan = GpuPlan::build(&spot, iso);
                 assert_eq!(plan.cfv_slot[0], 0);
@@ -539,23 +553,35 @@ mod tests {
                 let mut terminals = std::collections::HashSet::new();
                 for &node in plan.fold_nodes.iter().chain(&plan.show_nodes) {
                     let slot = plan.cfv_slot[node as usize] as usize;
-                    assert!(terminals.insert(slot), "terminal caches must remain distinct");
+                    assert!(
+                        terminals.insert(slot),
+                        "terminal caches must remain distinct"
+                    );
                     used[slot] = true;
                 }
                 let mut live = vec![std::collections::HashSet::new(); plan.num_levels];
                 for l in 0..plan.num_levels {
-                    for (nodes, spans) in [(&plan.action_nodes, &plan.action_spans),
-                        (&plan.chance_nodes, &plan.chance_node_spans)] {
+                    for (nodes, spans) in [
+                        (&plan.action_nodes, &plan.action_spans),
+                        (&plan.chance_nodes, &plan.chance_node_spans),
+                    ] {
                         let span = spans[l];
-                        for &node in &nodes[span.start as usize..(span.start + span.count) as usize] {
+                        for &node in &nodes[span.start as usize..(span.start + span.count) as usize]
+                        {
                             let slot = plan.cfv_slot[node as usize] as usize;
                             assert!(live[l].insert(slot), "same-level outputs cannot alias");
-                            assert!(!terminals.contains(&slot), "scratch cannot overwrite cached terminals");
+                            assert!(
+                                !terminals.contains(&slot),
+                                "scratch cannot overwrite cached terminals"
+                            );
                             used[slot] = true;
                         }
                     }
                     if l > 0 {
-                        assert!(live[l].is_disjoint(&live[l - 1]), "a parent cannot overwrite child input storage");
+                        assert!(
+                            live[l].is_disjoint(&live[l - 1]),
+                            "a parent cannot overwrite child input storage"
+                        );
                     }
                 }
                 assert!(used.iter().all(|&used| used));

@@ -5,22 +5,34 @@
 //! loaded at a time: building or loading a 3-way spot drops the heads-up
 //! session and the other way round (`drop_session`).
 
-use crate::{bad_request, lock_unpoisoned, panic_msg, ApiError, AppState};
-use axum::extract::State;
-use axum::http::StatusCode;
-use axum::routing::{get, post};
-use axum::{Json, Router};
+use std::{
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc, LazyLock, Mutex,
+    },
+    time::Instant,
+};
+
+use axum::{
+    extract::State,
+    http::StatusCode,
+    routing::{get, post},
+    Json, Router,
+};
 use serde::{Deserialize, Serialize};
-use solver::cfr::Algorithm;
-use solver::multiway::query::{exploit_view, node_view, MwNodeView};
-use solver::query::{ExploitView, PathStep};
-use solver::multiway::tree::MwTreeConfig;
-use solver::multiway::{MwSolver, MwSpot, MwSpotConfig, NP};
-use solver::store::Storage;
-use solver::tree::{parse_sizes, StreetSizing};
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, LazyLock, Mutex};
-use std::time::Instant;
+use solver::{
+    cfr::Algorithm,
+    multiway::{
+        query::{exploit_view, node_view, MwNodeView},
+        tree::MwTreeConfig,
+        MwSolver, MwSpot, MwSpotConfig, NP,
+    },
+    query::{ExploitView, PathStep},
+    store::Storage,
+    tree::{parse_sizes, StreetSizing},
+};
+
+use crate::{bad_request, lock_unpoisoned, panic_msg, ApiError, AppState};
 
 /// Largest tree the builder will attempt (nodes).
 const MAX_NODES: usize = 150_000_000;
@@ -179,7 +191,10 @@ fn spot_request_from_config(config: &MwSpotConfig) -> MwSpotRequest {
         stacks: t.stacks,
         sizes: t.sizing[0]
             .iter()
-            .map(|x| SizeRow { bet: crate::sizes_to_string(&x.bet), raise: crate::sizes_to_string(&x.raise) })
+            .map(|x| SizeRow {
+                bet: crate::sizes_to_string(&x.bet),
+                raise: crate::sizes_to_string(&x.raise),
+            })
             .collect(),
         rake_pct: t.rake_pct * 100.0,
         rake_cap: t.rake_cap,
@@ -200,7 +215,11 @@ fn spot_config(req: &MwSpotRequest) -> Result<MwSpotConfig, String> {
     }
     let mut streets: [StreetSizing; 3] = Default::default();
     for (i, row) in req.sizes.iter().take(3).enumerate() {
-        streets[i] = StreetSizing { bet: parse_sizes(&row.bet)?, raise: parse_sizes(&row.raise)?, donk: Vec::new() };
+        streets[i] = StreetSizing {
+            bet: parse_sizes(&row.bet)?,
+            raise: parse_sizes(&row.raise)?,
+            donk: Vec::new(),
+        };
     }
     let mut t = MwTreeConfig::uniform(req.starting_pot, req.stacks[0], &[], &[]);
     t.stacks = req.stacks;
@@ -218,8 +237,16 @@ fn spot_config(req: &MwSpotRequest) -> Result<MwSpotConfig, String> {
     }
     t.add_allin = req.add_allin;
     t.icm = req.icm.clone();
-    let seats = req.seats.as_ref().map(|s| s.clone().map(|x| x.trim().chars().take(12).collect()));
-    Ok(MwSpotConfig { board: req.board.clone(), ranges: req.ranges.clone(), tree: t, seats })
+    let seats = req
+        .seats
+        .as_ref()
+        .map(|s| s.clone().map(|x| x.trim().chars().take(12).collect()));
+    Ok(MwSpotConfig {
+        board: req.board.clone(),
+        ranges: req.ranges.clone(),
+        tree: t,
+        seats,
+    })
 }
 
 fn tree_info(spot: &MwSpot, build_secs: f64) -> MwTreeInfo {
@@ -248,10 +275,15 @@ fn tree_info(spot: &MwSpot, build_secs: f64) -> MwTreeInfo {
 }
 
 fn ram_cap_mb() -> f64 {
-    if let Some(v) = std::env::var("SOLVER_MEM_MB").ok().and_then(|v| v.parse::<f64>().ok()) {
+    if let Some(v) = std::env::var("SOLVER_MEM_MB")
+        .ok()
+        .and_then(|v| v.parse::<f64>().ok())
+    {
         return v;
     }
-    solver::sysmem::avail_mem_mb().map(|a| a * 0.8).unwrap_or(48_000.0)
+    solver::sysmem::avail_mem_mb()
+        .map(|a| a * 0.8)
+        .unwrap_or(48_000.0)
 }
 
 /// Solver memory (MB) of the loaded 3-way spot, credited back to the RAM
@@ -261,7 +293,11 @@ pub(crate) fn arena_credit_mb() -> f64 {
     if std::env::var("SOLVER_MEM_MB").is_ok() {
         return 0.0;
     }
-    0.8 * lock_unpoisoned(&MW.status).tree.as_ref().map(|t| t.arena_mb).unwrap_or(0.0)
+    0.8 * lock_unpoisoned(&MW.status)
+        .tree
+        .as_ref()
+        .map(|t| t.arena_mb)
+        .unwrap_or(0.0)
 }
 
 /// Stops and joins the solve worker, if one is running. The session stays.
@@ -302,7 +338,12 @@ fn install(solver: MwSolver, info: MwTreeInfo, state: &str, request: Option<MwSp
         worker: None,
     });
     let mut st = lock_unpoisoned(&MW.status);
-    *st = MwStatus { state: state.into(), tree: Some(info), spot_request: Some(spot_request), ..Default::default() };
+    *st = MwStatus {
+        state: state.into(),
+        tree: Some(info),
+        spot_request: Some(spot_request),
+        ..Default::default()
+    };
 }
 
 /// Unloads whatever postflop spot is loaded, heads-up or 3-way.
@@ -316,7 +357,10 @@ async fn drop_all(app: &Arc<AppState>) -> Result<(), ApiError> {
     .map_err(|e| bad_request(e.to_string()))
 }
 
-async fn build(State(app): State<Arc<AppState>>, Json(req): Json<MwSpotRequest>) -> Result<Json<MwTreeInfo>, ApiError> {
+async fn build(
+    State(app): State<Arc<AppState>>,
+    Json(req): Json<MwSpotRequest>,
+) -> Result<Json<MwTreeInfo>, ApiError> {
     let cfg = spot_config(&req).map_err(bad_request)?;
     // Validate, then swap: the new spot is built and sized before the loaded
     // one is touched, so a refused build leaves an unsaved solve intact.
@@ -338,9 +382,10 @@ async fn build(State(app): State<Arc<AppState>>, Json(req): Json<MwSpotRequest>)
         )));
     }
     drop_all(&app).await?;
-    let solver = tokio::task::spawn_blocking(move || MwSolver::new(Arc::new(spot), Storage::Compressed))
-        .await
-        .map_err(|e| bad_request(e.to_string()))?;
+    let solver =
+        tokio::task::spawn_blocking(move || MwSolver::new(Arc::new(spot), Storage::Compressed))
+            .await
+            .map_err(|e| bad_request(e.to_string()))?;
     install(solver, info.clone(), "ready", Some(req));
     Ok(Json(info))
 }
@@ -372,7 +417,9 @@ fn default_check() -> u32 {
 
 async fn solve(Json(req): Json<SolveRequest>) -> Result<Json<serde_json::Value>, ApiError> {
     let mut g = lock_unpoisoned(&MW.session);
-    let sess = g.as_mut().ok_or_else(|| bad_request("no 3-way spot built yet"))?;
+    let sess = g
+        .as_mut()
+        .ok_or_else(|| bad_request("no 3-way spot built yet"))?;
     if lock_unpoisoned(&MW.status).state == "running" {
         return Err((StatusCode::CONFLICT, "already running".into()));
     }
@@ -402,7 +449,9 @@ async fn solve(Json(req): Json<SolveRequest>) -> Result<Json<serde_json::Value>,
     let status = MW.status.clone();
     sess.worker = Some(std::thread::spawn(move || {
         let st2 = status.clone();
-        let r = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| run(solver, stop, discard, status, req, engine)));
+        let r = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            run(solver, stop, discard, status, req, engine)
+        }));
         let mut st = lock_unpoisoned(&st2);
         match r {
             Ok(Ok(final_state)) => st.state = final_state.into(),
@@ -426,9 +475,17 @@ fn record(status: &Mutex<MwStatus>, pr: &solver::multiway::MwProgress, base_iter
     st.gaps = pr.gaps;
     st.evs = pr.evs;
     st.elapsed_secs = pr.elapsed_secs;
-    st.iters_per_sec = if pr.elapsed_secs > 0.0 { (pr.iteration - base_iter) as f64 / pr.elapsed_secs } else { 0.0 };
+    st.iters_per_sec = if pr.elapsed_secs > 0.0 {
+        (pr.iteration - base_iter) as f64 / pr.elapsed_secs
+    } else {
+        0.0
+    };
     st.gpu = gpu;
-    if st.history.last().is_some_and(|h| h.iteration == pr.iteration) {
+    if st
+        .history
+        .last()
+        .is_some_and(|h| h.iteration == pr.iteration)
+    {
         st.history.pop();
     }
     st.history.push(MwHistoryPoint {
@@ -480,7 +537,8 @@ fn run(
                     g.synchronize()?;
                     synced = false;
                     let k = g.iteration - base;
-                    let due = k % check == 0 && last_check.elapsed().as_secs_f64() >= 4.0 * eval_cost;
+                    let due =
+                        k % check == 0 && last_check.elapsed().as_secs_f64() >= 4.0 * eval_cost;
                     if due || k >= req.max_iterations {
                         let te = Instant::now();
                         let pr = g.progress(start.elapsed().as_secs_f64())?;
@@ -517,7 +575,10 @@ fn run(
                 });
             }
             Err(e) if engine == "gpu" => return Err(format!("GPU solve unavailable: {e}")),
-            Err(e) => lock_unpoisoned(&status).gpu_note = format!("on the CPU, the GPU could not take it ({e})"),
+            Err(e) => {
+                lock_unpoisoned(&status).gpu_note =
+                    format!("on the CPU, the GPU could not take it ({e})")
+            }
         }
     }
     #[cfg(not(feature = "gpu"))]
@@ -561,12 +622,18 @@ fn run(
             record(&status, &pr, base, false);
         }
     }
-    Ok(if done || !stop.load(Ordering::Relaxed) { "done" } else { "stopped" })
+    Ok(if done || !stop.load(Ordering::Relaxed) {
+        "done"
+    } else {
+        "stopped"
+    })
 }
 
 /// Returns when the solve has ended (after its last accuracy check).
 async fn stop() -> Json<serde_json::Value> {
-    tokio::task::spawn_blocking(|| stop_worker(false)).await.ok();
+    tokio::task::spawn_blocking(|| stop_worker(false))
+        .await
+        .ok();
     Json(serde_json::json!({"ok": true}))
 }
 
@@ -628,7 +695,13 @@ fn save_path(name: &str) -> Result<std::path::PathBuf, String> {
     let clean: String = name
         .trim()
         .chars()
-        .map(|c| if c.is_ascii_alphanumeric() || matches!(c, ' ' | '-' | '_' | '.') { c } else { '-' })
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || matches!(c, ' ' | '-' | '_' | '.') {
+                c
+            } else {
+                '-'
+            }
+        })
         .collect();
     let clean = clean.trim_matches('.').trim().to_string();
     if clean.is_empty() {
@@ -663,10 +736,15 @@ async fn save(Json(req): Json<NameRequest>) -> Result<Json<serde_json::Value>, A
     .await
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
-    Ok(Json(serde_json::json!({"ok": true, "path": out.to_string_lossy()})))
+    Ok(Json(
+        serde_json::json!({"ok": true, "path": out.to_string_lossy()}),
+    ))
 }
 
-async fn load(State(app): State<Arc<AppState>>, Json(req): Json<NameRequest>) -> Result<Json<MwStatus>, ApiError> {
+async fn load(
+    State(app): State<Arc<AppState>>,
+    Json(req): Json<NameRequest>,
+) -> Result<Json<MwStatus>, ApiError> {
     let path = save_path(&req.name).map_err(bad_request)?;
     // Vet the file before the loaded spot is dropped for it.
     let probe = path.clone();
@@ -694,7 +772,11 @@ async fn load(State(app): State<Arc<AppState>>, Json(req): Json<NameRequest>) ->
     st.iteration = iteration;
     st.exploit_pct = hdr.exploit_pct_pot.unwrap_or(0.0);
     if let Some(e) = hdr.exploit_pct_pot {
-        st.history.push(MwHistoryPoint { iteration, exploit_pct: e, elapsed_secs: 0.0 });
+        st.history.push(MwHistoryPoint {
+            iteration,
+            exploit_pct: e,
+            elapsed_secs: 0.0,
+        });
     }
     Ok(Json(st.clone()))
 }
@@ -715,10 +797,16 @@ async fn list_saves() -> Json<Vec<SaveEntry>> {
             if p.extension().and_then(|x| x.to_str()) != Some("gtomw") {
                 continue;
             }
-            let Ok(f) = std::fs::File::open(&p) else { continue };
+            let Ok(f) = std::fs::File::open(&p) else {
+                continue;
+            };
             if let Ok(h) = solver::multiway::save::peek(f) {
                 out.push(SaveEntry {
-                    name: p.file_stem().unwrap_or_default().to_string_lossy().into_owned(),
+                    name: p
+                        .file_stem()
+                        .unwrap_or_default()
+                        .to_string_lossy()
+                        .into_owned(),
                     board: h.config.board,
                     iteration: h.iteration,
                     exploit_pct: h.exploit_pct_pot,

@@ -1,6 +1,7 @@
 //! Offline fixed-current-policy diagnostic; no live API access or learning.
-use solver::preflop::{equity::EquityTable, PreflopSolver};
 use std::{path::Path, sync::Arc, time::Instant};
+
+use solver::preflop::{equity::EquityTable, PreflopSolver};
 fn main() -> Result<(), String> {
     let a: Vec<_> = std::env::args().skip(1).collect();
     if a.len() != 3 && !(a.len() == 4 && a[3] == "--pair") {

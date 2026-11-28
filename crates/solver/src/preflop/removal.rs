@@ -22,9 +22,13 @@
 //! symmetry an opponent's mass on combos holding one specific card depends
 //! only on that card's rank.
 
-use super::equity::{class_combos, class_parts, NUM_CLASSES};
-use super::{balanced_family, PreflopSolver, KIND_POT_SHARE};
 use std::sync::OnceLock;
+
+use super::{
+    balanced_family,
+    equity::{class_combos, class_parts, NUM_CLASSES},
+    PreflopSolver, KIND_POT_SHARE,
+};
 
 /// 1326 two-card holdings in a full deck over the 1225 left after two cards
 /// are dealt.
@@ -34,9 +38,17 @@ pub const DECK_SCALE: f64 = 1326.0 / 1225.0;
 fn combos_with_card(j: usize, rank: u8) -> f64 {
     let (hi, lo, suited) = class_parts(j);
     if hi == lo {
-        if hi == rank { 3.0 } else { 0.0 }
+        if hi == rank {
+            3.0
+        } else {
+            0.0
+        }
     } else if hi == rank || lo == rank {
-        if suited { 1.0 } else { 3.0 }
+        if suited {
+            1.0
+        } else {
+            3.0
+        }
     } else {
         0.0
     }
@@ -81,7 +93,13 @@ fn compatible_combos(h: usize, j: usize) -> f64 {
     let mut n = 0;
     for s1 in 0..4u8 {
         for s2 in 0..4u8 {
-            let valid = if jhi == jlo { s1 < s2 } else if jsuited { s1 == s2 } else { s1 != s2 };
+            let valid = if jhi == jlo {
+                s1 < s2
+            } else if jsuited {
+                s1 == s2
+            } else {
+                s1 != s2
+            };
             if !valid {
                 continue;
             }
@@ -116,7 +134,13 @@ impl PreflopSolver {
     /// cards (exact at the class level). Folds, a folded traverser, side pots
     /// and pots of three or more keep the plain per-class value given the
     /// opponents' ranges, reweighted per class.
-    pub(super) fn removal_terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
+    pub(super) fn removal_terminal_value(
+        &self,
+        node: usize,
+        p: usize,
+        reaches: &[Vec<f32>],
+        out: &mut [f32],
+    ) {
         let nd = &self.nodes[node];
         let mut prob = [1f64; NUM_CLASSES];
         let mut mass = [0f64; NUM_CLASSES];
@@ -133,8 +157,14 @@ impl PreflopSolver {
             return;
         }
         let me = 1u32 << p;
-        if nd.kind == KIND_POT_SHARE && nd.live & me != 0 && nd.live.count_ones() == 2 && nd.side_pots.is_empty() {
-            let q = (0..self.n).find(|&q| q != p && nd.live & (1 << q) != 0).expect("a second live seat");
+        if nd.kind == KIND_POT_SHARE
+            && nd.live & me != 0
+            && nd.live.count_ones() == 2
+            && nd.side_pots.is_empty()
+        {
+            let q = (0..self.n)
+                .find(|&q| q != p && nd.live & (1 << q) != 0)
+                .expect("a second live seat");
             self.removal_heads_up(node, p, &reaches[q], &prob, out);
             return;
         }
@@ -146,7 +176,14 @@ impl PreflopSolver {
 
     /// Heads-up showdown or flop leaf: the plain model's pricing with the
     /// opponent's range conditioned on each hero class's cards.
-    fn removal_heads_up(&self, node: usize, p: usize, opp: &[f32], prob: &[f64; NUM_CLASSES], out: &mut [f32]) {
+    fn removal_heads_up(
+        &self,
+        node: usize,
+        p: usize,
+        opp: &[f32],
+        prob: &[f64; NUM_CLASSES],
+        out: &mut [f32],
+    ) {
         let nd = &self.nodes[node];
         let w = weights();
         let inv_p = nd.invested[p];
@@ -159,7 +196,10 @@ impl PreflopSolver {
             let rel = &tables.rel[if r < 1.0 { 0 } else { 1 }];
             for h in 0..NUM_CLASSES {
                 let row = &w[h * NUM_CLASSES..][..NUM_CLASSES];
-                let (raw_row, rel_row) = (&tables.raw[h * NUM_CLASSES..][..NUM_CLASSES], &rel[h * NUM_CLASSES..][..NUM_CLASSES]);
+                let (raw_row, rel_row) = (
+                    &tables.raw[h * NUM_CLASSES..][..NUM_CLASSES],
+                    &rel[h * NUM_CLASSES..][..NUM_CLASSES],
+                );
                 let (mut norm, mut raw, mut relative) = (0f64, 0f64, 0f64);
                 for j in 0..NUM_CLASSES {
                     let d = opp[j] as f64 * row[j] as f64;
@@ -243,10 +283,20 @@ mod tests {
                     }
                 }
                 let brute = DECK_SCALE * m;
-                assert!((brute - fast[h]).abs() < 1e-9, "h={h}: {brute} vs {}", fast[h]);
+                assert!(
+                    (brute - fast[h]).abs() < 1e-9,
+                    "h={h}: {brute} vs {}",
+                    fast[h]
+                );
             }
-            let table: f64 = (0..NUM_CLASSES).map(|j| reach[j] as f64 * w[h * NUM_CLASSES + j] as f64).sum();
-            assert!((table - fast[h]).abs() < 1e-6, "h={h}: table {table} vs {}", fast[h]);
+            let table: f64 = (0..NUM_CLASSES)
+                .map(|j| reach[j] as f64 * w[h * NUM_CLASSES + j] as f64)
+                .sum();
+            assert!(
+                (table - fast[h]).abs() < 1e-6,
+                "h={h}: table {table} vs {}",
+                fast[h]
+            );
         }
     }
 
@@ -264,7 +314,11 @@ mod tests {
             }
         }
         // Holding As5s leaves AA 3 of its 6 combos and AK 12 of its 16.
-        let (aa, ako, aks) = (class_index(12, 12, false), class_index(12, 11, false), class_index(12, 11, true));
+        let (aa, ako, aks) = (
+            class_index(12, 12, false),
+            class_index(12, 11, false),
+            class_index(12, 11, true),
+        );
         let a5s = class_index(12, 3, true);
         let ratio = |j: usize| w[a5s * NUM_CLASSES + j] as f64 / DECK_SCALE;
         assert!((ratio(aa) - 0.5).abs() < 1e-6);

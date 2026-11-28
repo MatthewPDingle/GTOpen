@@ -76,15 +76,24 @@ pub(super) struct Lists {
 impl Lists {
     pub(super) fn build(s: &PreflopSolver) -> Result<Self, String> {
         let pick = |keep: &dyn Fn(&super::super::PNode) -> bool| -> Vec<u32> {
-            s.nodes.iter().enumerate().filter(|(_, nd)| keep(nd)).map(|(i, _)| i as u32).collect()
+            s.nodes
+                .iter()
+                .enumerate()
+                .filter(|(_, nd)| keep(nd))
+                .map(|(i, _)| i as u32)
+                .collect()
         };
-        let leaf = s.leaf_terminals().map_or(Vec::new(), |(nodes, _, _)| nodes.to_vec());
+        let leaf = s
+            .leaf_terminals()
+            .map_or(Vec::new(), |(nodes, _, _)| nodes.to_vec());
         if leaf.windows(2).any(|w| w[0] >= w[1]) {
             return Err("learned terminals are not in tree order".into());
         }
         Ok(Self {
             terms: pick(&|nd| nd.kind != KIND_ACTION),
-            hu: pick(&|nd| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 && nd.side_pots.is_empty()),
+            hu: pick(&|nd| {
+                nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 && nd.side_pots.is_empty()
+            }),
             leaf,
             mw: pick(&|nd| coupled_terminal(s, nd)),
         })
@@ -141,7 +150,9 @@ fn subtree_sizes(s: &PreflopSolver) -> Result<Vec<u32>, String> {
     let mut size = vec![1u32; n];
     for i in (0..n).rev() {
         let nd = &s.nodes[i];
-        if nd.kind != KIND_ACTION { continue; }
+        if nd.kind != KIND_ACTION {
+            continue;
+        }
         let mut next = i + 1;
         for a in 0..nd.actions.len() {
             let c = s.child(i, a);
@@ -173,7 +184,9 @@ impl Plan {
         top[0] = true;
         for i in 0..n {
             let nd = &s.nodes[i];
-            if nd.kind != KIND_ACTION { continue; }
+            if nd.kind != KIND_ACTION {
+                continue;
+            }
             for a in 0..nd.actions.len() {
                 let c = s.child(i, a);
                 depth[c] = depth[i] + 1;
@@ -199,7 +212,9 @@ impl Plan {
             }
             held += sz;
         }
-        if held > 0 { groups.push((start, roots.len())); }
+        if held > 0 {
+            groups.push((start, roots.len()));
+        }
 
         // Reach blocks: roots, then the nodes at and just under the top,
         // then one range every part reuses.
@@ -233,11 +248,15 @@ impl Plan {
         let mut act_nodes: Vec<u32> = Vec::new();
         let mut top_levels = vec![Vec::new(); max_depth + 1];
         for i in 0..n {
-            if top[i] { top_levels[depth[i] as usize].push(i as u32); }
+            if top[i] {
+                top_levels[depth[i] as usize].push(i as u32);
+            }
         }
         let mut top_spans = Vec::new();
         for level in &top_levels {
-            if level.is_empty() { continue; }
+            if level.is_empty() {
+                continue;
+            }
             top_spans.push((act_nodes.len() as u32, level.len() as u32));
             act_nodes.extend_from_slice(level);
         }
@@ -274,8 +293,12 @@ impl Plan {
                 chunk.nodes += size[r];
                 for i in r..r + size[r] as usize {
                     let action = s.nodes[i].kind == KIND_ACTION;
-                    if action { levels[depth[i] as usize].push(i as u32); }
-                    if i == r { continue; }
+                    if action {
+                        levels[depth[i] as usize].push(i as u32);
+                    }
+                    if i == r {
+                        continue;
+                    }
                     block[i] = (chunk_base + local) as u32;
                     local += 1;
                     if action {
@@ -287,8 +310,12 @@ impl Plan {
                 }
             }
             for (d, level) in levels.iter().enumerate() {
-                if level.is_empty() { continue; }
-                chunk.spans.push((act_nodes.len() as u32, level.len() as u32));
+                if level.is_empty() {
+                    continue;
+                }
+                chunk
+                    .spans
+                    .push((act_nodes.len() as u32, level.len() as u32));
                 act_nodes.extend_from_slice(level);
                 let inner_count = level.iter().filter(|&&i| !frontier_of[i as usize]).count();
                 widths[d % 2] = widths[d % 2].max(inner_count);
@@ -318,9 +345,13 @@ impl Plan {
 
         // reach_src as reach_sources(), with the blocks above.
         let mut reach_src = vec![0u32; n * np];
-        for q in 0..np { reach_src[q] = q as u32; }
+        for q in 0..np {
+            reach_src[q] = q as u32;
+        }
         for (i, node) in s.nodes.iter().enumerate() {
-            if node.kind != KIND_ACTION { continue; }
+            if node.kind != KIND_ACTION {
+                continue;
+            }
             for a in 0..node.actions.len() {
                 let c = s.child(i, a);
                 reach_src.copy_within(i * np..(i + 1) * np, c * np);
@@ -329,12 +360,27 @@ impl Plan {
         }
 
         let mut plan = Self {
-            parts, reach_src, reach_blocks, chunk_base, val_slot, value_blocks,
+            parts,
+            reach_src,
+            reach_blocks,
+            chunk_base,
+            val_slot,
+            value_blocks,
             frontier: (frontier_start as u32, roots.len() as u32),
-            act_nodes, top_spans, chunks,
-            mw_slots: Vec::new(), mw_blocks: Vec::new(), mw_work: Vec::new(), mw_compact: Vec::new(),
-            eq_slots: Vec::new(), eq_blocks: Vec::new(), eq_work: Vec::new(),
-            mw_union_max: 0, mw_capacity_max: 0, mw_terms_max: 0, eq_union_max: 0,
+            act_nodes,
+            top_spans,
+            chunks,
+            mw_slots: Vec::new(),
+            mw_blocks: Vec::new(),
+            mw_work: Vec::new(),
+            mw_compact: Vec::new(),
+            eq_slots: Vec::new(),
+            eq_blocks: Vec::new(),
+            eq_work: Vec::new(),
+            mw_union_max: 0,
+            mw_capacity_max: 0,
+            mw_terms_max: 0,
+            eq_union_max: 0,
             levels_total,
         };
         plan.slot_tables(s, lists)?;
@@ -355,18 +401,27 @@ impl Plan {
                 let mut any = false;
                 for &i in terms {
                     let node = &s.nodes[i as usize];
-                    if node.kind != KIND_POT_SHARE || coupled_terminal(s, node) != multiway { continue; }
+                    if node.kind != KIND_POT_SHARE || coupled_terminal(s, node) != multiway {
+                        continue;
+                    }
                     for p in 0..np {
-                        if (node.live >> p) & 1 == 0 { continue; }
+                        if (node.live >> p) & 1 == 0 {
+                            continue;
+                        }
                         for q in 0..np {
                             if q != p && (node.live >> q) & 1 != 0 {
-                                needed[p * nblocks + self.reach_src[i as usize * np + q] as usize] = true;
+                                needed
+                                    [p * nblocks + self.reach_src[i as usize * np + q] as usize] =
+                                    true;
                                 any = true;
                             }
                         }
                     }
                 }
-                let mut tables = Tables { nblocks, ..Default::default() };
+                let mut tables = Tables {
+                    nblocks,
+                    ..Default::default()
+                };
                 let (slots_all, blocks_all, work_all) = if multiway {
                     (&mut self.mw_slots, &mut self.mw_blocks, &mut self.mw_work)
                 } else {
@@ -407,7 +462,12 @@ impl Plan {
                     tables.work_len = work.len();
                     tables.capacity = tables.union;
                     if multiway {
-                        let view = EquityCachePlan { slots: Vec::new(), blocks: blocks.clone(), work: work.clone(), spans: tables.spans.clone() };
+                        let view = EquityCachePlan {
+                            slots: Vec::new(),
+                            blocks: blocks.clone(),
+                            work: work.clone(),
+                            spans: tables.spans.clone(),
+                        };
                         let compact = MultiwayCompactPlan::build(&view, np)?;
                         if compact.enabled {
                             tables.compact = true;
@@ -431,7 +491,9 @@ impl Plan {
                 }
             }
         }
-        if self.mw_compact.is_empty() { self.mw_compact.push(0); }
+        if self.mw_compact.is_empty() {
+            self.mw_compact.push(0);
+        }
         Ok(())
     }
 
@@ -439,14 +501,20 @@ impl Plan {
     /// optional heads-up equity cache.
     pub(super) fn fixed_bytes(&self, s: &PreflopSolver, lists: &Lists) -> Result<usize, String> {
         let forced = forced_storage_bytes(forced_policy_elements(s)?)?;
-        self.tree_bytes(s, lists)?.checked_add(forced).ok_or_else(|| "large-game allocation size overflow".to_string())
+        self.tree_bytes(s, lists)?
+            .checked_add(forced)
+            .ok_or_else(|| "large-game allocation size overflow".to_string())
     }
 
     /// `fixed_bytes` without the locked and profiled strategies, which
     /// change with the table and not with the tree.
     fn tree_bytes(&self, s: &PreflopSolver, lists: &Lists) -> Result<usize, String> {
         let (n, np, nc) = (s.nodes.len(), s.n, NUM_CLASSES);
-        let eq_channels = if super::super::balanced_family(&s.cfg.realization) { 3usize } else { 1 };
+        let eq_channels = if super::super::balanced_family(&s.cfg.realization) {
+            3usize
+        } else {
+            1
+        };
         // every u32/i32/f32 array the constructor uploads or allocates
         let mut words = 0usize;
         words += 11 * n + 3 * n * np; // tree: kind..calib, inv, rw, reach_src
@@ -468,12 +536,17 @@ impl Plan {
         }
         if !lists.mw.is_empty() {
             words += 3 * super::super::multiway::SAMPLES * nc; // order, lower, upper
-            words += self.mw_slots.len() + self.mw_blocks.len() + self.mw_work.len() + self.mw_compact.len();
+            words += self.mw_slots.len()
+                + self.mw_blocks.len()
+                + self.mw_work.len()
+                + self.mw_compact.len();
             words += lists.mw.len(); // terminal list
             words += self.mw_union_max + self.mw_terms_max; // active flags, terminal probabilities
             words += self.mw_capacity_max * nc; // normalized reaches
         }
-        words.checked_mul(4).and_then(|b| b.checked_add(SLACK_BYTES))
+        words
+            .checked_mul(4)
+            .and_then(|b| b.checked_add(SLACK_BYTES))
             .ok_or_else(|| "large-game allocation size overflow".to_string())
     }
 
@@ -481,33 +554,63 @@ impl Plan {
     /// when even its least does not fit. `forced` pins the batch and the
     /// cache choice (tests compare against a normal plan with the same).
     pub(super) fn fit(
-        &self, s: &PreflopSolver, lists: &Lists, budget_bytes: usize, forced: Option<(usize, bool)>,
+        &self,
+        s: &PreflopSolver,
+        lists: &Lists,
+        budget_bytes: usize,
+        forced: Option<(usize, bool)>,
     ) -> Result<Option<Fit>, String> {
         let nc = NUM_CLASSES;
-        let eq_channels = if super::super::balanced_family(&s.cfg.realization) { 3usize } else { 1 };
+        let eq_channels = if super::super::balanced_family(&s.cfg.realization) {
+            3usize
+        } else {
+            1
+        };
         let fixed = self.fixed_bytes(s, lists)?;
         let one_sample = self.mw_capacity_max * (nc + 1) * 4;
         let eq_cache_bytes = self.eq_union_max * nc * eq_channels * 4;
         let samples = super::super::multiway::SAMPLES;
         let (batch, eq_cache) = match forced {
             Some((batch, eq_cache)) => {
-                let batch = if one_sample == 0 { 0 } else { batch.clamp(1, 32.min(samples)) };
+                let batch = if one_sample == 0 {
+                    0
+                } else {
+                    batch.clamp(1, 32.min(samples))
+                };
                 (batch, eq_cache && self.eq_union_max > 0)
             }
             None => {
-                if fixed + one_sample > budget_bytes { return Ok(None); }
-                let batch = if one_sample == 0 { 0 } else { ((budget_bytes - fixed) / one_sample).min(32).min(samples) };
-                let eq_cache = self.eq_union_max > 0 && fixed + batch * one_sample + eq_cache_bytes <= budget_bytes;
+                if fixed + one_sample > budget_bytes {
+                    return Ok(None);
+                }
+                let batch = if one_sample == 0 {
+                    0
+                } else {
+                    ((budget_bytes - fixed) / one_sample).min(32).min(samples)
+                };
+                let eq_cache = self.eq_union_max > 0
+                    && fixed + batch * one_sample + eq_cache_bytes <= budget_bytes;
                 (batch, eq_cache)
             }
         };
         let need_bytes = fixed + batch * one_sample + if eq_cache { eq_cache_bytes } else { 0 };
-        if need_bytes > budget_bytes { return Ok(None); }
+        if need_bytes > budget_bytes {
+            return Ok(None);
+        }
         // per traverser sweep: every level down and up, a dozen terminal
         // kernels per part, two per multiway batch
-        let batches = if batch == 0 { 0 } else { samples.div_ceil(batch) };
+        let batches = if batch == 0 {
+            0
+        } else {
+            samples.div_ceil(batch)
+        };
         let launches = 2 * self.levels_total + self.chunks.len() * (12 + 2 * batches);
-        Ok(Some(Fit { batch, eq_cache, need_bytes, launches }))
+        Ok(Some(Fit {
+            batch,
+            eq_cache,
+            need_bytes,
+            launches,
+        }))
     }
 }
 
@@ -526,30 +629,53 @@ const ROOMY: f64 = 0.9;
 /// equity cache within `ROOMY` of the budget; failing that, the one with
 /// the largest batches (then the cache, then the least memory).
 /// `PREFLOP_GPU_LARGE_PARTS` pins the cut for experiments.
-pub(super) fn choose(s: &PreflopSolver, lists: &Lists, budget_mb: u64) -> Result<(Plan, Fit), String> {
+pub(super) fn choose(
+    s: &PreflopSolver,
+    lists: &Lists,
+    budget_mb: u64,
+) -> Result<(Plan, Fit), String> {
     let budget = (budget_mb as usize).saturating_mul(1_000_000);
     let roomy = (budget as f64 * ROOMY) as usize;
-    let forced_parts = std::env::var("PREFLOP_GPU_LARGE_PARTS").ok().and_then(|v| v.parse::<usize>().ok());
+    let forced_parts = std::env::var("PREFLOP_GPU_LARGE_PARTS")
+        .ok()
+        .and_then(|v| v.parse::<usize>().ok());
     let mut best: Option<(Plan, Fit)> = None;
     let mut least = usize::MAX;
     for &parts in LADDER.iter() {
         match forced_parts {
-            Some(forced) => if forced != parts { continue; },
-            None => if parts < FIRST_CHOICE { continue; },
+            Some(forced) => {
+                if forced != parts {
+                    continue;
+                }
+            }
+            None => {
+                if parts < FIRST_CHOICE {
+                    continue;
+                }
+            }
         }
         let plan = Plan::build(s, lists, parts)?;
-        least = least.min(plan.fixed_bytes(s, lists)? + plan.mw_capacity_max * (NUM_CLASSES + 1) * 4);
-        let Some(fit) = plan.fit(s, lists, budget, None)? else { continue; };
+        least =
+            least.min(plan.fixed_bytes(s, lists)? + plan.mw_capacity_max * (NUM_CLASSES + 1) * 4);
+        let Some(fit) = plan.fit(s, lists, budget, None)? else {
+            continue;
+        };
         let full = (fit.batch == 0 || fit.batch >= 32) && (fit.eq_cache || plan.eq_union_max == 0);
         let done = full && fit.need_bytes <= roomy;
         let rank = |f: &Fit| (f.batch, f.eq_cache, std::cmp::Reverse(f.need_bytes));
         if done || best.as_ref().map_or(true, |(_, b)| rank(&fit) > rank(b)) {
             best = Some((plan, fit));
         }
-        if done { break; }
+        if done {
+            break;
+        }
     }
-    best.ok_or_else(|| format!(
-        "needs ~{:.0} MB VRAM even in large-game mode (budget {budget_mb} MB)", least as f64 / 1e6))
+    best.ok_or_else(|| {
+        format!(
+            "needs ~{:.0} MB VRAM even in large-game mode (budget {budget_mb} MB)",
+            least as f64 / 1e6
+        )
+    })
 }
 
 /// The least GPU memory (MB) large-game mode needs for this built game, or
@@ -561,13 +687,21 @@ pub fn large_need_mb(s: &PreflopSolver) -> f64 {
 
 /// The part of `large_need_mb` fixed by the built tree and its model.
 pub fn large_tree_need_mb(s: &PreflopSolver) -> f64 {
-    if supported_tree(s).is_err() { return f64::INFINITY; }
-    let Ok(lists) = Lists::build(s) else { return f64::INFINITY };
+    if supported_tree(s).is_err() {
+        return f64::INFINITY;
+    }
+    let Ok(lists) = Lists::build(s) else {
+        return f64::INFINITY;
+    };
     let mut least = f64::INFINITY;
     // the finest cuts need the least; two steps bound the cost on big trees
     for &parts in LADDER.iter().rev().take(2) {
-        let Ok(plan) = Plan::build(s, &lists, parts) else { continue };
-        let Ok(fixed) = plan.tree_bytes(s, &lists) else { continue };
+        let Ok(plan) = Plan::build(s, &lists, parts) else {
+            continue;
+        };
+        let Ok(fixed) = plan.tree_bytes(s, &lists) else {
+            continue;
+        };
         least = least.min((fixed + plan.mw_capacity_max * (NUM_CLASSES + 1) * 4) as f64 / 1e6);
     }
     least
@@ -576,7 +710,9 @@ pub fn large_tree_need_mb(s: &PreflopSolver) -> f64 {
 /// The part that changes with the table: locked and profiled strategies.
 /// Infinite with the trust dial, which the mode does not cover.
 pub fn large_policy_need_mb(s: &PreflopSolver) -> f64 {
-    if s.rnr_active().is_some() { return f64::INFINITY; }
+    if s.rnr_active().is_some() {
+        return f64::INFINITY;
+    }
     match forced_policy_elements(s).and_then(forced_storage_bytes) {
         Ok(bytes) => bytes as f64 / 1e6,
         Err(_) => f64::INFINITY,
@@ -587,12 +723,20 @@ pub fn large_policy_need_mb(s: &PreflopSolver) -> f64 {
 /// size walk: a fresh game with no locked strategies. Slightly generous (a
 /// percent or two), since the cut itself is only known once the tree is built.
 pub fn large_need_of(cfg: &super::super::PreflopConfig, est: &super::super::TreeEstimate) -> f64 {
-    if cfg.icm.is_some() || cfg.unequal_stacks() { return f64::INFINITY; }
+    if cfg.icm.is_some() || cfg.unequal_stacks() {
+        return f64::INFINITY;
+    }
     let (nc, np) = (NUM_CLASSES as f64, cfg.positions.len() as f64);
     let (n, arena, g) = (est.nodes as f64, est.arena_len as f64, &est.gpu);
-    if n + np > u32::MAX as f64 || arena > u32::MAX as f64 { return f64::INFINITY; }
+    if n + np > u32::MAX as f64 || arena > u32::MAX as f64 {
+        return f64::INFINITY;
+    }
     let actions = est.action_nodes as f64;
-    let channels = if super::super::balanced_family(&cfg.realization) { 3.0 } else { 1.0 };
+    let channels = if super::super::balanced_family(&cfg.realization) {
+        3.0
+    } else {
+        1.0
+    };
     // the blocks one part holds at the finest cuts, with room to spare
     let part = n / 48.0 + 1000.0;
     let hu = g.heads_up_terminals as f64;
@@ -602,7 +746,7 @@ pub fn large_need_of(cfg: &super::super::PreflopConfig, est: &super::super::Tree
     words += 2.0 * nc + channels * nc * nc + 2.0 * np * nc;
     words += part * (nc + 1.0) + part * nc; // reach with totals, values
     words += 2.0 * np * 1000.0 * nc; // the parts' roots per evaluation pass
-    // each part's heads-up slot tables: a slot per block, the blocks read, the work lists
+                                     // each part's heads-up slot tables: a slot per block, the blocks read, the work lists
     let eq_blocks = n.min(2.0 * hu);
     words += 1.01 * n + eq_blocks + (eq_blocks + 2.0 * hu);
     if cfg.card_removal {
@@ -612,7 +756,10 @@ pub fn large_need_of(cfg: &super::super::PreflopConfig, est: &super::super::Tree
         words += g.leaf_terminals as f64 * (3.0 + 2.0 * nc);
     }
     if g.multiway_terminals > 0 {
-        let (union, seats) = (1.01 * g.multiway_tables as f64, 1.01 * g.multiway_seat_tables as f64);
+        let (union, seats) = (
+            1.01 * g.multiway_tables as f64,
+            1.01 * g.multiway_seat_tables as f64,
+        );
         words += 3.0 * super::super::multiway::SAMPLES as f64 * nc;
         words += 1.01 * n + union + (union + seats) + union * np; // slots, blocks, work, compact maps
         words += g.multiway_terminals as f64 + 2.0 * part; // terminal list, flags and probabilities
@@ -653,7 +800,6 @@ fn supported_tree(s: &PreflopSolver) -> Result<(), String> {
     Ok(())
 }
 
-
 /// What large-game mode would do with `budget_mb` for this built game, one
 /// row per cut that fits (diagnostics; no CUDA).
 pub fn large_plan_report(s: &PreflopSolver, budget_mb: u64) -> serde_json::Value {
@@ -661,10 +807,19 @@ pub fn large_plan_report(s: &PreflopSolver, budget_mb: u64) -> serde_json::Value
     if let Err(reason) = supported(s) {
         return serde_json::json!({ "supported": false, "reason": reason });
     }
-    let lists = match Lists::build(s) { Ok(l) => l, Err(reason) => return serde_json::json!({ "supported": false, "reason": reason }) };
+    let lists = match Lists::build(s) {
+        Ok(l) => l,
+        Err(reason) => return serde_json::json!({ "supported": false, "reason": reason }),
+    };
     let budget = (budget_mb as usize).saturating_mul(1_000_000);
     for &parts in LADDER.iter() {
-        let plan = match Plan::build(s, &lists, parts) { Ok(p) => p, Err(reason) => { rows.push(serde_json::json!({"parts": parts, "error": reason})); continue; } };
+        let plan = match Plan::build(s, &lists, parts) {
+            Ok(p) => p,
+            Err(reason) => {
+                rows.push(serde_json::json!({"parts": parts, "error": reason}));
+                continue;
+            }
+        };
         let fixed = plan.fixed_bytes(s, &lists).unwrap_or(usize::MAX);
         let fit = plan.fit(s, &lists, budget, None).ok().flatten();
         rows.push(serde_json::json!({
@@ -709,7 +864,13 @@ pub(super) trait Steps {
 
 /// One full pass for traverser `p`, as `sweep`: the top's reaches, then
 /// each part down, priced and back up, then the top's values.
-pub(super) fn run_sweep<S: Steps>(plan: &Plan, steps: &mut S, np: usize, p: i32, mode: i32) -> Result<(), String> {
+pub(super) fn run_sweep<S: Steps>(
+    plan: &Plan,
+    steps: &mut S,
+    np: usize,
+    p: i32,
+    mode: i32,
+) -> Result<(), String> {
     steps.init_root()?;
     for &(start, count) in &plan.top_spans {
         steps.down(start, count, mode)?;
@@ -737,7 +898,12 @@ pub(super) fn run_sweep<S: Steps>(plan: &Plan, steps: &mut S, np: usize, p: i32,
 /// once per part; every seat's best response (`best[p]`: mode 2 or 3) and
 /// average values run on them, and the part's root values wait until the
 /// top is finished per seat and pass.
-pub(super) fn run_evaluation<S: Steps>(plan: &Plan, steps: &mut S, np: usize, best: &[i32]) -> Result<(), String> {
+pub(super) fn run_evaluation<S: Steps>(
+    plan: &Plan,
+    steps: &mut S,
+    np: usize,
+    best: &[i32],
+) -> Result<(), String> {
     steps.init_root()?;
     for &(start, count) in &plan.top_spans {
         steps.down(start, count, 1)?;
@@ -779,21 +945,55 @@ struct OnDevice<'a> {
 }
 
 impl Steps for OnDevice<'_> {
-    fn init_root(&mut self) -> Result<(), String> { self.gpu.lg_init_root() }
-    fn down(&mut self, start: u32, count: u32, mode: i32) -> Result<(), String> { self.gpu.lg_down(start, count, mode) }
-    fn mass(&mut self, first: usize, count: usize) -> Result<(), String> { self.gpu.lg_mass(first, count) }
-    fn eq_cache(&mut self, chunk: &Chunk, which: usize) -> Result<(), String> { self.gpu.lg_eq_cache(&chunk.eq, which) }
-    fn terminals(&mut self, chunk: &Chunk, p: i32, gate: i32) -> Result<(), String> { self.gpu.lg_terminals(chunk, p, gate) }
-    fn up(&mut self, start: u32, count: u32, p: i32, mode: i32) -> Result<(), String> { self.gpu.lg_up(start, count, p, mode) }
+    fn init_root(&mut self) -> Result<(), String> {
+        self.gpu.lg_init_root()
+    }
+    fn down(&mut self, start: u32, count: u32, mode: i32) -> Result<(), String> {
+        self.gpu.lg_down(start, count, mode)
+    }
+    fn mass(&mut self, first: usize, count: usize) -> Result<(), String> {
+        self.gpu.lg_mass(first, count)
+    }
+    fn eq_cache(&mut self, chunk: &Chunk, which: usize) -> Result<(), String> {
+        self.gpu.lg_eq_cache(&chunk.eq, which)
+    }
+    fn terminals(&mut self, chunk: &Chunk, p: i32, gate: i32) -> Result<(), String> {
+        self.gpu.lg_terminals(chunk, p, gate)
+    }
+    fn up(&mut self, start: u32, count: u32, p: i32, mode: i32) -> Result<(), String> {
+        self.gpu.lg_up(start, count, p, mode)
+    }
     fn keep_roots(&mut self, plan: &Plan, chunk: &Chunk, seat_pass: usize) -> Result<(), String> {
-        let stash = self.stash.as_deref_mut().ok_or_else(|| "no stash in a learning pass".to_string())?;
-        self.gpu.lg_stash(stash, plan, chunk.frontier.0 as usize, chunk.frontier.1 as usize, seat_pass, false)
+        let stash = self
+            .stash
+            .as_deref_mut()
+            .ok_or_else(|| "no stash in a learning pass".to_string())?;
+        self.gpu.lg_stash(
+            stash,
+            plan,
+            chunk.frontier.0 as usize,
+            chunk.frontier.1 as usize,
+            seat_pass,
+            false,
+        )
     }
     fn restore_roots(&mut self, plan: &Plan, seat_pass: usize) -> Result<(), String> {
-        let stash = self.stash.as_deref_mut().ok_or_else(|| "no stash in a learning pass".to_string())?;
-        self.gpu.lg_stash(stash, plan, plan.frontier.0 as usize, plan.frontier.1 as usize, seat_pass, true)
+        let stash = self
+            .stash
+            .as_deref_mut()
+            .ok_or_else(|| "no stash in a learning pass".to_string())?;
+        self.gpu.lg_stash(
+            stash,
+            plan,
+            plan.frontier.0 as usize,
+            plan.frontier.1 as usize,
+            seat_pass,
+            true,
+        )
     }
-    fn root_copy(&mut self, seat_pass: usize) -> Result<(), String> { self.gpu.lg_root_copy(seat_pass) }
+    fn root_copy(&mut self, seat_pass: usize) -> Result<(), String> {
+        self.gpu.lg_root_copy(seat_pass)
+    }
 }
 
 // ---- device side -----------------------------------------------------------
@@ -810,7 +1010,9 @@ impl Plan {
     /// top's, then each part's.
     pub(super) fn take_values(&mut self) -> ValuePlan {
         let mut spans = self.top_spans.clone();
-        for chunk in &self.chunks { spans.extend_from_slice(&chunk.spans); }
+        for chunk in &self.chunks {
+            spans.extend_from_slice(&chunk.spans);
+        }
         ValuePlan {
             slots: std::mem::take(&mut self.val_slot),
             blocks: self.value_blocks,
@@ -823,12 +1025,16 @@ impl Plan {
     /// another (each part reads its own slice).
     pub(super) fn take_slot_tables(&mut self, np: usize) -> (EquityCachePlan, EquityCachePlan) {
         let eq = EquityCachePlan {
-            slots: std::mem::take(&mut self.eq_slots), blocks: std::mem::take(&mut self.eq_blocks),
-            work: std::mem::take(&mut self.eq_work), spans: vec![(0, 0); np + 1],
+            slots: std::mem::take(&mut self.eq_slots),
+            blocks: std::mem::take(&mut self.eq_blocks),
+            work: std::mem::take(&mut self.eq_work),
+            spans: vec![(0, 0); np + 1],
         };
         let mw = EquityCachePlan {
-            slots: std::mem::take(&mut self.mw_slots), blocks: std::mem::take(&mut self.mw_blocks),
-            work: std::mem::take(&mut self.mw_work), spans: vec![(0, 0); np + 1],
+            slots: std::mem::take(&mut self.mw_slots),
+            blocks: std::mem::take(&mut self.mw_blocks),
+            work: std::mem::take(&mut self.mw_work),
+            spans: vec![(0, 0); np + 1],
         };
         (eq, mw)
     }
@@ -847,8 +1053,15 @@ pub(super) struct Device {
 impl Device {
     pub(super) fn new(gpu: &PreflopGpu, selected: Selected) -> Result<Self, String> {
         let roots = (selected.plan.frontier.1 as usize).max(1);
-        let d_stash = gpu.stream.alloc_zeros::<f32>(2 * gpu.np as usize * roots * NUM_CLASSES).map_err(e)?;
-        Ok(Self { plan: selected.plan, fit: selected.fit, d_stash })
+        let d_stash = gpu
+            .stream
+            .alloc_zeros::<f32>(2 * gpu.np as usize * roots * NUM_CLASSES)
+            .map_err(e)?;
+        Ok(Self {
+            plan: selected.plan,
+            fit: selected.fit,
+            d_stash,
+        })
     }
 }
 
@@ -872,7 +1085,10 @@ impl PreflopGpu {
     /// `parts` pins the cut and `forced` the multiway batch and heads-up
     /// cache choice, so a test can compare with a normal plan of the same.
     pub(super) fn new_large_with(
-        s: &PreflopSolver, budget_mb: u64, parts: Option<usize>, forced: Option<(usize, bool)>,
+        s: &PreflopSolver,
+        budget_mb: u64,
+        parts: Option<usize>,
+        forced: Option<(usize, bool)>,
     ) -> Result<Self, String> {
         supported(s)?;
         let lists = Lists::build(s)?;
@@ -880,8 +1096,9 @@ impl PreflopGpu {
             Some(parts) => {
                 let plan = Plan::build(s, &lists, parts)?;
                 let budget = (budget_mb as usize).saturating_mul(1_000_000);
-                let fit = plan.fit(s, &lists, budget, forced)?
-                    .ok_or_else(|| format!("large-game mode in {parts} parts does not fit {budget_mb} MB"))?;
+                let fit = plan.fit(s, &lists, budget, forced)?.ok_or_else(|| {
+                    format!("large-game mode in {parts} parts does not fit {budget_mb} MB")
+                })?;
                 (plan, fit)
             }
             None => choose(s, &lists, budget_mb)?,
@@ -891,14 +1108,27 @@ impl PreflopGpu {
             plan.chunks.len(), plan.chunks.iter().map(|c| c.nodes).max().unwrap_or(0), s.nodes.len(),
             fit.batch, fit.eq_cache, fit.need_bytes as f64 / 1e6
         );
-        Self::construct(s, budget_mb, true, false, false, false, None, false, Some(Selected { plan, fit, lists }))
+        Self::construct(
+            s,
+            budget_mb,
+            true,
+            false,
+            false,
+            false,
+            None,
+            false,
+            Some(Selected { plan, fit, lists }),
+        )
     }
 
     /// Large-game mode with the cut, the multiway batch and the heads-up
     /// cache choice pinned (benchmarks; like-for-like checks against a
     /// normal plan, whose choices `layout` reports).
     pub fn new_large_pinned(
-        s: &PreflopSolver, budget_mb: u64, parts: Option<usize>, pinned: Option<(usize, bool)>,
+        s: &PreflopSolver,
+        budget_mb: u64,
+        parts: Option<usize>,
+        pinned: Option<(usize, bool)>,
     ) -> Result<Self, String> {
         Self::new_large_with(s, budget_mb, parts, pinned)
     }
@@ -912,15 +1142,21 @@ impl PreflopGpu {
     /// Some when this engine runs in large-game mode.
     pub fn large_game(&self) -> Option<LargeGameInfo> {
         self.large.as_ref().map(|l| LargeGameInfo {
-            parts: l.plan.parts, chunks: l.plan.chunks.len(), multiway_batch: l.fit.batch,
-            hu_equity_cache: l.fit.eq_cache, need_mb: l.fit.need_bytes as f64 / 1e6,
+            parts: l.plan.parts,
+            chunks: l.plan.chunks.len(),
+            multiway_batch: l.fit.batch,
+            hu_equity_cache: l.fit.eq_cache,
+            need_mb: l.fit.need_bytes as f64 / 1e6,
         })
     }
 
     /// One full pass for traverser `p`, as `sweep`: the top's reaches, then
     /// each part down, priced and back up, then the top's values.
     pub(super) fn large_sweep(&mut self, p: i32, mode: i32) -> Result<(), String> {
-        let large = self.large.take().ok_or_else(|| "large-game state missing".to_string())?;
+        let large = self
+            .large
+            .take()
+            .ok_or_else(|| "large-game state missing".to_string())?;
         let result = self.large_sweep_with(&large, p, mode);
         self.large = Some(large);
         result
@@ -928,7 +1164,16 @@ impl PreflopGpu {
 
     fn large_sweep_with(&mut self, large: &Device, p: i32, mode: i32) -> Result<(), String> {
         let np = self.np as usize;
-        run_sweep(&large.plan, &mut OnDevice { gpu: self, stash: None }, np, p, mode)
+        run_sweep(
+            &large.plan,
+            &mut OnDevice {
+                gpu: self,
+                stash: None,
+            },
+            np,
+            p,
+            mode,
+        )
     }
 
     /// `queue_evaluation` in parts. Reaches of the average strategy are
@@ -936,7 +1181,10 @@ impl PreflopGpu {
     /// run on them, and the part's root values wait in the stash until the
     /// top is finished per seat and pass.
     pub(super) fn large_queue_evaluation(&mut self) -> Result<(), String> {
-        let mut large = self.large.take().ok_or_else(|| "large-game state missing".to_string())?;
+        let mut large = self
+            .large
+            .take()
+            .ok_or_else(|| "large-game state missing".to_string())?;
         let result = self.large_evaluation_with(&mut large);
         self.large = Some(large);
         result
@@ -944,14 +1192,32 @@ impl PreflopGpu {
 
     fn large_evaluation_with(&mut self, large: &mut Device) -> Result<(), String> {
         let np = self.np as usize;
-        let best: Vec<i32> = (0..np).map(|p| if self.constrained_br[p] { 3 } else { 2 }).collect();
+        let best: Vec<i32> = (0..np)
+            .map(|p| if self.constrained_br[p] { 3 } else { 2 })
+            .collect();
         let Device { plan, d_stash, .. } = large;
-        run_evaluation(plan, &mut OnDevice { gpu: self, stash: Some(d_stash) }, np, &best)
+        run_evaluation(
+            plan,
+            &mut OnDevice {
+                gpu: self,
+                stash: Some(d_stash),
+            },
+            np,
+            &best,
+        )
     }
 
     /// Keep (or put back) the values of `count` part roots from value slot
     /// `first`, for one seat's evaluation pass.
-    fn lg_stash(&mut self, stash: &mut CudaSlice<f32>, plan: &Plan, first: usize, count: usize, seat_pass: usize, restore: bool) -> Result<(), String> {
+    fn lg_stash(
+        &mut self,
+        stash: &mut CudaSlice<f32>,
+        plan: &Plan,
+        first: usize,
+        count: usize,
+        seat_pass: usize,
+        restore: bool,
+    ) -> Result<(), String> {
         let nc = NUM_CLASSES;
         let (roots_at, roots) = (plan.frontier.0 as usize, plan.frontier.1 as usize);
         let at = (seat_pass * roots + (first - roots_at)) * nc;
@@ -969,32 +1235,53 @@ impl PreflopGpu {
     fn lg_root_copy(&mut self, seat_pass: usize) -> Result<(), String> {
         let nc = NUM_CLASSES;
         let root = self.d_val.slice(0..nc);
-        let mut dst = self.d_eval_roots.slice_mut(seat_pass * nc..(seat_pass + 1) * nc);
+        let mut dst = self
+            .d_eval_roots
+            .slice_mut(seat_pass * nc..(seat_pass + 1) * nc);
         self.stream.memcpy_dtod(&root, &mut dst).map_err(e)
     }
 
     fn lg_init_root(&mut self) -> Result<(), String> {
         unsafe {
-            self.stream.launch_builder(&self.f_init)
-                .arg(&self.d_cprob).arg(&mut self.d_reach).arg(&self.np)
-                .launch(Self::cfg(4)).map_err(e)?;
+            self.stream
+                .launch_builder(&self.f_init)
+                .arg(&self.d_cprob)
+                .arg(&mut self.d_reach)
+                .arg(&self.np)
+                .launch(Self::cfg(4))
+                .map_err(e)?;
         }
         Ok(())
     }
 
     /// `down` for one level span.
     fn lg_down(&mut self, start: u32, count: u32, mode: i32) -> Result<(), String> {
-        if count == 0 { return Ok(()); }
+        if count == 0 {
+            return Ok(());
+        }
         let (start, count) = (start as i32, count as i32);
         unsafe {
-            self.stream.launch_builder(&self.f_down)
-                .arg(&self.d_act_nodes).arg(&start).arg(&count)
-                .arg(&self.d_actor).arg(&self.d_na).arg(&self.d_off).arg(&self.d_cstart).arg(&self.d_children)
-                .arg(&self.d_regrets).arg(&self.d_strat)
-                .arg(&self.d_src).arg(&self.d_foff).arg(&self.d_forced)
-                .arg(&self.d_reach_src).arg(&mut self.d_reach)
-                .arg(&self.np).arg(&mode)
-                .launch(Self::cfg(count as u32)).map_err(e)?;
+            self.stream
+                .launch_builder(&self.f_down)
+                .arg(&self.d_act_nodes)
+                .arg(&start)
+                .arg(&count)
+                .arg(&self.d_actor)
+                .arg(&self.d_na)
+                .arg(&self.d_off)
+                .arg(&self.d_cstart)
+                .arg(&self.d_children)
+                .arg(&self.d_regrets)
+                .arg(&self.d_strat)
+                .arg(&self.d_src)
+                .arg(&self.d_foff)
+                .arg(&self.d_forced)
+                .arg(&self.d_reach_src)
+                .arg(&mut self.d_reach)
+                .arg(&self.np)
+                .arg(&mode)
+                .launch(Self::cfg(count as u32))
+                .map_err(e)?;
         }
         Ok(())
     }
@@ -1002,20 +1289,35 @@ impl PreflopGpu {
     /// Reach totals (and the blockers' rank masses) of `count` blocks from
     /// `first`: the top's once per pass, a part's after its down sweep.
     fn lg_mass(&mut self, first: usize, count: usize) -> Result<(), String> {
-        if count == 0 { return Ok(()); }
+        if count == 0 {
+            return Ok(());
+        }
         let nc = NUM_CLASSES;
         let reach = self.d_reach.slice(first * nc..(first + count) * nc);
         let mut mass = self.d_reach_mass.slice_mut(first..first + count);
         unsafe {
-            self.stream.launch_builder(&self.f_reach_mass)
-                .arg(&reach).arg(&mut mass)
-                .launch(LaunchConfig { block_dim: (128, 1, 1), ..Self::cfg(count as u32) }).map_err(e)?;
+            self.stream
+                .launch_builder(&self.f_reach_mass)
+                .arg(&reach)
+                .arg(&mut mass)
+                .launch(LaunchConfig {
+                    block_dim: (128, 1, 1),
+                    ..Self::cfg(count as u32)
+                })
+                .map_err(e)?;
             if let Some(r) = &mut self.removal {
                 let blocks = count as u32;
                 let mut rank = r.d_rank_mass.slice_mut(first * 13..(first + count) * 13);
-                self.stream.launch_builder(&r.f_rank_mass)
-                    .arg(&reach).arg(&blocks).arg(&mut rank)
-                    .launch(LaunchConfig { grid_dim: (blocks.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 })
+                self.stream
+                    .launch_builder(&r.f_rank_mass)
+                    .arg(&reach)
+                    .arg(&blocks)
+                    .arg(&mut rank)
+                    .launch(LaunchConfig {
+                        grid_dim: (blocks.div_ceil(256), 1, 1),
+                        block_dim: (256, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
                     .map_err(e)?;
             }
         }
@@ -1024,9 +1326,13 @@ impl PreflopGpu {
 
     /// `refresh_eq_cache` for one part's slots.
     fn lg_eq_cache(&mut self, t: &Tables, which: usize) -> Result<(), String> {
-        if self.use_eq_cache == 0 { return Ok(()); }
+        if self.use_eq_cache == 0 {
+            return Ok(());
+        }
         let (start, count) = t.spans[which];
-        if count == 0 { return Ok(()); }
+        if count == 0 {
+            return Ok(());
+        }
         let nc = NUM_CLASSES;
         let stride = t.union * nc;
         let work = self.d_eq_work.slice(t.work_at..t.work_at + t.work_len);
@@ -1036,13 +1342,20 @@ impl PreflopGpu {
                 let at = channel * nc * nc;
                 let tables = self.removal.as_ref().map_or(&self.d_eq, |r| &r.d_eq_w);
                 let table = tables.slice(at..at + nc * nc);
-                let mut cache = self.d_eq_cache.slice_mut(channel * stride..(channel + 1) * stride);
-                self.stream.launch_builder(&self.f_equities)
-                    .arg(&work).arg(&start)
-                    .arg(&blocks).arg(&table)
-                    .arg(&self.d_reach).arg(&self.d_reach_mass)
+                let mut cache = self
+                    .d_eq_cache
+                    .slice_mut(channel * stride..(channel + 1) * stride);
+                self.stream
+                    .launch_builder(&self.f_equities)
+                    .arg(&work)
+                    .arg(&start)
+                    .arg(&blocks)
+                    .arg(&table)
+                    .arg(&self.d_reach)
+                    .arg(&self.d_reach_mass)
                     .arg(&mut cache)
-                    .launch(Self::cfg(count)).map_err(e)?;
+                    .launch(Self::cfg(count))
+                    .map_err(e)?;
             }
         }
         Ok(())
@@ -1053,39 +1366,83 @@ impl PreflopGpu {
     fn lg_terminals(&mut self, chunk: &Chunk, p: i32, gate: i32) -> Result<(), String> {
         let nc = NUM_CLASSES;
         let (t0, tn) = (chunk.terms.0 as usize, chunk.terms.1 as usize);
-        if tn == 0 { return Ok(()); }
+        if tn == 0 {
+            return Ok(());
+        }
         let terms = self.d_terms.slice(t0..t0 + tn);
         let tcount = tn as i32;
-        let eq_slots = self.d_eq_slots.slice(chunk.eq.slots_at..chunk.eq.slots_at + chunk.eq.nblocks);
+        let eq_slots = self
+            .d_eq_slots
+            .slice(chunk.eq.slots_at..chunk.eq.slots_at + chunk.eq.nblocks);
         let stride = (chunk.eq.union * nc) as u64;
         unsafe {
-            self.stream.launch_builder(&self.f_terminal)
-                .arg(&terms).arg(&tcount).arg(&p).arg(&self.np)
-                .arg(&self.d_kind).arg(&self.d_live).arg(&self.d_winner)
-                .arg(&self.d_potf).arg(&self.d_pots).arg(&self.d_inv).arg(&self.d_rw)
-                .arg(&self.d_potg).arg(&self.d_calib).arg(&self.d_cbase)
-                .arg(&self.clip_lo).arg(&self.clip_hi)
+            self.stream
+                .launch_builder(&self.f_terminal)
+                .arg(&terms)
+                .arg(&tcount)
+                .arg(&p)
+                .arg(&self.np)
+                .arg(&self.d_kind)
+                .arg(&self.d_live)
+                .arg(&self.d_winner)
+                .arg(&self.d_potf)
+                .arg(&self.d_pots)
+                .arg(&self.d_inv)
+                .arg(&self.d_rw)
+                .arg(&self.d_potg)
+                .arg(&self.d_calib)
+                .arg(&self.d_cbase)
+                .arg(&self.clip_lo)
+                .arg(&self.clip_hi)
                 .arg(&self.d_eq)
-                .arg(&self.d_reach_src).arg(&self.d_reach).arg(&self.d_reach_mass)
-                .arg(&eq_slots).arg(&self.d_eq_cache).arg(&self.use_eq_cache).arg(&stride)
+                .arg(&self.d_reach_src)
+                .arg(&self.d_reach)
+                .arg(&self.d_reach_mass)
+                .arg(&eq_slots)
+                .arg(&self.d_eq_cache)
+                .arg(&self.use_eq_cache)
+                .arg(&stride)
                 .arg(&self.use_multiway)
-                .arg(&self.d_val_slot).arg(&mut self.d_val)
-                .launch(Self::cfg(tn as u32)).map_err(e)?;
+                .arg(&self.d_val_slot)
+                .arg(&mut self.d_val)
+                .launch(Self::cfg(tn as u32))
+                .map_err(e)?;
             if let Some(r) = &self.removal {
                 let (h0, hn) = (chunk.hu.0 as usize, chunk.hu.1 as usize);
                 if hn > 0 {
                     let hu = r.d_hu_terms.slice(h0..h0 + hn);
                     let count = hn as i32;
-                    self.stream.launch_builder(&r.f_heads_up)
-                        .arg(&hu).arg(&count).arg(&p).arg(&self.np)
-                        .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv).arg(&self.d_rw)
-                        .arg(&self.d_potg).arg(&self.d_calib).arg(&self.d_cbase)
-                        .arg(&self.clip_lo).arg(&self.clip_hi)
+                    self.stream
+                        .launch_builder(&r.f_heads_up)
+                        .arg(&hu)
+                        .arg(&count)
+                        .arg(&p)
+                        .arg(&self.np)
+                        .arg(&self.d_live)
+                        .arg(&self.d_pots)
+                        .arg(&self.d_inv)
+                        .arg(&self.d_rw)
+                        .arg(&self.d_potg)
+                        .arg(&self.d_calib)
+                        .arg(&self.d_cbase)
+                        .arg(&self.clip_lo)
+                        .arg(&self.clip_hi)
                         .arg(&r.d_eq_w)
-                        .arg(&self.d_reach_src).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&r.d_rank_mass)
-                        .arg(&eq_slots).arg(&self.d_eq_cache).arg(&self.use_eq_cache).arg(&stride)
-                        .arg(&self.d_val_slot).arg(&mut self.d_val)
-                        .launch(LaunchConfig { grid_dim: (hn as u32, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+                        .arg(&self.d_reach_src)
+                        .arg(&self.d_reach)
+                        .arg(&self.d_reach_mass)
+                        .arg(&r.d_rank_mass)
+                        .arg(&eq_slots)
+                        .arg(&self.d_eq_cache)
+                        .arg(&self.use_eq_cache)
+                        .arg(&stride)
+                        .arg(&self.d_val_slot)
+                        .arg(&mut self.d_val)
+                        .launch(LaunchConfig {
+                            grid_dim: (hn as u32, 1, 1),
+                            block_dim: (192, 1, 1),
+                            shared_mem_bytes: 0,
+                        })
                         .map_err(e)?;
                 }
             }
@@ -1095,12 +1452,24 @@ impl PreflopGpu {
                 let seats = self.d_leaf_seats.slice(2 * l0..2 * (l0 + ln));
                 let corr = self.d_leaf_corr.slice(l0 * 2 * nc..(l0 + ln) * 2 * nc);
                 let count = ln as u32;
-                self.stream.launch_builder(&self.f_leaf_terminal)
-                    .arg(&leaves).arg(&count).arg(&p).arg(&self.np)
-                    .arg(&seats).arg(&self.d_potg)
-                    .arg(&self.d_reach_src).arg(&self.d_reach_mass).arg(&corr)
-                    .arg(&self.d_val_slot).arg(&mut self.d_val)
-                    .launch(LaunchConfig { grid_dim: (count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+                self.stream
+                    .launch_builder(&self.f_leaf_terminal)
+                    .arg(&leaves)
+                    .arg(&count)
+                    .arg(&p)
+                    .arg(&self.np)
+                    .arg(&seats)
+                    .arg(&self.d_potg)
+                    .arg(&self.d_reach_src)
+                    .arg(&self.d_reach_mass)
+                    .arg(&corr)
+                    .arg(&self.d_val_slot)
+                    .arg(&mut self.d_val)
+                    .launch(LaunchConfig {
+                        grid_dim: (count, 1, 1),
+                        block_dim: (192, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
                     .map_err(e)?;
             }
         }
@@ -1108,11 +1477,23 @@ impl PreflopGpu {
         if let Some(r) = &self.removal {
             let terms = self.d_terms.slice(t0..t0 + tn);
             unsafe {
-                self.stream.launch_builder(&r.f_scale)
-                    .arg(&terms).arg(&tcount).arg(&p).arg(&self.np)
-                    .arg(&self.d_reach_src).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&r.d_rank_mass)
-                    .arg(&self.d_val_slot).arg(&mut self.d_val)
-                    .launch(LaunchConfig { grid_dim: (tn as u32, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+                self.stream
+                    .launch_builder(&r.f_scale)
+                    .arg(&terms)
+                    .arg(&tcount)
+                    .arg(&p)
+                    .arg(&self.np)
+                    .arg(&self.d_reach_src)
+                    .arg(&self.d_reach)
+                    .arg(&self.d_reach_mass)
+                    .arg(&r.d_rank_mass)
+                    .arg(&self.d_val_slot)
+                    .arg(&mut self.d_val)
+                    .launch(LaunchConfig {
+                        grid_dim: (tn as u32, 1, 1),
+                        block_dim: (192, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
                     .map_err(e)?;
             }
         }
@@ -1122,18 +1503,23 @@ impl PreflopGpu {
     /// `multiway_terminals` (prepared, normalized path) for one part: its
     /// own CDF slots, built and read a sample batch at a time.
     fn lg_multiway(&mut self, chunk: &Chunk, p: i32, gate: i32) -> Result<(), String> {
-        if self.use_multiway == 0 { return Ok(()); }
+        if self.use_multiway == 0 {
+            return Ok(());
+        }
         let t = &chunk.mw;
         let (work_start, work_count) = t.spans[p as usize];
         let (m0, mn) = (chunk.mw_terms.0 as usize, chunk.mw_terms.1);
-        if work_count == 0 || mn == 0 { return Ok(()); }
+        if work_count == 0 || mn == 0 {
+            return Ok(());
+        }
         let slot_count = t.union as u32;
         let compact = t.compact as i32;
         let work = self.d_mw_work.slice(t.work_at..t.work_at + t.work_len);
         let blocks = self.d_mw_blocks.slice(t.blocks_at..t.blocks_at + t.union);
         let slots = self.d_mw_slots.slice(t.slots_at..t.slots_at + t.nblocks);
         let map = if t.compact {
-            self.d_mw_compact.slice(t.compact_at..t.compact_at + t.compact_len)
+            self.d_mw_compact
+                .slice(t.compact_at..t.compact_at + t.compact_len)
         } else {
             self.d_mw_compact.slice(0..1)
         };
@@ -1141,38 +1527,104 @@ impl PreflopGpu {
         let samples = super::super::multiway::SAMPLES as u32;
         unsafe {
             if gate != 0 {
-                self.stream.launch_builder(&self.f_multiway_clear_active)
-                    .arg(&mut self.d_mw_active).arg(&slot_count)
-                    .launch(LaunchConfig { grid_dim: (slot_count.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                self.stream
+                    .launch_builder(&self.f_multiway_clear_active)
+                    .arg(&mut self.d_mw_active)
+                    .arg(&slot_count)
+                    .launch(LaunchConfig {
+                        grid_dim: (slot_count.div_ceil(256), 1, 1),
+                        block_dim: (256, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
+                    .map_err(e)?;
             }
-            self.stream.launch_builder(&self.f_multiway_prepare)
-                .arg(&terms).arg(&mn).arg(&p).arg(&self.np)
-                .arg(&self.d_live).arg(&self.d_reach_src).arg(&self.d_reach_mass)
-                .arg(&slots).arg(&mut self.d_mw_active).arg(&mut self.d_mw_prob).arg(&gate)
-                .launch(LaunchConfig { grid_dim: (mn.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
-            self.stream.launch_builder(&self.f_multiway_normalize)
-                .arg(&work).arg(&work_start).arg(&blocks)
-                .arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&compact)
+            self.stream
+                .launch_builder(&self.f_multiway_prepare)
+                .arg(&terms)
+                .arg(&mn)
+                .arg(&p)
+                .arg(&self.np)
+                .arg(&self.d_live)
+                .arg(&self.d_reach_src)
+                .arg(&self.d_reach_mass)
+                .arg(&slots)
+                .arg(&mut self.d_mw_active)
+                .arg(&mut self.d_mw_prob)
+                .arg(&gate)
+                .launch(LaunchConfig {
+                    grid_dim: (mn.div_ceil(256), 1, 1),
+                    block_dim: (256, 1, 1),
+                    shared_mem_bytes: 0,
+                })
+                .map_err(e)?;
+            self.stream
+                .launch_builder(&self.f_multiway_normalize)
+                .arg(&work)
+                .arg(&work_start)
+                .arg(&blocks)
+                .arg(&self.d_reach)
+                .arg(&self.d_reach_mass)
+                .arg(&self.d_mw_active)
+                .arg(&gate)
+                .arg(&compact)
                 .arg(&mut self.d_mw_normalized)
-                .launch(LaunchConfig { grid_dim: (work_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                .launch(LaunchConfig {
+                    grid_dim: (work_count, 1, 1),
+                    block_dim: (192, 1, 1),
+                    shared_mem_bytes: 0,
+                })
+                .map_err(e)?;
             for sample_start in (0..samples).step_by(self.mw_batch as usize) {
                 let sample_count = self.mw_batch.min(samples - sample_start);
-                self.stream.launch_builder(&self.f_multiway_cdf)
-                    .arg(&work).arg(&work_start).arg(&blocks)
+                self.stream
+                    .launch_builder(&self.f_multiway_cdf)
+                    .arg(&work)
+                    .arg(&work_start)
+                    .arg(&blocks)
                     .arg(&self.d_mw_order)
                     .arg(&self.d_mw_normalized)
-                    .arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&compact)
-                    .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
-                    .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
-                self.stream.launch_builder(&self.f_multiway_terminal)
-                    .arg(&terms).arg(&p).arg(&self.np)
-                    .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
-                    .arg(&self.d_reach_src).arg(&self.d_mw_prob)
-                    .arg(&slots).arg(&map).arg(&slot_count).arg(&compact).arg(&self.d_mw_cdf)
-                    .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
-                    .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
-                    .arg(&self.d_val_slot).arg(&mut self.d_val)
-                    .launch(LaunchConfig { block_dim: (192, 1, 1), ..Self::cfg(mn) }).map_err(e)?;
+                    .arg(&self.d_reach_mass)
+                    .arg(&self.d_mw_active)
+                    .arg(&gate)
+                    .arg(&compact)
+                    .arg(&mut self.d_mw_cdf)
+                    .arg(&sample_start)
+                    .arg(&sample_count)
+                    .arg(&self.mw_batch)
+                    .launch(LaunchConfig {
+                        grid_dim: (work_count, sample_count.div_ceil(4), 1),
+                        block_dim: (128, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
+                    .map_err(e)?;
+                self.stream
+                    .launch_builder(&self.f_multiway_terminal)
+                    .arg(&terms)
+                    .arg(&p)
+                    .arg(&self.np)
+                    .arg(&self.d_live)
+                    .arg(&self.d_pots)
+                    .arg(&self.d_inv)
+                    .arg(&self.d_reach_src)
+                    .arg(&self.d_mw_prob)
+                    .arg(&slots)
+                    .arg(&map)
+                    .arg(&slot_count)
+                    .arg(&compact)
+                    .arg(&self.d_mw_cdf)
+                    .arg(&self.d_mw_lower)
+                    .arg(&self.d_mw_upper)
+                    .arg(&sample_start)
+                    .arg(&sample_count)
+                    .arg(&self.mw_batch)
+                    .arg(&samples)
+                    .arg(&self.d_val_slot)
+                    .arg(&mut self.d_val)
+                    .launch(LaunchConfig {
+                        block_dim: (192, 1, 1),
+                        ..Self::cfg(mn)
+                    })
+                    .map_err(e)?;
             }
         }
         Ok(())
@@ -1180,18 +1632,35 @@ impl PreflopGpu {
 
     /// `up` for one level span.
     fn lg_up(&mut self, start: u32, count: u32, p: i32, mode: i32) -> Result<(), String> {
-        if count == 0 { return Ok(()); }
+        if count == 0 {
+            return Ok(());
+        }
         let (start, count) = (start as i32, count as i32);
         unsafe {
-            self.stream.launch_builder(&self.f_up)
-                .arg(&self.d_act_nodes).arg(&start).arg(&count)
-                .arg(&p).arg(&self.np).arg(&mode)
-                .arg(&self.d_actor).arg(&self.d_na).arg(&self.d_off).arg(&self.d_cstart).arg(&self.d_children)
-                .arg(&self.d_src).arg(&self.d_foff).arg(&self.d_forced)
-                .arg(&self.d_reach_src).arg(&self.d_reach)
-                .arg(&mut self.d_regrets).arg(&mut self.d_strat)
-                .arg(&self.d_val_slot).arg(&mut self.d_val)
-                .launch(Self::cfg(count as u32)).map_err(e)?;
+            self.stream
+                .launch_builder(&self.f_up)
+                .arg(&self.d_act_nodes)
+                .arg(&start)
+                .arg(&count)
+                .arg(&p)
+                .arg(&self.np)
+                .arg(&mode)
+                .arg(&self.d_actor)
+                .arg(&self.d_na)
+                .arg(&self.d_off)
+                .arg(&self.d_cstart)
+                .arg(&self.d_children)
+                .arg(&self.d_src)
+                .arg(&self.d_foff)
+                .arg(&self.d_forced)
+                .arg(&self.d_reach_src)
+                .arg(&self.d_reach)
+                .arg(&mut self.d_regrets)
+                .arg(&mut self.d_strat)
+                .arg(&self.d_val_slot)
+                .arg(&mut self.d_val)
+                .launch(Self::cfg(count as u32))
+                .map_err(e)?;
         }
         Ok(())
     }

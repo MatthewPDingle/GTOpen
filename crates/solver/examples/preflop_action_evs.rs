@@ -1,9 +1,10 @@
 //! Evaluate a saved game without changing it or running further iterations.
-use solver::preflop::{
-    PreflopSolver,
-    equity::{EquityTable, NUM_CLASSES, class_label},
-};
 use std::sync::Arc;
+
+use solver::preflop::{
+    equity::{class_label, EquityTable, NUM_CLASSES},
+    PreflopSolver,
+};
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     let save = args.get(1).expect("save path");

@@ -7,7 +7,9 @@ pub(crate) fn small() -> Arc<ThreeWayTable> {
 }
 
 fn class(label: &str) -> usize {
-    (0..N).find(|&c| super::super::equity::class_label(c) == label).unwrap()
+    (0..N)
+        .find(|&c| super::super::equity::class_label(c) == label)
+        .unwrap()
 }
 
 #[test]
@@ -29,7 +31,9 @@ fn shares_are_symmetric_and_split_each_pot_exactly() {
         let w = t.compatible(x, y, z);
         assert_eq!(w, t.compatible(y, z, x));
         assert_eq!(w, t.compatible(z, y, x));
-        if w == 0.0 { continue; }
+        if w == 0.0 {
+            continue;
+        }
         assert_eq!(t.share(x, y, z), t.share(x, z, y));
         let total = t.share(x, y, z) + t.share(y, x, z) + t.share(z, x, y);
         assert!((total - 1.0).abs() < 1e-5, "{x} {y} {z}: {total}");
@@ -40,16 +44,22 @@ fn shares_are_symmetric_and_split_each_pot_exactly() {
 fn point_masses_read_the_table_and_ranges_weight_by_compatibility() {
     let t = small();
     let (aa, kk, qq) = (class("AA"), class("KK"), class("QQ"));
-    let point = |c: usize| { let mut d = vec![0f32; N]; d[c] = 1.0; d };
+    let point = |c: usize| {
+        let mut d = vec![0f32; N];
+        d[c] = 1.0;
+        d
+    };
     let s = t.shares(&point(kk), &point(qq));
     assert!((s[aa] - t.share(aa, kk, qq) as f64).abs() < 1e-6);
     // Against {AA, KK} half and half, AA only ever meets the KK half
     // alongside another AA one time in six: the weights must say so.
     let mut mix = vec![0f32; N];
-    mix[aa] = 0.5; mix[kk] = 0.5;
+    mix[aa] = 0.5;
+    mix[kk] = 0.5;
     let got = t.shares(&mix, &point(qq))[aa];
     let w_aa = t.compatible(aa, aa, qq) as f64;
-    let want = (0.5 * w_aa * t.share(aa, aa, qq) as f64 + 0.5 * t.share(aa, kk, qq) as f64) / (0.5 * w_aa + 0.5);
+    let want = (0.5 * w_aa * t.share(aa, aa, qq) as f64 + 0.5 * t.share(aa, kk, qq) as f64)
+        / (0.5 * w_aa + 0.5);
     assert!((got - want).abs() < 1e-6);
     // Impossible deals get an even third.
     assert_eq!(t.shares(&point(aa), &point(aa))[aa], 1.0 / 3.0);
@@ -84,10 +94,13 @@ fn cache_round_trips() {
 }
 
 mod solver {
-    use super::small;
-    use crate::preflop::equity::{EquityTable, NUM_CLASSES};
-    use crate::preflop::{PreflopConfig, PreflopSolver, KIND_POT_SHARE};
     use std::sync::Arc;
+
+    use super::small;
+    use crate::preflop::{
+        equity::{EquityTable, NUM_CLASSES},
+        PreflopConfig, PreflopSolver, KIND_POT_SHARE,
+    };
 
     fn table() -> Arc<EquityTable> {
         static T: std::sync::OnceLock<Arc<EquityTable>> = std::sync::OnceLock::new();
@@ -103,12 +116,19 @@ mod solver {
             "positions": positions, "posts": posts, "stack": 10.0, "limp": true,
             "open_raises": [2.5], "raise_mults": [], "max_raises": 1, "add_allin": true,
             "rake_pct": 5.0, "rake_cap": 1.0, "realization": "raw"
-        })).unwrap();
+        }))
+        .unwrap();
         PreflopSolver::new(cfg, table()).unwrap()
     }
 
     fn reaches(n: usize) -> Vec<Vec<f32>> {
-        (0..n).map(|q| (0..NUM_CLASSES).map(|h| ((h * 7 + q * 13) % 11) as f32 / 40.0).collect()).collect()
+        (0..n)
+            .map(|q| {
+                (0..NUM_CLASSES)
+                    .map(|h| ((h * 7 + q * 13) % 11) as f32 / 40.0)
+                    .collect()
+            })
+            .collect()
     }
 
     #[test]
@@ -120,20 +140,30 @@ mod solver {
         let r = reaches(4);
         let mut checked = [false; 2];
         for (t, nd) in s.nodes.iter().enumerate() {
-            if nd.kind != KIND_POT_SHARE || nd.live.count_ones() < 3 || !nd.side_pots.is_empty() { continue; }
+            if nd.kind != KIND_POT_SHARE || nd.live.count_ones() < 3 || !nd.side_pots.is_empty() {
+                continue;
+            }
             for p in (0..4).filter(|&p| nd.live & (1 << p) != 0) {
                 let mut got = vec![0f32; NUM_CLASSES];
                 s.terminal_value(t, p, &r, &mut got);
                 let mut want = vec![0f32; NUM_CLASSES];
                 if nd.live.count_ones() == 3 {
-                    let opp: Vec<Vec<f32>> = (0..4).filter(|&q| q != p && nd.live & (1 << q) != 0).map(|q| {
-                        let m: f32 = r[q].iter().sum();
-                        r[q].iter().map(|x| x / m).collect()
-                    }).collect();
+                    let opp: Vec<Vec<f32>> = (0..4)
+                        .filter(|&q| q != p && nd.live & (1 << q) != 0)
+                        .map(|q| {
+                            let m: f32 = r[q].iter().sum();
+                            r[q].iter().map(|x| x / m).collect()
+                        })
+                        .collect();
                     let shares = small().shares(&opp[0], &opp[1]);
-                    let prob: f64 = (0..4).filter(|&q| q != p).map(|q| r[q].iter().sum::<f32>() as f64).product();
+                    let prob: f64 = (0..4)
+                        .filter(|&q| q != p)
+                        .map(|q| r[q].iter().sum::<f32>() as f64)
+                        .product();
                     let pot = nd.pot - s.rake_of(nd.pot);
-                    for h in 0..NUM_CLASSES { want[h] = (prob * (pot * shares[h] - nd.invested[p])) as f32; }
+                    for h in 0..NUM_CLASSES {
+                        want[h] = (prob * (pot * shares[h] - nd.invested[p])) as f32;
+                    }
                     checked[0] = true;
                 } else {
                     coupled.terminal_value(t, p, &r, &mut want);
@@ -151,7 +181,8 @@ mod solver {
         s.set_three_way_table(small()).unwrap();
         s.iterate();
         assert!(s.set_multiway_equity_model("coupled_deck_v1").is_err());
-        let path = std::env::temp_dir().join(format!("gtopen-3way-save-{}.gtop", std::process::id()));
+        let path =
+            std::env::temp_dir().join(format!("gtopen-3way-save-{}.gtop", std::process::id()));
         s.save_game(path.to_str().unwrap()).unwrap();
         let bytes = std::fs::read(&path).unwrap();
         std::fs::remove_file(&path).ok();

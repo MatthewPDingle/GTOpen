@@ -10,19 +10,19 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 pub mod best_response;
 pub mod cards;
 pub mod cfr;
+mod contextual_postflop;
 pub mod datagen;
 pub mod datagen3;
 pub mod datagen_mix;
-mod contextual_postflop;
 pub mod evaluator;
 pub mod fit;
 pub mod game;
+#[cfg(feature = "gpu")]
+pub mod gpu;
 pub mod gpu_turn;
 pub mod icm;
 pub mod lock_history;
 pub mod multiway;
-#[cfg(feature = "gpu")]
-pub mod gpu;
 pub mod preflop;
 pub mod query;
 pub mod range;

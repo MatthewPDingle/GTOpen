@@ -1,11 +1,13 @@
 //! Storage-only prototype: retain explicit GPU traversal and restore every bit.
 
+use std::sync::Arc;
+
 use crate::{
     gpu::{plan::GpuPlan, GpuSolver, SymmetricContinuationGpu},
+    parse_sizes,
     store::Store,
+    Algorithm, Solver, Spot, SpotConfig, StreetSizing, TreeConfig,
 };
-use crate::{parse_sizes, Algorithm, Solver, Spot, SpotConfig, StreetSizing, TreeConfig};
-use std::sync::Arc;
 
 fn data(s: &Store) -> &[f32] {
     let Store::F32(a) = s else {

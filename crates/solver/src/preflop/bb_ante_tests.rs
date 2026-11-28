@@ -3,9 +3,12 @@
 //! paid differs. Uncalled chips, rake and side pots compare what the seats
 //! bet, never the ante.
 
-use super::equity::{class_prob, EquityTable, NUM_CLASSES};
-use super::*;
 use std::sync::{Arc, OnceLock};
+
+use super::{
+    equity::{class_prob, EquityTable, NUM_CLASSES},
+    *,
+};
 
 fn table() -> Arc<EquityTable> {
     static T: OnceLock<Arc<EquityTable>> = OnceLock::new();
@@ -27,9 +30,16 @@ fn four(ante: f64, bb_ante: f64) -> PreflopConfig {
 
 fn step(s: &PreflopSolver, node: usize, label: &str) -> usize {
     let nd = &s.nodes[node];
-    let a = nd.actions.iter().position(|a| a.label.starts_with(label)).unwrap_or_else(|| {
-        panic!("no {label:?} among {:?}", nd.actions.iter().map(|a| &a.label).collect::<Vec<_>>())
-    });
+    let a = nd
+        .actions
+        .iter()
+        .position(|a| a.label.starts_with(label))
+        .unwrap_or_else(|| {
+            panic!(
+                "no {label:?} among {:?}",
+                nd.actions.iter().map(|a| &a.label).collect::<Vec<_>>()
+            )
+        });
     s.child(node, a)
 }
 
@@ -39,14 +49,21 @@ fn walk(s: &PreflopSolver, path: &[&str]) -> usize {
 
 fn weights(n: usize) -> Vec<Vec<f32>> {
     (0..n)
-        .map(|p| (0..NUM_CLASSES).map(|h| class_prob(h) * ((h * 7 + p * 17) % 23 + 1) as f32 / 25.0).collect())
+        .map(|p| {
+            (0..NUM_CLASSES)
+                .map(|h| class_prob(h) * ((h * 7 + p * 17) % 23 + 1) as f32 / 25.0)
+                .collect()
+        })
         .collect()
 }
 
 #[test]
 fn only_the_big_blind_pays_and_it_never_counts_as_a_bet() {
     let c = four(0.0, 1.0);
-    assert_eq!((c.ante_of(0), c.ante_of(2), c.ante_of(3), c.ante_total()), (0.0, 0.0, 1.0, 1.0));
+    assert_eq!(
+        (c.ante_of(0), c.ante_of(2), c.ante_of(3), c.ante_total()),
+        (0.0, 0.0, 1.0, 1.0)
+    );
     let plain = PreflopSolver::new(four(0.0, 0.0), table()).unwrap();
     let s = PreflopSolver::new(c.clone(), table()).unwrap();
     // The ante is paid on top of the stack: everyone still plays 30 bb.
@@ -58,8 +75,10 @@ fn only_the_big_blind_pays_and_it_never_counts_as_a_bet() {
     assert_eq!(estimate_tree(&c).unwrap().nodes as usize, s.nodes.len());
     for (a, b) in s.nodes.iter().zip(&plain.nodes) {
         assert_eq!(a.kind, b.kind);
-        assert_eq!(a.actions.iter().map(|x| &x.label).collect::<Vec<_>>(),
-                   b.actions.iter().map(|x| &x.label).collect::<Vec<_>>());
+        assert_eq!(
+            a.actions.iter().map(|x| &x.label).collect::<Vec<_>>(),
+            b.actions.iter().map(|x| &x.label).collect::<Vec<_>>()
+        );
         assert!((a.pot - b.pot - 1.0).abs() < 1e-9);
         assert!(a.side_pots.is_empty(), "equal stacks never make side pots");
         assert!((a.invested[3] - b.invested[3] - 1.0).abs() < 1e-9);
@@ -112,9 +131,16 @@ fn learned_values_with_blockers_do_not_see_who_paid_the_ante() {
         s.leaf_terminals().unwrap().2.to_vec()
     };
     let (each, bb) = (corrections(0.25, 0.0), corrections(0.0, 1.0));
-    assert!(each.iter().any(|c| c.abs() > 1e-3), "the net corrects something");
+    assert!(
+        each.iter().any(|c| c.abs() > 1e-3),
+        "the net corrects something"
+    );
     // the two solves match step for step to float noise (see the next test)
-    let worst = each.iter().zip(&bb).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max);
+    let worst = each
+        .iter()
+        .zip(&bb)
+        .map(|(x, y)| (x - y).abs())
+        .fold(0f32, f32::max);
     assert!(worst < 1e-4, "corrections differ by {worst} of the pot");
 }
 
@@ -134,14 +160,21 @@ fn same_game_as_each_seat_paying_a_share() {
         }
         assert!((each.nodes[node].pot - bb.nodes[node].pot).abs() < 1e-9);
         for p in 0..4 {
-            let prob: f64 = (0..4).filter(|&q| q != p).map(|q| w[q].iter().sum::<f32>() as f64).product();
+            let prob: f64 = (0..4)
+                .filter(|&q| q != p)
+                .map(|q| w[q].iter().sum::<f32>() as f64)
+                .product();
             // what seat p paid less (or more) in the big blind ante game
             let shift = prob * (0.25 - if p == 3 { 1.0 } else { 0.0 });
             each.terminal_value(node, p, &w, &mut a);
             bb.terminal_value(node, p, &w, &mut b);
             for h in 0..NUM_CLASSES {
-                assert!((a[h] as f64 + shift - b[h] as f64).abs() < 1e-5,
-                        "node {node} seat {p} class {h}: {} vs {}", a[h], b[h]);
+                assert!(
+                    (a[h] as f64 + shift - b[h] as f64).abs() < 1e-5,
+                    "node {node} seat {p} class {h}: {} vs {}",
+                    a[h],
+                    b[h]
+                );
             }
         }
     }
@@ -157,31 +190,45 @@ fn same_game_as_each_seat_paying_a_share() {
         bb.iterate();
     }
     let (ra, rb) = (each.arena_snapshot().0, bb.arena_snapshot().0);
-    let worst = ra.iter().zip(&rb).map(|(x, y)| (x - y).abs()).fold(0.0f32, f32::max);
+    let worst = ra
+        .iter()
+        .zip(&rb)
+        .map(|(x, y)| (x - y).abs())
+        .fold(0.0f32, f32::max);
     assert!(worst < 1e-3, "regrets differ beyond float noise: {worst}");
     for node in (0..each.nodes.len()).filter(|&i| each.nodes[i].kind == KIND_ACTION) {
         let (x, y) = (each.average_strategy(node), bb.average_strategy(node));
         // A class whose regrets sit at zero can tip either way on float
         // noise, so the node is compared as a whole, not class by class.
         let mean = x.iter().zip(&y).map(|(x, y)| (x - y).abs()).sum::<f32>() / x.len() as f32;
-        assert!(mean < 1e-3, "node {node}: strategies differ by {mean} on average");
+        assert!(
+            mean < 1e-3,
+            "node {node}: strategies differ by {mean} on average"
+        );
     }
     // The big blind paid 1 where it used to pay a quarter; the others pay nothing.
     let (x, y) = (each.evs(), bb.evs());
     for p in 0..4 {
         let paid = if p == 3 { 1.0 } else { 0.0 };
-        assert!((x[p] + 0.25 - paid - y[p]).abs() < 1e-3, "seat {p}: {} vs {}", x[p], y[p]);
+        assert!(
+            (x[p] + 0.25 - paid - y[p]).abs() < 1e-3,
+            "seat {p}: {} vs {}",
+            x[p],
+            y[p]
+        );
     }
 }
 
 #[test]
 fn side_pots_put_the_ante_in_the_main_pot() {
-    let three = |stacks: [f64; 3], opens: &[f64]| cfg(serde_json::json!({
-        "positions": ["BTN", "SB", "BB"], "posts": [0.0, 0.5, 1.0],
-        "stack": stacks.iter().cloned().fold(0.0, f64::max), "stacks": stacks, "bb_ante": 1.0,
-        "open_raises": opens, "raise_mults": [3.0], "max_raises": 3,
-        "add_allin": true, "realization": "raw"
-    }));
+    let three = |stacks: [f64; 3], opens: &[f64]| {
+        cfg(serde_json::json!({
+            "positions": ["BTN", "SB", "BB"], "posts": [0.0, 0.5, 1.0],
+            "stack": stacks.iter().cloned().fold(0.0, f64::max), "stacks": stacks, "bb_ante": 1.0,
+            "open_raises": opens, "raise_mults": [3.0], "max_raises": 3,
+            "add_allin": true, "realization": "raw"
+        }))
+    };
     // Everyone all-in: 10 from each plus the ante in the main pot, the rest
     // between the two deep stacks.
     let s = PreflopSolver::new(three([30.0, 10.0, 30.0], &[2.5]), table()).unwrap();
@@ -226,11 +273,18 @@ fn payoffs_conserve_chips_net_of_rake() {
         }
         assert!((nd.invested.iter().sum::<f64>() - nd.pot).abs() < 1e-9);
         let exact = match nd.kind {
-            KIND_FOLD_WIN => { folds += 1; Some(s.fold_win_rake(nd)) }
+            KIND_FOLD_WIN => {
+                folds += 1;
+                Some(s.fold_win_rake(nd))
+            }
             _ if !nd.side_pots.is_empty() => {
                 layered += 1;
                 let in_pots: f64 = nd.side_pots.iter().map(|p| p.0).sum();
-                assert!((in_pots - nd.pot).abs() < 1e-9, "pots {in_pots} vs {}", nd.pot);
+                assert!(
+                    (in_pots - nd.pot).abs() < 1e-9,
+                    "pots {in_pots} vs {}",
+                    nd.pot
+                );
                 Some(s.rake_of(nd.pot))
             }
             // the static skew on other pots is the model's own approximation
@@ -242,11 +296,22 @@ fn payoffs_conserve_chips_net_of_rake() {
             let mut values = [0.0f32; NUM_CLASSES];
             s.terminal_value(node, p, &w, &mut values);
             // fold-win values are one number per seat times the others' reach
-            total += values.iter().zip(&w[p]).map(|(v, w)| *v as f64 * *w as f64).sum::<f64>();
+            total += values
+                .iter()
+                .zip(&w[p])
+                .map(|(v, w)| *v as f64 * *w as f64)
+                .sum::<f64>();
         }
-        assert!((total + probability * rake).abs() < 1e-5, "node {node}: {total} vs {}", -probability * rake);
+        assert!(
+            (total + probability * rake).abs() < 1e-5,
+            "node {node}: {total} vs {}",
+            -probability * rake
+        );
     }
-    assert!(layered > 10 && folds > 10, "{layered} side-pot and {folds} fold terminals");
+    assert!(
+        layered > 10 && folds > 10,
+        "{layered} side-pot and {folds} fold terminals"
+    );
     for _ in 0..10 {
         s.iterate();
     }
@@ -258,8 +323,17 @@ fn payoffs_conserve_chips_net_of_rake() {
 fn tournament_payouts_count_the_ante_in_the_big_blinds_stack() {
     let mut c = four(0.0, 1.0);
     (c.rake_pct, c.rake_cap, c.no_flop_no_drop) = (0.0, 0.0, true);
-    c.icm = Some(IcmConfig { payouts: vec![100.0], field: vec![25.0], field_groups: vec![], stack_off: 1.0 });
-    let chip = { let mut c = c.clone(); c.icm = None; PreflopSolver::new(c, table()).unwrap() };
+    c.icm = Some(IcmConfig {
+        payouts: vec![100.0],
+        field: vec![25.0],
+        field_groups: vec![],
+        stack_off: 1.0,
+    });
+    let chip = {
+        let mut c = c.clone();
+        c.icm = None;
+        PreflopSolver::new(c, table()).unwrap()
+    };
     let icm = PreflopSolver::new(c, table()).unwrap();
     // four 30 bb stacks, the ante the big blind paid on top, and the field
     assert!((icm.icm.as_ref().unwrap().scale - (4.0 * 30.0 + 1.0 + 25.0) / 100.0).abs() < 1e-12);
@@ -270,7 +344,10 @@ fn tournament_payouts_count_the_ante_in_the_big_blinds_stack() {
         for p in 0..4 {
             chip.terminal_value(node, p, &w, &mut a);
             icm.terminal_value(node, p, &w, &mut b);
-            assert!((0..NUM_CLASSES).all(|h| (a[h] - b[h]).abs() <= 2e-4 * a[h].abs().max(1.0)), "node {node} seat {p}");
+            assert!(
+                (0..NUM_CLASSES).all(|h| (a[h] - b[h]).abs() <= 2e-4 * a[h].abs().max(1.0)),
+                "node {node} seat {p}"
+            );
         }
     }
 }
@@ -281,7 +358,8 @@ fn saves_use_v8_and_round_trip() {
     for _ in 0..3 {
         s.iterate();
     }
-    let path = std::env::temp_dir().join(format!("gtopen-bb-ante-save-{}.gtop", std::process::id()));
+    let path =
+        std::env::temp_dir().join(format!("gtopen-bb-ante-save-{}.gtop", std::process::id()));
     let path = path.to_str().unwrap();
     s.save_game(path).unwrap();
     let bytes = std::fs::read(path).unwrap();
@@ -297,12 +375,18 @@ fn saves_use_v8_and_round_trip() {
     out.extend(serde_json::to_vec(&header).unwrap());
     out.extend_from_slice(&bytes[end..]);
     std::fs::write(path, out).unwrap();
-    assert!(PreflopSolver::load_game(path, table()).err().unwrap().contains("v8"));
+    assert!(PreflopSolver::load_game(path, table())
+        .err()
+        .unwrap()
+        .contains("v8"));
     // Without one the config and the file are what they always were.
     let old = PreflopSolver::new(four(0.25, 0.0), table()).unwrap();
     assert!(!serde_json::to_string(&old.cfg).unwrap().contains("bb_ante"));
     old.save_game(path).unwrap();
-    assert_ne!(&std::fs::read(path).unwrap()[..12], super::save::MAGIC_BB_ANTE);
+    assert_ne!(
+        &std::fs::read(path).unwrap()[..12],
+        super::save::MAGIC_BB_ANTE
+    );
     std::fs::remove_file(path).unwrap();
 }
 

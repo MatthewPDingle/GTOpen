@@ -2,10 +2,13 @@
 //! at the root exactly (same reach × valid weighting), and at a pooled turn
 //! node the per-card node_views combined with the same weights.
 
-use solver::query::{NodeView, PathStep};
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Solver, Spot, SpotConfig};
 use std::sync::Arc;
+
+use solver::{
+    query::{NodeView, PathStep},
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    Solver, Spot, SpotConfig,
+};
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
     StreetSizing {
@@ -59,7 +62,12 @@ fn view_stats(v: &NodeView, p: usize) -> (f64, f64, Vec<f64>, f64) {
             }
         }
     }
-    (wev / w, weq / weqw.max(1e-12), fs.iter().map(|f| f / w).collect(), w)
+    (
+        wev / w,
+        weq / weqw.max(1e-12),
+        fs.iter().map(|f| f / w).collect(),
+        w,
+    )
 }
 
 #[test]
@@ -73,8 +81,16 @@ fn root_matches_node_view() {
     for p in 0..2 {
         let (ev, eq, freqs, _) = view_stats(&v, p);
         let ps = &root.players[p];
-        assert!((ps.ev as f64 - ev).abs() < 2e-3, "p{p} ev {} vs {ev}", ps.ev);
-        assert!((ps.eq.unwrap() as f64 - eq).abs() < 2e-3, "p{p} eq {:?} vs {eq}", ps.eq);
+        assert!(
+            (ps.ev as f64 - ev).abs() < 2e-3,
+            "p{p} ev {} vs {ev}",
+            ps.ev
+        );
+        assert!(
+            (ps.eq.unwrap() as f64 - eq).abs() < 2e-3,
+            "p{p} eq {:?} vs {eq}",
+            ps.eq
+        );
         if p == actor {
             for a in 0..freqs.len() {
                 assert!((root.freqs[a] as f64 - freqs[a]).abs() < 2e-3, "freq {a}");
@@ -82,13 +98,20 @@ fn root_matches_node_view() {
             // category shares partition the actor's range mass
             let cats = ps.cats.as_ref().expect("root is a full node");
             let made_w: f32 = cats.made.iter().map(|c| c.w).sum();
-            assert!((made_w - ps.w).abs() < 1e-2 * ps.w.max(1.0), "{made_w} vs {}", ps.w);
+            assert!(
+                (made_w - ps.w).abs() < 1e-2 * ps.w.max(1.0),
+                "{made_w} vs {}",
+                ps.w
+            );
         }
     }
     // pot-share convention survives the sweep
     let pot = root.pot;
     let sum = root.players[0].ev as f64 + root.players[1].ev as f64;
-    assert!((sum - pot).abs() < 0.05, "EV_OOP + EV_IP = {sum}, pot {pot}");
+    assert!(
+        (sum - pot).abs() < 0.05,
+        "EV_OOP + EV_IP = {sum}, pot {pot}"
+    );
 }
 
 #[test]
@@ -96,19 +119,36 @@ fn pooled_turn_matches_per_card_views() {
     let s = solved();
     let lines = s.report_lines();
     let root = lines.get("").unwrap();
-    let ci = root.kinds.iter().position(|k| k == "check").expect("root has a check");
+    let ci = root
+        .kinds
+        .iter()
+        .position(|k| k == "check")
+        .expect("root has a check");
     let k1 = format!("a{ci}");
     let ip = lines.get(&k1).unwrap();
-    let cj = ip.kinds.iter().position(|k| k == "check").expect("IP has a check");
+    let cj = ip
+        .kinds
+        .iter()
+        .position(|k| k == "check")
+        .expect("IP has a check");
     let k2 = format!("{k1},a{cj}");
-    assert_eq!(lines.get(&k2).unwrap().kind, "chance", "check-check ends the flop");
+    assert_eq!(
+        lines.get(&k2).unwrap().kind,
+        "chance",
+        "check-check ends the flop"
+    );
     let k3 = format!("{k2},c");
     let turn = lines.get(&k3).expect("first turn decision recorded");
     assert_eq!(turn.kind, "action");
     let actor = turn.actor.unwrap() as usize;
 
     // pool the per-card node_views with the same weights
-    let chance = s.node_view(&[PathStep::Action { index: ci }, PathStep::Action { index: cj }]).unwrap();
+    let chance = s
+        .node_view(&[
+            PathStep::Action { index: ci },
+            PathStep::Action { index: cj },
+        ])
+        .unwrap();
     let cards = chance.available_cards.unwrap();
     let mut wev = [0f64; 2];
     let mut weq = [0f64; 2];
@@ -138,15 +178,29 @@ fn pooled_turn_matches_per_card_views() {
         let ev = wev[p] / w[p];
         let eq = weq[p] / w[p];
         let ps = &turn.players[p];
-        assert!((ps.ev as f64 - ev).abs() < 3e-3, "p{p} pooled ev {} vs {ev}", ps.ev);
-        assert!((ps.eq.unwrap() as f64 - eq).abs() < 3e-3, "p{p} pooled eq {:?} vs {eq}", ps.eq);
+        assert!(
+            (ps.ev as f64 - ev).abs() < 3e-3,
+            "p{p} pooled ev {} vs {ev}",
+            ps.ev
+        );
+        assert!(
+            (ps.eq.unwrap() as f64 - eq).abs() < 3e-3,
+            "p{p} pooled eq {:?} vs {eq}",
+            ps.eq
+        );
     }
     for a in 0..fs.len() {
         let f = fs[a] / w[actor];
-        assert!((turn.freqs[a] as f64 - f).abs() < 3e-3, "pooled freq {a}: {} vs {f}", turn.freqs[a]);
+        assert!(
+            (turn.freqs[a] as f64 - f).abs() < 3e-3,
+            "pooled freq {a}: {} vs {f}",
+            turn.freqs[a]
+        );
     }
     // river lines are capped at the first response; deeper river shapes are absent
     let deep_river = lines.keys().filter(|k| k.matches('c').count() == 2).count();
     assert!(deep_river > 0, "river nodes recorded");
-    assert!(lines.values().all(|v| v.street < 2 || v.kind != "action" || true));
+    assert!(lines
+        .values()
+        .all(|v| v.street < 2 || v.kind != "action" || true));
 }

@@ -31,7 +31,9 @@ pub struct Group {
 pub fn state_count(table: usize, groups: &[Group], payouts: usize) -> Option<usize> {
     let players = table + groups.iter().map(|g| g.count).sum::<usize>();
     let places = payouts.min(players);
-    let mut states = 1usize.checked_shl(table as u32).filter(|&s| s <= MAX_STATES)?;
+    let mut states = 1usize
+        .checked_shl(table as u32)
+        .filter(|&s| s <= MAX_STATES)?;
     for g in groups {
         states = states.checked_mul(g.count.min(places.saturating_sub(1)) + 1)?;
         if states > MAX_STATES {
@@ -44,14 +46,19 @@ pub fn state_count(table: usize, groups: &[Group], payouts: usize) -> Option<usi
 /// Expected prize of each table player and of each player in each group.
 /// Every stack must be > 0; `payouts[k]` is the prize for place k+1, places
 /// beyond the number of players are ignored and missing places pay 0.
-pub fn malmuth_harville_groups(stacks: &[f64], groups: &[Group], payouts: &[f64]) -> (Vec<f64>, Vec<f64>) {
+pub fn malmuth_harville_groups(
+    stacks: &[f64],
+    groups: &[Group],
+    payouts: &[f64],
+) -> (Vec<f64>, Vec<f64>) {
     let n = stacks.len();
     let groups: Vec<Group> = groups.iter().copied().filter(|g| g.count > 0).collect();
     let mut table = vec![0.0; n];
     let mut field = vec![0.0; groups.len()];
     let players = n + groups.iter().map(|g| g.count).sum::<usize>();
     let places = payouts.len().min(players);
-    let total: f64 = stacks.iter().sum::<f64>() + groups.iter().map(|g| g.stack * g.count as f64).sum::<f64>();
+    let total: f64 =
+        stacks.iter().sum::<f64>() + groups.iter().map(|g| g.stack * g.count as f64).sum::<f64>();
     if places == 0 || total <= 0.0 {
         return (table, field);
     }
@@ -130,7 +137,12 @@ pub fn malmuth_harville(stacks: &[f64], payouts: &[f64]) -> Vec<f64> {
 /// players who busted in this hand finish below them, a larger starting
 /// stack finishing higher, with equal starting stacks splitting the places
 /// they cover.
-pub fn icm_after_hand(before: &[f64], after: &[f64], groups: &[Group], payouts: &[f64]) -> (Vec<f64>, Vec<f64>) {
+pub fn icm_after_hand(
+    before: &[f64],
+    after: &[f64],
+    groups: &[Group],
+    payouts: &[f64],
+) -> (Vec<f64>, Vec<f64>) {
     let n = before.len();
     assert_eq!(after.len(), n);
     let alive: Vec<usize> = (0..n).filter(|&i| after[i] > 1e-9).collect();
@@ -166,7 +178,14 @@ mod tests {
 
     /// Brute force over every finishing order.
     fn brute(stacks: &[f64], payouts: &[f64]) -> Vec<f64> {
-        fn rec(stacks: &[f64], payouts: &[f64], left: &mut Vec<usize>, prob: f64, place: usize, out: &mut [f64]) {
+        fn rec(
+            stacks: &[f64],
+            payouts: &[f64],
+            left: &mut Vec<usize>,
+            prob: f64,
+            place: usize,
+            out: &mut [f64],
+        ) {
             if left.is_empty() {
                 return;
             }
@@ -181,7 +200,14 @@ mod tests {
             }
         }
         let mut out = vec![0.0; stacks.len()];
-        rec(stacks, payouts, &mut (0..stacks.len()).collect(), 1.0, 0, &mut out);
+        rec(
+            stacks,
+            payouts,
+            &mut (0..stacks.len()).collect(),
+            1.0,
+            0,
+            &mut out,
+        );
         out
     }
 
@@ -190,14 +216,20 @@ mod tests {
         let cases: Vec<(Vec<f64>, Vec<f64>)> = vec![
             (vec![5000.0, 3000.0, 2000.0], vec![50.0, 30.0, 20.0]),
             (vec![10.0, 20.0, 30.0, 40.0, 5.0], vec![40.0, 25.0, 15.0]),
-            (vec![12.0, 12.0, 30.0, 7.5, 18.0, 25.0], vec![30.0, 20.0, 14.0, 10.0, 0.0, 0.0]),
+            (
+                vec![12.0, 12.0, 30.0, 7.5, 18.0, 25.0],
+                vec![30.0, 20.0, 14.0, 10.0, 0.0, 0.0],
+            ),
             (vec![1.0, 2.0], vec![100.0]),
         ];
         for (stacks, payouts) in cases {
             let a = malmuth_harville(&stacks, &payouts);
             let b = brute(&stacks, &payouts);
             for (x, y) in a.iter().zip(&b) {
-                assert!((x - y).abs() < 1e-9, "{stacks:?} {payouts:?}: {a:?} vs {b:?}");
+                assert!(
+                    (x - y).abs() < 1e-9,
+                    "{stacks:?} {payouts:?}: {a:?} vs {b:?}"
+                );
             }
             let paid: f64 = payouts.iter().take(stacks.len()).sum();
             assert!((a.iter().sum::<f64>() - paid).abs() < 1e-9);
@@ -242,7 +274,16 @@ mod tests {
         // listing its players one by one.
         let table = [12.0, 30.0, 7.5];
         let payouts = [40.0, 25.0, 15.0, 10.0, 6.0, 4.0];
-        let groups = [Group { stack: 20.0, count: 4 }, Group { stack: 9.0, count: 3 }];
+        let groups = [
+            Group {
+                stack: 20.0,
+                count: 4,
+            },
+            Group {
+                stack: 9.0,
+                count: 3,
+            },
+        ];
         let (t, f) = malmuth_harville_groups(&table, &groups, &payouts);
         let mut all = table.to_vec();
         all.extend([20.0; 4]);
@@ -251,7 +292,10 @@ mod tests {
         for i in 0..3 {
             assert!((t[i] - v[i]).abs() < 1e-9, "{t:?} vs {v:?}");
         }
-        assert!((f[0] - v[3]).abs() < 1e-9 && (f[1] - v[7]).abs() < 1e-9, "{f:?} vs {v:?}");
+        assert!(
+            (f[0] - v[3]).abs() < 1e-9 && (f[1] - v[7]).abs() < 1e-9,
+            "{f:?} vs {v:?}"
+        );
         let paid: f64 = payouts.iter().sum();
         assert!((t.iter().sum::<f64>() + 4.0 * f[0] + 3.0 * f[1] - paid).abs() < 1e-9);
     }
@@ -262,7 +306,10 @@ mod tests {
         let table = [25.0, 25.0, 10.0, 40.0, 25.0, 25.0, 3.0, 25.0];
         let mut payouts: Vec<f64> = (0..150).map(|k| 1.0 / (k as f64 + 1.0).powf(0.9)).collect();
         payouts.iter_mut().for_each(|p| *p = p.max(0.02));
-        let groups = [Group { stack: 25.0, count: 144 }];
+        let groups = [Group {
+            stack: 25.0,
+            count: 144,
+        }];
         assert!(state_count(8, &groups, 150).is_some());
         let t0 = std::time::Instant::now();
         let (t, f) = malmuth_harville_groups(&table, &groups, &payouts);
@@ -272,6 +319,16 @@ mod tests {
         // ICM favours the 3bb stack: worth more than its chip share.
         let chip = 3.0 / (178.0 + 144.0 * 25.0) * paid;
         assert!(t[6] > chip, "{} vs {chip}", t[6]);
-        assert_eq!(state_count(9, &[Group { stack: 20.0, count: 4000 }], 4000), None);
+        assert_eq!(
+            state_count(
+                9,
+                &[Group {
+                    stack: 20.0,
+                    count: 4000
+                }],
+                4000
+            ),
+            None
+        );
     }
 }

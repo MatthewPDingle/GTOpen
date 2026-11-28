@@ -32,13 +32,16 @@
 //! - p = 1 is today's solve (the dial is inactive); p = 0 is the unlocked
 //!   solve, bit for bit. One iteration costs an extra villain pass.
 
-use crate::cfr::{Discounts, Solver};
-use crate::game::{fold_cfv, showdown_cfv, Dealt};
-use crate::query::PROFILE_LABEL;
-use crate::scratch::Buf;
-use crate::store::Store;
-use crate::tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN};
 use serde::Serialize;
+
+use crate::{
+    cfr::{Discounts, Solver},
+    game::{fold_cfv, showdown_cfv, Dealt},
+    query::PROFILE_LABEL,
+    scratch::Buf,
+    store::Store,
+    tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN},
+};
 
 /// The free villain's own arenas (same layout as the villain's main ones).
 pub(crate) struct FreeArenas {
@@ -161,7 +164,12 @@ impl Solver {
     /// the villain's main arenas when it turns on); drop them when it is off.
     pub(crate) fn sync_free_arenas(&mut self, rnr: Option<Trust>) {
         match rnr {
-            Some(r) if self.free_arenas.as_ref().is_none_or(|f| f.villain != r.villain) => {
+            Some(r)
+                if self
+                    .free_arenas
+                    .as_ref()
+                    .is_none_or(|f| f.villain != r.villain) =>
+            {
                 let v = r.villain;
                 self.free_arenas = Some(Box::new(FreeArenas {
                     villain: v,
@@ -182,7 +190,9 @@ impl Solver {
     /// Whether the lock at `idx` is part of the read (a profile lock).
     #[inline]
     pub(crate) fn is_read_lock(&self, idx: u32) -> bool {
-        self.lock_labels.get(&idx).is_some_and(|l| l.starts_with(PROFILE_LABEL))
+        self.lock_labels
+            .get(&idx)
+            .is_some_and(|l| l.starts_with(PROFILE_LABEL))
     }
 
     /// The profiled player: the owner of the profile locks, if any.
@@ -200,14 +210,26 @@ impl Solver {
         if trust >= 1.0 {
             return None;
         }
-        Some(Trust { trust, villain: self.read_villain()? })
+        Some(Trust {
+            trust,
+            villain: self.read_villain()?,
+        })
     }
 
     /// One CFR pass for the hero against the read/free mixture.
     pub(crate) fn cfr_rnr_hero(&self, r: &Trust, disc: &Discounts, out: &mut [f32]) {
         let h = 1 - r.villain;
         let ro = stacked(&self.spot.weights[r.villain]);
-        self.cfr_mix(0, h, &self.spot.weights[h], &ro, Dealt::default(), disc, r.trust, out);
+        self.cfr_mix(
+            0,
+            h,
+            &self.spot.weights[h],
+            &ro,
+            Dealt::default(),
+            disc,
+            r.trust,
+            out,
+        );
     }
 
     /// `cfr()` for the hero `p` with the villain's reach stacked as
@@ -238,7 +260,14 @@ impl Solver {
             KIND_TERM_FOLD => {
                 let ro = mixed(reach_o2, nh_o, trust);
                 let amount = spot.fold_payoff(node_idx, node, p);
-                fold_cfv(&spot.hands[p], &spot.hands[1 - p], &ro, &spot.same_combo[p], amount, out);
+                fold_cfv(
+                    &spot.hands[p],
+                    &spot.hands[1 - p],
+                    &ro,
+                    &spot.same_combo[p],
+                    amount,
+                    out,
+                );
             }
             KIND_TERM_SHOWDOWN => {
                 let ro = mixed(reach_o2, nh_o, trust);
@@ -257,9 +286,15 @@ impl Solver {
                 );
             }
             KIND_CHANCE => {
-                self.chance_node(node, p, reach_p, reach_o2, dealt, out, |s, c, rp, ro, d, o| {
-                    s.cfr_mix(c, p, rp, ro, d, disc, trust, o)
-                });
+                self.chance_node(
+                    node,
+                    p,
+                    reach_p,
+                    reach_o2,
+                    dealt,
+                    out,
+                    |s, c, rp, ro, d, o| s.cfr_mix(c, p, rp, ro, d, disc, trust, o),
+                );
             }
             KIND_ACTION => {
                 let na = node.num_children as usize;
@@ -301,7 +336,9 @@ impl Solver {
                         }
                     }
                     if !locked {
-                        self.update_node(node_idx, node, p, &sigma, &vals, out, reach_p, disc, false);
+                        self.update_node(
+                            node_idx, node, p, &sigma, &vals, out, reach_p, disc, false,
+                        );
                     }
                 } else {
                     // villain node: the read plays any lock (else his main
@@ -322,7 +359,16 @@ impl Solver {
                             buf[nh_o + j] = reach_o2[nh_o + j] * sf[j];
                         }
                         child_out.fill(0.0);
-                        self.cfr_mix(spot.tree.children[cs + a], p, reach_p, &buf, dealt, disc, trust, &mut child_out);
+                        self.cfr_mix(
+                            spot.tree.children[cs + a],
+                            p,
+                            reach_p,
+                            &buf,
+                            dealt,
+                            disc,
+                            trust,
+                            &mut child_out,
+                        );
                         for i in 0..nh {
                             out[i] += child_out[i];
                         }
@@ -357,7 +403,14 @@ impl Solver {
             KIND_TERM_FOLD => {
                 let ro = mixed(reach_o2, nh_o, trust);
                 let amount = spot.fold_payoff(node_idx, node, p);
-                fold_cfv(&spot.hands[p], &spot.hands[1 - p], &ro, &spot.same_combo[p], amount, out);
+                fold_cfv(
+                    &spot.hands[p],
+                    &spot.hands[1 - p],
+                    &ro,
+                    &spot.same_combo[p],
+                    amount,
+                    out,
+                );
             }
             KIND_TERM_SHOWDOWN => {
                 let ro = mixed(reach_o2, nh_o, trust);
@@ -377,9 +430,15 @@ impl Solver {
             }
             KIND_CHANCE => {
                 let dummy = Buf::filled(nh, 1.0);
-                self.chance_node(node, p, &dummy, reach_o2, dealt, out, |s, c, _rp, ro, d, o| {
-                    s.eval_mix_into(c, p, ro, d, best, trust, o)
-                });
+                self.chance_node(
+                    node,
+                    p,
+                    &dummy,
+                    reach_o2,
+                    dealt,
+                    out,
+                    |s, c, _rp, ro, d, o| s.eval_mix_into(c, p, ro, d, best, trust, o),
+                );
             }
             KIND_ACTION => {
                 let na = node.num_children as usize;
@@ -392,7 +451,15 @@ impl Solver {
                     if best && !constrained {
                         for a in 0..na {
                             vals.fill(0.0);
-                            self.eval_mix_into(spot.tree.children[cs + a], p, reach_o2, dealt, best, trust, &mut vals);
+                            self.eval_mix_into(
+                                spot.tree.children[cs + a],
+                                p,
+                                reach_o2,
+                                dealt,
+                                best,
+                                trust,
+                                &mut vals,
+                            );
                             if a == 0 {
                                 out.copy_from_slice(&vals);
                             } else {
@@ -408,7 +475,15 @@ impl Solver {
                         self.average_strategy_into(node_idx, node, &mut sigma);
                         for a in 0..na {
                             vals.fill(0.0);
-                            self.eval_mix_into(spot.tree.children[cs + a], p, reach_o2, dealt, best, trust, &mut vals);
+                            self.eval_mix_into(
+                                spot.tree.children[cs + a],
+                                p,
+                                reach_o2,
+                                dealt,
+                                best,
+                                trust,
+                                &mut vals,
+                            );
                             let sig = &sigma[a * nh..(a + 1) * nh];
                             for i in 0..nh {
                                 out[i] += sig[i] * vals[i];
@@ -427,7 +502,15 @@ impl Solver {
                             buf[nh_o + j] = reach_o2[nh_o + j] * sig_free[a * nh_o + j];
                         }
                         vals.fill(0.0);
-                        self.eval_mix_into(spot.tree.children[cs + a], p, &buf, dealt, best, trust, &mut vals);
+                        self.eval_mix_into(
+                            spot.tree.children[cs + a],
+                            p,
+                            &buf,
+                            dealt,
+                            best,
+                            trust,
+                            &mut vals,
+                        );
                         for i in 0..nh {
                             out[i] += vals[i];
                         }
@@ -441,7 +524,12 @@ impl Solver {
     /// Range-weighted value of a root cfv vector, per compatible pair (chips,
     /// net of the player's root contribution).
     fn root_value(&self, p: usize, cfv: &[f32], denom: f64) -> f64 {
-        self.spot.weights[p].iter().zip(cfv).map(|(&w, &v)| w as f64 * v as f64).sum::<f64>() / denom
+        self.spot.weights[p]
+            .iter()
+            .zip(cfv)
+            .map(|(&w, &v)| w as f64 * v as f64)
+            .sum::<f64>()
+            / denom
     }
 
     /// Root cfv vectors of the trust game (see `RnrCfvs`). `with_read`
@@ -483,8 +571,10 @@ impl Solver {
         }
         let (v, h) = (r.villain, 1 - r.villain);
         let gap_h = self.root_value(h, &c.br_hero, denom) - self.root_value(h, &c.ev_hero, denom);
-        let gap_free = self.root_value(v, &c.br_villain, denom) - self.root_value(v, &c.ev_villain, denom);
-        let gap_read = self.root_value(v, &c.br_read, denom) - self.root_value(v, &c.ev_read, denom);
+        let gap_free =
+            self.root_value(v, &c.br_villain, denom) - self.root_value(v, &c.ev_villain, denom);
+        let gap_read =
+            self.root_value(v, &c.br_read, denom) - self.root_value(v, &c.ev_read, denom);
         let p = r.trust as f64;
         (gap_h + p * gap_read + (1.0 - p) * gap_free) / 2.0
     }
@@ -498,12 +588,20 @@ impl Solver {
     /// the profiled villain.
     pub fn readout_trust(&self) -> Result<Trust, String> {
         let villain = self.read_villain().ok_or("lock a villain profile first")?;
-        Ok(Trust { trust: self.trust.unwrap_or(1.0), villain })
+        Ok(Trust {
+            trust: self.trust.unwrap_or(1.0),
+            villain,
+        })
     }
 
     /// Build a readout from root values (CPU or GPU) and the solve's
     /// exploitability.
-    pub fn readout_from(&self, r: &Trust, c: &RnrCfvs, exploitability: f64) -> Result<TrustReadout, String> {
+    pub fn readout_from(
+        &self,
+        r: &Trust,
+        c: &RnrCfvs,
+        exploitability: f64,
+    ) -> Result<TrustReadout, String> {
         let denom = self.pair_weight_sum();
         if denom <= 0.0 {
             return Err("empty ranges".into());

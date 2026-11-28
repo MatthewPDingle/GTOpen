@@ -1,7 +1,8 @@
 //! Independent, read-only comparison of two all-learning saved histories.
+use std::{path::Path, sync::Arc};
+
 use serde_json::json;
 use solver::preflop::{equity::EquityTable, PreflopSolver};
-use std::{path::Path, sync::Arc};
 
 fn main() -> Result<(), String> {
     let a: Vec<_> = std::env::args().skip(1).collect();

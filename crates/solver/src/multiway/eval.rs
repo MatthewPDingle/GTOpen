@@ -18,8 +18,10 @@
 //! opponents hold. A river showdown sweeps hands in strength order so L/Q
 //! sums are running totals; each hand then costs O(52).
 
-use super::game::{MwRiverEval, MwSpot, NO_HAND};
-use super::tree::{others, MwNode, NP};
+use super::{
+    game::{MwRiverEval, MwSpot, NO_HAND},
+    tree::{others, MwNode, NP},
+};
 
 /// Basis indices for the cumulative sets.
 const L: usize = 0;
@@ -55,7 +57,10 @@ struct SetSums {
 
 impl SetSums {
     fn new() -> Self {
-        SetSums { t: 0.0, s: [0.0; 52] }
+        SetSums {
+            t: 0.0,
+            s: [0.0; 52],
+        }
     }
     #[inline]
     fn add(&mut self, c1: u8, c2: u8, w: f64) {
@@ -88,7 +93,17 @@ pub fn terminal_cfv(
         showdown(spot, eval, p, q, r, reach[q], reach[r], &coef, out);
     }
     if let (Some(icm), super::tree::KIND_TERM_SHOWDOWN) = (&spot.icm, node.kind) {
-        icm_order_terms(spot, icm.order(node, p), node, spot.river.get(dealt), p, q, r, reach, out);
+        icm_order_terms(
+            spot,
+            icm.order(node, p),
+            node,
+            spot.river.get(dealt),
+            p,
+            q,
+            r,
+            reach,
+            out,
+        );
     }
 }
 
@@ -106,7 +121,10 @@ fn icm_order_terms(
     out: &mut [f32],
 ) {
     let mut masses = vec![(0f64, 0f64); out.len()];
-    let mut add = |bounds: &(dyn Fn(u32) -> (i64, i64) + Sync), dw: f64, dt: f64, masses: &mut Vec<(f64, f64)>| {
+    let mut add = |bounds: &(dyn Fn(u32) -> (i64, i64) + Sync),
+                   dw: f64,
+                   dt: f64,
+                   masses: &mut Vec<(f64, f64)>| {
         if dw == 0.0 && dt == 0.0 {
             return;
         }
@@ -125,7 +143,12 @@ fn icm_order_terms(
 
 /// Dense 52x52 reach matrix of one opponent (P[a*52+b] = reach of combo ab)
 /// plus its total and per-card sums.
-fn dense(spot: &MwSpot, o: usize, reach: &[f32], only: Option<&[(u32, u16)]>) -> (Vec<f64>, SetSums) {
+fn dense(
+    spot: &MwSpot,
+    o: usize,
+    reach: &[f32],
+    only: Option<&[(u32, u16)]>,
+) -> (Vec<f64>, SetSums) {
     let mut m = vec![0f64; 52 * 52];
     let mut sums = SetSums::new();
     let mut put = |j: usize| {
@@ -146,7 +169,14 @@ fn dense(spot: &MwSpot, o: usize, reach: &[f32], only: Option<&[(u32, u16)]>) ->
 }
 
 /// Same-combo reach product summed over combos both opponents hold.
-fn same_combo_mass(spot: &MwSpot, q: usize, r: usize, reach_q: &[f32], reach_r: &[f32], list: impl Iterator<Item = usize>) -> f64 {
+fn same_combo_mass(
+    spot: &MwSpot,
+    q: usize,
+    r: usize,
+    reach_q: &[f32],
+    reach_r: &[f32],
+    list: impl Iterator<Item = usize>,
+) -> f64 {
     let mut k = 0f64;
     for j in list {
         let jr = spot.combo_hand[r][spot.hand_combo[q][j] as usize];
@@ -212,11 +242,13 @@ fn all_mass(
 fn run_hands(out: &mut [f32], work: impl Fn(usize, &mut f32) + Sync) {
     use rayon::prelude::*;
     if out.len() > 2 * PAR_CHUNK {
-        out.par_chunks_mut(PAR_CHUNK).enumerate().for_each(|(ci, ch)| {
-            for (k, o) in ch.iter_mut().enumerate() {
-                work(ci * PAR_CHUNK + k, o);
-            }
-        });
+        out.par_chunks_mut(PAR_CHUNK)
+            .enumerate()
+            .for_each(|(ci, ch)| {
+                for (k, o) in ch.iter_mut().enumerate() {
+                    work(ci * PAR_CHUNK + k, o);
+                }
+            });
     } else {
         for (i, o) in out.iter_mut().enumerate() {
             work(i, o);
@@ -255,7 +287,14 @@ fn showdown(
     if all_q.t == 0.0 || all_r.t == 0.0 {
         return;
     }
-    let k_all = same_combo_mass(spot, q, r, reach_q, reach_r, sq.iter().map(|&(_, j)| j as usize));
+    let k_all = same_combo_mass(
+        spot,
+        q,
+        r,
+        reach_q,
+        reach_r,
+        sq.iter().map(|&(_, j)| j as usize),
+    );
     // Sweep: one Group per distinct strength among p's hands.
     let mut groups: Vec<Group> = Vec::new();
     let mut group_of = vec![u32::MAX; spot.hands[p].len()];
@@ -302,7 +341,13 @@ fn showdown(
             group_of[spp[ip].1 as usize] = g;
             ip += 1;
         }
-        groups.push(Group { s, low: low.clone(), tied, k_low, k_tied });
+        groups.push(Group {
+            s,
+            low: low.clone(),
+            tied,
+            k_low,
+            k_tied,
+        });
     }
     let need_q: [bool; 3] = std::array::from_fn(|x| (0..3).any(|y| coef[x][y] != 0.0));
     let need_r: [bool; 3] = std::array::from_fn(|y| (0..3).any(|x| coef[x][y] != 0.0));
@@ -318,7 +363,10 @@ fn showdown(
         let s = grp.s;
         let h = &hands[i];
         let (a, b) = (h.c1 as usize, h.c2 as usize);
-        let sets = [[&grp.low[0], &grp.tied[0], &all_q], [&grp.low[1], &grp.tied[1], &all_r]];
+        let sets = [
+            [&grp.low[0], &grp.tied[0], &all_q],
+            [&grp.low[1], &grp.tied[1], &all_r],
+        ];
         let kk = [grp.k_low, grp.k_tied, k_all];
         // Membership-filtered rows: rows[o][kind][col][c], col 0 = card a.
         let mut rows = [[[[0f64; 52]; 2]; 3]; 2];
@@ -376,7 +424,14 @@ fn showdown(
 /// `mass` is `compatible_mass` for p (the reach of compatible opponent hand
 /// pairs). Every such pair leaves the same number of runouts, so the sum of
 /// the per-runout masses is `mass` times that count.
-pub fn showdown_equity(spot: &MwSpot, live: u8, dealt: &[u8], p: usize, reach: [&[f32]; NP], mass: &[f32]) -> Vec<f32> {
+pub fn showdown_equity(
+    spot: &MwSpot,
+    live: u8,
+    dealt: &[u8],
+    p: usize,
+    reach: [&[f32]; NP],
+    mass: &[f32],
+) -> Vec<f32> {
     use rayon::prelude::*;
     let nh = spot.hands[p].len();
     if live & (1 << p) == 0 {
@@ -386,7 +441,10 @@ pub fn showdown_equity(spot: &MwSpot, live: u8, dealt: &[u8], p: usize, reach: [
     let in_q = live & (1 << q) != 0;
     let in_r = live & (1 << r) != 0;
     if !in_q && !in_r {
-        return mass.iter().map(|&m| if m > 0.0 { 1.0 } else { f32::NAN }).collect();
+        return mass
+            .iter()
+            .map(|&m| if m > 0.0 { 1.0 } else { f32::NAN })
+            .collect();
     }
     // pay[cq][cr]: p's share given how each opponent compares (0 weaker,
     // 1 tied, 2 stronger); a folded opponent never counts.
@@ -441,7 +499,17 @@ pub fn showdown_equity(spot: &MwSpot, live: u8, dealt: &[u8], p: usize, reach: [
         .fold(
             || (vec![0f64; nh], vec![0f32; nh]),
             |(mut acc, mut buf), d| {
-                showdown(spot, spot.river.get(d), p, q, r, reach[q], reach[r], &coef, &mut buf);
+                showdown(
+                    spot,
+                    spot.river.get(d),
+                    p,
+                    q,
+                    r,
+                    reach[q],
+                    reach[r],
+                    &coef,
+                    &mut buf,
+                );
                 for (a, &b) in acc.iter_mut().zip(buf.iter()) {
                     *a += b as f64;
                 }
@@ -460,7 +528,13 @@ pub fn showdown_equity(spot: &MwSpot, live: u8, dealt: &[u8], p: usize, reach: [
         );
     won.iter()
         .zip(mass)
-        .map(|(&w, &m)| if m > 0.0 { (w / (m as f64 * count)).clamp(0.0, 1.0) as f32 } else { f32::NAN })
+        .map(|(&w, &m)| {
+            if m > 0.0 {
+                (w / (m as f64 * count)).clamp(0.0, 1.0) as f32
+            } else {
+                f32::NAN
+            }
+        })
         .collect()
 }
 
@@ -475,7 +549,11 @@ pub fn terminal_cfv_brute(
     let pay = spot.payoff_table(node, p);
     let (q, r) = others(p);
     let showdown = node.kind == super::tree::KIND_TERM_SHOWDOWN;
-    let eval = if showdown { Some(spot.river.get(dealt)) } else { None };
+    let eval = if showdown {
+        Some(spot.river.get(dealt))
+    } else {
+        None
+    };
     let mut dmask = 0u64;
     for &c in dealt {
         dmask |= 1u64 << c;
@@ -484,7 +562,15 @@ pub fn terminal_cfv_brute(
         let h = &spot.hands[o][j];
         eval.unwrap().rank[crate::cards::combo_index(h.c1, h.c2)]
     };
-    let cat = |mine: u32, theirs: u32| if theirs < mine { 0 } else if theirs == mine { 1 } else { 2 };
+    let cat = |mine: u32, theirs: u32| {
+        if theirs < mine {
+            0
+        } else if theirs == mine {
+            1
+        } else {
+            2
+        }
+    };
     let cache = std::sync::Mutex::new(std::collections::HashMap::new());
     spot.hands[p]
         .iter()
@@ -557,7 +643,11 @@ impl Cum {
     /// Sum over lo < strength < hi.
     #[inline]
     fn range(&self, lo: i64, hi: i64) -> f64 {
-        if hi <= lo + 1 { 0.0 } else { self.below(hi) - self.below(lo + 1) }
+        if hi <= lo + 1 {
+            0.0
+        } else {
+            self.below(hi) - self.below(lo + 1)
+        }
     }
     #[inline]
     fn eq(&self, t: i64) -> f64 {
@@ -577,7 +667,12 @@ struct OppCum {
 }
 
 impl OppCum {
-    fn new(spot: &MwSpot, o: usize, sorted: &[(u32, u16)], weight: impl Fn(usize) -> f64) -> OppCum {
+    fn new(
+        spot: &MwSpot,
+        o: usize,
+        sorted: &[(u32, u16)],
+        weight: impl Fn(usize) -> f64,
+    ) -> OppCum {
         let mut per: Vec<Vec<(u32, f64)>> = vec![Vec::new(); 52];
         let mut all = Vec::with_capacity(sorted.len());
         for &(st, j) in sorted {
@@ -587,7 +682,10 @@ impl OppCum {
             per[h.c1 as usize].push((st, w));
             per[h.c2 as usize].push((st, w));
         }
-        OppCum { all: Cum::new(all.into_iter()), card: per.into_iter().map(|v| Cum::new(v.into_iter())).collect() }
+        OppCum {
+            all: Cum::new(all.into_iter()),
+            card: per.into_iter().map(|v| Cum::new(v.into_iter())).collect(),
+        }
     }
 }
 
@@ -628,13 +726,16 @@ pub fn order_masses(
         let s = rank_of(r, j) as i64;
         let (b1, b2) = (h.c1 as usize, h.c2 as usize);
         reach_r[j] as f64
-            * (qc.all.range(s, POS_INF) - qc.card[b1].range(s, POS_INF) - qc.card[b2].range(s, POS_INF))
+            * (qc.all.range(s, POS_INF)
+                - qc.card[b1].range(s, POS_INF)
+                - qc.card[b2].range(s, POS_INF))
     };
     let ut_of = |j: usize| {
         let h = &spot.hands[r][j];
         let s = rank_of(r, j) as i64;
         let (b1, b2) = (h.c1 as usize, h.c2 as usize);
-        reach_r[j] as f64 * (qc.all.eq(s) - qc.card[b1].eq(s) - qc.card[b2].eq(s) + pq[b1 * 52 + b2])
+        reach_r[j] as f64
+            * (qc.all.eq(s) - qc.card[b1].eq(s) - qc.card[b2].eq(s) + pq[b1 * 52 + b2])
     };
     let mut u = vec![0f64; reach_r.len()];
     let mut ut = vec![0f64; reach_r.len()];
@@ -667,10 +768,16 @@ pub fn order_masses(
         };
         // r's own copy of the combo h, if inside.
         let jr = spot.combo_hand[r][spot.pair_combo[h1 * 52 + h2] as usize];
-        let (u_h, ut_h) = if jr != NO_HAND && inside(sh) { (u[jr as usize], ut[jr as usize]) } else { (0.0, 0.0) };
+        let (u_h, ut_h) = if jr != NO_HAND && inside(sh) {
+            (u[jr as usize], ut[jr as usize])
+        } else {
+            (0.0, 0.0)
+        };
         // Singles and pairs of b's cards (u, ut).
-        let mut w = uc.all.range(lo, hi) - uc.card[h1].range(lo, hi) - uc.card[h2].range(lo, hi) + u_h;
-        let mut t = utc.all.range(lo, hi) - utc.card[h1].range(lo, hi) - utc.card[h2].range(lo, hi) + ut_h;
+        let mut w =
+            uc.all.range(lo, hi) - uc.card[h1].range(lo, hi) - uc.card[h2].range(lo, hi) + u_h;
+        let mut t =
+            utc.all.range(lo, hi) - utc.card[h1].range(lo, hi) - utc.card[h2].range(lo, hi) + ut_h;
         // a strictly between b and hi, not just above b.
         if hi < POS_INF {
             w -= qc.all.from(hi) * rh_range(hi);

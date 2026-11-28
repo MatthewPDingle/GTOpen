@@ -14,12 +14,16 @@
 //! still holds the value the edit left and refuses (clearing the history)
 //! when something else changed it in between.
 
-use crate::cards::card_to_string;
-use crate::cfr::Solver;
-use crate::query::{LockMode, PathStep, PROFILE_LABEL};
-use crate::tree::{KIND_ACTION, KIND_CHANCE, SENTINEL};
-use serde::Serialize;
 use std::collections::HashMap;
+
+use serde::Serialize;
+
+use crate::{
+    cards::card_to_string,
+    cfr::Solver,
+    query::{LockMode, PathStep, PROFILE_LABEL},
+    tree::{KIND_ACTION, KIND_CHANCE, SENTINEL},
+};
 
 /// A node's lock state: (sigma, label), or None when unlocked.
 type LockValue = Option<(Vec<f32>, String)>;
@@ -135,16 +139,28 @@ impl Solver {
     }
 
     fn journal_lock(&mut self, idx: u32) {
-        if self.lock_history.journal.as_ref().is_some_and(|j| !j.contains_key(&idx)) {
+        if self
+            .lock_history
+            .journal
+            .as_ref()
+            .is_some_and(|j| !j.contains_key(&idx))
+        {
             let before = self.lock_value(idx);
-            self.lock_history.journal.as_mut().unwrap().insert(idx, before);
+            self.lock_history
+                .journal
+                .as_mut()
+                .unwrap()
+                .insert(idx, before);
         }
     }
 
     fn lock_value(&self, idx: u32) -> LockValue {
-        self.locks
-            .get(&idx)
-            .map(|s| (s.clone(), self.lock_labels.get(&idx).cloned().unwrap_or_default()))
+        self.locks.get(&idx).map(|s| {
+            (
+                s.clone(),
+                self.lock_labels.get(&idx).cloned().unwrap_or_default(),
+            )
+        })
     }
 
     /// Whether node `idx` holds `v` right now (compares without cloning).
@@ -210,13 +226,20 @@ impl Solver {
         }
         changes.sort_unstable_by_key(|c| c.0);
         let bytes = label.len()
-            + changes.iter().map(|(_, b, a)| value_bytes(b) + value_bytes(a)).sum::<usize>();
+            + changes
+                .iter()
+                .map(|(_, b, a)| value_bytes(b) + value_bytes(a))
+                .sum::<usize>();
         let h = &mut self.lock_history;
         h.redo.clear();
         if bytes > MAX_BYTES {
             h.undo.clear();
         } else {
-            h.undo.push(LockEdit { label, changes, bytes });
+            h.undo.push(LockEdit {
+                label,
+                changes,
+                bytes,
+            });
             h.trim();
         }
         Ok(result)
@@ -240,9 +263,10 @@ impl Solver {
         };
         // the state this step starts from: what the edit left (undo) or
         // what it found (redo)
-        let current_ok = edit.changes.iter().all(|(idx, before, after)| {
-            self.lock_holds(*idx, if undo { after } else { before })
-        });
+        let current_ok = edit
+            .changes
+            .iter()
+            .all(|(idx, before, after)| self.lock_holds(*idx, if undo { after } else { before }));
         if !current_ok {
             self.lock_history.clear();
             return Err("locks changed outside the edit history since this edit; \
@@ -255,7 +279,11 @@ impl Solver {
         self.mark_sym_dirty();
         let label = edit.label.clone();
         let h = &mut self.lock_history;
-        if undo { h.redo.push(edit) } else { h.undo.push(edit) }
+        if undo {
+            h.redo.push(edit)
+        } else {
+            h.undo.push(edit)
+        }
         Ok(Some(label))
     }
 
@@ -296,7 +324,9 @@ impl Solver {
             path.push(if node.kind == KIND_ACTION {
                 PathStep::Action { index: slot }
             } else {
-                PathStep::Card { card: card_to_string(slot as u8) }
+                PathStep::Card {
+                    card: card_to_string(slot as u8),
+                }
             });
             idx = child;
         }
@@ -312,7 +342,11 @@ impl Solver {
         let mut idxs: Vec<u32> = Vec::new();
         for &idx in self.locks.keys() {
             let node = &spot.tree.nodes[idx as usize];
-            if self.lock_labels.get(&idx).is_some_and(|l| l.starts_with(PROFILE_LABEL)) {
+            if self
+                .lock_labels
+                .get(&idx)
+                .is_some_and(|l| l.starts_with(PROFILE_LABEL))
+            {
                 profile[(node.player as usize).min(1)] += 1;
             } else {
                 idxs.push(idx);
@@ -338,7 +372,10 @@ impl Solver {
                         let slot = match step {
                             PathStep::Action { index } => {
                                 line.push(
-                                    self.action_views(at).get(*index).map(|a| a.label.clone()).unwrap_or_default(),
+                                    self.action_views(at)
+                                        .get(*index)
+                                        .map(|a| a.label.clone())
+                                        .unwrap_or_default(),
                                 );
                                 *index
                             }
@@ -353,11 +390,16 @@ impl Solver {
                 // weight each hand by how often it gets here; when none does
                 // (a line nobody takes), by its weight in the starting range
                 let reach = walk.as_ref().map(|w| &w.reach[p]);
-                let by_reach = reach.is_some_and(|r| r.iter().map(|&x| x as f64).sum::<f64>() > 1e-9);
+                let by_reach =
+                    reach.is_some_and(|r| r.iter().map(|&x| x as f64).sum::<f64>() > 1e-9);
                 let mut freqs = vec![0f64; na];
                 let mut total = 0f64;
                 for i in 0..nh {
-                    let w = if by_reach { reach.unwrap()[i] } else { spot.weights[p][i] } as f64;
+                    let w = if by_reach {
+                        reach.unwrap()[i]
+                    } else {
+                        spot.weights[p][i]
+                    } as f64;
                     total += w;
                     for (a, f) in freqs.iter_mut().enumerate() {
                         *f += w * sigma[a * nh + i] as f64;
@@ -377,8 +419,15 @@ impl Solver {
                     player: p as u8,
                     street: node.street,
                     kind,
-                    actions: self.action_views(idx).into_iter().map(|a| a.label).collect(),
-                    freqs: freqs.iter().map(|&f| if total > 0.0 { (f / total) as f32 } else { 0.0 }).collect(),
+                    actions: self
+                        .action_views(idx)
+                        .into_iter()
+                        .map(|a| a.label)
+                        .collect(),
+                    freqs: freqs
+                        .iter()
+                        .map(|&f| if total > 0.0 { (f / total) as f32 } else { 0.0 })
+                        .collect(),
                 }
             })
             .collect();
@@ -462,7 +511,12 @@ impl Solver {
         self.freeze_line_of(path, label, Some(node.player))
     }
 
-    fn freeze_line_of(&mut self, path: &[PathStep], label: &str, only: Option<u8>) -> Result<usize, String> {
+    fn freeze_line_of(
+        &mut self,
+        path: &[PathStep],
+        label: &str,
+        only: Option<u8>,
+    ) -> Result<usize, String> {
         let mut frozen = 0;
         for (i, step) in path.iter().enumerate() {
             if !matches!(step, PathStep::Action { .. }) {
@@ -470,7 +524,10 @@ impl Solver {
             }
             let prefix = &path[..i];
             let walk = self.walk_path(&self.canonical_path(prefix))?;
-            debug_assert_eq!(self.spot.tree.nodes[walk.node_idx as usize].kind, KIND_ACTION);
+            debug_assert_eq!(
+                self.spot.tree.nodes[walk.node_idx as usize].kind,
+                KIND_ACTION
+            );
             if self.locks.contains_key(&walk.node_idx) {
                 continue;
             }
@@ -478,7 +535,11 @@ impl Solver {
                 continue;
             }
             let desc = self.path_description(prefix)?;
-            self.lock_node(prefix, LockMode::Freeze, format!("{desc} (frozen on the line to {label})"))?;
+            self.lock_node(
+                prefix,
+                LockMode::Freeze,
+                format!("{desc} (frozen on the line to {label})"),
+            )?;
             frozen += 1;
         }
         Ok(frozen)

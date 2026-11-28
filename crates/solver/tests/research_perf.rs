@@ -1,10 +1,12 @@
 //! Frozen, manual workloads for the 2026-09-07 autoresearch run.
-use solver::preflop::{equity::EquityTable, PreflopConfig, PreflopSolver};
-use solver::query::PostflopStats;
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Solver, Spot, SpotConfig, Storage};
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
+
+use solver::{
+    preflop::{equity::EquityTable, PreflopConfig, PreflopSolver},
+    query::PostflopStats,
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    Solver, Spot, SpotConfig, Storage,
+};
 
 fn median(mut v: Vec<f64>) -> f64 {
     v.sort_by(f64::total_cmp);
@@ -18,14 +20,17 @@ fn hash(bytes: &[u8]) -> String {
 }
 fn spot_config() -> SpotConfig {
     let sizing = |bet, raise| StreetSizing {
-        bet: parse_sizes(bet).unwrap(), raise: parse_sizes(raise).unwrap(), donk: vec![],
+        bet: parse_sizes(bet).unwrap(),
+        raise: parse_sizes(raise).unwrap(),
+        donk: vec![],
     };
     SpotConfig {
         board: "Qs7h2d".into(),
         range_oop: "AA,KK,QQ,99,77,55,AQs,KQs,QJs,T9s,87s,AQo,KQo,A5s".into(),
         range_ip: "AA,KK,QQ,JJ,TT,88,66,AKs,AQs,KQs,JTs,98s,76s,AKo,AJo".into(),
         tree: TreeConfig {
-            starting_pot: 10.0, effective_stack: 40.0,
+            starting_pot: 10.0,
+            effective_stack: 40.0,
             oop: [sizing("50", "100"), sizing("50", ""), sizing("50", "")],
             ip: [sizing("50", "100"), sizing("50", ""), sizing("50", "")],
             ..Default::default()
@@ -45,15 +50,20 @@ fn cpu_preflop() {
         "add_allin":false, "allin_threshold":0.85,
         "rake_pct":5.0, "rake_cap":3.0, "no_flop_no_drop":true,
         "realization":"static"
-    })).unwrap();
+    }))
+    .unwrap();
     let mut s = PreflopSolver::new(cfg, eq).unwrap();
-    for _ in 0..3 { s.iterate(); }
+    for _ in 0..3 {
+        s.iterate();
+    }
     let mut times = Vec::new();
     let mut checks = Vec::new();
     let mut last = (Vec::new(), Vec::new());
     for _ in 0..3 {
         let start = Instant::now();
-        for _ in 0..5 { s.iterate(); }
+        for _ in 0..5 {
+            s.iterate();
+        }
         times.push(start.elapsed().as_secs_f64() * 200.0);
         let start = Instant::now();
         last = s.gaps_and_evs();
@@ -61,12 +71,15 @@ fn cpu_preflop() {
     }
     let (r, t) = s.arena_snapshot();
     let bytes: Vec<u8> = r.iter().chain(&t).flat_map(|v| v.to_le_bytes()).collect();
-    println!("METRIC_JSON {}", serde_json::json!({
-        "metrics":{"cpu.preflop.iteration_ms":median(times),
-            "cpu.preflop.check_ms":median(checks), "cpu.preflop.arena_mb":s.arena_mb()},
-        "nodes":s.nodes.len(), "iteration":s.iteration, "arena_hash":hash(&bytes),
-        "gaps":last.0, "evs":last.1
-    }));
+    println!(
+        "METRIC_JSON {}",
+        serde_json::json!({
+            "metrics":{"cpu.preflop.iteration_ms":median(times),
+                "cpu.preflop.check_ms":median(checks), "cpu.preflop.arena_mb":s.arena_mb()},
+            "nodes":s.nodes.len(), "iteration":s.iteration, "arena_hash":hash(&bytes),
+            "gaps":last.0, "evs":last.1
+        })
+    );
 }
 
 #[test]
@@ -80,11 +93,15 @@ fn lifecycle() {
         std::hint::black_box(&spot);
     }
     let mut s = Solver::new(Arc::new(Spot::new(spot_config()).unwrap()));
-    for _ in 0..3 { s.iterate(); }
+    for _ in 0..3 {
+        s.iterate();
+    }
     let mut times = Vec::new();
     for _ in 0..3 {
         let start = Instant::now();
-        for _ in 0..5 { s.iterate(); }
+        for _ in 0..5 {
+            s.iterate();
+        }
         times.push(start.elapsed().as_secs_f64() * 200.0);
     }
     s.ensure_symmetric();
@@ -96,7 +113,9 @@ fn lifecycle() {
         let lines = s.report_lines();
         reports.push(start.elapsed().as_secs_f64() * 1000.0);
         let h = hash(&serde_json::to_vec(&lines).unwrap());
-        if !report_hash.is_empty() { assert_eq!(h, report_hash); }
+        if !report_hash.is_empty() {
+            assert_eq!(h, report_hash);
+        }
         report_hash = h;
     }
     std::fs::create_dir_all("target/research-fixtures").unwrap();
@@ -110,7 +129,9 @@ fn lifecycle() {
         s.save(file).unwrap();
         saves.push(start.elapsed().as_secs_f64() * 1000.0);
         let h = hash(&std::fs::read(file).unwrap());
-        if !save_hash.is_empty() { assert_eq!(h, save_hash); }
+        if !save_hash.is_empty() {
+            assert_eq!(h, save_hash);
+        }
         save_hash = h;
         let start = Instant::now();
         let loaded = Solver::load(file).unwrap();
@@ -125,8 +146,14 @@ fn lifecycle() {
         assert!((loaded.exploitability() - exploit).abs() < 1e-3);
     }
     let save_mb = std::fs::metadata(file).unwrap().len() as f64 / 1e6;
-    let stats = PostflopStats { contextual_betting: None, cbet:[80.0,60.0,40.0], fold_to_bet:[65.0,60.0,55.0],
-        raise_bet:8.0, donk:10.0, bet_size:"min".into() };
+    let stats = PostflopStats {
+        contextual_betting: None,
+        cbet: [80.0, 60.0, 40.0],
+        fold_to_bet: [65.0, 60.0, 55.0],
+        raise_bet: 8.0,
+        donk: 10.0,
+        bet_size: "min".into(),
+    };
     let mut profiles = Vec::new();
     let mut profile_hash = String::new();
     for _ in 0..3 {
@@ -134,16 +161,21 @@ fn lifecycle() {
         let summary = s.lock_profile(1, &stats, Some(1)).unwrap();
         profiles.push(start.elapsed().as_secs_f64() * 1000.0);
         let h = hash(&serde_json::to_vec(&summary).unwrap());
-        if !profile_hash.is_empty() { assert_eq!(h, profile_hash); }
+        if !profile_hash.is_empty() {
+            assert_eq!(h, profile_hash);
+        }
         profile_hash = h;
     }
-    println!("METRIC_JSON {}", serde_json::json!({
-        "metrics":{"lifecycle.build_ms":median(builds), "cpu.postflop.iteration_ms":median(times),
-            "lifecycle.report_lines_ms":median(reports), "lifecycle.profile_ms":median(profiles),
-            "lifecycle.save_ms":median(saves), "lifecycle.load_ms":median(loads),
-            "lifecycle.compressed_load_ms":median(compressed_loads), "lifecycle.save_mb":save_mb,
-            "cpu.postflop.arena_mb":s.arena_bytes() as f64 / 1e6},
-        "nodes":s.spot.tree.nodes.len(), "iteration":s.iteration, "exploitability":exploit,
-        "report_hash":report_hash, "profile_hash":profile_hash, "save_hash":save_hash
-    }));
+    println!(
+        "METRIC_JSON {}",
+        serde_json::json!({
+            "metrics":{"lifecycle.build_ms":median(builds), "cpu.postflop.iteration_ms":median(times),
+                "lifecycle.report_lines_ms":median(reports), "lifecycle.profile_ms":median(profiles),
+                "lifecycle.save_ms":median(saves), "lifecycle.load_ms":median(loads),
+                "lifecycle.compressed_load_ms":median(compressed_loads), "lifecycle.save_mb":save_mb,
+                "cpu.postflop.arena_mb":s.arena_bytes() as f64 / 1e6},
+            "nodes":s.spot.tree.nodes.len(), "iteration":s.iteration, "exploitability":exploit,
+            "report_hash":report_hash, "profile_hash":profile_hash, "save_hash":save_hash
+        })
+    );
 }

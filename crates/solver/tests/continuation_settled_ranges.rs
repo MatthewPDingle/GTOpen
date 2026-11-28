@@ -1,12 +1,13 @@
 //! Diagnostic continuation of the failed coherent-range trajectories.
 //! Fixed tails do not replace or relax the original changing-range gates.
 #![cfg(feature = "preflop-research")]
+use std::sync::Arc;
+
 use solver::{
     game::Dealt,
     gpu::{plan::GpuPlan, SymmetricContinuationGpu},
+    parse_sizes, Algorithm, Solver, Spot, SpotConfig, StreetSizing, TreeConfig,
 };
-use solver::{parse_sizes, Algorithm, Solver, Spot, SpotConfig, StreetSizing, TreeConfig};
-use std::sync::Arc;
 
 fn weights(sp: &Spot, p: usize, t: u32) -> Vec<f32> {
     sp.hands[p]
