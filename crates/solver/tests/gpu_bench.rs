@@ -37,6 +37,7 @@ fn bench_gpu_six_max() {
         rake_pct: 5.0,
         rake_cap: 3.0,
         no_flop_no_drop: true,
+        rake_threebet: false,
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,

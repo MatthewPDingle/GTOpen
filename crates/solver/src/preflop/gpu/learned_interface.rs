@@ -231,6 +231,7 @@ impl PreflopGpu {
             summary["rake_pct"] = json!(s.cfg.rake_pct);
             summary["rake_cap"] = json!(s.cfg.rake_cap);
             summary["no_flop_no_drop"] = json!(s.cfg.no_flop_no_drop);
+            summary["rake_threebet"] = json!(s.cfg.rake_threebet);
             Some(self.stream.clone_htod(&pots).map_err(e)?)
         } else {
             None

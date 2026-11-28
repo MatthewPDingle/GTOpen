@@ -11,7 +11,7 @@
 // crates/server/src/version.rs); when that is below what this page needs,
 // the header asks for a restart. Raise both together whenever the page
 // starts to need something new from the server.
-export const NEEDS_SERVER_LEVEL = 8;
+export const NEEDS_SERVER_LEVEL = 9;
 
 export const RESTART_LABEL = '\u26a0 restart GTOpen';
 export const RESTART_TIP = 'This page is newer than the GTOpen program that is running, so some things will be missing or wrong. ' +
@@ -61,4 +61,14 @@ export async function initVersion(link, fetchInfo, notice = null) {
   link.textContent = versionLabel(info);
   link.dataset.tip = versionTip(info);
   if (/^https:\/\//.test(info?.changelog_url || '')) link.href = info.changelog_url;
+}
+
+/** Features that cannot be sent to this server without changing the game. */
+export function unsupportedPreflopFeatures(info, { sizing, bbAnte, threeBetRake }) {
+  const level = info?.server_level ?? 0;
+  return [
+    sizing && level < 8 ? 'the new raise sizes' : null,
+    bbAnte && level < 8 ? 'a big blind ante' : null,
+    threeBetRake && level < 9 ? 'GG Network rake' : null,
+  ].filter(Boolean);
 }
