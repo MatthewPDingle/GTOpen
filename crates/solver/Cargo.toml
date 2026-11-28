@@ -23,6 +23,10 @@ libc = "0.2"
 name = "solve-cli"
 path = "src/bin/solve_cli.rs"
 
+[[bin]]
+name = "bombpot"
+path = "src/bin/bombpot.rs"
+
 [features]
 gpu = ["dep:cudarc"]
 preflop-research = ["gpu"]

@@ -1,0 +1,54 @@
+{
+ "name": "base",
+ "note": "The starting recipe on the small game: the 47 flop set, 8 walks a flop, 15 rounds, scored on 24 flops it never plays.",
+ "spec": "specs/47_flops_8_walks.json",
+ "rounds": 15,
+ "loop": {
+  "hidden": 256,
+  "layers": 3,
+  "width": 128,
+  "steps": 4000,
+  "avg-steps": 2500,
+  "cap": 24000000,
+  "river-solve": 100,
+  "keep-rounds": 10,
+  "seed": 1,
+  "flags": [
+   "warm",
+   "fixed-suits",
+   "in-ram",
+   "low-priority"
+  ]
+ },
+ "trained": [
+  "QcTc9d",
+  "Qc8c6c",
+  "Qc4d3h"
+ ],
+ "unseen": [
+  "9c6c5d",
+  "AcJd3h",
+  "6d6c2h",
+  "Tc7c2c",
+  "KcQdTh",
+  "Ac8d4c",
+  "KcJc2d",
+  "Jc5d4h",
+  "AcTd7h",
+  "AcQd8h",
+  "KcTd5h",
+  "Qc7d6h",
+  "Jc9d7h",
+  "9c7d4h",
+  "8c5d3h",
+  "Ac9c3d",
+  "Kc7d4d",
+  "Qc7c4d",
+  "Jc6d5c",
+  "8c6c5d",
+  "Ac9c6c",
+  "Jc7c4c",
+  "QdQc6h",
+  "Tc4h4d"
+ ]
+}

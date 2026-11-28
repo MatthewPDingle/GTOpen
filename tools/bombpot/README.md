@@ -1,0 +1,203 @@
+# Bomb pot net: training tools
+
+Self-play training of the bomb pot net, for two players and (one flop at a
+time, new) three. The engine side is
+`crates/solver/src/bombpot/` (`range.rs`, `range3.rs`, `net.rs`, `deepcfr.rs`) and the
+`bombpot` tool; this folder holds the PyTorch side.
+
+| file | role |
+|---|---|
+| `train.py` | fits a net to example files and writes it in the engine's format; `--check` compares its outputs with the engine's |
+| `loop.py` | the whole loop: self-play, training, exact scoring every few rounds; resumable |
+
+## One flop, start to finish
+
+```bash
+cargo build --release -p solver --bin bombpot
+python tools/bombpot/loop.py --spec spec.json --work WORK --exe target/release/bombpot \
+    --iters 60 --score game.json --score-every 10 --warm
+```
+
+`spec.json` is a `GenSpec` (`deepcfr.rs`): the game (boards, antes, stacks,
+bet sizes), how many games and walks a run plays, and how many turn and
+river cards each walk draws. With no boards in the game, every game draws
+its own flop; `held_out` flops are never drawn. `game.json` is one game
+(`BpConfig`) to score on.
+
+```json
+{"game": {"boards": ["AsKd7c"],
+          "tree": {"players": 2, "ante": 6.0, "stack": 98.0,
+                   "sizing": [{"bet": [{"PotPct": 66.0}], "raise": [{"PotPct": 100.0}]},
+                              {"bet": [{"PotPct": 66.0}], "raise": [{"PotPct": 100.0}]},
+                              {"bet": [{"PotPct": 66.0}], "raise": [{"PotPct": 100.0}]}]}},
+ "games": 1, "walks": 12, "turn_draws": 3, "river_draws": 2, "keep": [1.0, 0.5, 0.2]}
+```
+
+`WORK/log.jsonl` gets one line per event. A `score` line says what a perfect
+opponent would gain against the strategy net: `gain_avg` in chips per hand
+and `gain_pct_of_pot` as a share of the starting pot. Scoring tries every
+turn and river card, so it is exact; `--score-turns` / `--score-rivers`
+sample instead (quicker, reads a little high).
+
+## On a shared machine
+
+`--low-priority` runs the loop and the engine below normal priority and
+`--threads N` caps the engine's threads. Training needs a PyTorch build for
+the machine's GPU (see `tools/leafnet/README.md` for the RTX 50-series) and
+takes a few GB of GPU memory at the default `--cap`.
+
+On a GPU shared with another job, `--gpu-free-gb N` holds each training run
+until that much memory is free, and a smaller `--cap` lowers what training
+takes (about 1 GB per 8 million examples). `--keep-rounds N` keeps only the
+last rounds' example files on disk.
+
+Run one training job at a time on a small CPU-only machine: two PyTorch jobs
+on four cores crawl.
+
+With `--in-ram` (loop and trainer) the examples stay in main memory and
+only each batch goes to the GPU. The trainer then holds about 1 GB of GPU
+memory whatever `--cap` is, in place of about 5 GB at 32 million examples,
+at the price of a slightly slower step. Use it when the card is nearly full.
+
+## Net shapes
+
+`--width N` (loop and trainer) makes two-sided nets: one side reads the hand
+on its board, the other the board and the betting, and each action's output
+is a weighted sum of the two (`N` numbers in between). The engine then runs
+the hand side once per board and the other side once per decision for all
+hands, so games and scores run several times faster than with the one-piece
+net (`--width 0`), also with a much bigger net. `--hidden` and `--layers`
+size the hand side; `--spot-hidden` and `--spot-layers` size the situation
+side, which costs almost nothing in play and is where size pays most (on one
+round's examples a 512x3 situation side beside a 128x2 hand side explained
+0.83 of the river values, against 0.65 with both sides 128x2).
+
+In a spec, `"spread": true` makes the walks of a run share one shuffled deck
+(each takes the next cards) instead of each drawing its own: the same work
+covers the turn cards evenly, which steadies the flop examples.
+
+## What score to expect
+
+`bombpot tables game.json --rounds 80 --every 10` trains plain tables the
+same way (seats take turns) on the cards of one sampled walk, in under a
+minute. Its score at a round is about what a net that fitted every example
+perfectly would reach there, so read a net's score against it before
+blaming the net. `--regret-power` and `--avg-power` set how much later
+rounds count (round t counts t^power times); the loop's `--power` and
+`--avg-power` are the same for the nets. On the README's game tables with
+power 1 need about 70 rounds to get under 3% of the pot, with power 2 about
+30.
+
+`bombpot mix game.json --nets none,adv_0001.bin,... --net avg_NNNN.bin`
+scores the exact average of the nets that played beside the strategy net,
+on the same sampled cards: a gap between the two is the strategy net's own
+loss.
+
+`specs/one_flop_fixed_cards.json` (`"fixed_cards": 1`) makes the net loop
+play the very cards `bombpot tables` and `bombpot score --turns 6 --rivers 6`
+draw with seed 1, every round. Run with `--score-turns 6 --score-rivers 6`,
+the loop's scores then compare with the tables' round for round on the same
+small game, where a net sees every spot every round. A gap there is the
+net's fit; a gap only on the full game is too few cards seen per round.
+
+## Solving the river instead of learning it
+
+On the full game the nets' river play stopped improving after about ten
+rounds and then got worse (a net sees each of the 2,352 turn and river
+boards of a flop too rarely), while on fixed cards the same net stays ahead
+of the tables. So the river can be left to arithmetic: with
+`"river_solve": N` in the spec the nets play the flop and the turn only,
+and each river spot a walk reaches is solved on the spot, in N rounds, for
+the ranges that arrive (`Walker::river_iters`); no river examples are
+written. `bombpot score --river-solve N` (the loop's `--river-solve N`)
+scores that same mix: the strategy net to the river, then the solution for
+the ranges it brings. `bombpot tables --river-solve N` is the plain-tables
+reference for it: with N = 100 it reaches in 20 rounds what plain tables
+need about 35 for, and a reply that starts on the river gains about 1% of
+the pot (5% with N = 30). `specs/one_flop_river_solved.json` holds the
+settings; a half round of it solves 384 boards (about a minute of one
+core per 50).
+
+## Several flops in one net
+
+`"flops": [...]` in a spec makes every round play the same flops (each
+`walks` times). What the 5090 runs showed, in % of the pot a perfect
+opponent gains: six flops at 16 walks each are held about as well as one
+(4% after 40 rounds) but a flop the net never played stays at 40%; 24 flops
+at 4 walks each (the same work per round) score alike on played and unplayed
+flops, but slowly (32% and 34% after 20 rounds); 24 flops at 16 walks each
+reach 10% on played flops after 20 rounds and 28% on unplayed ones.
+
+`specs/47_flops_river_solved.json` and `specs/95_flops_river_solved.json`
+use the flop sets of Flop Reports (`solve-cli flops 47`), which hold every
+texture in its share of all flops. These flops are in their standard suits,
+so run them with `--fixed-suits` and score flops in standard suits as well
+(`specs/flop_*.json`; none of Jc8d4h, 9c6c5d, AcJd3h, 6d6c2h, Tc7c2c and
+KcQdTh is in either set): a flop in other suits is first renamed to its
+standard form, and the net never has to learn that suits are
+interchangeable.
+
+## Three players
+
+A spec whose game has `"players": 3` runs the same loop with three seats
+taking turns (`specs/3p_one_flop.json`, scored on
+`specs/3p_flop_AcQd8h.json`). What differs:
+
+- The engine plays whole ranges for all three seats (`range3.rs`): a hand's
+  value at the end of a line counts every pair of opposing hands that fits
+  with it, exactly. Checked against a slow hand-by-hand calculation and
+  against the exact three-way solver.
+- The score is what one seat gains by changing its own play alone, averaged
+  over the three seats, as a share of the starting pot. Two seats working
+  together are not looked at.
+- The river is not solved on the spot (`river_solve` and `--river-solve`
+  are for two players): the nets play all three streets, so `keep` needs a
+  share of river examples.
+- No range inputs (`--range` stays off).
+
+`bombpot tables game.json --turns 2 --rivers 2 --rounds 120 --regret-power 2
+--avg-power 2` trains plain tables the same way on a few sampled cards: what
+a net that fitted every example would reach. On AcQd8h with four runouts
+that is 21.6 / 6.0 / 2.6 / 1.6 / 1.0 / 0.7% after 20 to 120 rounds; with
+round weights of 1 it is about three times slower (31% after 40 rounds on
+one runout, against 14% with weights of 2).
+
+## Self-play by dealt hands
+
+A spec with a `"dealt"` part plays another way (`dealt.rs`,
+`specs/3p_one_flop_dealt.json`): one seat holds every hand, the other seats
+are each dealt one hand and the turn and river are dealt too; the others
+take one drawn action at each decision and the learner tries all of its
+own. One deal is a tiny fraction of the work of a whole-range walk and
+gives a noisy look at the same advantages (over many deals they average to
+the whole-range ones: `dealt_tests.rs`). It is the way that still works
+with four or more players, where whole ranges do not. The loop, the trainer
+and the scoring are unchanged.
+
+```json
+"keep": [0.008, 0.006, 0.006],
+"dealt": {"runouts": 1000, "hands": 24, "strategy_runouts": 200, "strategy_keep": [0.1, 0.05, 0.03]}
+```
+
+`runouts` turn-and-river deals, each with `hands` sets of hands for the
+other seats; `keep` is the share of the learner's hands kept as advantage
+examples per street. The mixes played are recorded on `strategy_runouts`
+separate walks that try every action of the other seats, so the strategy
+net averages the rounds as the whole-range loop does.
+
+What three players on one flop reached on the desktop (AcQd8h, 60 rounds,
+1000 / 600 steps; lower is better):
+
+| run | score | of which river |
+|---|---|---|
+| whole range, 24 walks | 17 to 18% | 10 to 11 |
+| dealt hands (`3p_one_flop_dealt.json`) | 16.7% | 7.8 |
+| twice the dealt hands (`3p_one_flop_dealt_x2.json`) | 13.7% | 6.9 |
+
+The nets play the river themselves here, and the river is where they lose.
+A study of net sizes on saved examples showed the net is too small for the
+river only, and that it is the situation side that counts: with
+`--width 256 --spot-hidden 1024 --spot-layers 4` (hand side unchanged) the
+river fit rises from 0.61 to 0.73 while flop and turn stay the same. A large
+situation side would make dealt self-play slow, so the engine keeps it per
+decision and cards there (`NetPolicy::remember_spots`).
