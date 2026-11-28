@@ -665,6 +665,52 @@ impl HandSides {
     }
 }
 
+/// The situation side of a two-sided net at decisions met before, by
+/// decision and board cards. Dealt-hand self-play meets the same decision
+/// on the same cards many times (every flop decision in every deal, every
+/// river decision in each set of hands dealt on one runout), and a large
+/// situation side is most of its cost. Flop and turn entries are kept for
+/// good; river entries are dropped when their table is full.
+#[derive(Default)]
+pub struct SpotSides {
+    early: std::sync::RwLock<SpotMap>,
+    river: std::sync::RwLock<SpotMap>,
+}
+
+type Spot = std::sync::Arc<(Vec<f32>, [f32; MENU])>;
+type SpotMap = std::collections::HashMap<(u32, [u8; 4]), Spot>;
+
+/// River entries kept at most (a few thousand numbers each).
+const RIVER_SPOTS_KEPT: usize = 20_000;
+/// Flop and turn entries kept at most (one flop has 49 turn cards).
+const EARLY_SPOTS_KEPT: usize = 60_000;
+
+impl SpotSides {
+    fn get(&self, net: &TwoNet, abs: &Abstraction, node_idx: u32, street: usize, runout: &Runout, pub_row: &[f32], rows: &[usize]) -> Spot {
+        let mut cards = [255u8; 4];
+        for b in 0..abs.num_boards() {
+            for st in 1..=street {
+                cards[b * 2 + st - 1] = runout[b][st - 1];
+            }
+        }
+        let key = (node_idx, cards);
+        let (map, kept) = if street == 2 { (&self.river, RIVER_SPOTS_KEPT) } else { (&self.early, EARLY_SPOTS_KEPT) };
+        if let Some(v) = map.read().unwrap().get(&key) {
+            return v.clone();
+        }
+        let mut weights = Vec::new();
+        let mut offsets = [0.0f32; MENU];
+        net.spot_side(pub_row, rows, &mut weights, &mut offsets);
+        let spot = std::sync::Arc::new((weights, offsets));
+        let mut map = map.write().unwrap();
+        if map.len() >= kept {
+            map.clear();
+        }
+        map.insert(key, spot.clone());
+        spot
+    }
+}
+
 /// Turn the net's outputs at one decision into probabilities over the
 /// node's own actions.
 #[inline]
@@ -729,11 +775,34 @@ pub struct NetPolicy<'a> {
     /// Whether the net was trained with the range inputs (one-sided nets only).
     pub range_on: bool,
     sides: HandSides,
+    /// Kept situation sides (`remember_spots`).
+    spots: Option<SpotSides>,
 }
 
 impl<'a> NetPolicy<'a> {
     pub fn new(tree: &'a BpTree, abs: &'a Abstraction, pubf: &'a PublicFeats, net: &'a Net, range_on: bool) -> NetPolicy<'a> {
-        NetPolicy { tree, abs, pubf, net, range_on, sides: HandSides::default() }
+        NetPolicy { tree, abs, pubf, net, range_on, sides: HandSides::default(), spots: None }
+    }
+
+    /// Keep the situation side of every decision met (two-sided nets): for
+    /// play that comes back to the same decision on the same cards, as
+    /// dealt-hand self-play does. Whole-range walks meet each one once.
+    pub fn remember_spots(mut self) -> NetPolicy<'a> {
+        self.spots = Some(SpotSides::default());
+        self
+    }
+
+    fn spot(&self, n: &TwoNet, node_idx: u32, street: usize, runout: &Runout, rows: &[usize]) -> Spot {
+        let pub_row = self.pubf.row(node_idx);
+        match &self.spots {
+            Some(kept) => kept.get(n, self.abs, node_idx, street, runout, pub_row, rows),
+            None => {
+                let mut weights = Vec::new();
+                let mut offsets = [0.0f32; MENU];
+                n.spot_side(pub_row, rows, &mut weights, &mut offsets);
+                std::sync::Arc::new((weights, offsets))
+            }
+        }
     }
 }
 
@@ -755,10 +824,8 @@ impl Policy for NetPolicy<'_> {
         match self.net {
             Net::Two(n) => {
                 let sides = self.sides.get(n, self.abs, street, runout, used, &rows);
-                let mut weights = Vec::new();
-                let mut offsets = [0.0f32; MENU];
-                n.spot_side(self.pubf.row(node_idx), &rows, &mut weights, &mut offsets);
-                n.combine(&weights, &offsets, &sides[hand * n.d..(hand + 1) * n.d], &mut raw);
+                let spot = self.spot(n, node_idx, street, runout, &rows);
+                n.combine(&spot.0, &spot.1, &sides[hand * n.d..(hand + 1) * n.d], &mut raw);
                 outputs_to_probs(n.kind, &raw, slots, na, out);
             }
             Net::One(net) => {
@@ -785,9 +852,8 @@ impl Policy for NetPolicy<'_> {
                 assert!(!self.range_on, "a two-sided net has no range inputs");
                 let rows = board_rows(self.abs, street, runout);
                 let sides = self.sides.get(n, self.abs, street, runout, used, &rows);
-                let mut weights = Vec::new();
-                let mut offsets = [0.0f32; MENU];
-                n.spot_side(self.pubf.row(node_idx), &rows, &mut weights, &mut offsets);
+                let spot = self.spot(n, node_idx, street, runout, &rows);
+                let (weights, offsets) = (&spot.0, &spot.1);
                 let mut raw = [0.0f32; MENU];
                 let mut probs = [0.0f32; MAX_ACTIONS];
                 for h in 0..NUM_COMBOS {
@@ -795,7 +861,7 @@ impl Policy for NetPolicy<'_> {
                     if (1u64 << c1 | 1u64 << c2) & used != 0 {
                         continue;
                     }
-                    n.combine(&weights, &offsets, &sides[h * n.d..(h + 1) * n.d], &mut raw);
+                    n.combine(weights, offsets, &sides[h * n.d..(h + 1) * n.d], &mut raw);
                     outputs_to_probs(n.kind, &raw, slots, na, &mut probs);
                     for a in 0..na {
                         out[a * NUM_COMBOS + h] = probs[a];

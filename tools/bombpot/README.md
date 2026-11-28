@@ -184,3 +184,20 @@ other seats; `keep` is the share of the learner's hands kept as advantage
 examples per street. The mixes played are recorded on `strategy_runouts`
 separate walks that try every action of the other seats, so the strategy
 net averages the rounds as the whole-range loop does.
+
+What three players on one flop reached on the desktop (AcQd8h, 60 rounds,
+1000 / 600 steps; lower is better):
+
+| run | score | of which river |
+|---|---|---|
+| whole range, 24 walks | 17 to 18% | 10 to 11 |
+| dealt hands (`3p_one_flop_dealt.json`) | 16.7% | 7.8 |
+| twice the dealt hands (`3p_one_flop_dealt_x2.json`) | 13.7% | 6.9 |
+
+The nets play the river themselves here, and the river is where they lose.
+A study of net sizes on saved examples showed the net is too small for the
+river only, and that it is the situation side that counts: with
+`--width 256 --spot-hidden 1024 --spot-layers 4` (hand side unchanged) the
+river fit rises from 0.61 to 0.73 while flop and turn stay the same. A large
+situation side would make dealt self-play slow, so the engine keeps it per
+decision and cards there (`NetPolicy::remember_spots`).

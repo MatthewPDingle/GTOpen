@@ -706,7 +706,10 @@ pub fn generate(
             let netp;
             let policy: &dyn Policy = match net {
                 Some(n) => {
-                    netp = NetPolicy::new(&game.tree, &game.abs, &game.pubf, n, range_on);
+                    let p = NetPolicy::new(&game.tree, &game.abs, &game.pubf, n, range_on);
+                    // Dealt hands come back to the same decisions on the
+                    // same cards; whole-range walks do not.
+                    netp = if spec.dealt.is_some() { p.remember_spots() } else { p };
                     &netp
                 }
                 None => &uniform,
