@@ -75,7 +75,7 @@ fn solve_gpu(spot: &Arc<MwSpot>, o: &Opts) -> Result<Solved, String> {
     // true while no other solve is about to allocate. Held until the solve ends.
     let _turn = solver::gpu_turn::take();
     let (free, total) = solver::gpu::vram_info_mb().ok_or("the graphics card's memory could not be read")?;
-    let budget = free.saturating_sub(1024).min(total * 88 / 100).saturating_sub((o.reserve_gb * 1000.0) as u64) * 1_000_000;
+    let budget = datagen3::plan_budget(free, total, o.reserve_gb);
     let opts = MwGpuOptions { budget_bytes: Some(budget), ..Default::default() };
     let mut g = MwGpuSolver::with_options(spot.clone(), solver::Algorithm::Dcfr, &opts)?;
     let pot = spot.tree.config.starting_pot;
@@ -255,7 +255,7 @@ pub fn run_job3(job: u64, contributor: &str, o: &Opts, book: &Book, mix: u32, ca
 /// hands and estimated size, and on a GPU build what the card would really
 /// plan for it. For tuning the estimate against real cards.
 pub fn sizes3(o: &Opts) {
-    let cap = super::vram_cap(o);
+    let cap = super::vram_cap3(o);
     let mut sync = solver::datagen_mix::MixSync::open(&super::mix_dir(o));
     let _ = sync.refresh_if_due();
     let Some(id) = sync.book.open_ids().into_iter().find(|id| sync.book.mixes[id].players == 3) else {

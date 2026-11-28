@@ -266,9 +266,13 @@ flop is really worth to each player. Game mix 4 is the first.
   raise on the river, which is what lets a 100 bb single-raised pot fit a
   32 GB card.
 - **A solve uses the card that is free.** The more of the card a solve may
-  use, the faster it runs, so it plans for nearly all free memory (often three
-  times the size `--max-vram` goes by). To keep room for another program on
-  the card, pass `--reserve-gb G`.
+  use, the faster it runs, so it plans for the free memory up to four fifths
+  of the card (often three times the size `--max-vram` goes by), and without
+  `--max-vram` it draws trees up to 70% of the card. The fifth left free is
+  for the desktop and small programs: a card filled past its memory spills
+  into system memory and a solve then runs ten times slower. To keep more
+  room for another program on the card, pass `--reserve-gb G`: a solve then
+  leaves G GB of the memory that is free when it starts.
 - **Small cards keep to heads-up flops.** A mix can ask for a card of a size
   (`min_card_gb`: the trees it must hold). A generator on a smaller card, or
   without a GPU, passes that mix over, says so once, and solves the mix
