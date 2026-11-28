@@ -179,9 +179,12 @@ export function createIcmControls(els, positionsFor, changed) {
   // gives them back.
   let holdingRake = false;
   const rakeFields = () => [els.rakePct, els.rakeCap].filter(Boolean);
+  // The rake type has no number to zero, so it is held and released with the
+  // amounts but never overwritten.
+  const heldRakeFields = () => [...rakeFields(), els.rakeType].filter(Boolean);
   function releaseRake() {
     holdingRake = false;
-    releaseRakeBoxes(rakeFields());
+    releaseRakeBoxes(heldRakeFields());
   }
   function zeroRake(on) {
     if (on) {
@@ -192,13 +195,13 @@ export function createIcmControls(els, positionsFor, changed) {
         holdingRake = true;
       }
       for (const el of rakeFields()) el.value = '0';
-      holdRakeBoxes(rakeFields());
+      holdRakeBoxes(heldRakeFields());
     } else if (holdingRake) {
       holdingRake = false;
       for (const [el, saved] of [[els.rakePct, state.rakePct], [els.rakeCap, state.rakeCap]]) {
         if (el) el.value = saved ?? '';
       }
-      releaseRakeBoxes(rakeFields());
+      releaseRakeBoxes(heldRakeFields());
     }
   }
   // Custom has no preset behind it, so its numbers must be in view.

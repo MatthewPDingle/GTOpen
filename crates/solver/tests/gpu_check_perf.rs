@@ -23,6 +23,7 @@ fn config(n: usize) -> PreflopConfig {
         rake_pct: 5.0,
         rake_cap: 3.0,
         no_flop_no_drop: true,
+        rake_threebet: false,
         realization: if n == 6 { "static" } else { "calibrated" }.into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,

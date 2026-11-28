@@ -103,7 +103,7 @@ impl PreflopGpu {
             } else {s.rake_of(n.pot)}) as f32).collect();
             summary["scope"]=json!("Two-player physical class-pair chance with configured rake. Fixed Balanced continuation; no learned pricing or multiway support. CPU queries and saves are not converted.");
             summary["rake_pct"]=json!(s.cfg.rake_pct);summary["rake_cap"]=json!(s.cfg.rake_cap);
-            summary["no_flop_no_drop"]=json!(s.cfg.no_flop_no_drop);
+            summary["no_flop_no_drop"]=json!(s.cfg.no_flop_no_drop);summary["rake_threebet"]=json!(s.cfg.rake_threebet);
             Some(self.stream.clone_htod(&pots).map_err(e)?)
         } else {None};
         self.interface=Some(Interface{prepare:module.load_function("interface_prepare").map_err(e)?,terminal:module.load_function("interface_terminal").map_err(e)?,

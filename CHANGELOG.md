@@ -2,6 +2,12 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.11.0 - 2026-11-28
+
+- Preflop Lab: a new "Rake type" choice decides which pots the rake is charged on. "No Flop, No Drop" (the default) only rakes pots that reach the flop; "Full" rakes every pot, including one that ends before the flop; "GG Network" rakes a preflop pot once there has been a 3-bet.
+- The choice belongs to the game you build, so saved scenarios and saved games keep theirs. Older scenarios and saves stay No Flop, No Drop.
+- Update and refresh the page. GG Network needs the program rebuilt and restarted (close and reopen GTOpen); the header says when a restart is waiting.
+
 ## 1.10.1 - 2026-11-25
 
 - Hand grids: the hand names and the numbers in the cells now have a dark edge round the letters, so they stay easy to read on bright green, yellow and orange cells. This covers every view in Browse (STRAT, EV, EQ, EXPLOIT), the Preflop Lab grid and the range editors.

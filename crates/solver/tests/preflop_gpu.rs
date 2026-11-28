@@ -208,6 +208,28 @@ fn gpu_matches_cpu_big_blind_ante() {
     gs.prune = false;
     run_equivalence(cpu, gs);
 }
+/// The 3-bet rake rule is a host-side choice per fold-win terminal, like the
+/// big blind ante: the GPU must price those terminals as the CPU does.
+#[test]
+fn gpu_matches_cpu_three_bet_rake() {
+    let mut cfg = hu25();
+    cfg.rake_threebet = true;
+    cfg.open_raises = vec![2.0];
+    cfg.add_allin = false;
+    assert_gpu_matches_cpu(cfg.clone());
+    cfg.positions = (0..3).map(|i| format!("P{i}")).collect();
+    cfg.posts = vec![0., 0.5, 1.];
+    cfg.stack = 12.;
+    let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+    // The tree must actually reach a fold-win after a 3-bet, or this compares
+    // two games that never exercise the rule.
+    const FOLD_WIN: u8 = 1; // PNode.kind for a fold-win terminal
+    assert!(cpu.nodes.iter().any(|nd| nd.kind == FOLD_WIN && cpu.fold_win_rake(nd) > 0.0));
+    let mut gs = PreflopSolver::new(cfg, table()).unwrap();
+    cpu.prune = false;
+    gs.prune = false;
+    run_equivalence(cpu, gs);
+}
 fn hu25() -> PreflopConfig {
     PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
         utg_straddle: false,
@@ -224,6 +246,7 @@ fn hu25() -> PreflopConfig {
         rake_pct: 5.0,
         rake_cap: 1.0,
         no_flop_no_drop: true,
+        rake_threebet: false,
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
@@ -455,6 +478,7 @@ fn gpu_push_fold_anchors() {
         rake_pct: 0.0,
         rake_cap: 0.0,
         no_flop_no_drop: true,
+        rake_threebet: false,
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,

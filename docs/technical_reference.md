@@ -254,6 +254,10 @@ Games with `balanced` or `leafnet` realization or separate 4-bet+ menus use `GTO
 - **Same game, different payer.** A big blind ante of `A` and a per-seat ante of `A / n` build the same tree, pots and stacks. Every terminal pays a seat the same up to the constant it paid in, and regrets are differences between actions, so the two solves match step for step to float noise (`same_game_as_each_seat_paying_a_share`); each seat's EV differs by that constant (the big blind's is lower by what it paid for the table). One exception: with ICM payouts who holds the chips matters. (Up to 1.6.1 learned flop values with blockers were a second one, because the leaf net's input carried a term in what the seat had put in; see "Blockers" above.)
 - **Saves.** Games with a big blind ante save as `GTOPREFLOP8`, so older binaries refuse them rather than drop the ante. Without one, the config and the save are unchanged.
 
+## Preflop rake
+
+`rake_pct`/`rake_cap` apply once to every pot that reaches the flop. `no_flop_no_drop` (default true) exempts a preflop fold-out from rake; `false` (the Lab's "Full") rakes every pot. `PreflopConfig.rake_threebet` (default false, the Lab's "GG Network") rakes a preflop fold-out once the line had a 3-bet or more: `PNode.raises >= 2`, with the open as raise 1, and the rake on the matched pot only. Any raise counts, including an all-in too small to reopen the betting — the same raise depth is what labels a pot a 3-bet elsewhere in the app. A game with `rake_threebet` saves as `GTOPREFLOP9`, which older binaries refuse; with no rake, or under ICM's forced zero rake, the type has no effect and the game saves as the plain no-rake one.
+
 ## The raise cap
 
 `PreflopConfig.max_raises` caps the raises of a hand, the all-in included: `legal_actions_of` offers no raise of any kind once `raises == max_raises`. The last raise the cap allows is therefore a raise nobody can answer with a raise. When called it always sees a flop, so it costs its owner less than the same raise in a game without the cap, and a solve uses it for hands it would otherwise call with.
