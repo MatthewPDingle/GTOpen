@@ -532,8 +532,8 @@ pub fn payoff_table(node: &MwNode, p: usize, rake_pct: f64, rake_cap: f64) -> [[
         let payers = (0..NP).filter(|&i| put[i] >= lv - 1e-7).count() as f64;
         let amount = (lv - prev) * payers;
         let mut contenders = 0u8;
-        for i in 0..NP {
-            if live & (1 << i) != 0 && put[i] >= lv - 1e-7 {
+        for (i, &pi) in put.iter().enumerate() {
+            if live & (1 << i) != 0 && pi >= lv - 1e-7 {
                 contenders |= 1 << i;
             }
         }
@@ -564,8 +564,8 @@ pub fn payoff_table(node: &MwNode, p: usize, rake_pct: f64, rake_cap: f64) -> [[
         0.0
     };
     let mut pay = [[0.0; 3]; 3];
-    for cq in 0..3 {
-        for cr in 0..3 {
+    for (cq, row) in pay.iter_mut().enumerate() {
+        for (cr, cell) in row.iter_mut().enumerate() {
             let mut won = 0.0;
             for (k, &(amount, cont)) in layers.iter().enumerate() {
                 let lv = levels[k];
@@ -596,7 +596,7 @@ pub fn payoff_table(node: &MwNode, p: usize, rake_pct: f64, rake_cap: f64) -> [[
                     won += net / ties;
                 }
             }
-            pay[cq][cr] = won - put[p];
+            *cell = won - put[p];
         }
     }
     pay

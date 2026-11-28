@@ -33,8 +33,10 @@ fn main() {
     let bytes = std::fs::read(&args[2]).unwrap();
     assert_eq!(bytes.len(), 4 + 169 * 169 * 4);
     let table: Vec<f64> = bytes[4..]
-        .chunks_exact(4)
-        .map(|b| f32::from_le_bytes(b.try_into().unwrap()) as f64)
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .map(|b| f32::from_le_bytes(*b) as f64)
         .collect();
     let samples: usize = args.get(4).map(|s| s.parse().unwrap()).unwrap_or(200_000);
     assert!(samples > 0);

@@ -47,8 +47,10 @@ fn main() {
         .collect();
     let bytes = std::fs::read("cache/preflop_eq169.bin").unwrap();
     let table: Vec<f64> = bytes[4..]
-        .chunks_exact(4)
-        .map(|b| f32::from_le_bytes(b.try_into().unwrap()) as f64)
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .map(|b| f32::from_le_bytes(*b) as f64)
         .collect();
     let hands = [
         ("KQo", class_index(11, 10, false), 0.2079848333),

@@ -40,7 +40,7 @@ async fn solve_until(state: &Arc<AppState>, iterations: u32) {
         trust: None,
         sweep: None,
     };
-    start_solve(State(state.clone()), Json(req)).await.unwrap();
+    let _ = start_solve(State(state.clone()), Json(req)).await.unwrap();
     while lock_unpoisoned(&state.status).iteration < iterations {
         tokio::time::sleep(std::time::Duration::from_millis(1)).await;
     }
@@ -54,7 +54,7 @@ async fn stop_measures_what_the_solve_leaves() {
         lock_unpoisoned(&state.status).history.is_empty(),
         "no check has run"
     );
-    stop_solve(State(state.clone())).await;
+    let _ = stop_solve(State(state.clone())).await;
     let st = lock_unpoisoned(&state.status).clone();
     assert_eq!(st.state, "stopped", "{}", st.error);
     let s = lock_unpoisoned(&solver);

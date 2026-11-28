@@ -10,6 +10,8 @@
 //! same way: a game mix with `"players": 3` (`crate::datagen_mix`) has the
 //! generator write jobs of these, fully determined by (mix, job, index, cap).
 
+use std::cmp::Ordering;
+
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -137,7 +139,7 @@ impl Inputs3 {
         }
         let mask = board.iter().fold(0u64, |m, &c| m | card_mask(c));
         let nh = self.hand_counts()?;
-        if nh.iter().any(|&n| n == 0) {
+        if nh.contains(&0) {
             return Err("a range has no hand left on this flop".into());
         }
         let tree = MwTreeBuilder::build(&self.spot_config().tree, mask, 0, nh, None)?;
@@ -206,7 +208,10 @@ pub fn class_values(spot: &MwSpot, cfv: &[Vec<f32>; NP]) -> Values3 {
             let (r1, r2) = (rank(h.c1), rank(h.c2));
             let k = class_index(r1.max(r2), r1.min(r2), suit(h.c1) == suit(h.c2));
             cw[k] += h.weight as f64;
-            if !(mass[i] > 0.0) || !equity[i].is_finite() || !cfv[p][i].is_finite() {
+            if mass[i].partial_cmp(&0.0) != Some(Ordering::Greater)
+                || !equity[i].is_finite()
+                || !cfv[p][i].is_finite()
+            {
                 continue;
             }
             // per-hand values are per unit of compatible opponent mass:
@@ -361,7 +366,7 @@ pub fn sanity3(r: &Record3) -> Option<String> {
                 vsum += v.reach[p][k] as f64 * x as f64;
             }
         }
-        if !(wsum > 0.0) {
+        if wsum.partial_cmp(&0.0) != Some(Ordering::Greater) {
             return Some(format!("player {p} has no values"));
         }
         total += vsum / wsum;
@@ -395,8 +400,8 @@ mod tests {
             .enumerate()
         {
             let r = crate::range::Range::parse(text).unwrap();
-            for idx in 0..NUM_COMBOS {
-                if r.weights[idx] > 0.0 {
+            for (idx, &w) in r.weights.iter().enumerate() {
+                if w > 0.0 {
                     let (c1, c2) = combo_from_index(idx);
                     let (r1, r2) = (rank(c1), rank(c2));
                     range[p][class_index(r1.max(r2), r1.min(r2), suit(c1) == suit(c2))] = 1.0;
@@ -512,8 +517,8 @@ mod tests {
         assert!(compare_values3(&bad.values, &rec.values).1 > 1.0);
         // values that hand out two pots are caught, each one being possible on its own
         let mut double = rec.clone();
-        for p in 0..NP {
-            for x in double.values.value[p].iter_mut().flatten() {
+        for row in double.values.value.iter_mut() {
+            for x in row.iter_mut().flatten() {
                 *x += 1.0 / 3.0;
             }
         }

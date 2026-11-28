@@ -12,6 +12,7 @@
 //! on, and a finished solve is left priced that way (`leaf_settle`). A save
 //! does not store corrections, so this is also what a reload computes: a
 //! loaded game shows the EVs and the gap the solve reported.
+use std::cmp::Ordering;
 use std::sync::Arc;
 
 use rayon::prelude::*;
@@ -25,6 +26,10 @@ use super::{
 };
 
 const NO_SLOT: u32 = u32::MAX;
+
+/// The learned terminals a GPU engine reads: node indices, (oop, ip) seats
+/// and the current corrections.
+pub type LeafTerminals<'a> = (&'a [u32], &'a [[u8; 2]], &'a [f32]);
 /// Weight of the newest net output at a refresh (None: 2/(k+1) at refresh
 /// k, a linearly weighted average of all refreshes so far).
 ///
@@ -197,7 +202,7 @@ impl PreflopSolver {
                 .iter()
                 .map(|&q| self.cfg.left(q, nd.invested[q]))
                 .fold(f64::MAX, f64::min);
-            if !(left / nd.pot > 1e-9) {
+            if (left / nd.pot).partial_cmp(&1e-9) != Some(Ordering::Greater) {
                 continue; // all in: no postflop play to learn
             }
             slot[i] = nodes.len() as u32;
@@ -390,7 +395,7 @@ impl PreflopSolver {
     pub fn leaf_refresh_due(&self, iteration: u32) -> bool {
         self.leaf
             .as_ref()
-            .map_or(false, |st| iteration > 0 && iteration % st.interval == 0)
+            .is_some_and(|st| iteration > 0 && iteration.is_multiple_of(st.interval))
     }
 
     /// Iterations between refreshes and the weight of the newest net output
@@ -414,7 +419,7 @@ impl PreflopSolver {
     pub fn leaf_values_stale_at(&self, iteration: u32) -> bool {
         self.leaf
             .as_ref()
-            .map_or(false, |st| iteration > 0 && st.fresh_at != Some(iteration))
+            .is_some_and(|st| iteration > 0 && st.fresh_at != Some(iteration))
     }
 
     /// The net's output at the current average strategies as a corrections
@@ -436,10 +441,10 @@ impl PreflopSolver {
                 continue;
             };
             let at = k * 2 * NUM_CLASSES;
-            for side in 0..2 {
-                for h in 0..NUM_CLASSES {
+            for (side, reach_side) in reach.iter().enumerate() {
+                for (h, &r) in reach_side.iter().enumerate() {
                     let i = side * NUM_CLASSES + h;
-                    let w = joint * reach[side][h] as f64;
+                    let w = joint * r as f64;
                     diff += w * (new[i] - stored.get(at + i).copied().unwrap_or(0.0)).abs() as f64;
                     weight += w;
                 }
@@ -541,7 +546,7 @@ impl PreflopSolver {
 
     /// Learned terminals: node indices, (oop, ip) seats and the current
     /// corrections (empty before the first refresh). For the GPU engine.
-    pub fn leaf_terminals(&self) -> Option<(&[u32], &[[u8; 2]], &[f32])> {
+    pub fn leaf_terminals(&self) -> Option<LeafTerminals<'_>> {
         self.leaf
             .as_ref()
             .map(|st| (st.nodes.as_slice(), st.seats.as_slice(), st.corr.as_slice()))
@@ -737,7 +742,9 @@ impl PreflopSolver {
             .flat_map_iter(|chunk| {
                 let xs: Vec<f32> = chunk.iter().flat_map(|l| l.x.iter().cloned()).collect();
                 let out = st.net.residual_batch(&xs);
-                out.chunks_exact(2 * NUM_CLASSES)
+                out.as_chunks::<{ 2 * NUM_CLASSES }>()
+                    .0
+                    .iter()
                     .map(|c| c.to_vec())
                     .collect::<Vec<_>>()
             })
@@ -748,7 +755,7 @@ impl PreflopSolver {
             .zip(corrs)
             .map(|(leaf, mut corr)| {
                 // corrections from a file, when there are any, on top of the net's output
-                let fixed = st.fix.as_ref().map_or(false, |f| {
+                let fixed = st.fix.as_ref().is_some_and(|f| {
                     let line = Some(f.line[leaf.k])
                         .filter(|&i| i != NO_SLOT)
                         .map(|i| i as usize);
@@ -954,7 +961,10 @@ impl PreflopSolver {
                 reaches[live[0]].iter().sum::<f32>(),
                 reaches[live[1]].iter().sum::<f32>(),
             ];
-            if !(stack / nd.pot > 1e-9) || !(mass[0] > 1e-12 && mass[1] > 1e-12) {
+            if (stack / nd.pot).partial_cmp(&1e-9) != Some(Ordering::Greater)
+                || mass[0].partial_cmp(&1e-12) != Some(Ordering::Greater)
+                || mass[1].partial_cmp(&1e-12) != Some(Ordering::Greater)
+            {
                 return;
             }
             let range = [0, 1].map(|side| {

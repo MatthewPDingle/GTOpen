@@ -69,14 +69,14 @@ impl Observation {
         let actor = ((lo >> 42) & 1) as usize;
         let mut cards = [0u8; 7];
         let mut seen = 0u64;
-        for i in 0..7 {
+        for (i, card) in cards.iter_mut().enumerate() {
             let c = ((lo >> (6 * i)) & 63) as u8;
             assert!(c < 52 || c == 63, "invalid card code");
             if c < 52 {
                 assert_eq!(seen & (1u64 << c), 0, "duplicate visible card");
                 seen |= 1u64 << c;
             }
-            cards[i] = c;
+            *card = c;
         }
         assert!(cards[0] < 52 && cards[1] < 52);
         let mut history = Vec::new();

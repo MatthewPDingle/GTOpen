@@ -207,7 +207,11 @@ fn spot_request_from_config(config: &MwSpotConfig) -> MwSpotRequest {
 }
 
 fn spot_config(req: &MwSpotRequest) -> Result<MwSpotConfig, String> {
-    if !(req.starting_pot > 0.0) || req.stacks.iter().any(|&s| !(s > 0.0)) {
+    // a NaN pot or stack is not positive and must not slip through
+    if req.starting_pot.is_nan()
+        || req.starting_pot <= 0.0
+        || req.stacks.iter().any(|&s| s.is_nan() || s <= 0.0)
+    {
         return Err("pot and stacks must be positive".into());
     }
     if !(0.0..=100.0).contains(&req.rake_pct) {
@@ -600,7 +604,7 @@ fn run(
         }
         s.iterate();
         let k = s.iteration - base;
-        if k % check == 0 || k >= req.max_iterations {
+        if k.is_multiple_of(check) || k >= req.max_iterations {
             let pr = s.progress(start.elapsed().as_secs_f64());
             checked = s.iteration;
             drop(s);

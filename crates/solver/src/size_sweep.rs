@@ -351,7 +351,7 @@ mod tests {
         })
         .unwrap();
         assert!(!edge);
-        assert!(calls >= 2 && calls <= 6, "{calls} probes");
+        assert!((2..=6).contains(&calls), "{calls} probes");
         let v = verdict(&points, edge).unwrap();
         assert_eq!(v.best_grid, 50.0);
         assert!((v.best - 42.0).abs() <= 3.0, "refined best {}", v.best);

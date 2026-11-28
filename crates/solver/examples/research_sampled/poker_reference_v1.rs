@@ -214,8 +214,8 @@ impl<'a> Walk<'a> {
             let x = uniform(&mut self.rng);
             let mut sum = 0.;
             let mut selected = n - 1;
-            for a in 0..n {
-                sum += p[a];
+            for (a, &pa) in p.iter().enumerate().take(n) {
+                sum += pa;
                 if x < sum {
                     selected = a;
                     break;

@@ -79,7 +79,7 @@ fn gaps_of(spot: &MwSpot, best: &[Vec<f32>; NP], avg: &[Vec<f32>; NP]) -> [f64; 
 
 /// `GTOPEN_TRACE=1` prints every accuracy check of a solve (for timing a card).
 fn trace(iteration: u32, pct: f64, t0: std::time::Instant) {
-    if std::env::var("GTOPEN_TRACE").map_or(false, |v| v == "1") {
+    if std::env::var("GTOPEN_TRACE").is_ok_and(|v| v == "1") {
         eprintln!(
             "    iter {iteration:4}  exploit {pct:7.3}% of pot  {:7.1} s",
             t0.elapsed().as_secs_f64()
@@ -139,7 +139,7 @@ fn solve_cpu(spot: &Arc<MwSpot>, o: &Opts) -> Result<Solved, String> {
     loop {
         s.iterate();
         let late = t0.elapsed().as_secs_f64() >= o.max_minutes * 60.0;
-        if s.iteration % 20 == 0 || s.iteration >= o.max_iters || late {
+        if s.iteration.is_multiple_of(20) || s.iteration >= o.max_iters || late {
             let w = &spot.weights;
             let reach = [&w[0][..], &w[1][..], &w[2][..]];
             let best: [Vec<f32>; NP] =
@@ -196,7 +196,7 @@ fn kept_lines(part: &Path, header: &str, job: u64) -> Vec<String> {
         serde_json::from_str::<serde_json::Value>(a).ok()
             == serde_json::from_str::<serde_json::Value>(b).ok()
     };
-    if !lines.next().map_or(false, |first| same(first, header)) {
+    if !lines.next().is_some_and(|first| same(first, header)) {
         return Vec::new();
     }
     let mut kept = Vec::new();
@@ -204,9 +204,9 @@ fn kept_lines(part: &Path, header: &str, job: u64) -> Vec<String> {
         let index = kept.len() as u32;
         let ok = match serde_json::from_str::<serde_json::Value>(line) {
             Ok(v) if v["type"] == "example" => serde_json::from_value::<Record3>(v)
-                .map_or(false, |r| r.inputs.job == job && r.inputs.index == index),
+                .is_ok_and(|r| r.inputs.job == job && r.inputs.index == index),
             Ok(v) if v["type"] == "skipped" => serde_json::from_value::<Skipped3>(v)
-                .map_or(false, |s| s.job == job && s.index == index),
+                .is_ok_and(|s| s.job == job && s.index == index),
             _ => false,
         };
         if !ok {
@@ -264,7 +264,7 @@ pub fn run_job3(
     let t0 = std::time::Instant::now();
     for index in kept.len() as u32..per_job {
         let (inputs, tree_bytes) = book.sized_inputs3(mix, job, index, cap)?;
-        let fits = cap.map_or(true, |c| tree_bytes as f64 <= c * 1e9);
+        let fits = cap.is_none_or(|c| tree_bytes as f64 <= c * 1e9);
         let before = std::fs::read_to_string(&tries)
             .ok()
             .and_then(|t| {

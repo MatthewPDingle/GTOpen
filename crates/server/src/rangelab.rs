@@ -299,7 +299,19 @@ pub struct Library {
 
 type LineKey = (String, String, u64, String);
 
+/// The load-time merge key: charts sharing it are the same spot. The gametype
+/// carries the open size, so it belongs in the key.
+type MergeKey = (String, String, String, String, i64, i64, i64);
+
+/// The summary's per-tag row: players, variants in sort order with their
+/// depths, and the number of spots.
+type GameSummary<'a> = (usize, Vec<(&'a str, Vec<f64>)>, usize);
+
 type Stamp = Vec<(PathBuf, Option<SystemTime>, u64)>;
+
+/// The parsed library and the file stamp it was built from, cached until the
+/// stamp changes.
+type CachedLibrary = Option<(Stamp, Arc<Library>)>;
 
 fn search_dirs() -> Vec<PathBuf> {
     match std::env::var("GTOPEN_RANGELAB_DIR") {
@@ -361,8 +373,7 @@ fn read_spots(path: &Path) -> Result<Vec<Value>, String> {
 
 impl Library {
     fn load(dirs: &[PathBuf], files: &Stamp) -> Library {
-        let mut merged: HashMap<(String, String, String, String, i64, i64, i64), Record> =
-            HashMap::new();
+        let mut merged: HashMap<MergeKey, Record> = HashMap::new();
         let mut infos = Vec::new();
         for (path, _, _) in files {
             let name = path.display().to_string();
@@ -371,7 +382,6 @@ impl Library {
                     let mut n = 0;
                     for v in &spots {
                         if let Some(r) = Record::parse(v, &name) {
-                            // Range Lab's merge key; the gametype carries the open size.
                             let key = (
                                 r.gametype.clone(),
                                 format!("{}", r.depth),
@@ -502,8 +512,7 @@ impl Library {
     }
 
     pub fn summary(&self) -> Value {
-        // tag -> (players, variants in sort order with their depths, count)
-        let mut games: BTreeMap<&str, (usize, Vec<(&str, Vec<f64>)>, usize)> = BTreeMap::new();
+        let mut games: BTreeMap<&str, GameSummary<'_>> = BTreeMap::new();
         for r in &self.records {
             let g = games.entry(&r.tag).or_insert((r.players, Vec::new(), 0));
             if g.1.last().map(|v| v.0) != Some(r.variant()) {
@@ -1141,7 +1150,7 @@ pub struct MatchRequest {
 /// The current library, reloaded when any data file is added, removed or
 /// changed (the folder listing is cheap; parsing the files is not).
 pub fn library() -> Arc<Library> {
-    static CACHE: OnceLock<Mutex<Option<(Stamp, Arc<Library>)>>> = OnceLock::new();
+    static CACHE: OnceLock<Mutex<CachedLibrary>> = OnceLock::new();
     let dirs = search_dirs();
     let stamp = candidate_files(&dirs);
     let mut guard = CACHE
@@ -1171,8 +1180,8 @@ mod tests {
         depth: f64,
         first: char,
     ) -> Value {
-        let f: String = std::iter::repeat(first).take(169).collect();
-        let zero: String = std::iter::repeat('A').take(169).collect();
+        let f: String = std::iter::repeat_n(first, 169).collect();
+        let zero: String = "A".repeat(169);
         json!([
             fam,
             "reg",

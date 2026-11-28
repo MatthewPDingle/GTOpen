@@ -30,10 +30,10 @@ fn same_class_all_in_terminals_are_zero_sum_for_raw_and_static() {
                 reaches[0][h] = 1.0;
                 reaches[1][h] = 1.0;
                 let mut payoffs = [0.0; 2];
-                for p in 0..2 {
+                for (p, payoff) in payoffs.iter_mut().enumerate() {
                     let mut out = [0.0; NUM_CLASSES];
                     solver.terminal_value(node, p, &reaches, &mut out);
-                    payoffs[p] = out[h];
+                    *payoff = out[h];
                     assert_eq!(
                         out[h], 0.0,
                         "{realization}, removal={card_removal}, seat={p}, class={h}"

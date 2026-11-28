@@ -859,11 +859,11 @@ fn omc_raises_get_respect() {
     pol.raise[aa] = 1.0;
     pol.raise[kk] = 1.0;
     // limps all pairs below KK and strong suited stuff; folds the rest
-    for h in 0..NUM_CLASSES {
+    for (h, call) in pol.call.iter_mut().enumerate() {
         if h != aa && h != kk {
             let (hi, lo, suited) = solver::preflop::equity::class_parts(h);
             if hi == lo || (suited && hi >= 8) {
-                pol.call[h] = 1.0;
+                *call = 1.0;
             }
         }
     }
@@ -926,8 +926,8 @@ fn whale_bleeds_and_gets_exploited() {
 
     let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
-    for b in 0..NUM_BUCKETS {
-        buckets[b] = Some(flat_policy(1.0, 0.0)); // never folds, never raises
+    for bucket in &mut buckets {
+        *bucket = Some(flat_policy(1.0, 0.0)); // never folds, never raises
     }
     s.set_table(
         vec![false, false],
@@ -1535,8 +1535,8 @@ fn fully_ruled_frozen_seat_allowed_as_hero() {
         s.iterate();
     }
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
-    for b in 0..NUM_BUCKETS {
-        buckets[b] = Some(flat_policy(1.0, 0.0)); // never folds, never raises
+    for bucket in &mut buckets {
+        *bucket = Some(flat_policy(1.0, 0.0)); // never folds, never raises
     }
     s.set_table(
         vec![true, false],
@@ -1588,8 +1588,8 @@ fn hero_on_ruled_seat_learns_free_exploit() {
         s.iterate();
     }
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
-    for b in 0..NUM_BUCKETS {
-        buckets[b] = Some(flat_policy(1.0, 0.0)); // never folds, never raises
+    for bucket in &mut buckets {
+        *bucket = Some(flat_policy(1.0, 0.0)); // never folds, never raises
     }
     s.set_table(
         vec![false, false],

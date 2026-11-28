@@ -37,6 +37,7 @@
 //!   dealt sum.
 //!
 //! None of them changes how a total is split between the players.
+use std::cmp::Ordering;
 use std::sync::OnceLock;
 
 use super::{
@@ -308,10 +309,12 @@ pub fn leaf_total(
     rake_cap_bb: f64,
     pot_type: usize,
 ) -> LeafTotal {
-    if !(rake_frac > 0.0) {
+    if rake_frac.partial_cmp(&0.0) != Some(Ordering::Greater) {
         return LeafTotal::Exact(1.0);
     }
-    if !(rake_cap_bb > 0.0 && pot_bb > 0.0) {
+    if rake_cap_bb.partial_cmp(&0.0) != Some(Ordering::Greater)
+        || pot_bb.partial_cmp(&0.0) != Some(Ordering::Greater)
+    {
         return LeafTotal::Unknown; // no cap: the rake taken grows with the final pot, and no rule was fitted for that
     }
     let k = rake_cap_bb / pot_bb;
@@ -415,7 +418,7 @@ impl Blocking {
         let mean: f64 = (0..NUM_CLASSES)
             .map(|h| oop[h] as f64 / so * free[0][h])
             .sum();
-        if !(mean > 0.0) {
+        if mean.partial_cmp(&0.0) != Some(Ordering::Greater) {
             return None;
         }
         free.iter_mut().flatten().for_each(|v| *v /= mean);
@@ -508,6 +511,9 @@ pub struct LeafSums {
 /// the leaf's sums. `norm` are the two reaches by class, `invested` what
 /// each of the two has put in over the pot, `measure` asks for the dealt
 /// sums even where the settings do not need them.
+// The arguments are the leaf's whole pricing context; grouping them into a
+// struct would not make the call sites clearer.
+#[allow(clippy::too_many_arguments)]
 pub fn book_leaf(
     books: LeafBooks,
     measure: bool,
@@ -550,10 +556,9 @@ pub fn book_leaf(
     // Blocking: book factor x (pot x value - invested) where the solve books
     // (pot x value - invested), by pricing with factor x value + (1 - factor) x invested / pot.
     if let (true, Some(b)) = (books.blocking, &blocking) {
-        for side in 0..2 {
-            for h in 0..NUM_CLASSES {
+        for (side, rel_row) in b.rel.iter().enumerate() {
+            for (h, &factor) in rel_row.iter().enumerate() {
                 let i = side * NUM_CLASSES + h;
-                let factor = b.rel[side][h];
                 let value = balanced[i] as f64 + corr[i] as f64;
                 corr[i] =
                     (factor * value + (1.0 - factor) * invested[side] - balanced[i] as f64) as f32;
@@ -737,7 +742,9 @@ mod tests {
     /// fitted in Python and applied here, so the two must agree.
     #[test]
     fn the_rule_gives_the_numbers_the_python_side_gives() {
-        let cases: [(&str, usize, f64, f64, f64, f64, Option<f64>); 12] = [
+        // form, pot type, pot, stack, rake, cap, expected total
+        type Case = (&'static str, usize, f64, f64, f64, f64, Option<f64>);
+        let cases: [Case; 12] = [
             ("linear", 1, 6.5, 97.0, 0.05, 3.0, Some(0.8808287)),
             ("linear", 2, 22.0, 89.0, 0.05, 3.0, Some(0.9133026)),
             ("linear", 3, 48.0, 76.0, 0.05, 3.0, Some(0.9420927)),

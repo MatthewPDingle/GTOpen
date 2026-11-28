@@ -154,13 +154,14 @@ async fn stop_ends_with_the_gap_of_the_strategies_it_leaves() {
     assert!(st.gap_total > 0.0 && !st.publication().converged);
     // the reported gaps are the gaps of what the solver now holds
     let (solver, stop, _) = pf_session(&state).unwrap();
-    let mut s = solver.lock().unwrap();
-    assert_eq!(s.iteration, st.iteration);
-    let (gaps, evs) = pf_measured_gaps(&mut s);
-    assert_close(&st.gaps, &gaps);
-    assert_close(&st.evs, &evs);
-    assert_close(&[st.gap_total], &[gaps.iter().sum::<f64>()]);
-    drop(s);
+    {
+        let mut s = solver.lock().unwrap();
+        assert_eq!(s.iteration, st.iteration);
+        let (gaps, evs) = pf_measured_gaps(&mut s);
+        assert_close(&st.gaps, &gaps);
+        assert_close(&st.evs, &evs);
+        assert_close(&[st.gap_total], &[gaps.iter().sum::<f64>()]);
+    }
     // the run is over: nothing is "stopping" any more, though the flag stays up
     assert!(stop.load(Ordering::Relaxed));
     assert_eq!(http_status(&state).await["stopping"], false);

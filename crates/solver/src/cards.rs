@@ -68,7 +68,7 @@ pub fn parse_cards(s: &str) -> Result<Vec<Card>, String> {
         .chars()
         .filter(|c| !c.is_whitespace() && *c != ',')
         .collect();
-    if cleaned.len() % 2 != 0 {
+    if !cleaned.len().is_multiple_of(2) {
         return Err(format!("invalid card list: {s:?}"));
     }
     let chars: Vec<char> = cleaned.chars().collect();
@@ -122,100 +122,6 @@ pub fn combo_to_string(c1: Card, c2: Card) -> String {
         (lo, hi)
     };
     format!("{}{}", card_to_string(a), card_to_string(b))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn card_roundtrip() {
-        for c in 0..52u8 {
-            assert_eq!(card_from_str(&card_to_string(c)).unwrap(), c);
-        }
-    }
-
-    #[test]
-    fn combo_index_roundtrip() {
-        let mut seen = std::collections::HashSet::new();
-        for c1 in 0..52u8 {
-            for c2 in 0..c1 {
-                let idx = combo_index(c1, c2);
-                assert!(idx < NUM_COMBOS);
-                assert!(seen.insert(idx), "duplicate combo index");
-                assert_eq!(combo_from_index(idx), (c1, c2));
-            }
-        }
-        assert_eq!(seen.len(), NUM_COMBOS);
-    }
-
-    #[test]
-    fn parse_board() {
-        let b = parse_cards("As Kh 7d").unwrap();
-        assert_eq!(b.len(), 3);
-        assert_eq!(cards_to_string(&b), "AsKh7d");
-        assert!(parse_cards("AsAs").is_err());
-        assert!(parse_cards("Xx").is_err());
-    }
-
-    #[test]
-    fn flops_subset_no_duplicates_and_weights_sum_to_n() {
-        // n >= 924 is where the old code emitted duplicate boards
-        for &n in &[1usize, 47, 95, 184, 500, 922, 923, 924, 1000, 1200, 1754] {
-            let sub = canonical_flops_subset(n);
-            let mut seen = std::collections::HashSet::new();
-            for (b, _) in &sub {
-                assert!(seen.insert(b.clone()), "duplicate board {b} at n={n}");
-            }
-            assert!(sub.len() <= n, "more rows than requested at n={n}");
-            let wsum: u32 = sub.iter().map(|x| x.1).sum();
-            assert_eq!(wsum as usize, n, "subset weights must sum to n at n={n}");
-        }
-    }
-
-    #[test]
-    fn flops_subset_weight_is_one_at_ui_presets() {
-        // stratum width 22100/n > 24 (the max class weight) for all presets,
-        // so every class covers at most one midpoint
-        for &n in &[47usize, 95, 184] {
-            let sub = canonical_flops_subset(n);
-            assert_eq!(sub.len(), n);
-            assert!(sub.iter().all(|x| x.1 == 1), "non-unit weight at n={n}");
-        }
-    }
-
-    #[test]
-    fn flops_subset_full_mode_keeps_iso_weights() {
-        let all = canonical_flops();
-        assert_eq!(all.len(), 1755);
-        assert_eq!(all.iter().map(|x| x.1 as u64).sum::<u64>(), 22_100);
-        assert_eq!(canonical_flops_subset(0), all);
-        assert_eq!(canonical_flops_subset(1755), all);
-        assert_eq!(canonical_flops_subset(9999), all);
-    }
-
-    #[test]
-    fn flops_subset_multiplicity_tracks_true_share() {
-        // Unbiasedness bound of systematic sampling: every class's emitted
-        // weight is within 1 of its proportional share n*w/W, so subset
-        // aggregates that multiply by the row weight estimate the true
-        // flop-frequency average with < 1 stratum of error per class.
-        let all = canonical_flops();
-        let total: f64 = all.iter().map(|x| x.1 as f64).sum();
-        for &n in &[95usize, 500, 1000, 1754] {
-            let sub = canonical_flops_subset(n);
-            let sub_w: std::collections::HashMap<&str, u32> =
-                sub.iter().map(|(b, w)| (b.as_str(), *w)).collect();
-            for (b, w) in &all {
-                let share = n as f64 * *w as f64 / total;
-                let got = *sub_w.get(b.as_str()).unwrap_or(&0) as f64;
-                assert!(
-                    (got - share).abs() < 1.0,
-                    "class {b} (w={w}): emitted {got}, proportional share {share:.3} at n={n}"
-                );
-            }
-        }
-    }
 }
 
 /// All strategically distinct flops (suit-isomorphism classes): 1755
@@ -312,4 +218,98 @@ pub fn canonical_flops() -> Vec<(String, u32)> {
             )
         })
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn card_roundtrip() {
+        for c in 0..52u8 {
+            assert_eq!(card_from_str(&card_to_string(c)).unwrap(), c);
+        }
+    }
+
+    #[test]
+    fn combo_index_roundtrip() {
+        let mut seen = std::collections::HashSet::new();
+        for c1 in 0..52u8 {
+            for c2 in 0..c1 {
+                let idx = combo_index(c1, c2);
+                assert!(idx < NUM_COMBOS);
+                assert!(seen.insert(idx), "duplicate combo index");
+                assert_eq!(combo_from_index(idx), (c1, c2));
+            }
+        }
+        assert_eq!(seen.len(), NUM_COMBOS);
+    }
+
+    #[test]
+    fn parse_board() {
+        let b = parse_cards("As Kh 7d").unwrap();
+        assert_eq!(b.len(), 3);
+        assert_eq!(cards_to_string(&b), "AsKh7d");
+        assert!(parse_cards("AsAs").is_err());
+        assert!(parse_cards("Xx").is_err());
+    }
+
+    #[test]
+    fn flops_subset_no_duplicates_and_weights_sum_to_n() {
+        // n >= 924 is where the old code emitted duplicate boards
+        for &n in &[1usize, 47, 95, 184, 500, 922, 923, 924, 1000, 1200, 1754] {
+            let sub = canonical_flops_subset(n);
+            let mut seen = std::collections::HashSet::new();
+            for (b, _) in &sub {
+                assert!(seen.insert(b.clone()), "duplicate board {b} at n={n}");
+            }
+            assert!(sub.len() <= n, "more rows than requested at n={n}");
+            let wsum: u32 = sub.iter().map(|x| x.1).sum();
+            assert_eq!(wsum as usize, n, "subset weights must sum to n at n={n}");
+        }
+    }
+
+    #[test]
+    fn flops_subset_weight_is_one_at_ui_presets() {
+        // stratum width 22100/n > 24 (the max class weight) for all presets,
+        // so every class covers at most one midpoint
+        for &n in &[47usize, 95, 184] {
+            let sub = canonical_flops_subset(n);
+            assert_eq!(sub.len(), n);
+            assert!(sub.iter().all(|x| x.1 == 1), "non-unit weight at n={n}");
+        }
+    }
+
+    #[test]
+    fn flops_subset_full_mode_keeps_iso_weights() {
+        let all = canonical_flops();
+        assert_eq!(all.len(), 1755);
+        assert_eq!(all.iter().map(|x| x.1 as u64).sum::<u64>(), 22_100);
+        assert_eq!(canonical_flops_subset(0), all);
+        assert_eq!(canonical_flops_subset(1755), all);
+        assert_eq!(canonical_flops_subset(9999), all);
+    }
+
+    #[test]
+    fn flops_subset_multiplicity_tracks_true_share() {
+        // Unbiasedness bound of systematic sampling: every class's emitted
+        // weight is within 1 of its proportional share n*w/W, so subset
+        // aggregates that multiply by the row weight estimate the true
+        // flop-frequency average with < 1 stratum of error per class.
+        let all = canonical_flops();
+        let total: f64 = all.iter().map(|x| x.1 as f64).sum();
+        for &n in &[95usize, 500, 1000, 1754] {
+            let sub = canonical_flops_subset(n);
+            let sub_w: std::collections::HashMap<&str, u32> =
+                sub.iter().map(|(b, w)| (b.as_str(), *w)).collect();
+            for (b, w) in &all {
+                let share = n as f64 * *w as f64 / total;
+                let got = *sub_w.get(b.as_str()).unwrap_or(&0) as f64;
+                assert!(
+                    (got - share).abs() < 1.0,
+                    "class {b} (w={w}): emitted {got}, proportional share {share:.3} at n={n}"
+                );
+            }
+        }
+    }
 }

@@ -1,6 +1,6 @@
 //! GPU transition check for every betting-history template of the BB study.
 #[path = "research_sampled/state.rs"]
-mod state;
+pub mod state;
 #[cfg(not(feature = "gpu"))]
 fn main() {
     panic!("requires --features gpu");

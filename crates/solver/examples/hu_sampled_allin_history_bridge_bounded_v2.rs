@@ -2,13 +2,13 @@
 #[path = "research_sampled/allin_counts_v1.rs"]
 mod allin_counts_v1;
 #[path = "research_sampled/batch_queries_v1.rs"]
-mod batch_queries_v1;
+pub mod batch_queries_v1;
 #[path = "research_sampled/observation_v1.rs"]
-mod observation_v1;
+pub mod observation_v1;
 #[path = "research_sampled/poker_reference_v1.rs"]
-mod poker_reference_v1;
+pub mod poker_reference_v1;
 #[path = "research_sampled/policy_bank_v1.rs"]
-mod policy_bank_v1;
+pub mod policy_bank_v1;
 #[path = "research_sampled/policy_walk_allin_v1.rs"]
 mod policy_walk_allin_v1;
 #[path = "research_sampled/policy_walk_v1.rs"]
@@ -16,7 +16,7 @@ mod policy_walk_v1;
 #[path = "research_sampled/research_bounded_output_v1.rs"]
 mod research_bounded_output_v1;
 #[path = "research_sampled/state.rs"]
-mod state;
+pub mod state;
 use std::collections::BTreeMap;
 
 use batch_queries_v1::Queries;

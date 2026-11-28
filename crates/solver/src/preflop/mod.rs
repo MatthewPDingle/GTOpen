@@ -542,7 +542,7 @@ fn fully_ruled(p: &Option<SeatProfile>) -> bool {
                 .as_ref()
                 .and_then(|r| r.adaptive_from)
                 .is_none()
-                && (0..NUM_BUCKETS).all(|b| prof.buckets.get(b).map_or(false, |x| x.is_some()))
+                && (0..NUM_BUCKETS).all(|b| prof.buckets.get(b).is_some_and(|x| x.is_some()))
         })
         .unwrap_or(false)
 }
@@ -1036,7 +1036,9 @@ impl PreflopSolver {
                 .enumerate()
                 .map(|(k, w)| w * class_prob(k))
                 .sum();
-            if range.len() != NUM_CLASSES || !(mass > 0.0) {
+            if range.len() != NUM_CLASSES
+                || mass.partial_cmp(&0.0) != Some(std::cmp::Ordering::Greater)
+            {
                 (
                     self.cfg.stack,
                     self.cfg.stacks,
@@ -1258,9 +1260,9 @@ impl PreflopSolver {
         let mut r = vec![0f32; self.n];
         let spr = {
             let mut min_left = f64::MAX;
-            for i in 0..self.n {
+            for (i, &inv) in invested.iter().enumerate().take(self.n) {
                 if live & (1 << i) != 0 {
-                    min_left = min_left.min(self.cfg.left(i, invested[i]));
+                    min_left = min_left.min(self.cfg.left(i, inv));
                 }
             }
             (min_left / pot).max(0.0)
@@ -2289,9 +2291,9 @@ impl PreflopSolver {
         checkpoint_tests::observe_terminal();
         if let Some(tables) = &self.icm {
             let mut prob = 1f64;
-            for q in 0..self.n {
+            for (q, reach) in reaches.iter().enumerate().take(self.n) {
                 if q != p {
-                    let s: f32 = reaches[q].iter().sum();
+                    let s: f32 = reach.iter().sum();
                     prob *= s as f64;
                 }
             }
@@ -2320,9 +2322,9 @@ impl PreflopSolver {
     fn plain_terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
         let nd = &self.nodes[node];
         let mut prob = 1f64;
-        for q in 0..self.n {
+        for (q, reach) in reaches.iter().enumerate().take(self.n) {
             if q != p {
-                let s: f32 = reaches[q].iter().sum();
+                let s: f32 = reach.iter().sum();
                 prob *= s as f64;
             }
         }
@@ -2354,11 +2356,11 @@ impl PreflopSolver {
                 }
                 // normalized opponent class distributions
                 let mut dists: Vec<Vec<f32>> = Vec::new();
-                for q in 0..self.n {
+                for (q, reach) in reaches.iter().enumerate().take(self.n) {
                     if q != p && nd.live & (1 << q) != 0 {
-                        let s: f32 = reaches[q].iter().sum();
+                        let s: f32 = reach.iter().sum();
                         if s > 0.0 {
-                            dists.push(reaches[q].iter().map(|&x| x / s).collect());
+                            dists.push(reach.iter().map(|&x| x / s).collect());
                         }
                     }
                 }
@@ -2505,8 +2507,8 @@ impl PreflopSolver {
         if let [dist] = opponents {
             // Symmetrized so a two-way pot pays out exactly what is in it
             // despite sampling noise in the equity table.
-            for h in 0..NUM_CLASSES {
-                out[h] = (0..NUM_CLASSES)
+            for (h, share) in out.iter_mut().enumerate() {
+                *share = (0..NUM_CLASSES)
                     .map(|j| dist[j] as f64 * self.balanced_raw_equity(h, j) as f64)
                     .sum();
             }
@@ -2589,7 +2591,7 @@ impl PreflopSolver {
                         }
                         if updates_here
                             && (self.iteration < PRUNE_WARMUP
-                                || self.iteration % PRUNE_REFRESH == 0)
+                                || self.iteration.is_multiple_of(PRUNE_REFRESH))
                         {
                             return false;
                         }
@@ -2714,7 +2716,7 @@ impl PreflopSolver {
     fn stop_requested(&self) -> bool {
         self.stop_flag
             .as_ref()
-            .map_or(false, |f| f.load(Ordering::Relaxed))
+            .is_some_and(|f| f.load(Ordering::Relaxed))
     }
 
     pub fn iterate(&mut self) {
@@ -3207,8 +3209,8 @@ impl PreflopSolver {
             .collect();
         let range_of = |seat: usize| -> String {
             let mut parts: Vec<String> = Vec::new();
-            for h in 0..NUM_CLASSES {
-                let w = (reaches[seat][h] / class_prob(h)).min(1.0);
+            for (h, &reach) in reaches[seat].iter().enumerate().take(NUM_CLASSES) {
+                let w = (reach / class_prob(h)).min(1.0);
                 if w > 0.995 {
                     parts.push(equity::class_label(h));
                 } else if w > 0.005 {
@@ -3251,8 +3253,8 @@ impl PreflopSolver {
         let (oop, ip) = (live_seats[0], live_seats[1]);
         let range_of = |seat: usize| -> String {
             let mut parts: Vec<String> = Vec::new();
-            for h in 0..NUM_CLASSES {
-                let w = (reaches[seat][h] / class_prob(h)).min(1.0);
+            for (h, &reach) in reaches[seat].iter().enumerate().take(NUM_CLASSES) {
+                let w = (reach / class_prob(h)).min(1.0);
                 if w > 0.995 {
                     parts.push(equity::class_label(h));
                 } else if w > 0.005 {
@@ -3758,8 +3760,7 @@ impl PreflopSolver {
         // the player's raising range, for the re-raise bucket: what it raises
         // with in any of the entry buckets (built first — bucket order)
         let mut raise_range = vec![0f64; NUM_CLASSES];
-        for b in 0..NUM_BUCKETS {
-            let (t_cont, t_raise) = targets[b];
+        for (b, &(t_cont, t_raise)) in targets.iter().enumerate() {
             if b == BUCKET_VS_LIMPS as usize {
                 if let Some(c) = limp_contexts
                     .iter()
@@ -4371,14 +4372,13 @@ fn next_state_of(
 /// all-in level. Returns None when nothing changes and there is one pot
 /// (always so with equal stacks), so those terminals stay bit-identical.
 ///
+/// The settled pots: amounts, and the seats eligible for each.
+type SettledPots = (Vec<f64>, Vec<(f64, u32)>);
+
 /// Antes and folded seats' chips are dead money: antes go to the main pot,
 /// folded chips to every pot their contribution reaches. Each pot is
 /// (amount, mask of live seats eligible to win it).
-fn settle_pots(
-    cfg: &PreflopConfig,
-    invested: &[f64],
-    live: u32,
-) -> Option<(Vec<f64>, Vec<(f64, u32)>)> {
+fn settle_pots(cfg: &PreflopConfig, invested: &[f64], live: u32) -> Option<SettledPots> {
     let n = invested.len();
     let is_live = |i: usize| live & (1 << i) != 0;
     // What each seat bet, on the common base of the per-seat ante: only the

@@ -649,28 +649,27 @@ fn inspect_profile(
         None
     };
     let mut fallback = None;
-    if request.bucket == BUCKET_VS_3BET {
-        if response
+    if request.bucket == BUCKET_VS_3BET
+        && response
             .and_then(|r| r.contextual_reraise.as_ref())
             .is_some()
-        {
-            if let Some(input) = &request.context {
-                let prediction = preview.as_ref().unwrap();
-                if prediction.policy.is_some() {
-                    return Ok(contextual_evidence(
-                        profile,
-                        prediction.note.clone(),
-                        cfg,
-                        seat,
-                        Some(input),
-                    ));
-                }
-                fallback = Some(prediction.note.clone());
-            } else if let Some(note) = contextual::support_note(cfg) {
-                fallback = Some(note);
-            } else {
-                return Ok(contextual_evidence(profile,"Select a concrete entry, raise depth and price to inspect the prediction. Adaptive or point locks can override it in a game.".into(),cfg,seat,None));
+    {
+        if let Some(input) = &request.context {
+            let prediction = preview.as_ref().unwrap();
+            if prediction.policy.is_some() {
+                return Ok(contextual_evidence(
+                    profile,
+                    prediction.note.clone(),
+                    cfg,
+                    seat,
+                    Some(input),
+                ));
             }
+            fallback = Some(prediction.note.clone());
+        } else if let Some(note) = contextual::support_note(cfg) {
+            fallback = Some(note);
+        } else {
+            return Ok(contextual_evidence(profile,"Select a concrete entry, raise depth and price to inspect the prediction. Adaptive or point locks can override it in a game.".into(),cfg,seat,None));
         }
     }
     let mut policy_key = key(request.bucket).to_string();

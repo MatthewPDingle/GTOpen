@@ -85,7 +85,7 @@ fn main() {
             let mut adjusted=weights.clone();
             for h in 0..169 {
                 let valid:Vec<_>=combos[h].iter().filter(|c|mask&((1<<c[0])|(1<<c[1]))==0).collect();
-                for p in 0..3 {adjusted[p][h]*=valid.len() as f64/combos[h].len() as f64;}
+                for plane in &mut adjusted {plane[h]*=valid.len() as f64/combos[h].len() as f64;}
                 if valid.is_empty(){continue}
                 if mode<2 {let count=if mode==0 {1} else {4};for _ in 0..count {let c=valid[rng.next() as usize%valid.len()];ranks[h].push(evaluate7(&[c[0],c[1],board[0],board[1],board[2],board[3],board[4]]));}}
                 else {for c in valid {ranks[h].push(evaluate7(&[c[0],c[1],board[0],board[1],board[2],board[3],board[4]]));}}
@@ -98,7 +98,7 @@ fn main() {
                         for c in 0..169 {
                             let valid:Vec<_>=combos[c].iter().filter(|a|mask&((1<<a[0])|(1<<a[1]))==0).collect();
                             for (ci,hole) in valid.iter().enumerate() {if hm&((1<<hole[0])|(1<<hole[1]))==0 {hr[c].push(ranks[c][ci]);}}
-                            for p in 0..3 {hw[p][c]*=hr[c].len() as f64/combos[c].len() as f64;}
+                            for plane in &mut hw {plane[c]*=hr[c].len() as f64/combos[c].len() as f64;}
                         }
                         let importance=(0..3).map(|p|hw[p].iter().sum::<f64>()/weights[p].iter().sum::<f64>()).product::<f64>()/combos[*h].len() as f64;
                         denoms[i]+=importance;sums[i]+=importance*share(ranks[*h][hi],&hr,&hw);
@@ -106,7 +106,8 @@ fn main() {
                 }
             } else {
             let board_mass:f64=(0..3).map(|p|adjusted[p].iter().sum::<f64>()/weights[p].iter().sum::<f64>()).product(); for (i,(_,h,_)) in hands.iter().enumerate(){if !ranks[*h].is_empty(){let valid=combos[*h].iter().filter(|c|mask&((1<<c[0])|(1<<c[1]))==0).count(); let importance=board_mass*valid as f64/combos[*h].len() as f64; denoms[i]+=importance; sums[i]+=importance*ranks[*h].iter().map(|&r|share(r,&ranks,&adjusted)).sum::<f64>()/ranks[*h].len() as f64;}}
-            }            if [32,64,128,256,512,1024,2048,4096].contains(&n){out.push(json!({"mode":(["one_combo","four_combos","all_combos","hero_excluded"][mode]),"seed":seed,"boards":n,"results":hands.iter().enumerate().map(|(i,(label,_,reference))|json!({"hand":label,"equity":sums[i]/denoms[i],"reference":reference,"error":sums[i]/denoms[i]-reference})).collect::<Vec<_>>()}));}
+            }
+            if [32,64,128,256,512,1024,2048,4096].contains(&n){out.push(json!({"mode":(["one_combo","four_combos","all_combos","hero_excluded"][mode]),"seed":seed,"boards":n,"results":hands.iter().enumerate().map(|(i,(label,_,reference))|json!({"hand":label,"equity":sums[i]/denoms[i],"reference":reference,"error":sums[i]/denoms[i]-reference})).collect::<Vec<_>>()}));}
         }out
     }).flatten().collect();
     println!("{}",serde_json::to_string_pretty(&json!({"scope":"Board-conditional categorical independent opponent draws; board card removal weighted, cross-hole-card collisions omitted. Same class rank samples shared by hero and opponents.","runs":rows})).unwrap());

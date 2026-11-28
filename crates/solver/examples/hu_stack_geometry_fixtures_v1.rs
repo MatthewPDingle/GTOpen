@@ -1,8 +1,8 @@
 //! Offline geometry fixtures across stack depths. No solve, no live-server access.
 #[path = "research_sampled/poker_reference_v1.rs"]
-mod poker_reference_v1;
+pub mod poker_reference_v1;
 #[path = "research_sampled/state.rs"]
-mod state;
+pub mod state;
 use std::{path::Path, sync::Arc};
 
 use poker_reference_v1::Game;

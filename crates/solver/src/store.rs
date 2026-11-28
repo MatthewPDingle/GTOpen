@@ -28,6 +28,11 @@ impl<T: Copy + Default> ArenaBuf<T> {
         ArenaBuf { buf, ptr }
     }
 
+    /// Mutable view of `len` entries at `offset`.
+    ///
+    /// # Safety
+    /// The caller must not hold another reference to the same range, and no
+    /// other thread may write it concurrently (see the [`ArenaBuf`] contract).
     #[inline(always)]
     #[allow(clippy::mut_from_ref)]
     pub unsafe fn slice(&self, offset: u64, len: usize) -> &mut [T] {
@@ -35,12 +40,16 @@ impl<T: Copy + Default> ArenaBuf<T> {
         std::slice::from_raw_parts_mut(self.ptr.add(offset as usize), len)
     }
 
+    /// # Safety
+    /// `idx` must be in bounds and no other reference to it may be live.
     #[inline(always)]
     pub unsafe fn read_at(&self, idx: usize) -> T {
         debug_assert!(idx < self.buf.len());
         *self.ptr.add(idx)
     }
 
+    /// # Safety
+    /// `idx` must be in bounds and no other reference to it may be live.
     #[inline(always)]
     pub unsafe fn write_at(&self, idx: usize, v: T) {
         debug_assert!(idx < self.buf.len());
@@ -139,7 +148,9 @@ impl Store {
     }
 
     /// Decode `len` entries at `offset` into `out` (f32 stores copy directly).
-    /// Safety: same disjointness contract as `ArenaBuf::slice`.
+    ///
+    /// # Safety
+    /// Same disjointness contract as [`ArenaBuf::slice`].
     #[inline]
     pub unsafe fn read_f32(&self, node_idx: u32, offset: u64, len: usize, out: &mut [f32]) {
         match self {
@@ -154,7 +165,9 @@ impl Store {
     }
 
     /// Encode `src` into `len` entries at `offset`, refreshing the node scale.
-    /// Safety: same disjointness contract as `ArenaBuf::slice`.
+    ///
+    /// # Safety
+    /// Same disjointness contract as [`ArenaBuf::slice`].
     #[inline]
     pub unsafe fn write_f32(&self, node_idx: u32, offset: u64, len: usize, src: &[f32]) {
         match self {

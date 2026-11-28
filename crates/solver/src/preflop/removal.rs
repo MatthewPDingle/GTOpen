@@ -22,6 +22,7 @@
 //! symmetry an opponent's mass on combos holding one specific card depends
 //! only on that card's rank.
 
+use std::cmp::Ordering;
 use std::sync::OnceLock;
 
 use super::{
@@ -152,7 +153,7 @@ impl PreflopSolver {
             }
             plain *= reaches[q].iter().sum::<f32>() as f64;
         }
-        if !(plain > 0.0) {
+        if plain.partial_cmp(&0.0) != Some(Ordering::Greater) {
             out.iter_mut().for_each(|v| *v = 0.0);
             return;
         }
@@ -207,7 +208,7 @@ impl PreflopSolver {
                     raw += d * raw_row[j] as f64;
                     relative += d * rel_row[j] as f64;
                 }
-                if !(norm > 0.0) {
+                if norm.partial_cmp(&0.0) != Some(Ordering::Greater) {
                     out[h] = 0.0;
                     continue;
                 }
@@ -231,7 +232,7 @@ impl PreflopSolver {
                 norm += d;
                 eq += d * self.eq.eq(h, j) as f64;
             }
-            if !(norm > 0.0) {
+            if norm.partial_cmp(&0.0) != Some(Ordering::Greater) {
                 out[h] = 0.0;
                 continue;
             }

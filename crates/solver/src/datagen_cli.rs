@@ -1232,7 +1232,7 @@ fn verify(o: &Opts, env: &EnvOpts) {
     let mut first = String::new();
     std::io::BufReader::new(open()).read_line(&mut first).ok();
     if serde_json::from_str::<serde_json::Value>(&first)
-        .map_or(false, |v| v["format"] == solver::datagen3::FORMAT3)
+        .is_ok_and(|v| v["format"] == solver::datagen3::FORMAT3)
     {
         three::verify3(file, o);
     }

@@ -44,6 +44,8 @@ pub(crate) struct PfFree {
     pub off: Vec<u32>,
     pub regrets: Arena,
     pub strat: Arena,
+    /// The free arenas' total length; read by the GPU engine only.
+    #[cfg_attr(not(feature = "gpu"), allow(dead_code))]
     pub len: usize,
 }
 
@@ -322,8 +324,8 @@ impl PreflopSolver {
         };
         let updates = (actor == tp && learning) || free_learns;
         // prune actions no type plays, except the traverser's refresh passes
-        let refresh =
-            updates && (self.iteration < PRUNE_WARMUP || self.iteration % PRUNE_REFRESH == 0);
+        let refresh = updates
+            && (self.iteration < PRUNE_WARMUP || self.iteration.is_multiple_of(PRUNE_REFRESH));
         let skipped: Vec<bool> = (0..na)
             .map(|a| {
                 if !self.prune || na == 1 || (actor == ps && refresh) {
@@ -738,6 +740,10 @@ impl PreflopSolver {
     }
 }
 
+/// The free type's (reaches slot, base reach) and its sigma, as `scale_types`
+/// receives them.
+type FreeSigma<'a> = ((usize, &'a Vec<f32>), &'a Vec<f32>);
+
 /// Child reaches for action `a`: the seat's read reach by its sigma, its
 /// free type's (if any) by the free sigma.
 fn scale_types(
@@ -745,7 +751,7 @@ fn scale_types(
     actor: usize,
     base_read: &[f32],
     sigma: &[f32],
-    free: Option<((usize, &Vec<f32>), &Vec<f32>)>,
+    free: Option<FreeSigma<'_>>,
     a: usize,
 ) {
     for h in 0..NUM_CLASSES {

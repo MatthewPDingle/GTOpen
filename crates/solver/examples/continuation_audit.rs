@@ -159,7 +159,7 @@ fn main() {
                 let mut gap_pct = f64::INFINITY;
                 while solver.iteration < max_iterations {
                     solver.iterate();
-                    if solver.iteration % 25 == 0 || solver.iteration == max_iterations {
+                    if solver.iteration.is_multiple_of(25) || solver.iteration == max_iterations {
                         gap_pct = solver.exploitability() / pot * 100.0;
                         eprintln!("{case} {board} rake {rake}% iteration {} gap {gap_pct:.5}% elapsed {:.1}s", solver.iteration, solve_start.elapsed().as_secs_f64());
                         convergence.push(json!({"iteration": solver.iteration, "gap_pct_pot": gap_pct, "seconds": solve_start.elapsed().as_secs_f64()}));

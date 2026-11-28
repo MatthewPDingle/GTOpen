@@ -399,14 +399,14 @@ fn predict_impl(
                 )
             })
             .unwrap();
-        for h in 0..169 {
+        for (h, probs) in baseline.probabilities.iter().enumerate() {
             let hand = hand_features(h);
             for (m, modifier) in [1.0, price_z, depth].into_iter().enumerate() {
                 for k in 0..6 {
                     x[26 + entry * 18 + m * 6 + k] = hand[k] * modifier;
                 }
             }
-            let mut logits = baseline.probabilities[h].map(|p| p.max(1e-12).ln());
+            let mut logits = probs.map(|p| p.max(1e-12).ln());
             for (f, w) in x.iter().zip(&model.weights) {
                 logits[1] += f * w[0];
                 logits[2] += f * w[1];

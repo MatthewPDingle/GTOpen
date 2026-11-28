@@ -33,10 +33,10 @@ fn permutations() -> Vec<[u8; 4]> {
 }
 fn transform(lo: u64, p: [u8; 4]) -> u64 {
     let mut cs = [0u8; 7];
-    for i in 0..7 {
+    for (i, card) in cs.iter_mut().enumerate() {
         let c = ((lo >> (i * 6)) & 63) as u8;
         assert!(c < 52 || c == 63);
-        cs[i] = if c == 63 {
+        *card = if c == 63 {
             63
         } else {
             (c / 4) * 4 + p[(c % 4) as usize]
@@ -45,8 +45,8 @@ fn transform(lo: u64, p: [u8; 4]) -> u64 {
     cs[..2].sort_unstable();
     cs[2..5].sort_unstable();
     let mut out = lo & (1u64 << 42);
-    for i in 0..7 {
-        out |= (cs[i] as u64) << (6 * i);
+    for (i, &c) in cs.iter().enumerate() {
+        out |= (c as u64) << (6 * i);
     }
     out
 }
@@ -68,7 +68,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let ps = permutations();
     let mut original = [0usize; 4];
     let mut covered = std::collections::BTreeSet::new();
-    for row in bytes[32..].chunks_exact(88) {
+    for row in bytes[32..].as_chunks::<88>().0 {
         let hi = u64::from_le_bytes(row[..8].try_into().unwrap());
         let lo = u64::from_le_bytes(row[8..16].try_into().unwrap());
         original[street(hi, lo)] += 1;
@@ -76,7 +76,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Orbit invariance controls across all streets, without examining values.
     for stage in 0..4 {
         let mut controls = 0;
-        for row in bytes[32..].chunks_exact(88) {
+        for row in bytes[32..].as_chunks::<88>().0 {
             let hi = u64::from_le_bytes(row[..8].try_into().unwrap());
             let lo = u64::from_le_bytes(row[8..16].try_into().unwrap());
             if street(hi, lo) != stage {

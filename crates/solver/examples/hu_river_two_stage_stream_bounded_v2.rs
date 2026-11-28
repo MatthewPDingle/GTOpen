@@ -11,10 +11,7 @@ mod policy_bank_v1;
 mod research_bounded_output_v1;
 #[path = "research_sampled/state.rs"]
 mod state;
-use std::{
-    collections::BTreeMap,
-    io::{Read, Write},
-};
+use std::{collections::BTreeMap, io::Read};
 
 use observation_v1::Observation;
 use poker_reference_v1::{key, Game, Key};
@@ -191,6 +188,8 @@ fn action_document(action: Action, before: State, after: State, cfg: &TreeConfig
             (after.put[actor]-(cfg.starting_pot/2.+cfg.effective_stack)).abs()<1e-8})
 }
 
+// Recursive audit walker; its eight cursor arguments are the traversal state.
+#[allow(clippy::too_many_arguments)]
 fn tree(
     game: &Game,
     deal: &[u8; 9],

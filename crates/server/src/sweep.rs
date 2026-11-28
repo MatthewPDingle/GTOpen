@@ -192,6 +192,7 @@ fn bet_freq(b: &BoardSolve, player: usize) -> Option<f64> {
 
 /// One candidate size solved on one board: the summary point and the
 /// details the Best size view shows.
+#[allow(clippy::too_many_arguments)] // the sweep's solve context, passed as plain pieces by its call sites
 fn solve_size(
     stop: &AtomicBool,
     req: &ReportRequest,

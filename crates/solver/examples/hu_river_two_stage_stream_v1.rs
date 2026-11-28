@@ -189,6 +189,8 @@ fn action_document(action: Action, before: State, after: State, cfg: &TreeConfig
             (after.put[actor]-(cfg.starting_pot/2.+cfg.effective_stack)).abs()<1e-8})
 }
 
+// Recursive audit walker; its eight cursor arguments are the traversal state.
+#[allow(clippy::too_many_arguments)]
 fn tree(
     game: &Game,
     deal: &[u8; 9],

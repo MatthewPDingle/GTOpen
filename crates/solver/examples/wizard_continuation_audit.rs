@@ -1,15 +1,16 @@
 //! Offline fixed-range continuation audit; never connects to the app.
 //! prepare SAVE OUTPUT or run MANIFEST [JOB_LIMIT]. GPU feature required to run.
-use std::{sync::Arc, time::Instant};
+use std::sync::Arc;
+#[cfg(feature = "gpu")]
+use std::time::Instant;
 
 use serde_json::{json, Value};
-use solver::{
-    preflop::{
-        equity::{class_index, class_label, class_prob, EquityTable, NUM_CLASSES},
-        PreflopSolver, RealizationFit,
-    },
-    rank, suit, Solver, Spot, SpotConfig, Storage,
+use solver::preflop::{
+    equity::{class_label, class_prob, EquityTable, NUM_CLASSES},
+    PreflopSolver, RealizationFit,
 };
+#[cfg(feature = "gpu")]
+use solver::{preflop::equity::class_index, rank, suit, Solver, Spot, SpotConfig, Storage};
 
 const PROBES: [&str; 8] = ["AA", "A5s", "KQo", "QJs", "99", "88", "55", "76s"];
 fn dist(weights: &[f32]) -> Vec<f32> {
@@ -45,14 +46,14 @@ fn prices(
         for h in 0..NUM_CLASSES {
             let mut raw = 0.0f32;
             let mut rel = 0.0f32;
-            for j in 0..NUM_CLASSES {
+            for (j, &dj) in d[1 - p].iter().enumerate() {
                 let e = if h == j {
                     0.5
                 } else {
                     0.5 * (eq.eq(h, j) + 1.0 - eq.eq(j, h))
                 };
-                raw += d[1 - p][j] * e;
-                rel += d[1 - p][j] * fit.balanced_share(e, h, j, p == 0);
+                raw += dj * e;
+                rel += dj * fit.balanced_share(e, h, j, p == 0);
             }
             let value = net * (raw + blend * (rel - raw)) as f64;
             means[p] += d[p][h] as f64 * value;
@@ -111,18 +112,18 @@ fn prepare(save: &str, output: &str) -> Result<(), String> {
         let mut weights = original.clone();
         let mut dropped = Vec::new();
         let mut added = Vec::new();
-        for p in 0..2 {
-            let max = weights[p].iter().copied().fold(0.0f32, f32::max);
-            for w in &mut weights[p] {
+        for (p, weight) in weights.iter_mut().enumerate() {
+            let max = weight.iter().copied().fold(0.0f32, f32::max);
+            for w in weight.iter_mut() {
                 *w /= max;
             }
-            let pre: f32 = weights[p]
+            let pre: f32 = weight
                 .iter()
                 .enumerate()
                 .map(|(h, w)| class_prob(h) * w)
                 .sum();
             let mut removed = 0.0;
-            for (h, w) in weights[p].iter_mut().enumerate() {
+            for (h, w) in weight.iter_mut().enumerate() {
                 if *w < 0.005 {
                     removed += class_prob(h) * *w;
                     *w = 0.0;
@@ -131,7 +132,7 @@ fn prepare(save: &str, output: &str) -> Result<(), String> {
             dropped.push(removed / pre);
             let mut probe_mass = 0.0;
             if p == 0 {
-                for (h, w) in weights[p].iter_mut().enumerate() {
+                for (h, w) in weight.iter_mut().enumerate() {
                     if PROBES.contains(&class_label(h).as_str()) && *w < 0.001 {
                         probe_mass += class_prob(h) * (0.001 - *w);
                         *w = 0.001;
