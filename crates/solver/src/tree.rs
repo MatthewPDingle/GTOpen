@@ -38,7 +38,9 @@ pub fn parse_sizes(s: &str) -> Result<Vec<BetSize>, String> {
             // comparison — admitted here it used to panic the amount sort
             // during tree build, so reject anything non-finite by name.
             if !m.is_finite() || m <= 1.0 {
-                return Err(format!("raise multiple must be a finite number > 1: {tok:?}"));
+                return Err(format!(
+                    "raise multiple must be a finite number > 1: {tok:?}"
+                ));
             }
             out.push(BetSize::PrevMult(m));
         } else {
@@ -46,7 +48,9 @@ pub fn parse_sizes(s: &str) -> Result<Vec<BetSize>, String> {
                 .parse()
                 .map_err(|_| format!("invalid size token {tok:?}"))?;
             if !p.is_finite() || p <= 0.0 {
-                return Err(format!("bet size must be a positive finite number: {tok:?}"));
+                return Err(format!(
+                    "bet size must be a positive finite number: {tok:?}"
+                ));
             }
             out.push(BetSize::PotPct(p));
         }

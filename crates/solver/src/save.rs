@@ -4,13 +4,19 @@
 //! storage mode, so files written by compressed and uncompressed solvers are
 //! interchangeable (and older saves keep loading).
 
-use crate::cfr::{Algorithm, Solver};
-use crate::game::{Spot, SpotConfig};
-use crate::store::{Storage, Store};
-use crate::tree::KIND_ACTION;
+use std::{
+    io::{BufReader, BufWriter, Read, Write},
+    sync::Arc,
+};
+
 use serde::{Deserialize, Serialize};
-use std::io::{BufReader, BufWriter, Read, Write};
-use std::sync::Arc;
+
+use crate::{
+    cfr::{Algorithm, Solver},
+    game::{Spot, SpotConfig},
+    store::{Storage, Store},
+    tree::KIND_ACTION,
+};
 
 const MAGIC: &[u8] = b"GTOSOLVE2\n";
 /// Tournament (ICM) saves: older binaries refuse them instead of continuing
@@ -127,7 +133,11 @@ impl Solver {
     fn write_save(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        let magic = if self.spot.config.tree.icm.is_some() { MAGIC_ICM } else { MAGIC };
+        let magic = if self.spot.config.tree.icm.is_some() {
+            MAGIC_ICM
+        } else {
+            MAGIC
+        };
         w.write_all(magic).map_err(|e| e.to_string())?;
         // Node-index order, not HashMap order: the header is part of the file
         // identity, and a load-then-save round trip must reproduce it byte for
@@ -135,8 +145,11 @@ impl Solver {
         let mut locks: Vec<(u32, Vec<f32>)> =
             self.locks.iter().map(|(k, v)| (*k, v.clone())).collect();
         locks.sort_unstable_by_key(|(idx, _)| *idx);
-        let mut lock_labels: Vec<(u32, String)> =
-            self.lock_labels.iter().map(|(k, v)| (*k, v.clone())).collect();
+        let mut lock_labels: Vec<(u32, String)> = self
+            .lock_labels
+            .iter()
+            .map(|(k, v)| (*k, v.clone()))
+            .collect();
         lock_labels.sort_unstable_by_key(|(idx, _)| *idx);
         let header = Header {
             config: self.spot.config.clone(),
@@ -203,7 +216,10 @@ impl Solver {
         // a save without the shape switch predates the check-through fix:
         // rebuild the tree the way it was built, or the arenas won't line up
         let mut config = header.config;
-        config.tree.carry_aggressor_through_checks.get_or_insert(true);
+        config
+            .tree
+            .carry_aggressor_through_checks
+            .get_or_insert(true);
         let spot = Spot::new_lenient(config)?;
         // Refuse malformed lock entries here, while no state depends on them:
         // installed unchecked they would panic at the first query instead.
@@ -252,9 +268,8 @@ impl Solver {
             }
             let mut buf = vec![0f32; len];
             {
-                let bytes: &mut [u8] = unsafe {
-                    std::slice::from_raw_parts_mut(buf.as_mut_ptr() as *mut u8, len * 4)
-                };
+                let bytes: &mut [u8] =
+                    unsafe { std::slice::from_raw_parts_mut(buf.as_mut_ptr() as *mut u8, len * 4) };
                 r.read_exact(bytes).map_err(|e| e.to_string())?;
             }
             let nh = solver.spot.hands[p].len();

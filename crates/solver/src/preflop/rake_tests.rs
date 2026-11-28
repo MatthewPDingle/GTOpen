@@ -28,9 +28,16 @@ fn three(rake_threebet: bool, no_flop_no_drop: bool) -> PreflopConfig {
 
 fn step(s: &PreflopSolver, node: usize, label: &str) -> usize {
     let nd = &s.nodes[node];
-    let a = nd.actions.iter().position(|a| a.label.starts_with(label)).unwrap_or_else(|| {
-        panic!("no {label:?} among {:?}", nd.actions.iter().map(|a| &a.label).collect::<Vec<_>>())
-    });
+    let a = nd
+        .actions
+        .iter()
+        .position(|a| a.label.starts_with(label))
+        .unwrap_or_else(|| {
+            panic!(
+                "no {label:?} among {:?}",
+                nd.actions.iter().map(|a| &a.label).collect::<Vec<_>>()
+            )
+        });
     s.child(node, a)
 }
 
@@ -40,7 +47,11 @@ fn walk(s: &PreflopSolver, path: &[&str]) -> usize {
 
 fn weights(n: usize) -> Vec<Vec<f32>> {
     (0..n)
-        .map(|p| (0..NUM_CLASSES).map(|h| class_prob(h) * ((h * 7 + p * 17) % 23 + 1) as f32 / 25.0).collect())
+        .map(|p| {
+            (0..NUM_CLASSES)
+                .map(|h| class_prob(h) * ((h * 7 + p * 17) % 23 + 1) as f32 / 25.0)
+                .collect()
+        })
         .collect()
 }
 
@@ -58,13 +69,19 @@ fn the_three_bet_rule_rakes_only_lines_with_a_three_bet() {
     // small blind's uncalled 5 bb is returned first.
     let threebet = &s.nodes[walk(&s, &["Raise 2.5", "3-bet 7.5", "Fold", "Fold"])];
     assert_eq!(threebet.raises, 2);
-    assert_eq!((threebet.pot, threebet.invested.clone()), (11.0, vec![2.5, 7.5, 1.0]));
+    assert_eq!(
+        (threebet.pot, threebet.invested.clone()),
+        (11.0, vec![2.5, 7.5, 1.0])
+    );
     assert!((s.fold_win_rake(threebet) - 0.3).abs() < 1e-12);
     assert_eq!(s.fold_win_rake(threebet), s.rake_of(threebet.pot - 5.0));
     // The same line is untouched when the rule is off, and the other types
     // leave the postflop leaves to the continuation model.
     let off = PreflopSolver::new(three(false, true), table()).unwrap();
-    assert_eq!(off.fold_win_rake(&off.nodes[walk(&off, &["Raise 2.5", "3-bet 7.5", "Fold", "Fold"])]), 0.0);
+    assert_eq!(
+        off.fold_win_rake(&off.nodes[walk(&off, &["Raise 2.5", "3-bet 7.5", "Fold", "Fold"])]),
+        0.0
+    );
     let full = PreflopSolver::new(three(false, false), table()).unwrap();
     let nd = &full.nodes[walk(&full, &["Raise 2.5", "Fold", "Fold"])];
     assert!((full.fold_win_rake(nd) - full.rake_of(nd.pot - 1.5)).abs() < 1e-12);
@@ -90,12 +107,23 @@ fn payoffs_conserve_chips_under_the_three_bet_rule() {
         for p in 0..3 {
             let mut values = [0f32; NUM_CLASSES];
             s.terminal_value(node, p, &w, &mut values);
-            total += values.iter().zip(&w[p]).map(|(v, w)| *v as f64 * *w as f64).sum::<f64>();
+            total += values
+                .iter()
+                .zip(&w[p])
+                .map(|(v, w)| *v as f64 * *w as f64)
+                .sum::<f64>();
         }
-        assert!((total + probability * rake).abs() < 1e-5, "node {node}: {total} vs {}", -probability * rake);
+        assert!(
+            (total + probability * rake).abs() < 1e-5,
+            "node {node}: {total} vs {}",
+            -probability * rake
+        );
     }
     // The tree has both kinds of fold-win: before a 3-bet and after one.
-    assert!(raked > 0 && free > 0, "{raked} raked and {free} free fold terminals");
+    assert!(
+        raked > 0 && free > 0,
+        "{raked} raked and {free} free fold terminals"
+    );
     for _ in 0..10 {
         s.iterate();
     }
@@ -109,7 +137,8 @@ fn saves_use_v9_and_round_trip() {
     for _ in 0..3 {
         s.iterate();
     }
-    let path = std::env::temp_dir().join(format!("gtopen-rake3bet-save-{}.gtop", std::process::id()));
+    let path =
+        std::env::temp_dir().join(format!("gtopen-rake3bet-save-{}.gtop", std::process::id()));
     let path = path.to_str().unwrap();
     s.save_game(path).unwrap();
     let bytes = std::fs::read(path).unwrap();
@@ -120,17 +149,28 @@ fn saves_use_v9_and_round_trip() {
     // A v9 file whose header lost the setting must not continue as another game.
     let end = 12 + bytes[12..].iter().position(|&b| b == b'\n').unwrap();
     let mut header: serde_json::Value = serde_json::from_slice(&bytes[12..end]).unwrap();
-    header["config"].as_object_mut().unwrap().remove("rake_threebet");
+    header["config"]
+        .as_object_mut()
+        .unwrap()
+        .remove("rake_threebet");
     let mut out = bytes[..12].to_vec();
     out.extend(serde_json::to_vec(&header).unwrap());
     out.extend_from_slice(&bytes[end..]);
     std::fs::write(path, out).unwrap();
-    assert!(PreflopSolver::load_game(path, table()).err().unwrap().contains("v9"));
+    assert!(PreflopSolver::load_game(path, table())
+        .err()
+        .unwrap()
+        .contains("v9"));
     // Without the rule the config omits the field and the save is not v9.
     let old = PreflopSolver::new(three(false, true), table()).unwrap();
-    assert!(!serde_json::to_string(&old.cfg).unwrap().contains("rake_threebet"));
+    assert!(!serde_json::to_string(&old.cfg)
+        .unwrap()
+        .contains("rake_threebet"));
     old.save_game(path).unwrap();
-    assert_ne!(&std::fs::read(path).unwrap()[..12], super::save::MAGIC_RAKE3BET);
+    assert_ne!(
+        &std::fs::read(path).unwrap()[..12],
+        super::save::MAGIC_RAKE3BET
+    );
     // A pre-v9 file claiming the setting must not be read as one.
     let bytes = std::fs::read(path).unwrap();
     let end = 12 + bytes[12..].iter().position(|&b| b == b'\n').unwrap();
@@ -140,7 +180,10 @@ fn saves_use_v9_and_round_trip() {
     out.extend(serde_json::to_vec(&header).unwrap());
     out.extend_from_slice(&bytes[end..]);
     std::fs::write(path, out).unwrap();
-    assert!(PreflopSolver::load_game(path, table()).err().unwrap().contains("v9"));
+    assert!(PreflopSolver::load_game(path, table())
+        .err()
+        .unwrap()
+        .contains("v9"));
     // A v9 game can carry any earlier feature too: the big blind ante here.
     let mut both = three(true, true);
     both.bb_ante = 1.0;
@@ -149,7 +192,10 @@ fn saves_use_v9_and_round_trip() {
         s.iterate();
     }
     s.save_game(path).unwrap();
-    assert_eq!(&std::fs::read(path).unwrap()[..12], super::save::MAGIC_RAKE3BET);
+    assert_eq!(
+        &std::fs::read(path).unwrap()[..12],
+        super::save::MAGIC_RAKE3BET
+    );
     let loaded = PreflopSolver::load_game(path, table()).unwrap();
     assert!((loaded.cfg.bb_ante - 1.0).abs() < 1e-12 && loaded.cfg.rake_threebet);
     assert_eq!(loaded.arena_snapshot(), s.arena_snapshot());
@@ -162,7 +208,10 @@ fn saves_use_v9_and_round_trip() {
         s.iterate();
     }
     s.save_game(path).unwrap();
-    assert_eq!(&std::fs::read(path).unwrap()[..12], super::save::MAGIC_RAKE3BET);
+    assert_eq!(
+        &std::fs::read(path).unwrap()[..12],
+        super::save::MAGIC_RAKE3BET
+    );
     let loaded = PreflopSolver::load_game(path, table()).unwrap();
     assert!((loaded.cfg.limper_extra - 1.0).abs() < 1e-12 && loaded.cfg.rake_threebet);
     assert_eq!(loaded.arena_snapshot(), s.arena_snapshot());

@@ -25,10 +25,14 @@
 //! (they carry no weight in the hero's values), which is what gives the
 //! readout its "if the reads are wrong" number at every level.
 
-use super::equity::{class_prob, NUM_CLASSES};
-use super::{Arena, PreflopSolver, DCFR_ALPHA, DCFR_GAMMA, KIND_ACTION, PAR_DEPTH, PRUNE_REFRESH, PRUNE_WARMUP};
 use rayon::prelude::*;
 use serde::Serialize;
+
+use super::{
+    equity::{class_prob, NUM_CLASSES},
+    Arena, PreflopSolver, DCFR_ALPHA, DCFR_GAMMA, KIND_ACTION, PAR_DEPTH, PRUNE_REFRESH,
+    PRUNE_WARMUP,
+};
 
 /// The free types' own arenas. Only the ruled seats' action nodes have a
 /// block (`off[node]`, `u32::MAX` elsewhere), laid out like the main arenas.
@@ -87,8 +91,12 @@ impl PreflopSolver {
 
     /// Seats the dial applies to: every other seat with a profile.
     pub fn trust_seats(&self) -> Vec<usize> {
-        let Some(h) = self.hero else { return Vec::new() };
-        (0..self.n).filter(|&i| i != h && self.seat_profiles[i].is_some()).collect()
+        let Some(h) = self.hero else {
+            return Vec::new();
+        };
+        (0..self.n)
+            .filter(|&i| i != h && self.seat_profiles[i].is_some())
+            .collect()
     }
 
     /// (trust, hero) when the dial shapes the solve: hero mode, a dial set
@@ -127,7 +135,11 @@ impl PreflopSolver {
             return;
         };
         let seats = self.trust_seats();
-        if self.pf_free.as_ref().is_some_and(|f| f.hero == hero && f.seats == seats) {
+        if self
+            .pf_free
+            .as_ref()
+            .is_some_and(|f| f.hero == hero && f.seats == seats)
+        {
             return;
         }
         let mut slot_of = vec![None; self.n];
@@ -155,13 +167,25 @@ impl PreflopSolver {
                 }
             }
         }
-        self.pf_free = Some(Box::new(PfFree { hero, seats, slot_of, off, regrets, strat: Arena::new(len), len }));
+        self.pf_free = Some(Box::new(PfFree {
+            hero,
+            seats,
+            slot_of,
+            off,
+            regrets,
+            strat: Arena::new(len),
+            len,
+        }));
     }
 
     /// The seat a traverser index belongs to (n + j: slot j's free type).
     #[inline]
     fn seat_of(&self, f: &PfFree, tp: usize) -> usize {
-        if tp < self.n { tp } else { f.seats[tp - self.n] }
+        if tp < self.n {
+            tp
+        } else {
+            f.seats[tp - self.n]
+        }
     }
 
     fn free_current(&self, f: &PfFree, node: usize, sigma: &mut [f32]) {
@@ -221,7 +245,13 @@ impl PreflopSolver {
 
     /// The seats' reaches at a terminal for traverser seat `ps`: every ruled
     /// seat but the traverser's own mixes its two types.
-    fn mixed_reaches(&self, f: &PfFree, ps: usize, reaches: &[Vec<f32>], mix: &[f32]) -> Vec<Vec<f32>> {
+    fn mixed_reaches(
+        &self,
+        f: &PfFree,
+        ps: usize,
+        reaches: &[Vec<f32>],
+        mix: &[f32],
+    ) -> Vec<Vec<f32>> {
         let mut out: Vec<Vec<f32>> = reaches[..self.n].to_vec();
         for (j, &q) in f.seats.iter().enumerate() {
             if q == ps {
@@ -237,13 +267,23 @@ impl PreflopSolver {
     }
 
     fn rnr_root_reaches(&self, f: &PfFree) -> Vec<Vec<f32>> {
-        (0..self.n + f.seats.len()).map(|_| (0..NUM_CLASSES).map(class_prob).collect()).collect()
+        (0..self.n + f.seats.len())
+            .map(|_| (0..NUM_CLASSES).map(class_prob).collect())
+            .collect()
     }
 
     /// One learning pass for traverser `tp` (the hero, or n + j for slot j's
     /// free type): `traverse` mode 0 with the type split.
     #[allow(clippy::too_many_arguments)]
-    fn traverse_rnr(&self, f: &PfFree, node: usize, tp: usize, reaches: &mut [Vec<f32>], mix: &[f32], depth: u32) -> Vec<f32> {
+    fn traverse_rnr(
+        &self,
+        f: &PfFree,
+        node: usize,
+        tp: usize,
+        reaches: &mut [Vec<f32>],
+        mix: &[f32],
+        depth: u32,
+    ) -> Vec<f32> {
         let ps = self.seat_of(f, tp);
         let nd = &self.nodes[node];
         if nd.kind != KIND_ACTION {
@@ -255,7 +295,12 @@ impl PreflopSolver {
         if depth < PAR_DEPTH && self.stop_requested() {
             return vec![0f32; NUM_CLASSES];
         }
-        let (actor, na, data_off, cs) = (nd.actor as usize, nd.actions.len(), nd.data_off, nd.child_start as usize);
+        let (actor, na, data_off, cs) = (
+            nd.actor as usize,
+            nd.actions.len(),
+            nd.data_off,
+            nd.child_start as usize,
+        );
         let slot = f.slot_of[actor];
         // the read type (the seat itself): as traverse()
         let forced = self.forced_sigma(node);
@@ -270,16 +315,25 @@ impl PreflopSolver {
         let own_free = slot.is_some_and(|j| tp == self.n + j);
         let sig_free = slot.map(|_| self.free_sigma(f, node, true));
         let free_learns = own_free && !self.point_locks.contains_key(&(node as u32));
-        let own = if own_free { sig_free.as_ref().unwrap() } else { &sigma };
+        let own = if own_free {
+            sig_free.as_ref().unwrap()
+        } else {
+            &sigma
+        };
         let updates = (actor == tp && learning) || free_learns;
         // prune actions no type plays, except the traverser's refresh passes
-        let refresh = updates && (self.iteration < PRUNE_WARMUP || self.iteration % PRUNE_REFRESH == 0);
+        let refresh =
+            updates && (self.iteration < PRUNE_WARMUP || self.iteration % PRUNE_REFRESH == 0);
         let skipped: Vec<bool> = (0..na)
             .map(|a| {
                 if !self.prune || na == 1 || (actor == ps && refresh) {
                     return false;
                 }
-                let zero = |s: &[f32]| s[a * NUM_CLASSES..(a + 1) * NUM_CLASSES].iter().all(|&x| x == 0.0);
+                let zero = |s: &[f32]| {
+                    s[a * NUM_CLASSES..(a + 1) * NUM_CLASSES]
+                        .iter()
+                        .all(|&x| x == 0.0)
+                };
                 if actor == ps {
                     zero(own)
                 } else {
@@ -290,7 +344,14 @@ impl PreflopSolver {
         let free_ix = slot.map(|j| self.n + j);
         let (base_read, base_free) = (reaches[actor].clone(), free_ix.map(|k| reaches[k].clone()));
         let scale = |r: &mut [Vec<f32>], a: usize| {
-            scale_types(r, actor, &base_read, &sigma, free_ix.zip(base_free.as_ref()).zip(sig_free.as_ref()), a)
+            scale_types(
+                r,
+                actor,
+                &base_read,
+                &sigma,
+                free_ix.zip(base_free.as_ref()).zip(sig_free.as_ref()),
+                a,
+            )
         };
         let vals: Vec<Vec<f32>> = if depth < PAR_DEPTH && na > 1 {
             let base: &[Vec<f32>] = reaches;
@@ -302,7 +363,14 @@ impl PreflopSolver {
                     }
                     let mut r = base.to_vec();
                     scale(&mut r, a);
-                    self.traverse_rnr(f, self.children[cs + a] as usize, tp, &mut r, mix, depth + 1)
+                    self.traverse_rnr(
+                        f,
+                        self.children[cs + a] as usize,
+                        tp,
+                        &mut r,
+                        mix,
+                        depth + 1,
+                    )
                 })
                 .collect()
         } else {
@@ -313,7 +381,14 @@ impl PreflopSolver {
                     continue;
                 }
                 scale(reaches, a);
-                vals.push(self.traverse_rnr(f, self.children[cs + a] as usize, tp, reaches, mix, depth + 1));
+                vals.push(self.traverse_rnr(
+                    f,
+                    self.children[cs + a] as usize,
+                    tp,
+                    reaches,
+                    mix,
+                    depth + 1,
+                ));
             }
             reaches[actor].copy_from_slice(&base_read);
             if let (Some(k), Some(b)) = (free_ix, base_free.as_ref()) {
@@ -361,7 +436,15 @@ impl PreflopSolver {
     /// `tp`, with the ruled seats mixed at `mix`. The best response deviates
     /// at the traverser's nodes except where a point lock (or, for a read
     /// type, its profile) binds it, as `traverse_checkpoint` mode 2.
-    fn eval_rnr(&self, f: &PfFree, node: usize, tp: usize, reaches: &mut [Vec<f32>], mix: &[f32], depth: u32) -> Option<(Vec<f32>, Vec<f32>)> {
+    fn eval_rnr(
+        &self,
+        f: &PfFree,
+        node: usize,
+        tp: usize,
+        reaches: &mut [Vec<f32>],
+        mix: &[f32],
+        depth: u32,
+    ) -> Option<(Vec<f32>, Vec<f32>)> {
         let ps = self.seat_of(f, tp);
         let nd = &self.nodes[node];
         if nd.kind != KIND_ACTION {
@@ -376,10 +459,16 @@ impl PreflopSolver {
         let (actor, na, cs) = (nd.actor as usize, nd.actions.len(), nd.child_start as usize);
         let slot = f.slot_of[actor];
         let forced = self.forced_sigma(node);
-        let sigma = forced.clone().unwrap_or_else(|| self.average_strategy(node));
+        let sigma = forced
+            .clone()
+            .unwrap_or_else(|| self.average_strategy(node));
         let own_free = slot.is_some_and(|j| tp == self.n + j);
         let sig_free = slot.map(|_| self.free_sigma(f, node, false));
-        let own = if own_free { sig_free.as_ref().unwrap() } else { &sigma };
+        let own = if own_free {
+            sig_free.as_ref().unwrap()
+        } else {
+            &sigma
+        };
         // traverse_checkpoint's rule for a seat (mode 2 maxes even where it
         // is frozen or forced: that is its bleed; mode 3 for adaptive
         // profiles only at learning nodes); a free type is bound only by
@@ -396,13 +485,28 @@ impl PreflopSolver {
                 if !self.prune || na == 1 || (actor == ps && maximize) {
                     return false;
                 }
-                let zero = |s: &[f32]| s[a * NUM_CLASSES..(a + 1) * NUM_CLASSES].iter().all(|&x| x == 0.0);
-                if actor == ps { zero(own) } else { zero(&sigma) && sig_free.as_ref().is_none_or(|s| zero(s)) }
+                let zero = |s: &[f32]| {
+                    s[a * NUM_CLASSES..(a + 1) * NUM_CLASSES]
+                        .iter()
+                        .all(|&x| x == 0.0)
+                };
+                if actor == ps {
+                    zero(own)
+                } else {
+                    zero(&sigma) && sig_free.as_ref().is_none_or(|s| zero(s))
+                }
             })
             .collect();
         let (base_read, base_free) = (reaches[actor].clone(), free_ix.map(|k| reaches[k].clone()));
         let scale = |r: &mut [Vec<f32>], a: usize| {
-            scale_types(r, actor, &base_read, &sigma, free_ix.zip(base_free.as_ref()).zip(sig_free.as_ref()), a)
+            scale_types(
+                r,
+                actor,
+                &base_read,
+                &sigma,
+                free_ix.zip(base_free.as_ref()).zip(sig_free.as_ref()),
+                a,
+            )
         };
         let restore = |r: &mut [Vec<f32>]| {
             r[actor].copy_from_slice(&base_read);
@@ -421,7 +525,14 @@ impl PreflopSolver {
                     }
                     let mut r = base.to_vec();
                     scale(&mut r, a);
-                    self.eval_rnr(f, self.children[cs + a] as usize, tp, &mut r, mix, depth + 1)
+                    self.eval_rnr(
+                        f,
+                        self.children[cs + a] as usize,
+                        tp,
+                        &mut r,
+                        mix,
+                        depth + 1,
+                    )
                 })
                 .collect::<Option<Vec<_>>>()?
         } else {
@@ -432,7 +543,14 @@ impl PreflopSolver {
                     continue;
                 }
                 scale(reaches, a);
-                let v = self.eval_rnr(f, self.children[cs + a] as usize, tp, reaches, mix, depth + 1);
+                let v = self.eval_rnr(
+                    f,
+                    self.children[cs + a] as usize,
+                    tp,
+                    reaches,
+                    mix,
+                    depth + 1,
+                );
                 match v {
                     Some(v) => vals.push(v),
                     None => {
@@ -454,11 +572,17 @@ impl PreflopSolver {
             }
         } else {
             for h in 0..NUM_CLASSES {
-                avg[h] = (0..na).map(|a| own[a * NUM_CLASSES + h] * vals[a].1[h]).sum();
+                avg[h] = (0..na)
+                    .map(|a| own[a * NUM_CLASSES + h] * vals[a].1[h])
+                    .sum();
                 br[h] = if maximize {
-                    vals.iter().map(|v| v.0[h]).fold(f32::NEG_INFINITY, f32::max)
+                    vals.iter()
+                        .map(|v| v.0[h])
+                        .fold(f32::NEG_INFINITY, f32::max)
                 } else {
-                    (0..na).map(|a| own[a * NUM_CLASSES + h] * vals[a].0[h]).sum()
+                    (0..na)
+                        .map(|a| own[a * NUM_CLASSES + h] * vals[a].0[h])
+                        .sum()
                 };
             }
         }
@@ -469,7 +593,9 @@ impl PreflopSolver {
     /// type's, then DCFR discounting of both arena sets. False when stopped.
     pub(crate) fn try_iterate_rnr(&mut self) -> bool {
         self.sync_pf_free();
-        let Some((mix, hero)) = self.rnr_active() else { return true };
+        let Some((mix, hero)) = self.rnr_active() else {
+            return true;
+        };
         let f = self.pf_free.take().expect("synced above");
         let mix = vec![mix; f.seats.len()];
         let mix = &mix[..];
@@ -501,7 +627,9 @@ impl PreflopSolver {
             for nd in &self.nodes {
                 if nd.kind == KIND_ACTION && !self.seat_frozen[nd.actor as usize] {
                     let len = nd.actions.len() * NUM_CLASSES;
-                    ss[nd.data_off..nd.data_off + len].iter_mut().for_each(|s| *s *= sd);
+                    ss[nd.data_off..nd.data_off + len]
+                        .iter_mut()
+                        .for_each(|s| *s *= sd);
                 }
             }
             for r in f.regrets.slice_mut().iter_mut() {
@@ -516,7 +644,9 @@ impl PreflopSolver {
     }
 
     fn root_value(v: &[f32]) -> f64 {
-        (0..NUM_CLASSES).map(|h| class_prob(h) as f64 * v[h] as f64).sum()
+        (0..NUM_CLASSES)
+            .map(|h| class_prob(h) as f64 * v[h] as f64)
+            .sum()
     }
 
     /// Gaps and EVs of the trust game, per seat: the hero's against the
@@ -533,7 +663,9 @@ impl PreflopSolver {
             .map(|tp| {
                 let mut r = self.rnr_root_reaches(f);
                 let (br, avg) = self.eval_rnr(f, 0, tp, &mut r, &mixes, 0)?;
-                let gap: f64 = (0..NUM_CLASSES).map(|h| class_prob(h) as f64 * (br[h] - avg[h]) as f64).sum();
+                let gap: f64 = (0..NUM_CLASSES)
+                    .map(|h| class_prob(h) as f64 * (br[h] - avg[h]) as f64)
+                    .sum();
                 Some((gap, Self::root_value(&avg)))
             })
             .collect::<Option<Vec<_>>>()?;
@@ -552,7 +684,9 @@ impl PreflopSolver {
 
     /// The hero's EV against the reads, the mixture and the free types.
     pub fn trust_readout(&self) -> Result<PfTrustReadout, String> {
-        let (mix, hero) = self.rnr_active().ok_or("set HERO, a seat profile and the trust dial first")?;
+        let (mix, hero) = self
+            .rnr_active()
+            .ok_or("set HERO, a seat profile and the trust dial first")?;
         let f = self.pf_free.as_deref().ok_or("solve first")?;
         let ev = |m: f32| self.hero_ev_with_types(&vec![m; f.seats.len()]);
         Ok(PfTrustReadout {
@@ -568,10 +702,16 @@ impl PreflopSolver {
     /// Hero EV with ruled seat `trust_seats()[j]` playing its read with
     /// probability `mix[j]` (and its free type otherwise).
     pub fn hero_ev_with_types(&self, mix: &[f32]) -> Result<f64, String> {
-        let (_, hero) = self.rnr_active().ok_or("set HERO, a seat profile and the trust dial first")?;
+        let (_, hero) = self
+            .rnr_active()
+            .ok_or("set HERO, a seat profile and the trust dial first")?;
         let f = self.pf_free.as_deref().ok_or("solve first")?;
         if mix.len() != f.seats.len() {
-            return Err(format!("{} mixes for {} ruled seats", mix.len(), f.seats.len()));
+            return Err(format!(
+                "{} mixes for {} ruled seats",
+                mix.len(),
+                f.seats.len()
+            ));
         }
         let mut r = self.rnr_root_reaches(f);
         let (_, avg) = self.eval_rnr(f, 0, hero, &mut r, mix, 0).ok_or("stopped")?;
@@ -582,7 +722,11 @@ impl PreflopSolver {
     pub(crate) fn rnr_live(&self) -> Option<Vec<bool>> {
         self.rnr_active()?;
         let seats = self.trust_seats();
-        Some((0..self.n).map(|i| self.hero == Some(i) || seats.contains(&i)).collect())
+        Some(
+            (0..self.n)
+                .map(|i| self.hero == Some(i) || seats.contains(&i))
+                .collect(),
+        )
     }
 
     /// The free types' average strategy at a node (None off the dial or at

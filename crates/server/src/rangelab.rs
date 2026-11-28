@@ -14,12 +14,15 @@
 //! (`round(v*63)`) and EV loss as `round(9*ln(1+loss/0.02))`. Records are
 //! decoded into GTOpen's 169-class order (`class_label`) on request.
 
+use std::{
+    collections::{BTreeMap, HashMap, HashSet, VecDeque},
+    path::{Path, PathBuf},
+    sync::{Arc, Mutex, OnceLock},
+    time::SystemTime,
+};
+
 use serde::Deserialize;
 use serde_json::{json, Value};
-use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
-use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex, OnceLock};
-use std::time::SystemTime;
 
 const B64: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
@@ -35,8 +38,9 @@ fn valid_vec(s: &str) -> bool {
 fn rl_to_class() -> &'static [usize; 169] {
     static MAP: OnceLock<[usize; 169]> = OnceLock::new();
     MAP.get_or_init(|| {
-        let mut names: Vec<(String, usize)> =
-            (0..169).map(|i| (solver::preflop::equity::class_label(i), i)).collect();
+        let mut names: Vec<(String, usize)> = (0..169)
+            .map(|i| (solver::preflop::equity::class_label(i), i))
+            .collect();
         names.sort();
         let mut out = [0usize; 169];
         for (k, (_, idx)) in names.into_iter().enumerate() {
@@ -95,7 +99,10 @@ impl Record {
             return None;
         }
         let strs = |x: &Value| -> Option<Vec<String>> {
-            x.as_array()?.iter().map(|s| s.as_str().map(str::to_string)).collect()
+            x.as_array()?
+                .iter()
+                .map(|s| s.as_str().map(str::to_string))
+                .collect()
         };
         let actions: Vec<RawAction> = a[9]
             .as_array()?
@@ -151,7 +158,11 @@ impl Record {
     /// 64-level rounding leaves sums near (not at) 1, and Range Lab
     /// renormalizes the same way.
     fn strategy(&self) -> Vec<Vec<f64>> {
-        let mut strategy: Vec<Vec<f64>> = self.freqs.iter().map(|s| decode_vec(s, freq_digit)).collect();
+        let mut strategy: Vec<Vec<f64>> = self
+            .freqs
+            .iter()
+            .map(|s| decode_vec(s, freq_digit))
+            .collect();
         for h in 0..169 {
             let t: f64 = strategy.iter().map(|row| row[h]).sum();
             if t > 0.0 {
@@ -178,7 +189,10 @@ fn line_tokens(hist: &str) -> Vec<char> {
 
 /// Leading number of an open-size label ("2.5x", "5bb") in big blinds.
 fn open_bb(open: &str) -> Option<f64> {
-    let n: String = open.chars().take_while(|c| c.is_ascii_digit() || *c == '.').collect();
+    let n: String = open
+        .chars()
+        .take_while(|c| c.is_ascii_digit() || *c == '.')
+        .collect();
     n.parse().ok()
 }
 
@@ -205,7 +219,12 @@ const STAGES: [&str; 7] = [
 
 /// Sort key for variants: open size in bb, else tournament stage order.
 fn variant_rank(variant: &str) -> f64 {
-    open_bb(variant).unwrap_or_else(|| STAGES.iter().position(|s| *s == variant).unwrap_or(STAGES.len()) as f64)
+    open_bb(variant).unwrap_or_else(|| {
+        STAGES
+            .iter()
+            .position(|s| *s == variant)
+            .unwrap_or(STAGES.len()) as f64
+    })
 }
 
 fn variant_label(variant: &str) -> String {
@@ -224,9 +243,22 @@ fn variant_label(variant: &str) -> String {
 /// Situations in the order a hand reaches them.
 fn family_rank(family: &str) -> usize {
     const ORDER: [&str; 11] = [
-        "RFI", "BBvsLimp", "BBvsOpen", "vsOpen", "Squeeze", "vs3bet", "OpenVs3bet", "vs4bet", "vsJam", "BBvsJam", "OpenVsJam",
+        "RFI",
+        "BBvsLimp",
+        "BBvsOpen",
+        "vsOpen",
+        "Squeeze",
+        "vs3bet",
+        "OpenVs3bet",
+        "vs4bet",
+        "vsJam",
+        "BBvsJam",
+        "OpenVsJam",
     ];
-    ORDER.iter().position(|f| *f == family).unwrap_or(ORDER.len())
+    ORDER
+        .iter()
+        .position(|f| *f == family)
+        .unwrap_or(ORDER.len())
 }
 
 fn family_label(family: &str, tag: &str) -> String {
@@ -271,10 +303,15 @@ type Stamp = Vec<(PathBuf, Option<SystemTime>, u64)>;
 
 fn search_dirs() -> Vec<PathBuf> {
     match std::env::var("GTOPEN_RANGELAB_DIR") {
-        Ok(v) if !v.trim().is_empty() => {
-            v.split(';').filter(|s| !s.trim().is_empty()).map(|s| PathBuf::from(s.trim())).collect()
-        }
-        _ => vec![PathBuf::from("cache/rangelab"), PathBuf::from("../Range Lab")],
+        Ok(v) if !v.trim().is_empty() => v
+            .split(';')
+            .filter(|s| !s.trim().is_empty())
+            .map(|s| PathBuf::from(s.trim()))
+            .collect(),
+        _ => vec![
+            PathBuf::from("cache/rangelab"),
+            PathBuf::from("../Range Lab"),
+        ],
     }
 }
 
@@ -282,10 +319,16 @@ fn search_dirs() -> Vec<PathBuf> {
 fn candidate_files(dirs: &[PathBuf]) -> Stamp {
     let mut out: Stamp = Vec::new();
     for dir in dirs {
-        let Ok(rd) = std::fs::read_dir(dir) else { continue };
+        let Ok(rd) = std::fs::read_dir(dir) else {
+            continue;
+        };
         for e in rd.flatten() {
             let p = e.path();
-            let ext = p.extension().and_then(|x| x.to_str()).unwrap_or("").to_ascii_lowercase();
+            let ext = p
+                .extension()
+                .and_then(|x| x.to_str())
+                .unwrap_or("")
+                .to_ascii_lowercase();
             if ext != "js" && ext != "json" {
                 continue;
             }
@@ -318,7 +361,8 @@ fn read_spots(path: &Path) -> Result<Vec<Value>, String> {
 
 impl Library {
     fn load(dirs: &[PathBuf], files: &Stamp) -> Library {
-        let mut merged: HashMap<(String, String, String, String, i64, i64, i64), Record> = HashMap::new();
+        let mut merged: HashMap<(String, String, String, String, i64, i64, i64), Record> =
+            HashMap::new();
         let mut infos = Vec::new();
         for (path, _, _) in files {
             let name = path.display().to_string();
@@ -342,22 +386,53 @@ impl Library {
                         }
                     }
                     let error = (n == 0).then(|| "no valid chart records".to_string());
-                    infos.push(FileInfo { path: name, records: n, error });
+                    infos.push(FileInfo {
+                        path: name,
+                        records: n,
+                        error,
+                    });
                 }
                 // Unrelated .js/.json files in the folder are expected; list
                 // them only when they look like they were meant to be data.
                 Err(e) => {
-                    let lower = path.file_name().map(|f| f.to_string_lossy().to_ascii_lowercase()).unwrap_or_default();
+                    let lower = path
+                        .file_name()
+                        .map(|f| f.to_string_lossy().to_ascii_lowercase())
+                        .unwrap_or_default();
                     if lower.contains("range") || lower.contains("data") {
-                        infos.push(FileInfo { path: name, records: 0, error: Some(e) });
+                        infos.push(FileInfo {
+                            path: name,
+                            records: 0,
+                            error: Some(e),
+                        });
                     }
                 }
             }
         }
         let mut records: Vec<Record> = merged.into_values().collect();
         records.sort_by(|a, b| {
-            (&a.tag, variant_rank(a.variant()), a.variant(), a.depth, family_rank(&a.family), &a.family, a.hero, a.vs, a.caller)
-                .partial_cmp(&(&b.tag, variant_rank(b.variant()), b.variant(), b.depth, family_rank(&b.family), &b.family, b.hero, b.vs, b.caller))
+            (
+                &a.tag,
+                variant_rank(a.variant()),
+                a.variant(),
+                a.depth,
+                family_rank(&a.family),
+                &a.family,
+                a.hero,
+                a.vs,
+                a.caller,
+            )
+                .partial_cmp(&(
+                    &b.tag,
+                    variant_rank(b.variant()),
+                    b.variant(),
+                    b.depth,
+                    family_rank(&b.family),
+                    &b.family,
+                    b.hero,
+                    b.vs,
+                    b.caller,
+                ))
                 .unwrap_or(std::cmp::Ordering::Equal)
         });
         let mut positions: BTreeMap<String, Vec<String>> = BTreeMap::new();
@@ -380,7 +455,14 @@ impl Library {
         let mut by_line = HashMap::new();
         let mut prefixes = HashSet::new();
         for (i, r) in records.iter().enumerate() {
-            let key = |h: &str| (r.tag.clone(), r.variant().to_string(), r.depth.to_bits(), h.to_string());
+            let key = |h: &str| {
+                (
+                    r.tag.clone(),
+                    r.variant().to_string(),
+                    r.depth.to_bits(),
+                    h.to_string(),
+                )
+            };
             by_line.insert(key(&r.hist), i);
             let tokens: Vec<&str> = r.hist.split('-').filter(|t| !t.is_empty()).collect();
             for k in 0..=tokens.len() {
@@ -524,7 +606,12 @@ impl Library {
     /// Best chart for a preflop line: same game and seat count, identical
     /// kind-only action history; then the nearest open size and depth.
     pub fn find(&self, q: &MatchRequest) -> Option<usize> {
-        let line: Vec<char> = q.line.iter().filter_map(|t| t.chars().next()).map(|c| c.to_ascii_uppercase()).collect();
+        let line: Vec<char> = q
+            .line
+            .iter()
+            .filter_map(|t| t.chars().next())
+            .map(|c| c.to_ascii_uppercase())
+            .collect();
         let open_dist = |r: &Record| match (&q.variant, q.open_to, open_bb(r.variant())) {
             (Some(v), _, _) if v == r.variant() => 0.0,
             (Some(_), _, _) => 1e6,
@@ -623,7 +710,11 @@ struct Walk<'a> {
 
 impl<'a> Walk<'a> {
     fn new(lib: &'a Library, req: &'a TreeRequest) -> Result<Self, String> {
-        let positions = lib.positions.get(&req.tag).cloned().ok_or("no pre-solved GTO charts for this game")?;
+        let positions = lib
+            .positions
+            .get(&req.tag)
+            .cloned()
+            .ok_or("no pre-solved GTO charts for this game")?;
         let n = positions.len();
         // Range Lab's table setup: blinds by name, a 2 bb straddle acting
         // last, and a 12.5% ante in the tournament games.
@@ -636,7 +727,11 @@ impl<'a> Walk<'a> {
                 _ => 0.0,
             })
             .collect();
-        let ante = if req.tag.starts_with("cev") || req.tag.starts_with("icm") { 0.125 } else { 0.0 };
+        let ante = if req.tag.starts_with("cev") || req.tag.starts_with("icm") {
+            0.125
+        } else {
+            0.0
+        };
         Ok(Walk {
             lib,
             req,
@@ -666,7 +761,12 @@ impl<'a> Walk<'a> {
     }
 
     fn key(&self, hist: &str) -> LineKey {
-        (self.req.tag.clone(), self.req.variant.clone(), self.req.depth.to_bits(), hist.to_string())
+        (
+            self.req.tag.clone(),
+            self.req.variant.clone(),
+            self.req.depth.to_bits(),
+            hist.to_string(),
+        )
     }
 
     fn all_in(&self, p: usize) -> bool {
@@ -685,14 +785,20 @@ impl<'a> Walk<'a> {
                 break;
             }
         }
-        let Some(&p) = self.queue.front() else { return (Point::Flop, None) };
+        let Some(&p) = self.queue.front() else {
+            return (Point::Flop, None);
+        };
         let hist = self.hist.join("-");
         if let Some(&id) = self.lib.by_line.get(&self.key(&hist)) {
             if self.lib.records[id].hero == p as i64 {
                 return (Point::Chart(id), Some(p));
             }
         }
-        let fold = if hist.is_empty() { "F".to_string() } else { format!("{hist}-F") };
+        let fold = if hist.is_empty() {
+            "F".to_string()
+        } else {
+            format!("{hist}-F")
+        };
         if self.lib.prefixes.contains(&self.key(&fold)) {
             (Point::Forced, Some(p))
         } else {
@@ -702,25 +808,58 @@ impl<'a> Walk<'a> {
 
     fn actions(&self, point: Point) -> Vec<TreeAction> {
         let depth = self.req.depth;
-        let fold = || TreeAction { code: "F".into(), kind: "fold", label: "Fold".into(), to: 0.0 };
+        let fold = || TreeAction {
+            code: "F".into(),
+            kind: "fold",
+            label: "Fold".into(),
+            to: 0.0,
+        };
         match point {
             Point::Chart(id) => self.lib.records[id]
                 .actions
                 .iter()
                 .map(|a| match a.code.chars().next().unwrap_or('F') {
                     'F' => fold(),
-                    'X' => TreeAction { code: a.code.clone(), kind: "check", label: "Check".into(), to: self.level },
+                    'X' => TreeAction {
+                        code: a.code.clone(),
+                        kind: "check",
+                        label: "Check".into(),
+                        to: self.level,
+                    },
                     'C' => {
-                        let to = if a.allin { depth } else { self.level.min(depth) };
-                        TreeAction { code: a.code.clone(), kind: "call", label: format!("Call {}", fmt_bb(to)), to }
+                        let to = if a.allin {
+                            depth
+                        } else {
+                            self.level.min(depth)
+                        };
+                        TreeAction {
+                            code: a.code.clone(),
+                            kind: "call",
+                            label: format!("Call {}", fmt_bb(to)),
+                            to,
+                        }
                     }
                     _ => {
                         let size = if a.code == "RAI" { depth } else { a.size };
                         if a.code == "RAI" || a.allin || size >= depth - 0.2 {
-                            TreeAction { code: a.code.clone(), kind: "jam", label: format!("All-in {}", fmt_bb(depth)), to: depth }
+                            TreeAction {
+                                code: a.code.clone(),
+                                kind: "jam",
+                                label: format!("All-in {}", fmt_bb(depth)),
+                                to: depth,
+                            }
                         } else {
-                            let verb = if self.raises == 0 { "Raise".to_string() } else { format!("{}-bet", self.raises + 2) };
-                            TreeAction { code: a.code.clone(), kind: "raise", label: format!("{verb} {}", fmt_bb(size)), to: size }
+                            let verb = if self.raises == 0 {
+                                "Raise".to_string()
+                            } else {
+                                format!("{}-bet", self.raises + 2)
+                            };
+                            TreeAction {
+                                code: a.code.clone(),
+                                kind: "raise",
+                                label: format!("{verb} {}", fmt_bb(size)),
+                                to: size,
+                            }
                         }
                     }
                 })
@@ -740,11 +879,19 @@ impl<'a> Walk<'a> {
 
     /// Combo-weighted frequency of each action over the actor's range here.
     fn freqs(&self, p: usize, sigma: &[Vec<f64>]) -> Vec<f64> {
-        let w: Vec<f64> = (0..169).map(|h| self.reach[p][h] * class_combos(h)).collect();
+        let w: Vec<f64> = (0..169)
+            .map(|h| self.reach[p][h] * class_combos(h))
+            .collect();
         let tot: f64 = w.iter().sum();
         sigma
             .iter()
-            .map(|row| if tot > 0.0 { (0..169).map(|h| w[h] * row[h]).sum::<f64>() / tot } else { 0.0 })
+            .map(|row| {
+                if tot > 0.0 {
+                    (0..169).map(|h| w[h] * row[h]).sum::<f64>() / tot
+                } else {
+                    0.0
+                }
+            })
             .collect()
     }
 
@@ -763,7 +910,10 @@ impl<'a> Walk<'a> {
                 self.bet[p] = act.to;
                 self.level = act.to;
                 let n = self.n();
-                self.queue = (1..n).map(|k| (p + k) % n).filter(|&q| !self.folded[q]).collect();
+                self.queue = (1..n)
+                    .map(|k| (p + k) % n)
+                    .filter(|&q| !self.folded[q])
+                    .collect();
             }
         }
     }
@@ -846,7 +996,13 @@ impl Library {
                 }
                 None => {
                     history.push(step(None));
-                    return Ok(TreeRun { walk, point, actor, history, path });
+                    return Ok(TreeRun {
+                        walk,
+                        point,
+                        actor,
+                        history,
+                        path,
+                    });
                 }
             }
         }
@@ -854,7 +1010,13 @@ impl Library {
 
     /// The node at the end of `req.path`, shaped like /api/preflop/node.
     pub fn tree(&self, req: &TreeRequest) -> Result<Value, String> {
-        let TreeRun { walk, point, actor, history, path } = self.run(req)?;
+        let TreeRun {
+            walk,
+            point,
+            actor,
+            history,
+            path,
+        } = self.run(req)?;
         let live = walk.live();
         let n_live = live.iter().filter(|l| **l).count();
         let acts = walk.actions(point);
@@ -913,7 +1075,11 @@ impl Library {
     /// /api/preflop/export returns.
     pub fn export(&self, req: &TreeRequest) -> Result<Value, String> {
         let TreeRun { walk, point, .. } = self.run(req)?;
-        let live: Vec<usize> = walk.postflop_order().into_iter().filter(|&i| !walk.folded[i]).collect();
+        let live: Vec<usize> = walk
+            .postflop_order()
+            .into_iter()
+            .filter(|&i| !walk.folded[i])
+            .collect();
         if point != Point::Flop || live.len() != 2 {
             return Err("export needs a flop with exactly two players".into());
         }
@@ -978,7 +1144,10 @@ pub fn library() -> Arc<Library> {
     static CACHE: OnceLock<Mutex<Option<(Stamp, Arc<Library>)>>> = OnceLock::new();
     let dirs = search_dirs();
     let stamp = candidate_files(&dirs);
-    let mut guard = CACHE.get_or_init(|| Mutex::new(None)).lock().unwrap_or_else(|p| p.into_inner());
+    let mut guard = CACHE
+        .get_or_init(|| Mutex::new(None))
+        .lock()
+        .unwrap_or_else(|p| p.into_inner());
     if let Some((s, lib)) = guard.as_ref() {
         if *s == stamp {
             return lib.clone();
@@ -993,17 +1162,42 @@ pub fn library() -> Arc<Library> {
 mod tests {
     use super::*;
 
-    fn rec(fam: &str, hero: i64, vs: i64, hist: &str, open: &str, depth: f64, first: char) -> Value {
+    fn rec(
+        fam: &str,
+        hero: i64,
+        vs: i64,
+        hist: &str,
+        open: &str,
+        depth: f64,
+        first: char,
+    ) -> Value {
         let f: String = std::iter::repeat(first).take(169).collect();
         let zero: String = std::iter::repeat('A').take(169).collect();
-        json!([fam, "reg", format!("Cash_{open}"), 8, depth, hero, vs, -1, "BTN",
-            [["F","F",0,0,0.5],["R9","R",9,0,0.5]], [zero.clone(), f], [zero.clone(), zero], "", hist, open])
+        json!([
+            fam,
+            "reg",
+            format!("Cash_{open}"),
+            8,
+            depth,
+            hero,
+            vs,
+            -1,
+            "BTN",
+            [["F", "F", 0, 0, 0.5], ["R9", "R", 9, 0, 0.5]],
+            [zero.clone(), f],
+            [zero.clone(), zero],
+            "",
+            hist,
+            open
+        ])
     }
 
     /// A 169-character chart vector from a per-class function.
     fn vec_of(f: impl Fn(usize) -> f64) -> String {
         let map = rl_to_class();
-        (0..169).map(|k| B64[(f(map[k]) * 63.0).round() as usize] as char).collect()
+        (0..169)
+            .map(|k| B64[(f(map[k]) * 63.0).round() as usize] as char)
+            .collect()
     }
 
     #[test]
@@ -1013,26 +1207,72 @@ mod tests {
         const AA: usize = 12 * 14;
         let rec = |fam: &str, hero: i64, pos: &str, hist: &str, acts: Value, freqs: Vec<String>| {
             let n = freqs.len();
-            json!([fam, "reg", "Cash3_R3", 3, 100.0, hero, -1, -1, pos, acts, freqs,
-                vec![vec_of(|_| 0.0); n], "", hist, "3x"])
+            json!([
+                fam,
+                "reg",
+                "Cash3_R3",
+                3,
+                100.0,
+                hero,
+                -1,
+                -1,
+                pos,
+                acts,
+                freqs,
+                vec![vec_of(|_| 0.0); n],
+                "",
+                hist,
+                "3x"
+            ])
         };
         let records = vec![
-            rec("RFI", 0, "BTN", "", json!([["F","F",0,0,0.9],["R3","R",3,0,0.1]]),
-                vec![vec_of(|h| if h == AA { 0.0 } else { 1.0 }), vec_of(|h| if h == AA { 1.0 } else { 0.0 })]),
-            rec("BBvsOpen", 2, "BB", "R3-F", json!([["F","F",0,0,0.0],["C","C",3,0,1.0]]),
-                vec![vec_of(|_| 0.0), vec_of(|_| 1.0)]),
+            rec(
+                "RFI",
+                0,
+                "BTN",
+                "",
+                json!([["F", "F", 0, 0, 0.9], ["R3", "R", 3, 0, 0.1]]),
+                vec![
+                    vec_of(|h| if h == AA { 0.0 } else { 1.0 }),
+                    vec_of(|h| if h == AA { 1.0 } else { 0.0 }),
+                ],
+            ),
+            rec(
+                "BBvsOpen",
+                2,
+                "BB",
+                "R3-F",
+                json!([["F", "F", 0, 0, 0.0], ["C", "C", 3, 0, 1.0]]),
+                vec![vec_of(|_| 0.0), vec_of(|_| 1.0)],
+            ),
         ];
         // SB first in (after a BTN fold) can limp, and nothing follows a limp.
         let mut records = records;
-        records.push(rec("RFI", 1, "SB", "F", json!([["F","F",0,0,0.5],["C","C",1,0,0.5]]),
-            vec![vec_of(|_| 0.5), vec_of(|_| 0.5)]));
+        records.push(rec(
+            "RFI",
+            1,
+            "SB",
+            "F",
+            json!([["F", "F", 0, 0, 0.5], ["C", "C", 1, 0, 0.5]]),
+            vec![vec_of(|_| 0.5), vec_of(|_| 0.5)],
+        ));
         let dir = std::env::temp_dir().join(format!("gtopen-rangelab-tree-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
-        std::fs::write(dir.join("cash-data.js"), format!("window.CASH_DATA={};", json!({"v":1,"spots":records}))).unwrap();
+        std::fs::write(
+            dir.join("cash-data.js"),
+            format!("window.CASH_DATA={};", json!({"v":1,"spots":records})),
+        )
+        .unwrap();
         let dirs = vec![dir.clone()];
         let lib = Library::load(&dirs, &candidate_files(&dirs));
         let req = |path: Vec<usize>, extend: bool| TreeRequest {
-            tag: "reg".into(), variant: "3x".into(), depth: 100.0, path, extend, rake_pct: 5.0, rake_cap: 3.0,
+            tag: "reg".into(),
+            variant: "3x".into(),
+            depth: 100.0,
+            path,
+            extend,
+            rake_pct: 5.0,
+            rake_cap: 3.0,
         };
         let root = lib.tree(&req(vec![], false)).unwrap();
         assert_eq!(root["actor_pos"], "BTN");
@@ -1050,7 +1290,10 @@ mod tests {
         assert_eq!(btn_reach[AA], 1.0);
         assert_eq!(btn_reach[0], 0.0);
         let ex = lib.export(&req(vec![1, 0, 1], false)).unwrap();
-        assert_eq!((ex["oop_pos"].as_str(), ex["ip_pos"].as_str()), (Some("BB"), Some("BTN")));
+        assert_eq!(
+            (ex["oop_pos"].as_str(), ex["ip_pos"].as_str()),
+            (Some("BB"), Some("BTN"))
+        );
         assert_eq!(ex["range_ip"], "AA");
         assert_eq!(ex["pot_type"], "single_raised");
         assert_eq!(ex["eff_stack_bb"], 97.0);
@@ -1058,8 +1301,14 @@ mod tests {
         // BTN folds, SB limps: BB has no chart there and the line ends.
         let end = lib.tree(&req(vec![0, 1], false)).unwrap();
         assert_eq!(end["actor_pos"], "BB");
-        assert!(end["strategy_note"].as_str().unwrap().contains("no chart for BB"));
-        assert_eq!(lib.tree(&req(vec![0, 0], false)).unwrap()["kind"], "fold_win");
+        assert!(end["strategy_note"]
+            .as_str()
+            .unwrap()
+            .contains("no chart for BB"));
+        assert_eq!(
+            lib.tree(&req(vec![0, 0], false)).unwrap()["kind"],
+            "fold_win"
+        );
         assert!(lib.export(&req(vec![1, 0], false)).is_err());
         assert!(lib.tree(&req(vec![5], false)).is_err());
         std::fs::remove_dir_all(&dir).ok();
@@ -1071,7 +1320,10 @@ mod tests {
         // JavaScript's default sort (code units): digits before letters,
         // so the order runs 22, 32o, 32s, … AA, AKo, AKs, … TT.
         let label = |k: usize| solver::preflop::equity::class_label(map[k]);
-        assert_eq!((label(0), label(1), label(2)), ("22".into(), "32o".into(), "32s".into()));
+        assert_eq!(
+            (label(0), label(1), label(2)),
+            ("22".into(), "32o".into(), "32s".into())
+        );
         assert_eq!(label(168), "TT");
         let mut seen = map.to_vec();
         seen.sort();
@@ -1084,7 +1336,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("gtopen-rangelab-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let old = json!({"v":1,"spots":[rec("vsOpen",5,4,"F-F-F-F-R3","3x",100.0,'A')]});
-        std::fs::write(dir.join("cash-data.js"), format!("window.CASH_DATA={old};\n")).unwrap();
+        std::fs::write(
+            dir.join("cash-data.js"),
+            format!("window.CASH_DATA={old};\n"),
+        )
+        .unwrap();
         std::thread::sleep(std::time::Duration::from_millis(20));
         let new = json!({"v":1,"spots":[
             rec("vsOpen",5,4,"F-F-F-F-R3","3x",100.0,'_'),
@@ -1095,15 +1351,37 @@ mod tests {
         std::fs::write(dir.join("notes.json"), "[1,2,3]").unwrap();
         let dirs = vec![dir.clone()];
         let lib = Library::load(&dirs, &candidate_files(&dirs));
-        assert_eq!(lib.records.len(), 3, "the newer crawl replaces the older record");
+        assert_eq!(
+            lib.records.len(),
+            3,
+            "the newer crawl replaces the older record"
+        );
         let sm = lib.summary();
-        assert_eq!(sm["files"].as_array().unwrap().len(), 2, "unrelated JSON is not listed");
+        assert_eq!(
+            sm["files"].as_array().unwrap().len(),
+            2,
+            "unrelated JSON is not listed"
+        );
         let variants = &sm["games"][0]["variants"];
-        assert_eq!((variants[0]["key"].as_str(), variants[0]["depths"].clone()), (Some("2.5x"), json!([150.0])));
-        assert_eq!(variants[1]["depths"], json!([100.0]), "depths are listed per open size");
+        assert_eq!(
+            (variants[0]["key"].as_str(), variants[0]["depths"].clone()),
+            (Some("2.5x"), json!([150.0]))
+        );
+        assert_eq!(
+            variants[1]["depths"],
+            json!([100.0]),
+            "depths are listed per open size"
+        );
         let q = MatchRequest {
-            tag: "reg".into(), players: 8, stack: 110.0, open_to: Some(3.0), variant: None,
-            line: ["F", "F", "F", "F", "R"].iter().map(|s| s.to_string()).collect(),
+            tag: "reg".into(),
+            players: 8,
+            stack: 110.0,
+            open_to: Some(3.0),
+            variant: None,
+            line: ["F", "F", "F", "F", "R"]
+                .iter()
+                .map(|s| s.to_string())
+                .collect(),
         };
         let id = lib.find(&q).unwrap();
         let spot = lib.spot(id).unwrap();
@@ -1114,7 +1392,10 @@ mod tests {
         // newer record: every hand raises
         assert!((strat[169].as_f64().unwrap() - 1.0).abs() < 1e-9);
         assert_eq!(spot["actions"][1]["label"], "Raise to 9 bb");
-        let q2 = MatchRequest { open_to: Some(2.4), ..q };
+        let q2 = MatchRequest {
+            open_to: Some(2.4),
+            ..q
+        };
         assert_eq!(lib.spot(lib.find(&q2).unwrap()).unwrap()["variant"], "2.5x");
         std::fs::remove_dir_all(&dir).ok();
     }

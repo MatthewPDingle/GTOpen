@@ -1,13 +1,11 @@
 //! A three-player postflop spot: board, the three ranges, the tree and the
 //! per-river-board hand strengths every terminal evaluation needs.
 
-use super::tree::{MwTree, MwTreeBuilder, MwTreeConfig, NP};
-use crate::cards::*;
-use crate::evaluator::evaluate7;
-use crate::game::HandInfo;
-use crate::range::Range;
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
+
+use super::tree::{MwTree, MwTreeBuilder, MwTreeConfig, NP};
+use crate::{cards::*, evaluator::evaluate7, game::HandInfo, range::Range};
 
 pub const NO_HAND: u16 = u16::MAX;
 
@@ -52,7 +50,9 @@ impl MwRiverTable {
     }
 
     pub fn get(&self, dealt: &[u8]) -> &MwRiverEval {
-        self.entries[self.key(dealt)].as_deref().expect("river eval missing")
+        self.entries[self.key(dealt)]
+            .as_deref()
+            .expect("river eval missing")
     }
 }
 
@@ -82,7 +82,10 @@ impl MwSpot {
         MwSpot::new_with_limit(config, None)
     }
 
-    pub fn new_with_limit(config: MwSpotConfig, max_nodes: Option<usize>) -> Result<MwSpot, String> {
+    pub fn new_with_limit(
+        config: MwSpotConfig,
+        max_nodes: Option<usize>,
+    ) -> Result<MwSpot, String> {
         let board = parse_cards(&config.board)?;
         if !(3..=5).contains(&board.len()) {
             return Err("board must have 3 to 5 cards".into());
@@ -101,10 +104,18 @@ impl MwSpot {
                 if mask & board_mask != 0 {
                     continue;
                 }
-                hands[p].push(HandInfo { c1, c2, weight: w, mask });
+                hands[p].push(HandInfo {
+                    c1,
+                    c2,
+                    weight: w,
+                    mask,
+                });
             }
             if hands[p].is_empty() {
-                return Err(format!("player {} range has no combos left after board removal", p + 1));
+                return Err(format!(
+                    "player {} range has no combos left after board removal",
+                    p + 1
+                ));
             }
             if hands[p].len() >= NO_HAND as usize {
                 return Err("range too large".into());
@@ -133,7 +144,8 @@ impl MwSpot {
         if triple <= 0.0 {
             return Err("the three ranges are mutually impossible after card removal".into());
         }
-        let weights: [Vec<f32>; NP] = std::array::from_fn(|p| hands[p].iter().map(|h| h.weight).collect());
+        let weights: [Vec<f32>; NP] =
+            std::array::from_fn(|p| hands[p].iter().map(|h| h.weight).collect());
         let root_street = (board.len() - 3) as u8;
         let tree = MwTreeBuilder::build(
             &config.tree,
@@ -145,9 +157,17 @@ impl MwSpot {
         let icm = match &config.tree.icm {
             Some(icm) => {
                 if icm.behind.is_some() {
-                    return Err("3-way ICM takes each player's stack from the tree: leave behind unset".into());
+                    return Err(
+                        "3-way ICM takes each player's stack from the tree: leave behind unset"
+                            .into(),
+                    );
                 }
-                let min = config.tree.stacks.iter().copied().fold(f64::INFINITY, f64::min);
+                let min = config
+                    .tree
+                    .stacks
+                    .iter()
+                    .copied()
+                    .fold(f64::INFINITY, f64::min);
                 icm.validate(NP, min, config.tree.rake_pct)?;
                 Some(super::icm::MwIcm::build(&tree, icm))
             }
@@ -177,7 +197,12 @@ impl MwSpot {
     pub fn payoff_table(&self, node: &super::tree::MwNode, p: usize) -> [[f64; 3]; 3] {
         match &self.icm {
             Some(icm) => icm.table(node, p),
-            None => super::tree::payoff_table(node, p, self.tree.config.rake_pct, self.tree.config.rake_cap),
+            None => super::tree::payoff_table(
+                node,
+                p,
+                self.tree.config.rake_pct,
+                self.tree.config.rake_cap,
+            ),
         }
     }
 
@@ -205,7 +230,11 @@ impl MwSpot {
     }
 
     pub fn num_action_nodes(&self) -> usize {
-        self.tree.nodes.iter().filter(|n| n.kind == super::tree::KIND_ACTION).count()
+        self.tree
+            .nodes
+            .iter()
+            .filter(|n| n.kind == super::tree::KIND_ACTION)
+            .count()
     }
 }
 
@@ -278,7 +307,11 @@ fn build_river_table(board: &[Card], board_mask: u64, hands: &[Vec<HandInfo>; NP
                 }
             }
         }
-        Box::new(MwRiverEval { rank, rank_pair, sorted })
+        Box::new(MwRiverEval {
+            rank,
+            rank_pair,
+            sorted,
+        })
     };
     let entries = match root_street {
         2 => vec![Some(eval_board(&[]))],
@@ -314,7 +347,10 @@ fn build_river_table(board: &[Card], board_mask: u64, hands: &[Vec<HandInfo>; NP
             slots
         }
     };
-    MwRiverTable { root_street, entries }
+    MwRiverTable {
+        root_street,
+        entries,
+    }
 }
 
 #[allow(clippy::type_complexity)]
@@ -331,7 +367,10 @@ fn suit_symmetries(
                 for d in 0..4u8 {
                     let pm = [a, b, c, d];
                     let mut seen = [false; 4];
-                    if !pm.iter().all(|&s| !std::mem::replace(&mut seen[s as usize], true)) {
+                    if !pm
+                        .iter()
+                        .all(|&s| !std::mem::replace(&mut seen[s as usize], true))
+                    {
                         continue;
                     }
                     if board.iter().any(|&c| permute_card(c, &pm) != c) {
@@ -343,7 +382,9 @@ fn suit_symmetries(
                         for h in &hands[p] {
                             let k = combo_index(permute_card(h.c1, &pm), permute_card(h.c2, &pm));
                             let j = combo_hand[p][k];
-                            if j == NO_HAND || (hands[p][j as usize].weight - h.weight).abs() >= 1e-6 {
+                            if j == NO_HAND
+                                || (hands[p][j as usize].weight - h.weight).abs() >= 1e-6
+                            {
                                 ok = false;
                                 break 'p;
                             }

@@ -1,0 +1,71 @@
+# Tests are not run here: the release suite is slow (thin LTO, codegen-units=1)
+# and the GPU suites need a card. Run `cargo test --release -p solver` locally
+# before a release.
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  merge_group:
+    types: [checks_requested]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: cargo check (${{ matrix.toolchain }})
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [stable, '1.98.0']
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca
+        with:
+          toolchain: ${{ matrix.toolchain }}
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with:
+          shared-key: linux-check-${{ matrix.toolchain }}
+          save-if: ${{ github.ref == 'refs/heads/master' }}
+      - name: Check the workspace
+        run: cargo check --workspace --all-targets --locked
+      # The CUDA path is feature-gated and cudarc loads nvrtc at runtime, so it
+      # compiles on a GPU-less runner and still catches breakage Windows users hit.
+      - name: Check the gpu feature
+        run: cargo check -p solver --features gpu --locked
+
+  clippy:
+    name: cargo clippy
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca
+        with:
+          toolchain: stable
+          components: clippy
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with:
+          shared-key: linux-clippy
+          save-if: ${{ github.ref == 'refs/heads/master' }}
+      # Warnings do not fail this job: ~158 remain in the tree. Clear them, then
+      # add `-D warnings` for the libraries.
+      - name: Lint the workspace
+        run: cargo clippy --workspace --all-targets --locked

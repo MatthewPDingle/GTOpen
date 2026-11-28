@@ -1,8 +1,10 @@
 //! Offline audit of board-correlated categorical equity. Never accesses the server.
 use rayon::prelude::*;
 use serde_json::{json, Value};
-use solver::evaluator::evaluate7;
-use solver::preflop::equity::{class_combos, class_index};
+use solver::{
+    evaluator::evaluate7,
+    preflop::equity::{class_combos, class_index},
+};
 struct Rng(u64);
 impl Rng {
     fn next(&mut self) -> u64 {

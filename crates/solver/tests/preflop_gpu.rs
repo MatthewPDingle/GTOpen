@@ -7,12 +7,13 @@
 //! disagreement beyond float-order noise is a GPU bug.
 #![cfg(feature = "gpu")]
 
-use solver::preflop::equity::{class_index, EquityTable, NUM_CLASSES};
-use solver::preflop::gpu::PreflopGpu;
+use std::sync::{Arc, OnceLock};
+
 use solver::preflop::{
+    equity::{class_index, EquityTable, NUM_CLASSES},
+    gpu::PreflopGpu,
     BucketPolicy, PreflopConfig, PreflopSolver, SeatProfile, BUCKET_VS_RAISE, NUM_BUCKETS,
 };
-use std::sync::{Arc, OnceLock};
 
 fn table() -> Arc<EquityTable> {
     static T: OnceLock<Arc<EquityTable>> = OnceLock::new();
@@ -41,7 +42,10 @@ fn gpu_matches_cpu_coupled_three_way() {
     let mut gs = PreflopSolver::new(cfg, table()).unwrap();
     cpu.prune = false;
     gs.prune = false;
-    assert_eq!(cpu.multiway_equity_model(), solver::preflop::multiway::MODEL);
+    assert_eq!(
+        cpu.multiway_equity_model(),
+        solver::preflop::multiway::MODEL
+    );
     run_equivalence(cpu, gs);
 }
 
@@ -71,7 +75,8 @@ fn gpu_matches_cpu_side_pots() {
             assert!(cpu.nodes.iter().any(|n| !n.side_pots.is_empty()));
             cpu.prune = false;
             gs.prune = false;
-            let (_, selection) = PreflopGpu::new_throughput(&gs, 8_000).expect("side-pot trees run on the GPU");
+            let (_, selection) =
+                PreflopGpu::new_throughput(&gs, 8_000).expect("side-pot trees run on the GPU");
             assert_eq!(selection.mode, "normal_gpu");
             run_side_pot_equivalence(cpu, gs);
         }
@@ -83,7 +88,9 @@ fn gpu_matches_cpu_three_way_table() {
     // three_way_table_v1: single-pot 3-way terminals, 3-seat side pots, and
     // coupled 4-way pots next to the table.
     static T: OnceLock<Arc<solver::preflop::three_way::ThreeWayTable>> = OnceLock::new();
-    let tw = T.get_or_init(|| Arc::new(solver::preflop::three_way::ThreeWayTable::build(64))).clone();
+    let tw = T
+        .get_or_init(|| Arc::new(solver::preflop::three_way::ThreeWayTable::build(64)))
+        .clone();
     let mut equal = hu25();
     equal.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
     equal.posts = vec![0.0, 0.5, 1.0];
@@ -127,8 +134,14 @@ fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
     g.sync_to_cpu(&mut gs).unwrap();
     let (cr, _) = cpu.arena_snapshot();
     let (gr, _) = gs.arena_snapshot();
-    let worst = cr.iter().zip(gr.iter()).fold(0f32, |w, (x, y)| w.max((x - y).abs()));
-    assert!(worst < 1e-3, "side-pot regret math diverges beyond float noise: {worst}");
+    let worst = cr
+        .iter()
+        .zip(gr.iter())
+        .fold(0f32, |w, (x, y)| w.max((x - y).abs()));
+    assert!(
+        worst < 1e-3,
+        "side-pot regret math diverges beyond float noise: {worst}"
+    );
     for _ in 5..20 {
         cpu.iterate();
         g.iterate(&mut gs).unwrap();
@@ -139,7 +152,11 @@ fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
         if cpu.nodes[i].kind != 0 {
             continue;
         }
-        for (x, y) in cpu.average_strategy(i).iter().zip(gs.average_strategy(i).iter()) {
+        for (x, y) in cpu
+            .average_strategy(i)
+            .iter()
+            .zip(gs.average_strategy(i).iter())
+        {
             if *x > 0.9 || *x < 0.1 {
                 decisive += 1;
                 if (x - y).abs() > 0.1 {
@@ -148,8 +165,14 @@ fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
             }
         }
     }
-    assert!(decisive > 1000, "sanity: expected many decisive entries, got {decisive}");
-    assert!((clash as f64) < decisive as f64 * 0.002, "pure decisions disagree at 20 iterations: {clash} of {decisive}");
+    assert!(
+        decisive > 1000,
+        "sanity: expected many decisive entries, got {decisive}"
+    );
+    assert!(
+        (clash as f64) < decisive as f64 * 0.002,
+        "pure decisions disagree at 20 iterations: {clash} of {decisive}"
+    );
     for _ in 0..280 {
         cpu.iterate();
         g.iterate(&mut gs).unwrap();
@@ -157,10 +180,16 @@ fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
     g.sync_to_cpu(&mut gs).unwrap();
     let gc: f64 = cpu.br_gaps().iter().sum();
     let gg: f64 = gs.br_gaps().iter().sum();
-    assert!((gc - gg).abs() < 0.02, "BR gap mismatch: cpu {gc} vs gpu-synced {gg}");
+    assert!(
+        (gc - gg).abs() < 0.02,
+        "BR gap mismatch: cpu {gc} vs gpu-synced {gg}"
+    );
     let (gaps_dev, _) = g.gaps_and_evs().unwrap();
     let gd: f64 = gaps_dev.iter().sum();
-    assert!((gd - gg).abs() < 0.02, "device gap computation disagrees: {gd} vs {gg}");
+    assert!(
+        (gd - gg).abs() < 0.02,
+        "device gap computation disagrees: {gd} vs {gg}"
+    );
 }
 
 #[test]
@@ -170,8 +199,8 @@ fn gpu_matches_cpu_live_utg_straddle() {
         cfg.positions = (0..n).map(|i| format!("P{i}")).collect();
         cfg.posts = vec![0.; n];
         cfg.posts[0] = 2.;
-        cfg.posts[n-2] = 0.5;
-        cfg.posts[n-1] = 1.;
+        cfg.posts[n - 2] = 0.5;
+        cfg.posts[n - 1] = 1.;
         cfg.utg_straddle = true;
         cfg.stack = 12.;
         cfg.open_raises = vec![4.];
@@ -224,17 +253,28 @@ fn gpu_matches_cpu_three_bet_rake() {
     // The tree must actually reach a fold-win after a 3-bet, or this compares
     // two games that never exercise the rule.
     const FOLD_WIN: u8 = 1; // PNode.kind for a fold-win terminal
-    assert!(cpu.nodes.iter().any(|nd| nd.kind == FOLD_WIN && cpu.fold_win_rake(nd) > 0.0));
+    assert!(cpu
+        .nodes
+        .iter()
+        .any(|nd| nd.kind == FOLD_WIN && cpu.fold_win_rake(nd) > 0.0));
     let mut gs = PreflopSolver::new(cfg, table()).unwrap();
     cpu.prune = false;
     gs.prune = false;
     run_equivalence(cpu, gs);
 }
 fn hu25() -> PreflopConfig {
-    PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
-        stack: 25.0, stacks: None,
+        stack: 25.0,
+        stacks: None,
         posts: vec![0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -250,7 +290,10 @@ fn hu25() -> PreflopConfig {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     }
 }
 
@@ -293,7 +336,9 @@ fn assert_gpu_matches_cpu(cfg: PreflopConfig) {
 }
 
 fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
-    BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
+    BucketPolicy {
+        raise_multiples: Vec::new(),
+        raise_sizes: Vec::new(),
         call: vec![call; NUM_CLASSES],
         raise: vec![raise; NUM_CLASSES],
         jam: vec![0.0; NUM_CLASSES],
@@ -304,37 +349,69 @@ fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
 #[test]
 fn gpu_matches_cpu_with_limper_count_policies() {
     use solver::preflop::{archetypes, LimpContextPolicy, ProfileResponse};
-    let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
-    cfg.posts=vec![0.0,0.5,1.0];cfg.open_raises=vec![2.5];cfg.max_raises=2;
-    let mut cpu=PreflopSolver::new(cfg.clone(),table()).unwrap();
-    let mut gs=PreflopSolver::new(cfg,table()).unwrap();
-    for s in [&mut cpu,&mut gs] {
+    let mut cfg = hu25();
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.open_raises = vec![2.5];
+    cfg.max_raises = 2;
+    let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+    let mut gs = PreflopSolver::new(cfg, table()).unwrap();
+    for s in [&mut cpu, &mut gs] {
         assert_eq!(s.multiway_equity_model(), "coupled_deck_v1");
-        s.prune=false;s.iterate();
-        let mut p=s.generate_profile(2,&archetypes()[3].1,"limp responses").unwrap().0;
-        p.response=Some(ProfileResponse {limp_contexts:(1..=3).map(|limpers|LimpContextPolicy {
-            limpers,free_check:true,policy:flat_policy(1.0-limpers as f32*0.2,limpers as f32*0.2)
-        }).collect(),..Default::default()});
-        s.set_table(vec![false;3],vec![None,None,Some(p)]).unwrap();
+        s.prune = false;
+        s.iterate();
+        let mut p = s
+            .generate_profile(2, &archetypes()[3].1, "limp responses")
+            .unwrap()
+            .0;
+        p.response = Some(ProfileResponse {
+            limp_contexts: (1..=3)
+                .map(|limpers| LimpContextPolicy {
+                    limpers,
+                    free_check: true,
+                    policy: flat_policy(1.0 - limpers as f32 * 0.2, limpers as f32 * 0.2),
+                })
+                .collect(),
+            ..Default::default()
+        });
+        s.set_table(vec![false; 3], vec![None, None, Some(p)])
+            .unwrap();
     }
-    run_equivalence(cpu,gs);
+    run_equivalence(cpu, gs);
 }
 
 #[test]
 fn gpu_matches_cpu_with_contextual_reraise_profiles() {
     use solver::preflop::{archetypes, contextual, ProfileResponse};
-    let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
-    cfg.posts=vec![0.0,0.5,1.0];cfg.stack=100.0;cfg.open_raises=vec![2.5];cfg.max_raises=3;
-    let mut cpu=legacy_solver(cfg.clone(),table()).unwrap();
-    let mut gs=legacy_solver(cfg,table()).unwrap();
-    for s in [&mut cpu,&mut gs] {
-        s.prune=false;s.iterate();
-        let mut p=s.generate_profile(1,&archetypes()[3].1,"contextual responses").unwrap().0;
-        p.response=Some(ProfileResponse {contextual_reraise:Some(contextual::MODEL_ID.into()),adaptive_from:Some(0.25),..Default::default()});
-        s.set_table(vec![false;3],vec![None,Some(p.clone()),Some(p)]).unwrap();
-        assert!(s.nodes.iter().enumerate().any(|(i,_)|s.contextual_status(i).is_some_and(|v|v.active)));
+    let mut cfg = hu25();
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.stack = 100.0;
+    cfg.open_raises = vec![2.5];
+    cfg.max_raises = 3;
+    let mut cpu = legacy_solver(cfg.clone(), table()).unwrap();
+    let mut gs = legacy_solver(cfg, table()).unwrap();
+    for s in [&mut cpu, &mut gs] {
+        s.prune = false;
+        s.iterate();
+        let mut p = s
+            .generate_profile(1, &archetypes()[3].1, "contextual responses")
+            .unwrap()
+            .0;
+        p.response = Some(ProfileResponse {
+            contextual_reraise: Some(contextual::MODEL_ID.into()),
+            adaptive_from: Some(0.25),
+            ..Default::default()
+        });
+        s.set_table(vec![false; 3], vec![None, Some(p.clone()), Some(p)])
+            .unwrap();
+        assert!(s
+            .nodes
+            .iter()
+            .enumerate()
+            .any(|(i, _)| s.contextual_status(i).is_some_and(|v| v.active)));
     }
-    run_equivalence(cpu,gs);
+    run_equivalence(cpu, gs);
 }
 
 /// Seat modes and locks (item P5): a profile-ruled bucket plus a point lock
@@ -362,7 +439,8 @@ fn gpu_matches_cpu_with_profile_and_lock() {
             limp_defense: None,
             response: None,
         };
-        s.set_table(vec![false, false], vec![None, Some(station)]).unwrap();
+        s.set_table(vec![false, false], vec![None, Some(station)])
+            .unwrap();
     }
     assert!(cpu.has_overrides());
     run_equivalence(cpu, gs);
@@ -436,7 +514,10 @@ fn run_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
             }
         }
     }
-    assert!(decisive > 1000, "sanity: expected many decisive entries, got {decisive}");
+    assert!(
+        decisive > 1000,
+        "sanity: expected many decisive entries, got {decisive}"
+    );
     assert!(
         (clash as f64) < decisive as f64 * 0.002,
         "pure decisions disagree: {clash} of {decisive} decisive entries"
@@ -463,10 +544,18 @@ fn run_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
 #[test]
 fn gpu_push_fold_anchors() {
     let eq = table();
-    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
-        stack: 10.0, stacks: None,
+        stack: 10.0,
+        stacks: None,
         posts: vec![0.5, 1.0],
         ante: 0.0,
         limp: false,
@@ -482,7 +571,10 @@ fn gpu_push_fold_anchors() {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     };
     let mut s = legacy_solver(cfg, eq).unwrap();
     let mut g = PreflopGpu::new(&s, 8_000).expect("gpu init");
@@ -492,10 +584,18 @@ fn gpu_push_fold_anchors() {
     g.sync_to_cpu(&mut s).unwrap();
 
     let sb = s.average_strategy(0);
-    let jam = s.nodes[0].actions.iter().position(|a| a.kind == "jam").unwrap();
+    let jam = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "jam")
+        .unwrap();
     let bb_idx = s.child(0, jam);
     let bb = s.average_strategy(bb_idx);
-    let call = s.nodes[bb_idx].actions.iter().position(|a| a.kind == "call").unwrap();
+    let call = s.nodes[bb_idx]
+        .actions
+        .iter()
+        .position(|a| a.kind == "call")
+        .unwrap();
     let aa = class_index(12, 12, false);
     let seven_deuce = class_index(5, 0, false);
     assert!(sb[jam * NUM_CLASSES + aa] > 0.99, "AA must jam");
@@ -505,7 +605,6 @@ fn gpu_push_fold_anchors() {
     assert!(gap < 0.02, "GPU solve should converge: gap {gap} bb");
 }
 
-
 #[test]
 fn gpu_matches_cpu_with_adaptive_large_bet_responses() {
     use solver::preflop::ProfileResponse;
@@ -514,19 +613,29 @@ fn gpu_matches_cpu_with_adaptive_large_bet_responses() {
     for s in [&mut cpu, &mut gs] {
         s.prune = false;
         let p = SeatProfile {
-            name: "adaptive station".into(), buckets: vec![Some(flat_policy(0.65, 0.1)); NUM_BUCKETS],
-            vs_raise_bands: None, postflop: None, limp_defense: Some(flat_policy(0.7, 0.0)),
-            response: Some(ProfileResponse { contextual_reraise: None, limp_unopened: Some(flat_policy(0.6, 0.0)), adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] }),
+            name: "adaptive station".into(),
+            buckets: vec![Some(flat_policy(0.65, 0.1)); NUM_BUCKETS],
+            vs_raise_bands: None,
+            postflop: None,
+            limp_defense: Some(flat_policy(0.7, 0.0)),
+            response: Some(ProfileResponse {
+                contextual_reraise: None,
+                limp_unopened: Some(flat_policy(0.6, 0.0)),
+                adaptive_from: Some(0.25),
+                source_stats: None,
+                cold_reraise: None,
+                limp_contexts: vec![],
+            }),
         };
         s.set_table(vec![false; 2], vec![None, Some(p)]).unwrap();
     }
     run_equivalence(cpu, gs);
 }
 
-
 #[test]
 fn gpu_matches_cpu_equal_blinds() {
-    let mut cfg = hu25(); cfg.posts = vec![1.0, 1.0];
+    let mut cfg = hu25();
+    cfg.posts = vec![1.0, 1.0];
     cfg.realization = "calibrated".into();
     assert_gpu_matches_cpu(cfg);
 }
@@ -534,116 +643,211 @@ fn gpu_matches_cpu_equal_blinds() {
 #[test]
 fn gpu_matches_cpu_with_distinct_cold_reraise_policy() {
     use solver::preflop::ProfileResponse;
-    let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
-    cfg.open_raises=vec![2.0];cfg.max_raises=2;
-    let mut cpu=legacy_solver(cfg.clone(),table()).unwrap();
-    let mut gs=legacy_solver(cfg,table()).unwrap();
-    for s in [&mut cpu,&mut gs] {
-        s.prune=false;
-        let p=SeatProfile{name:"measured responses".into(),buckets:vec![Some(flat_policy(0.3,0.2));NUM_BUCKETS],
-            vs_raise_bands:Some(vec![(2.5,flat_policy(0.6,0.1)),(999.0,flat_policy(0.2,0.05))]),
-            postflop:None,limp_defense:None,
-            response:Some(ProfileResponse{cold_reraise:Some(flat_policy(0.07,0.11)),..Default::default()})};
-        s.set_table(vec![false;3],vec![None,None,Some(p)]).unwrap();
+    let mut cfg = hu25();
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.open_raises = vec![2.0];
+    cfg.max_raises = 2;
+    let mut cpu = legacy_solver(cfg.clone(), table()).unwrap();
+    let mut gs = legacy_solver(cfg, table()).unwrap();
+    for s in [&mut cpu, &mut gs] {
+        s.prune = false;
+        let p = SeatProfile {
+            name: "measured responses".into(),
+            buckets: vec![Some(flat_policy(0.3, 0.2)); NUM_BUCKETS],
+            vs_raise_bands: Some(vec![
+                (2.5, flat_policy(0.6, 0.1)),
+                (999.0, flat_policy(0.2, 0.05)),
+            ]),
+            postflop: None,
+            limp_defense: None,
+            response: Some(ProfileResponse {
+                cold_reraise: Some(flat_policy(0.07, 0.11)),
+                ..Default::default()
+            }),
+        };
+        s.set_table(vec![false; 3], vec![None, None, Some(p)])
+            .unwrap();
     }
-    run_equivalence(cpu,gs);
+    run_equivalence(cpu, gs);
 }
 
 #[test]
 fn gpu_matches_cpu_with_observed_open_size_distribution() {
-    let mut cpu=legacy_solver(hu25(),table()).unwrap();
-    let mut gs=legacy_solver(hu25(),table()).unwrap();
-    for s in [&mut cpu,&mut gs] {
-        s.prune=false;s.iterate();
-        let mut pol=flat_policy(0.2,0.5);pol.raise_sizes=vec![(2.0,0.4),(2.5,0.6)];
-        let mut buckets=vec![None;NUM_BUCKETS];buckets[0]=Some(pol);
-        let profile=SeatProfile{name:"opening size mixture".into(),buckets,vs_raise_bands:None,postflop:None,limp_defense:None,response:None};
-        s.set_table(vec![false;2],vec![Some(profile),None]).unwrap();
+    let mut cpu = legacy_solver(hu25(), table()).unwrap();
+    let mut gs = legacy_solver(hu25(), table()).unwrap();
+    for s in [&mut cpu, &mut gs] {
+        s.prune = false;
+        s.iterate();
+        let mut pol = flat_policy(0.2, 0.5);
+        pol.raise_sizes = vec![(2.0, 0.4), (2.5, 0.6)];
+        let mut buckets = vec![None; NUM_BUCKETS];
+        buckets[0] = Some(pol);
+        let profile = SeatProfile {
+            name: "opening size mixture".into(),
+            buckets,
+            vs_raise_bands: None,
+            postflop: None,
+            limp_defense: None,
+            response: None,
+        };
+        s.set_table(vec![false; 2], vec![Some(profile), None])
+            .unwrap();
     }
-    run_equivalence(cpu,gs);
+    run_equivalence(cpu, gs);
 }
 
 #[test]
 fn gpu_matches_cpu_with_observed_iso_3bet_and_squeeze_sizes() {
-    use solver::preflop::{LimpContextPolicy,ProfileResponse,BUCKET_VS_LIMPS,BUCKET_SQUEEZE};
-    for (bucket,seat,path,sb) in [
-        (BUCKET_VS_LIMPS,1,vec!["call"],0.5),
-        (BUCKET_VS_RAISE,1,vec!["raise"],1.0),
-        (BUCKET_SQUEEZE,2,vec!["raise","call"],0.5),
+    use solver::preflop::{LimpContextPolicy, ProfileResponse, BUCKET_SQUEEZE, BUCKET_VS_LIMPS};
+    for (bucket, seat, path, sb) in [
+        (BUCKET_VS_LIMPS, 1, vec!["call"], 0.5),
+        (BUCKET_VS_RAISE, 1, vec!["raise"], 1.0),
+        (BUCKET_SQUEEZE, 2, vec!["raise", "call"], 0.5),
     ] {
-        let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
-        cfg.posts=vec![0.0,sb,1.0];cfg.stack=30.0;cfg.ante=0.1;
-        cfg.open_raises=vec![2.0,4.0,6.0];cfg.raise_mults=vec![3.0,4.0];cfg.max_raises=2;
-        let mut cpu=legacy_solver(cfg.clone(),table()).unwrap();
-        let mut gs=legacy_solver(cfg,table()).unwrap();
-        for s in [&mut cpu,&mut gs] {
-            s.prune=false;
-            let mut pol=flat_policy(0.2,0.6);
-            if bucket==BUCKET_VS_LIMPS {pol.raise_sizes=vec![(4.0,0.4),(6.0,0.6)];}
-            else {pol.raise_multiples=vec![(3.0,0.4),(4.0,0.6)];}
-            let mut buckets=vec![None;NUM_BUCKETS];buckets[bucket as usize]=Some(pol.clone());
-            let profile=SeatProfile{name:"ordinary raise mixture".into(),buckets,
-                vs_raise_bands:if bucket==BUCKET_VS_RAISE {Some(vec![(999.0,pol.clone())])}else{None},
-                postflop:None,limp_defense:None,
-                response:if bucket==BUCKET_VS_LIMPS {Some(ProfileResponse{
-                    limp_contexts:vec![LimpContextPolicy{limpers:1,free_check:sb==1.0,policy:pol}],..Default::default()})}else{None}};
-            let mut profiles=vec![None;3];profiles[seat]=Some(profile);
-            s.set_table(vec![false;3],profiles).unwrap();
-            let mut n=0;
-            for kind in &path {let a=s.nodes[n].actions.iter().position(|a|a.kind==*kind).unwrap();n=s.child(n,a);}
-            assert_eq!(s.nodes[n].bucket,bucket);
-            let sigma=s.average_strategy(n);
-            for (size,expected) in if bucket==BUCKET_VS_LIMPS {[(4.0,0.24),(6.0,0.36)]}else{[(6.0,0.24),(8.0,0.36)]} {
-                let a=s.nodes[n].actions.iter().position(|a|a.kind=="raise" && a.to==size).unwrap();
-                for h in 0..169 {assert!((sigma[a*169+h]-expected).abs()<1e-6);}
+        let mut cfg = hu25();
+        cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+        cfg.posts = vec![0.0, sb, 1.0];
+        cfg.stack = 30.0;
+        cfg.ante = 0.1;
+        cfg.open_raises = vec![2.0, 4.0, 6.0];
+        cfg.raise_mults = vec![3.0, 4.0];
+        cfg.max_raises = 2;
+        let mut cpu = legacy_solver(cfg.clone(), table()).unwrap();
+        let mut gs = legacy_solver(cfg, table()).unwrap();
+        for s in [&mut cpu, &mut gs] {
+            s.prune = false;
+            let mut pol = flat_policy(0.2, 0.6);
+            if bucket == BUCKET_VS_LIMPS {
+                pol.raise_sizes = vec![(4.0, 0.4), (6.0, 0.6)];
+            } else {
+                pol.raise_multiples = vec![(3.0, 0.4), (4.0, 0.6)];
+            }
+            let mut buckets = vec![None; NUM_BUCKETS];
+            buckets[bucket as usize] = Some(pol.clone());
+            let profile = SeatProfile {
+                name: "ordinary raise mixture".into(),
+                buckets,
+                vs_raise_bands: if bucket == BUCKET_VS_RAISE {
+                    Some(vec![(999.0, pol.clone())])
+                } else {
+                    None
+                },
+                postflop: None,
+                limp_defense: None,
+                response: if bucket == BUCKET_VS_LIMPS {
+                    Some(ProfileResponse {
+                        limp_contexts: vec![LimpContextPolicy {
+                            limpers: 1,
+                            free_check: sb == 1.0,
+                            policy: pol,
+                        }],
+                        ..Default::default()
+                    })
+                } else {
+                    None
+                },
+            };
+            let mut profiles = vec![None; 3];
+            profiles[seat] = Some(profile);
+            s.set_table(vec![false; 3], profiles).unwrap();
+            let mut n = 0;
+            for kind in &path {
+                let a = s.nodes[n]
+                    .actions
+                    .iter()
+                    .position(|a| a.kind == *kind)
+                    .unwrap();
+                n = s.child(n, a);
+            }
+            assert_eq!(s.nodes[n].bucket, bucket);
+            let sigma = s.average_strategy(n);
+            for (size, expected) in if bucket == BUCKET_VS_LIMPS {
+                [(4.0, 0.24), (6.0, 0.36)]
+            } else {
+                [(6.0, 0.24), (8.0, 0.36)]
+            } {
+                let a = s.nodes[n]
+                    .actions
+                    .iter()
+                    .position(|a| a.kind == "raise" && a.to == size)
+                    .unwrap();
+                for h in 0..169 {
+                    assert!((sigma[a * 169 + h] - expected).abs() < 1e-6);
+                }
             }
         }
         // This fixture tests the uploaded size mixtures. Check each early
         // iteration's full arenas before floating regret crossings can fork
         // this multi-player game's long-horizon mixed strategy. Existing
         // long-horizon convergence/equivalence fixtures remain unchanged.
-        let mut g=PreflopGpu::new(&gs,8_000).unwrap();
+        let mut g = PreflopGpu::new(&gs, 8_000).unwrap();
         for _ in 0..5 {
-            cpu.iterate();g.iterate(&mut gs).unwrap();g.sync_to_cpu(&mut gs).unwrap();
-            let (cr,cs)=cpu.arena_snapshot();let (gr,gsums)=gs.arena_snapshot();
-            for (name,a,b) in [("regret",&cr,&gr),("strategy sum",&cs,&gsums)] {
-                let worst=a.iter().zip(b).map(|(x,y)|(x-y).abs()).fold(0.0f32,f32::max);
-                assert!(worst<1e-3,"size-mixture {name} mismatch: {worst}");
+            cpu.iterate();
+            g.iterate(&mut gs).unwrap();
+            g.sync_to_cpu(&mut gs).unwrap();
+            let (cr, cs) = cpu.arena_snapshot();
+            let (gr, gsums) = gs.arena_snapshot();
+            for (name, a, b) in [("regret", &cr, &gr), ("strategy sum", &cs, &gsums)] {
+                let worst = a
+                    .iter()
+                    .zip(b)
+                    .map(|(x, y)| (x - y).abs())
+                    .fold(0.0f32, f32::max);
+                assert!(worst < 1e-3, "size-mixture {name} mismatch: {worst}");
             }
-            for (n,nd) in cpu.nodes.iter().enumerate() {
-                if nd.kind==0 && nd.actor as usize==seat && nd.bucket==bucket {
-                    assert_eq!(cpu.average_strategy(n),gs.average_strategy(n));
+            for (n, nd) in cpu.nodes.iter().enumerate() {
+                if nd.kind == 0 && nd.actor as usize == seat && nd.bucket == bucket {
+                    assert_eq!(cpu.average_strategy(n), gs.average_strategy(n));
                 }
             }
         }
-        for _ in 0..295 {cpu.iterate();g.iterate(&mut gs).unwrap();}
+        for _ in 0..295 {
+            cpu.iterate();
+            g.iterate(&mut gs).unwrap();
+        }
         g.sync_to_cpu(&mut gs).unwrap();
-        let (cpu_gaps,cpu_evs)=cpu.gaps_and_evs();let (synced_gaps,synced_evs)=gs.gaps_and_evs();
-        let (device_gaps,device_evs)=g.gaps_and_evs().unwrap();
-        let delta=|a:&[f64],b:&[f64]|a.iter().zip(b).map(|(x,y)|(x-y).abs()).fold(0.0f64,f64::max);
+        let (cpu_gaps, cpu_evs) = cpu.gaps_and_evs();
+        let (synced_gaps, synced_evs) = gs.gaps_and_evs();
+        let (device_gaps, device_evs) = g.gaps_and_evs().unwrap();
+        let delta = |a: &[f64], b: &[f64]| {
+            a.iter()
+                .zip(b)
+                .map(|(x, y)| (x - y).abs())
+                .fold(0.0f64, f64::max)
+        };
         eprintln!("sizing bucket {bucket}: 300-iteration max CPU/GPU gap delta {:.8}, EV delta {:.8}; device gap {:.8}, EV {:.8} bb",delta(&cpu_gaps,&synced_gaps),delta(&cpu_evs,&synced_evs),delta(&device_gaps,&synced_gaps),delta(&device_evs,&synced_evs));
-        assert!((cpu_gaps.iter().sum::<f64>()-synced_gaps.iter().sum::<f64>()).abs()<0.02);
-        assert!((device_gaps.iter().sum::<f64>()-synced_gaps.iter().sum::<f64>()).abs()<0.02);
+        assert!((cpu_gaps.iter().sum::<f64>() - synced_gaps.iter().sum::<f64>()).abs() < 0.02);
+        assert!((device_gaps.iter().sum::<f64>() - synced_gaps.iter().sum::<f64>()).abs() < 0.02);
         for seat in 0..cpu_gaps.len() {
-            assert!((cpu_gaps[seat]-synced_gaps[seat]).abs()<0.02);
-            assert!((device_gaps[seat]-synced_gaps[seat]).abs()<0.02);
-            assert!((cpu_evs[seat]-synced_evs[seat]).abs()<0.02);
-            assert!((device_evs[seat]-synced_evs[seat]).abs()<0.02);
+            assert!((cpu_gaps[seat] - synced_gaps[seat]).abs() < 0.02);
+            assert!((device_gaps[seat] - synced_gaps[seat]).abs() < 0.02);
+            assert!((cpu_evs[seat] - synced_evs[seat]).abs() < 0.02);
+            assert!((device_evs[seat] - synced_evs[seat]).abs() < 0.02);
         }
     }
 }
 
 #[test]
 fn gpu_matches_cpu_balanced_rake_and_sizing() {
-    for (pct,cap) in [(0.0,0.0),(5.0,0.25)] {
-        let mut cfg=hu25();cfg.realization="balanced".into();cfg.rake_pct=pct;cfg.rake_cap=cap;
-        cfg.fourbet_mults=Some(vec![2.0]);cfg.raise_mults_by_seat=Some(vec![vec![3.0],vec![4.0]]);
+    for (pct, cap) in [(0.0, 0.0), (5.0, 0.25)] {
+        let mut cfg = hu25();
+        cfg.realization = "balanced".into();
+        cfg.rake_pct = pct;
+        cfg.rake_cap = cap;
+        cfg.fourbet_mults = Some(vec![2.0]);
+        cfg.raise_mults_by_seat = Some(vec![vec![3.0], vec![4.0]]);
         assert_gpu_matches_cpu(cfg);
     }
-    let mut cfg=hu25();cfg.realization="balanced".into();
-    cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
-    cfg.stack=8.0;cfg.max_raises=1;
-    let mut a=PreflopSolver::new(cfg.clone(),table()).unwrap();a.prune=false;
-    let mut b=PreflopSolver::new(cfg,table()).unwrap();b.prune=false;
-    run_equivalence(a,b);
+    let mut cfg = hu25();
+    cfg.realization = "balanced".into();
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.stack = 8.0;
+    cfg.max_raises = 1;
+    let mut a = PreflopSolver::new(cfg.clone(), table()).unwrap();
+    a.prune = false;
+    let mut b = PreflopSolver::new(cfg, table()).unwrap();
+    b.prune = false;
+    run_equivalence(a, b);
 }

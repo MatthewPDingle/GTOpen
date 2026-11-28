@@ -38,8 +38,7 @@
 //! pin and the blocking of leaf_total.rs apply after it, as they do to the
 //! net's output alone. The corrections are part of the values a solve is
 //! measured against, like the net's output. A save does not keep them.
-use super::equity::NUM_CLASSES;
-use super::leafnet::POT_TYPES;
+use super::{equity::NUM_CLASSES, leafnet::POT_TYPES};
 
 /// Largest correction a file may carry, as a fraction of the pot. The nets'
 /// errors are a few percent of the pot at most; a file in percent instead of
@@ -62,7 +61,10 @@ pub struct LeafFix {
 impl LeafFix {
     /// No corrections yet (`set_all`, `set_pot_type` and `set_line` add them); `source` is for messages.
     pub fn named(source: &str) -> Self {
-        LeafFix { source: source.to_string(), ..Default::default() }
+        LeafFix {
+            source: source.to_string(),
+            ..Default::default()
+        }
     }
 
     /// The file named by env PREFLOP_LEAF_FIX, or None when it is not set.
@@ -72,27 +74,50 @@ impl LeafFix {
         if path.is_empty() {
             return Ok(None);
         }
-        let text = std::fs::read_to_string(path).map_err(|e| format!("PREFLOP_LEAF_FIX: cannot read {path}: {e}"))?;
+        let text = std::fs::read_to_string(path)
+            .map_err(|e| format!("PREFLOP_LEAF_FIX: cannot read {path}: {e}"))?;
         Self::from_json(&text, path).map(Some)
     }
 
     pub fn from_json(text: &str, source: &str) -> Result<Self, String> {
         let bad = |what: String| format!("{source}: {what}");
-        let v: serde_json::Value = serde_json::from_str(text).map_err(|e| bad(format!("not JSON: {e}")))?;
-        let top = v.as_object().ok_or_else(|| bad("must be a JSON object".into()))?;
-        if let Some(key) = top.keys().find(|k| !["format", "version", "note", "entries"].contains(&k.as_str())) {
+        let v: serde_json::Value =
+            serde_json::from_str(text).map_err(|e| bad(format!("not JSON: {e}")))?;
+        let top = v
+            .as_object()
+            .ok_or_else(|| bad("must be a JSON object".into()))?;
+        if let Some(key) = top
+            .keys()
+            .find(|k| !["format", "version", "note", "entries"].contains(&k.as_str()))
+        {
             return Err(bad(format!("unknown key \"{key}\"")));
         }
-        if top.get("format").and_then(|f| f.as_str()) != Some("gtopen-leaf-fix") || top.get("version").and_then(|n| n.as_u64()) != Some(1) {
-            return Err(bad("must say \"format\": \"gtopen-leaf-fix\", \"version\": 1".into()));
+        if top.get("format").and_then(|f| f.as_str()) != Some("gtopen-leaf-fix")
+            || top.get("version").and_then(|n| n.as_u64()) != Some(1)
+        {
+            return Err(bad(
+                "must say \"format\": \"gtopen-leaf-fix\", \"version\": 1".into(),
+            ));
         }
         let mut fix = LeafFix::named(source);
-        fix.note = top.get("note").and_then(|n| n.as_str()).unwrap_or("").to_string();
-        let entries = top.get("entries").and_then(|e| e.as_array()).ok_or_else(|| bad("\"entries\" must be a list".into()))?;
+        fix.note = top
+            .get("note")
+            .and_then(|n| n.as_str())
+            .unwrap_or("")
+            .to_string();
+        let entries = top
+            .get("entries")
+            .and_then(|e| e.as_array())
+            .ok_or_else(|| bad("\"entries\" must be a list".into()))?;
         for (i, entry) in entries.iter().enumerate() {
             let at = |what: String| bad(format!("entry {}: {what}", i + 1));
-            let e = entry.as_object().ok_or_else(|| at("must be an object".into()))?;
-            if let Some(key) = e.keys().find(|k| !["line", "pot_type", "oop", "ip"].contains(&k.as_str())) {
+            let e = entry
+                .as_object()
+                .ok_or_else(|| at("must be an object".into()))?;
+            if let Some(key) = e
+                .keys()
+                .find(|k| !["line", "pot_type", "oop", "ip"].contains(&k.as_str()))
+            {
                 return Err(at(format!("unknown key \"{key}\"")));
             }
             let mut both = vec![0f32; 2 * NUM_CLASSES];
@@ -100,13 +125,22 @@ impl LeafFix {
                 let out = &mut both[side * NUM_CLASSES..(side + 1) * NUM_CLASSES];
                 match e.get(*key) {
                     None => {}
-                    Some(serde_json::Value::Number(n)) => out.fill(n.as_f64().unwrap_or(f64::NAN) as f32),
+                    Some(serde_json::Value::Number(n)) => {
+                        out.fill(n.as_f64().unwrap_or(f64::NAN) as f32)
+                    }
                     Some(serde_json::Value::Array(a)) if a.len() == NUM_CLASSES => {
                         for (o, x) in out.iter_mut().zip(a) {
-                            *o = x.as_f64().ok_or_else(|| at(format!("\"{key}\" must hold numbers")))? as f32;
+                            *o = x
+                                .as_f64()
+                                .ok_or_else(|| at(format!("\"{key}\" must hold numbers")))?
+                                as f32;
                         }
                     }
-                    Some(_) => return Err(at(format!("\"{key}\" must be one number or {NUM_CLASSES} numbers"))),
+                    Some(_) => {
+                        return Err(at(format!(
+                            "\"{key}\" must be one number or {NUM_CLASSES} numbers"
+                        )))
+                    }
                 }
             }
             let text_of = |key: &str| match e.get(key) {
@@ -115,11 +149,17 @@ impl LeafFix {
                 Some(_) => Err(at(format!("\"{key}\" must be text"))),
             };
             match (text_of("line")?, text_of("pot_type")?) {
-                (Some(_), Some(_)) => return Err(at("give \"line\" or \"pot_type\", not both".into())),
+                (Some(_), Some(_)) => {
+                    return Err(at("give \"line\" or \"pot_type\", not both".into()))
+                }
                 (Some(line), None) => fix.set_line(line, &both).map_err(at)?,
                 (None, Some(name)) => {
-                    let t = POT_TYPES.iter().position(|p| *p == name)
-                        .ok_or_else(|| at(format!("\"pot_type\" must be one of {}, not \"{name}\"", POT_TYPES.join(", "))))?;
+                    let t = POT_TYPES.iter().position(|p| *p == name).ok_or_else(|| {
+                        at(format!(
+                            "\"pot_type\" must be one of {}, not \"{name}\"",
+                            POT_TYPES.join(", ")
+                        ))
+                    })?;
                     fix.set_pot_type(t, &both).map_err(at)?;
                 }
                 (None, None) => fix.set_all(&both).map_err(at)?,
@@ -130,7 +170,10 @@ impl LeafFix {
 
     fn checked(both: &[f32]) -> Result<Both, String> {
         if both.len() != 2 * NUM_CLASSES {
-            return Err(format!("a correction is {} numbers, out of position first", 2 * NUM_CLASSES));
+            return Err(format!(
+                "a correction is {} numbers, out of position first",
+                2 * NUM_CLASSES
+            ));
         }
         if let Some(v) = both.iter().find(|v| !v.is_finite() || v.abs() > MAX_FIX) {
             return Err(format!("{v} is not a correction: the numbers are fractions of the pot (0.01 is 1% of the pot), at most {MAX_FIX} either way"));
@@ -151,7 +194,10 @@ impl LeafFix {
     pub fn set_pot_type(&mut self, pot_type: usize, both: &[f32]) -> Result<(), String> {
         let slot = self.by_type.get_mut(pot_type).ok_or("no such pot type")?;
         if slot.is_some() {
-            return Err(format!("a second entry for pot type {}", POT_TYPES[pot_type]));
+            return Err(format!(
+                "a second entry for pot type {}",
+                POT_TYPES[pot_type]
+            ));
         }
         *slot = Some(Self::checked(both)?);
         Ok(())
@@ -181,7 +227,12 @@ impl LeafFix {
 
     /// What the file holds, in words.
     pub fn summary(&self) -> String {
-        let types: Vec<&str> = POT_TYPES.iter().zip(&self.by_type).filter(|(_, t)| t.is_some()).map(|(n, _)| *n).collect();
+        let types: Vec<&str> = POT_TYPES
+            .iter()
+            .zip(&self.by_type)
+            .filter(|(_, t)| t.is_some())
+            .map(|(n, _)| *n)
+            .collect();
         let mut parts = Vec::new();
         if self.all.is_some() {
             parts.push("every leaf".to_string());
@@ -192,7 +243,15 @@ impl LeafFix {
         if !self.lines.is_empty() {
             parts.push(format!("{} lines", self.lines.len()));
         }
-        format!("leaf corrections from {} ({})", self.source, if parts.is_empty() { "none".to_string() } else { parts.join("; ") })
+        format!(
+            "leaf corrections from {} ({})",
+            self.source,
+            if parts.is_empty() {
+                "none".to_string()
+            } else {
+                parts.join("; ")
+            }
+        )
     }
 
     /// Adds what the file holds for a leaf to `corr` (out of position 169,
@@ -201,7 +260,11 @@ impl LeafFix {
     /// lines). True when any entry applied.
     pub(crate) fn add(&self, pot_type: usize, line: Option<usize>, corr: &mut [f32]) -> bool {
         let mut any = false;
-        let entries = [self.all.as_ref(), self.by_type.get(pot_type).and_then(|t| t.as_ref()), line.and_then(|i| self.lines.get(i)).map(|(_, b)| b)];
+        let entries = [
+            self.all.as_ref(),
+            self.by_type.get(pot_type).and_then(|t| t.as_ref()),
+            line.and_then(|i| self.lines.get(i)).map(|(_, b)| b),
+        ];
         for both in entries.into_iter().flatten() {
             for (c, f) in corr.iter_mut().zip(both.iter()) {
                 *c += f;
@@ -226,46 +289,87 @@ mod tests {
                 {"pot_type": "3bet", "ip": classes},
                 {"line": "P0 Raise 2.5 | P1 Call 2.5", "oop": classes},
             ],
-        }).to_string();
+        })
+        .to_string();
         let fix = LeafFix::from_json(&text, "test.json").unwrap();
-        assert_eq!((fix.note.as_str(), fix.lines().collect::<Vec<_>>()), ("a test", vec!["P0 Raise 2.5 | P1 Call 2.5"]));
-        assert!(!fix.is_empty() && fix.summary().contains("every leaf") && fix.summary().contains("3bet") && fix.summary().contains("1 lines"));
+        assert_eq!(
+            (fix.note.as_str(), fix.lines().collect::<Vec<_>>()),
+            ("a test", vec!["P0 Raise 2.5 | P1 Call 2.5"])
+        );
+        assert!(
+            !fix.is_empty()
+                && fix.summary().contains("every leaf")
+                && fix.summary().contains("3bet")
+                && fix.summary().contains("1 lines")
+        );
         // a single-raised leaf without a line of its own: the entry for every leaf alone
         let mut corr = vec![0.01f32; 2 * NUM_CLASSES];
         assert!(fix.add(1, None, &mut corr));
-        assert!(corr[..NUM_CLASSES].iter().all(|&c| (c - 0.012).abs() < 1e-7) && corr[NUM_CLASSES..].iter().all(|&c| (c - 0.008).abs() < 1e-7));
+        assert!(
+            corr[..NUM_CLASSES]
+                .iter()
+                .all(|&c| (c - 0.012).abs() < 1e-7)
+                && corr[NUM_CLASSES..]
+                    .iter()
+                    .all(|&c| (c - 0.008).abs() < 1e-7)
+        );
         // a 3-bet leaf at the named line: all three add up, each on its own side and class
         let mut corr = vec![0f32; 2 * NUM_CLASSES];
         assert!(fix.add(2, Some(0), &mut corr));
         for h in 0..NUM_CLASSES {
-            assert!((corr[h] - (0.002 + classes[h])).abs() < 1e-7 && (corr[NUM_CLASSES + h] - (-0.002 + classes[h])).abs() < 1e-7, "class {h}");
+            assert!(
+                (corr[h] - (0.002 + classes[h])).abs() < 1e-7
+                    && (corr[NUM_CLASSES + h] - (-0.002 + classes[h])).abs() < 1e-7,
+                "class {h}"
+            );
         }
         // nothing for a leaf no entry fits
         let only_type = LeafFix::from_json(r#"{"format":"gtopen-leaf-fix","version":1,"entries":[{"pot_type":"4bet","oop":0.01}]}"#, "t").unwrap();
         let mut corr = vec![0f32; 2 * NUM_CLASSES];
         assert!(!only_type.add(1, None, &mut corr) && corr.iter().all(|&c| c == 0.0));
-        assert!(LeafFix::from_json(r#"{"format":"gtopen-leaf-fix","version":1,"entries":[]}"#, "t").unwrap().is_empty());
+        assert!(LeafFix::from_json(
+            r#"{"format":"gtopen-leaf-fix","version":1,"entries":[]}"#,
+            "t"
+        )
+        .unwrap()
+        .is_empty());
     }
 
     #[test]
     fn a_file_that_could_be_a_mistake_is_refused() {
-        let file = |entries: &str| format!(r#"{{"format":"gtopen-leaf-fix","version":1,"entries":[{entries}]}}"#);
+        let file = |entries: &str| {
+            format!(r#"{{"format":"gtopen-leaf-fix","version":1,"entries":[{entries}]}}"#)
+        };
         for (entries, says) in [
-            (r#"{"oop": 1.5}"#, "fractions of the pot"),                    // percent, not a fraction
+            (r#"{"oop": 1.5}"#, "fractions of the pot"), // percent, not a fraction
             (r#"{"oop": [0.01, 0.02]}"#, "169 numbers"),
             (r#"{"oop": "0.01"}"#, "169 numbers"),
-            (r#"{"pot_type": "srp", "line": "P0 Call 1", "oop": 0.01}"#, "not both"),
+            (
+                r#"{"pot_type": "srp", "line": "P0 Call 1", "oop": 0.01}"#,
+                "not both",
+            ),
             (r#"{"pot_type": "5bet", "oop": 0.01}"#, "pot_type"),
             (r#"{"pot": "srp", "oop": 0.01}"#, "unknown key"),
             (r#"{"oop": 0.01}, {"ip": 0.01}"#, "second entry"),
-            (r#"{"line": "A | B", "oop": 0.01}, {"line": "A | B", "ip": 0.01}"#, "second entry"),
+            (
+                r#"{"line": "A | B", "oop": 0.01}, {"line": "A | B", "ip": 0.01}"#,
+                "second entry",
+            ),
             (r#"{"line": " ", "oop": 0.01}"#, "empty line"),
         ] {
             let err = LeafFix::from_json(&file(entries), "t.json").unwrap_err();
-            assert!(err.starts_with("t.json: ") && err.contains(says), "{entries}: {err}");
+            assert!(
+                err.starts_with("t.json: ") && err.contains(says),
+                "{entries}: {err}"
+            );
         }
-        for text in ["[]", r#"{"format":"gtopen-leaf-fix","version":2,"entries":[]}"#, r#"{"format":"gtopen-leaf-fix","version":1}"#,
-                     r#"{"format":"gtopen-leaf-fix","version":1,"entries":[],"entry":[]}"#, "not json"] {
+        for text in [
+            "[]",
+            r#"{"format":"gtopen-leaf-fix","version":2,"entries":[]}"#,
+            r#"{"format":"gtopen-leaf-fix","version":1}"#,
+            r#"{"format":"gtopen-leaf-fix","version":1,"entries":[],"entry":[]}"#,
+            "not json",
+        ] {
             assert!(LeafFix::from_json(text, "t.json").is_err(), "{text}");
         }
     }

@@ -3,18 +3,23 @@
 //! kernel reads and writes, and check that each read finds exactly what the
 //! normal plan would have there. The CUDA tests then hold the mode to the
 //! normal plan's bits on the card.
-use super::*;
-use crate::preflop::equity::EquityTable;
-use crate::preflop::leafnet::constant_net;
-use crate::preflop::PreflopConfig;
 use std::collections::HashSet;
+
+use super::*;
+use crate::preflop::{equity::EquityTable, leafnet::constant_net, PreflopConfig};
 
 fn table() -> Arc<EquityTable> {
     static T: std::sync::OnceLock<Arc<EquityTable>> = std::sync::OnceLock::new();
     T.get_or_init(|| Arc::new(EquityTable::build(300))).clone()
 }
 
-fn game(n: usize, realization: &str, opens: &[f64], max_raises: u8, blockers: bool) -> PreflopSolver {
+fn game(
+    n: usize,
+    realization: &str,
+    opens: &[f64],
+    max_raises: u8,
+    blockers: bool,
+) -> PreflopSolver {
     let mut posts = vec![0.0; n];
     posts[n - 2] = 0.5;
     posts[n - 1] = 1.0;
@@ -26,8 +31,11 @@ fn game(n: usize, realization: &str, opens: &[f64], max_raises: u8, blockers: bo
     })).unwrap();
     let mut s = PreflopSolver::new(cfg, table()).unwrap();
     if realization == "leafnet" {
-        let pattern: Vec<f32> = (0..2 * NUM_CLASSES).map(|k| 0.04 * (((k * 7) % 11) as f32 - 5.0) / 5.0).collect();
-        s.install_leaf_net(Arc::new(constant_net(&pattern))).unwrap();
+        let pattern: Vec<f32> = (0..2 * NUM_CLASSES)
+            .map(|k| 0.04 * (((k * 7) % 11) as f32 - 5.0) / 5.0)
+            .collect();
+        s.install_leaf_net(Arc::new(constant_net(&pattern)))
+            .unwrap();
         s.set_leaf_schedule(u32::MAX, Some(0.3));
     }
     s
@@ -61,13 +69,20 @@ impl<'a> Model<'a> {
     fn new(s: &'a PreflopSolver, plan: &'a Plan, lists: &'a Lists) -> Self {
         let n = s.nodes.len();
         Self {
-            s, plan, lists, normal_src: reach_sources(s),
-            reach: vec![NONE; plan.reach_blocks], mass: vec![NONE; plan.reach_blocks],
+            s,
+            plan,
+            lists,
+            normal_src: reach_sources(s),
+            reach: vec![NONE; plan.reach_blocks],
+            mass: vec![NONE; plan.reach_blocks],
             val: vec![NONE; plan.value_blocks],
             stash: vec![vec![NONE; plan.frontier.1 as usize]; 2 * s.n],
             roots_out: vec![NONE; 2 * s.n],
-            epoch: 0, eq_filled: None,
-            downs: vec![0; n], ups: vec![0; n], priced: vec![0; n],
+            epoch: 0,
+            eq_filled: None,
+            downs: vec![0; n],
+            ups: vec![0; n],
+            priced: vec![0; n],
         }
     }
     fn stamp(&self, p: i32, mode: i32) -> u32 {
@@ -80,7 +95,10 @@ impl<'a> Model<'a> {
         let want = (self.normal_src[node * self.s.n + q], self.epoch);
         let block = self.lean(node, q);
         if self.reach[block] != want {
-            return Err(format!("{what}: node {node} seat {q} reads block {block} holding {:?}, wants {want:?}", self.reach[block]));
+            return Err(format!(
+                "{what}: node {node} seat {q} reads block {block} holding {:?}, wants {want:?}",
+                self.reach[block]
+            ));
         }
         Ok(())
     }
@@ -94,7 +112,9 @@ impl<'a> Model<'a> {
 impl<'a> Steps for Model<'a> {
     fn init_root(&mut self) -> Result<(), String> {
         self.epoch += 1;
-        for q in 0..self.s.n { self.reach[q] = (q as u32, self.epoch); }
+        for q in 0..self.s.n {
+            self.reach[q] = (q as u32, self.epoch);
+        }
         Ok(())
     }
 
@@ -105,7 +125,9 @@ impl<'a> Steps for Model<'a> {
         for &nd in nodes {
             let nd = nd as usize;
             let node = &self.s.nodes[nd];
-            if node.kind != KIND_ACTION { return Err(format!("down: node {nd} is not a decision")); }
+            if node.kind != KIND_ACTION {
+                return Err(format!("down: node {nd} is not a decision"));
+            }
             let act = node.actor as usize;
             self.reach_ok(nd, act, "down")?;
             read.insert(self.lean(nd, act));
@@ -117,12 +139,16 @@ impl<'a> Steps for Model<'a> {
             for a in 0..self.s.nodes[nd].actions.len() {
                 let c = self.s.child(nd, a);
                 let block = self.lean(c, act);
-                if !written.insert(block) { return Err(format!("down: block {block} written twice in one launch")); }
+                if !written.insert(block) {
+                    return Err(format!("down: block {block} written twice in one launch"));
+                }
                 self.reach[block] = (self.normal_src[c * self.s.n + act], self.epoch);
             }
         }
         if let Some(block) = read.intersection(&written).next() {
-            return Err(format!("down: block {block} read and written in one launch"));
+            return Err(format!(
+                "down: block {block} read and written in one launch"
+            ));
         }
         Ok(())
     }
@@ -155,24 +181,37 @@ impl<'a> Steps for Model<'a> {
         let (s, plan, np) = (self.s, self.plan, self.s.n);
         let pu = p as usize;
         let (t0, tn) = chunk.terms;
-        let slice = |list: &'a [u32], range: (u32, u32)| &list[range.0 as usize..(range.0 + range.1) as usize];
+        let slice = |list: &'a [u32], range: (u32, u32)| {
+            &list[range.0 as usize..(range.0 + range.1) as usize]
+        };
         let terms = slice(&self.lists.terms, (t0, tn));
         // the per-kind lists are exactly this part's terminals of that kind
         let kind_ok = |list: &[u32], keep: &dyn Fn(usize) -> bool| -> bool {
-            list.iter().copied().eq(terms.iter().copied().filter(|&i| keep(i as usize)))
+            list.iter()
+                .copied()
+                .eq(terms.iter().copied().filter(|&i| keep(i as usize)))
         };
-        if !kind_ok(slice(&self.lists.mw, chunk.mw_terms), &|i| coupled_terminal(s, &s.nodes[i])) {
+        if !kind_ok(slice(&self.lists.mw, chunk.mw_terms), &|i| {
+            coupled_terminal(s, &s.nodes[i])
+        }) {
             return Err("multiway list is not this part's".into());
         }
-        if !kind_ok(slice(&self.lists.hu, chunk.hu), &|i| s.nodes[i].kind == KIND_POT_SHARE && s.nodes[i].live.count_ones() == 2) {
+        if !kind_ok(slice(&self.lists.hu, chunk.hu), &|i| {
+            s.nodes[i].kind == KIND_POT_SHARE && s.nodes[i].live.count_ones() == 2
+        }) {
             return Err("heads-up list is not this part's".into());
         }
         let leaves: HashSet<u32> = self.lists.leaf.iter().copied().collect();
-        if !kind_ok(slice(&self.lists.leaf, chunk.leaf), &|i| leaves.contains(&(i as u32))) {
+        if !kind_ok(slice(&self.lists.leaf, chunk.leaf), &|i| {
+            leaves.contains(&(i as u32))
+        }) {
             return Err("learned list is not this part's".into());
         }
-        if chunk.mw.union > plan.mw_union_max || chunk.mw.capacity > plan.mw_capacity_max
-            || chunk.mw_terms.1 as usize > plan.mw_terms_max || chunk.eq.union > plan.eq_union_max {
+        if chunk.mw.union > plan.mw_union_max
+            || chunk.mw.capacity > plan.mw_capacity_max
+            || chunk.mw_terms.1 as usize > plan.mw_terms_max
+            || chunk.eq.union > plan.eq_union_max
+        {
             return Err("a part's scratch is larger than the plan's".into());
         }
         for &nd in terms {
@@ -194,26 +233,40 @@ impl<'a> Steps for Model<'a> {
                 };
                 if !multiway {
                     match self.eq_filled {
-                        Some((part, which)) if part == chunk.frontier.0 && (which == pu || which == np) => {}
-                        other => return Err(format!("terminal {nd}: equity cache filled for {other:?}")),
+                        Some((part, which))
+                            if part == chunk.frontier.0 && (which == pu || which == np) => {}
+                        other => {
+                            return Err(format!("terminal {nd}: equity cache filled for {other:?}"))
+                        }
                     }
                 }
                 let (w0, wn) = t.spans[pu];
                 let mine = &work[t.work_at + w0 as usize..t.work_at + (w0 + wn) as usize];
                 for q in (0..np).filter(|&q| q != pu && (node.live >> q) & 1 != 0) {
                     let block = self.lean(nd, q);
-                    if block >= t.nblocks { return Err(format!("terminal {nd}: block {block} beyond the part's slot table")); }
+                    if block >= t.nblocks {
+                        return Err(format!(
+                            "terminal {nd}: block {block} beyond the part's slot table"
+                        ));
+                    }
                     let slot = slots[t.slots_at + block];
-                    if slot as usize >= t.union || blocks[t.blocks_at + slot as usize] as usize != block {
+                    if slot as usize >= t.union
+                        || blocks[t.blocks_at + slot as usize] as usize != block
+                    {
                         return Err(format!("terminal {nd}: block {block} has no slot"));
                     }
                     let Some(local) = mine.iter().position(|&x| x == slot) else {
-                        return Err(format!("terminal {nd}: slot {slot} is not in seat {pu}'s work"));
+                        return Err(format!(
+                            "terminal {nd}: slot {slot} is not in seat {pu}'s work"
+                        ));
                     };
                     if multiway && t.compact {
-                        let mapped = plan.mw_compact[t.compact_at + pu * t.union + slot as usize] as usize;
+                        let mapped =
+                            plan.mw_compact[t.compact_at + pu * t.union + slot as usize] as usize;
                         if mapped != local || mapped >= t.capacity {
-                            return Err(format!("terminal {nd}: compact slot {mapped}, wants {local}"));
+                            return Err(format!(
+                                "terminal {nd}: compact slot {mapped}, wants {local}"
+                            ));
                         }
                     }
                 }
@@ -230,13 +283,28 @@ impl<'a> Steps for Model<'a> {
         for &nd in nodes {
             let nd = nd as usize;
             let node = &self.s.nodes[nd];
-            if node.actor as i32 == p { self.reach_ok(nd, p as usize, "up")?; }
+            if node.actor as i32 == p {
+                self.reach_ok(nd, p as usize, "up")?;
+            }
             for a in 0..node.actions.len() {
                 let c = self.s.child(nd, a);
                 let slot = self.plan.val_slot[c] as usize;
-                let want = (c as u32, self.stamp(p, if self.s.nodes[c].kind == KIND_ACTION { mode } else { TERMINAL }));
+                let want = (
+                    c as u32,
+                    self.stamp(
+                        p,
+                        if self.s.nodes[c].kind == KIND_ACTION {
+                            mode
+                        } else {
+                            TERMINAL
+                        },
+                    ),
+                );
                 if self.val[slot] != want {
-                    return Err(format!("up: node {nd} reads child {c} in slot {slot} holding {:?}, wants {want:?}", self.val[slot]));
+                    return Err(format!(
+                        "up: node {nd} reads child {c} in slot {slot} holding {:?}, wants {want:?}",
+                        self.val[slot]
+                    ));
                 }
                 read.insert(slot);
             }
@@ -244,7 +312,9 @@ impl<'a> Steps for Model<'a> {
         let mut written = HashSet::new();
         for &nd in nodes {
             let slot = self.plan.val_slot[nd as usize] as usize;
-            if !written.insert(slot) { return Err(format!("up: slot {slot} written twice in one launch")); }
+            if !written.insert(slot) {
+                return Err(format!("up: slot {slot} written twice in one launch"));
+            }
             self.val[slot] = (nd, self.stamp(p, mode));
             self.ups[nd as usize] += 1;
         }
@@ -295,10 +365,23 @@ fn every_read_finds_what_the_normal_plan_holds_there() {
             let at = format!("{name}, {parts} parts ({} chunks)", plan.chunks.len());
             // every decision is in exactly one level span, every terminal in one part
             let mut seen = vec![0u32; s.nodes.len()];
-            for &nd in &plan.act_nodes { seen[nd as usize] += 1; }
-            assert!(s.nodes.iter().enumerate().all(|(i, nd)| seen[i] == (nd.kind == KIND_ACTION) as u32), "{at}: level spans");
+            for &nd in &plan.act_nodes {
+                seen[nd as usize] += 1;
+            }
+            assert!(
+                s.nodes
+                    .iter()
+                    .enumerate()
+                    .all(|(i, nd)| seen[i] == (nd.kind == KIND_ACTION) as u32),
+                "{at}: level spans"
+            );
             assert_eq!(plan.act_nodes.len(), actions, "{at}");
-            let spans: usize = plan.top_spans.iter().chain(plan.chunks.iter().flat_map(|c| c.spans.iter())).map(|x| x.1 as usize).sum();
+            let spans: usize = plan
+                .top_spans
+                .iter()
+                .chain(plan.chunks.iter().flat_map(|c| c.spans.iter()))
+                .map(|x| x.1 as usize)
+                .sum();
             assert_eq!(spans, actions, "{at}");
             let mut next = [0u32; 4];
             for c in &plan.chunks {
@@ -306,34 +389,66 @@ fn every_read_finds_what_the_normal_plan_holds_there() {
                     assert_eq!(range.0, next[k], "{at}: terminal ranges follow on");
                     next[k] += range.1;
                 }
-                assert!(c.nodes as usize <= s.nodes.len().div_ceil(parts), "{at}: part too large");
+                assert!(
+                    c.nodes as usize <= s.nodes.len().div_ceil(parts),
+                    "{at}: part too large"
+                );
             }
-            assert_eq!(next.map(|x| x as usize), [lists.terms.len(), lists.hu.len(), lists.leaf.len(), lists.mw.len()], "{at}");
-            assert!(plan.reach_blocks <= s.nodes.len() + np - 1 && plan.value_blocks <= s.nodes.len(), "{at}");
+            assert_eq!(
+                next.map(|x| x as usize),
+                [
+                    lists.terms.len(),
+                    lists.hu.len(),
+                    lists.leaf.len(),
+                    lists.mw.len()
+                ],
+                "{at}"
+            );
+            assert!(
+                plan.reach_blocks <= s.nodes.len() + np - 1 && plan.value_blocks <= s.nodes.len(),
+                "{at}"
+            );
 
             let mut model = Model::new(&s, &plan, &lists);
             // two passes each, so a value left from the pass before cannot pass for fresh
             for round in 0..2 {
                 for p in 0..np as i32 {
                     model.clear_counts();
-                    run_sweep(&plan, &mut model, np, p, 0).unwrap_or_else(|err| panic!("{at}, seat {p}, round {round}: {err}"));
+                    run_sweep(&plan, &mut model, np, p, 0)
+                        .unwrap_or_else(|err| panic!("{at}, seat {p}, round {round}: {err}"));
                     assert_eq!(model.val[0], (0, model.stamp(p, 0)), "{at}: root value");
                     for (i, nd) in s.nodes.iter().enumerate() {
                         let action = (nd.kind == KIND_ACTION) as u32;
-                        assert_eq!((model.downs[i], model.ups[i], model.priced[i]), (action, action, 1 - action), "{at}: node {i}");
+                        assert_eq!(
+                            (model.downs[i], model.ups[i], model.priced[i]),
+                            (action, action, 1 - action),
+                            "{at}: node {i}"
+                        );
                     }
                 }
                 let best: Vec<i32> = (0..np).map(|p| if p % 2 == 0 { 2 } else { 3 }).collect();
                 model.clear_counts();
-                run_evaluation(&plan, &mut model, np, &best).unwrap_or_else(|err| panic!("{at}, evaluation, round {round}: {err}"));
+                run_evaluation(&plan, &mut model, np, &best)
+                    .unwrap_or_else(|err| panic!("{at}, evaluation, round {round}: {err}"));
                 for p in 0..np {
-                    assert_eq!(model.roots_out[2 * p], (0, model.stamp(p as i32, best[p])), "{at}: best-response root");
-                    assert_eq!(model.roots_out[2 * p + 1], (0, model.stamp(p as i32, 1)), "{at}: average root");
+                    assert_eq!(
+                        model.roots_out[2 * p],
+                        (0, model.stamp(p as i32, best[p])),
+                        "{at}: best-response root"
+                    );
+                    assert_eq!(
+                        model.roots_out[2 * p + 1],
+                        (0, model.stamp(p as i32, 1)),
+                        "{at}: average root"
+                    );
                 }
                 for (i, nd) in s.nodes.iter().enumerate() {
                     let action = (nd.kind == KIND_ACTION) as u32;
-                    assert_eq!((model.downs[i], model.ups[i], model.priced[i]),
-                        (action, action * 2 * np as u32, (1 - action) * np as u32), "{at}: node {i} in evaluation");
+                    assert_eq!(
+                        (model.downs[i], model.ups[i], model.priced[i]),
+                        (action, action * 2 * np as u32, (1 - action) * np as u32),
+                        "{at}: node {i} in evaluation"
+                    );
                 }
             }
         }
@@ -350,18 +465,30 @@ fn the_model_catches_a_wrong_block_or_slot() {
     // a value slot shared by two inner terminals of one part
     let mut plan = Plan::build(&s, &lists, 4).unwrap();
     let c = &plan.chunks[1];
-    let inner: Vec<u32> = lists.terms[c.terms.0 as usize..(c.terms.0 + c.terms.1) as usize].iter().copied()
-        .filter(|&i| plan.val_slot[i as usize] >= plan.frontier.0 + plan.frontier.1).collect();
+    let inner: Vec<u32> = lists.terms[c.terms.0 as usize..(c.terms.0 + c.terms.1) as usize]
+        .iter()
+        .copied()
+        .filter(|&i| plan.val_slot[i as usize] >= plan.frontier.0 + plan.frontier.1)
+        .collect();
     plan.val_slot[inner[1] as usize] = plan.val_slot[inner[0] as usize];
     let mut model = Model::new(&s, &plan, &lists);
     assert!(run_sweep(&plan, &mut model, np, 0, 0).is_err());
     // a part's root reach block moved into the shared range
     let mut plan = Plan::build(&s, &lists, 4).unwrap();
     let root = plan.act_nodes[plan.chunks[0].spans[0].0 as usize] as usize;
-    let parent_actor = (0..np).find(|&q| plan.reach_src[root * np + q] as usize >= np && (plan.reach_src[root * np + q] as usize) < plan.chunk_base
-        && good.reach_src[root * np + q] != good.reach_src[q]).unwrap();
+    let parent_actor = (0..np)
+        .find(|&q| {
+            plan.reach_src[root * np + q] as usize >= np
+                && (plan.reach_src[root * np + q] as usize) < plan.chunk_base
+                && good.reach_src[root * np + q] != good.reach_src[q]
+        })
+        .unwrap();
     let moved = plan.reach_src[root * np + parent_actor];
-    for x in plan.reach_src.iter_mut() { if *x == moved { *x = plan.chunk_base as u32; } }
+    for x in plan.reach_src.iter_mut() {
+        if *x == moved {
+            *x = plan.chunk_base as u32;
+        }
+    }
     let mut model = Model::new(&s, &plan, &lists);
     let failed = (0..np as i32).any(|p| run_sweep(&plan, &mut model, np, p, 0).is_err());
     assert!(failed);
@@ -382,18 +509,27 @@ fn the_cut_shrinks_what_the_card_holds_and_budgets_decide_the_rest() {
         let one = plan.mw_capacity_max * (NUM_CLASSES + 1) * 4;
         assert_eq!(plan.fit(&s, &lists, fixed + one - 1, None).unwrap(), None);
         let least = plan.fit(&s, &lists, fixed + one, None).unwrap().unwrap();
-        assert_eq!((least.batch, least.eq_cache, least.need_bytes), (1, false, fixed + one));
+        assert_eq!(
+            (least.batch, least.eq_cache, least.need_bytes),
+            (1, false, fixed + one)
+        );
         let full = plan.fit(&s, &lists, usize::MAX / 2, None).unwrap().unwrap();
         assert_eq!((full.batch, full.eq_cache), (32, true));
         assert!(full.launches < least.launches);
         // pinned for a like-for-like comparison with a normal plan
-        let pinned = plan.fit(&s, &lists, usize::MAX / 2, Some((7, false))).unwrap().unwrap();
+        let pinned = plan
+            .fit(&s, &lists, usize::MAX / 2, Some((7, false)))
+            .unwrap()
+            .unwrap();
         assert_eq!((pinned.batch, pinned.eq_cache), (7, false));
         assert_eq!(plan.fit(&s, &lists, fixed, Some((32, true))).unwrap(), None);
     }
     let large = large_need_mb(&s);
     assert!(large.is_finite());
-    println!("6 seats, {} nodes: normal plan {normal:.0} MB, large-game mode {large:.0} MB", s.nodes.len());
+    println!(
+        "6 seats, {} nodes: normal plan {normal:.0} MB, large-game mode {large:.0} MB",
+        s.nodes.len()
+    );
     assert_eq!(large, large_tree_need_mb(&s) + large_policy_need_mb(&s));
     // room to spare: the first choice of cut, with full batches and the cache
     let (plan, fit) = choose(&s, &lists, 100_000).unwrap();
@@ -401,7 +537,11 @@ fn the_cut_shrinks_what_the_card_holds_and_budgets_decide_the_rest() {
     // a budget that cut would nearly fill: a finer one that leaves room, still with all of it
     let tight = (fit.need_bytes as f64 / 1e6 / 0.95) as u64;
     let (finer, fit) = choose(&s, &lists, tight).unwrap();
-    assert!(finer.parts > 16 && (fit.batch, fit.eq_cache) == (32, true), "{} parts, {fit:?}", finer.parts);
+    assert!(
+        finer.parts > 16 && (fit.batch, fit.eq_cache) == (32, true),
+        "{} parts, {fit:?}",
+        finer.parts
+    );
     assert!(fit.need_bytes as f64 <= tight as f64 * 1e6 * 0.9);
     // room for the large-game mode only: a fine cut that still fits
     let (plan, fit) = choose(&s, &lists, large.ceil() as u64 + 1).unwrap();
@@ -414,8 +554,14 @@ fn the_size_walk_estimate_is_close_and_never_under() {
     for (name, s) in fixtures() {
         let est = crate::preflop::estimate_tree(&s.cfg).unwrap();
         let (before, built) = (large_need_of(&s.cfg, &est), large_need_mb(&s));
-        assert!(before >= built, "{name}: estimate {before} under the built game's {built}");
-        assert!(before <= built * 1.05 + 25.0, "{name}: estimate {before} far over the built game's {built}");
+        assert!(
+            before >= built,
+            "{name}: estimate {before} under the built game's {built}"
+        );
+        assert!(
+            before <= built * 1.05 + 25.0,
+            "{name}: estimate {before} far over the built game's {built}"
+        );
     }
 }
 
@@ -437,13 +583,33 @@ mod on_the_card {
     use super::*;
 
     fn bits(g: &PreflopGpu) -> (Vec<u32>, Vec<u32>, Vec<u32>) {
-        (g.stream.clone_dtoh(&g.d_regrets).unwrap().iter().map(|v| v.to_bits()).collect(),
-         g.stream.clone_dtoh(&g.d_strat).unwrap().iter().map(|v| v.to_bits()).collect(),
-         g.stream.clone_dtoh(&g.d_eval_roots).unwrap().iter().map(|v| v.to_bits()).collect())
+        (
+            g.stream
+                .clone_dtoh(&g.d_regrets)
+                .unwrap()
+                .iter()
+                .map(|v| v.to_bits())
+                .collect(),
+            g.stream
+                .clone_dtoh(&g.d_strat)
+                .unwrap()
+                .iter()
+                .map(|v| v.to_bits())
+                .collect(),
+            g.stream
+                .clone_dtoh(&g.d_eval_roots)
+                .unwrap()
+                .iter()
+                .map(|v| v.to_bits())
+                .collect(),
+        )
     }
 
     fn close(a: &(Vec<f64>, Vec<f64>), b: &(Vec<f64>, Vec<f64>), tolerance: f64) -> bool {
-        a.0.iter().chain(&a.1).zip(b.0.iter().chain(&b.1)).all(|(x, y)| (x - y).abs() < tolerance)
+        a.0.iter()
+            .chain(&a.1)
+            .zip(b.0.iter().chain(&b.1))
+            .all(|(x, y)| (x - y).abs() < tolerance)
     }
 
     fn used_bytes(ctx: &Arc<CudaContext>) -> u64 {
@@ -453,7 +619,11 @@ mod on_the_card {
         unsafe {
             let pool = cudarc::driver::result::device::get_mem_pool(ctx.cu_device()).unwrap();
             cudarc::driver::result::mem_pool::get_attribute(
-                pool, sys::CUmemPool_attribute::CU_MEMPOOL_ATTR_USED_MEM_CURRENT, (&mut bytes as *mut u64).cast()).unwrap();
+                pool,
+                sys::CUmemPool_attribute::CU_MEMPOOL_ATTR_USED_MEM_CURRENT,
+                (&mut bytes as *mut u64).cast(),
+            )
+            .unwrap();
         }
         bytes
     }
@@ -464,20 +634,30 @@ mod on_the_card {
     /// eager launches first, then the captured graphs, an evaluation each
     /// round, and for learned flop values a refresh and re-upload midway.
     fn step_for_step(name: &str, mut s: PreflopSolver, prepare: impl Fn(&mut PreflopSolver)) {
-        for _ in 0..12 { s.iterate(); }
+        for _ in 0..12 {
+            s.iterate();
+        }
         prepare(&mut s);
         let learned = s.leaf_terminals().is_some();
-        if learned { s.refresh_leaf_values().unwrap(); }
+        if learned {
+            s.refresh_leaf_values().unwrap();
+        }
         let mut normal = PreflopGpu::new(&s, 4000).expect("test requires CUDA");
         assert!(normal.large_game().is_none());
         let pinned = normal.layout();
         let cuts = [2usize, 4, 16, 96];
-        let mut large: Vec<PreflopGpu> = cuts.iter()
-            .map(|&parts| PreflopGpu::new_large_pinned(&s, 4000, Some(parts), Some(pinned)).unwrap()).collect();
+        let mut large: Vec<PreflopGpu> = cuts
+            .iter()
+            .map(|&parts| {
+                PreflopGpu::new_large_pinned(&s, 4000, Some(parts), Some(pinned)).unwrap()
+            })
+            .collect();
         for (g, &parts) in large.iter().zip(&cuts) {
             let info = g.large_game().unwrap();
             assert_eq!(info.parts, parts, "{name}");
-            if g.use_multiway != 0 && normal.mw_nterms > 0 { assert_eq!(g.layout(), pinned, "{name}"); }
+            if g.use_multiway != 0 && normal.mw_nterms > 0 {
+                assert_eq!(g.layout(), pinned, "{name}");
+            }
             assert_eq!(bits(g).0, bits(&normal).0, "{name}: uploaded tables");
         }
         let start = s.iteration;
@@ -495,19 +675,35 @@ mod on_the_card {
                 assert!(got_bits.0 == want_bits.0, "{at}: regrets differ");
                 assert!(got_bits.1 == want_bits.1, "{at}: strategy sums differ");
                 assert!(got_bits.2 == want_bits.2, "{at}: evaluation roots differ");
-                assert_eq!(got.0.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), want.0.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), "{at}: gaps");
-                assert_eq!(got.1.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), want.1.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), "{at}: values");
+                assert_eq!(
+                    got.0.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    want.0.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    "{at}: gaps"
+                );
+                assert_eq!(
+                    got.1.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    want.1.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    "{at}: values"
+                );
                 assert_eq!(clocks[k], clock);
             }
             if round >= 2 {
-                assert!(large.iter().all(|g| g.eval_graph.is_some() && g.learning_graphs.iter().any(|x| x.is_some())), "{name}: graphs captured");
+                assert!(
+                    large
+                        .iter()
+                        .all(|g| g.eval_graph.is_some()
+                            && g.learning_graphs.iter().any(|x| x.is_some())),
+                    "{name}: graphs captured"
+                );
             }
             if learned && round == 2 {
                 // the host refreshes the corrections from the device's averages
                 normal.sync_to_cpu(&mut s).unwrap();
                 s.refresh_leaf_values().unwrap();
                 normal.upload_leaf_corr(&s).unwrap();
-                for g in large.iter_mut() { g.upload_leaf_corr(&s).unwrap(); }
+                for g in large.iter_mut() {
+                    g.upload_leaf_corr(&s).unwrap();
+                }
             }
         }
         // an interrupted pass leaves the same state behind, and the download matches
@@ -515,14 +711,28 @@ mod on_the_card {
         for (k, g) in large.iter_mut().enumerate() {
             let before = bits(g);
             assert!(!g.try_iterate_counter(&mut clocks[k], Some(&stop)).unwrap());
-            assert!(bits(g) == before && clocks[k] == clock, "{name}: stopped pass");
+            assert!(
+                bits(g) == before && clocks[k] == clock,
+                "{name}: stopped pass"
+            );
         }
         normal.sync_to_cpu(&mut s).unwrap();
         let from_normal = s.arena_snapshot();
         large[1].sync_to_cpu(&mut s).unwrap();
         let from_large = s.arena_snapshot();
-        assert!(from_normal.0.iter().zip(&from_large.0).all(|(a, b)| a.to_bits() == b.to_bits())
-            && from_normal.1.iter().zip(&from_large.1).all(|(a, b)| a.to_bits() == b.to_bits()), "{name}: download");
+        assert!(
+            from_normal
+                .0
+                .iter()
+                .zip(&from_large.0)
+                .all(|(a, b)| a.to_bits() == b.to_bits())
+                && from_normal
+                    .1
+                    .iter()
+                    .zip(&from_large.1)
+                    .all(|(a, b)| a.to_bits() == b.to_bits()),
+            "{name}: download"
+        );
         // and the device agrees with the CPU's own evaluation of that state
         let (cpu, gpu) = (s.gaps_and_evs(), large[1].gaps_and_evs().unwrap());
         assert!(close(&cpu, &gpu, 5e-3), "{name}: cpu {cpu:?} gpu {gpu:?}");
@@ -552,25 +762,35 @@ mod on_the_card {
     fn large_game_mode_matches_without_the_heads_up_cache_and_with_short_batches() {
         // the choices a squeezed budget makes: pin them on both sides
         let mut s = game(4, "leafnet", &[2.5, 4.0], 3, true);
-        for _ in 0..12 { s.iterate(); }
+        for _ in 0..12 {
+            s.iterate();
+        }
         s.refresh_leaf_values().unwrap();
         let budget_for = |s: &PreflopSolver| -> u64 {
             // just under the heads-up cache, so the normal plan leaves it out
             let mut budget = minimum_need_mb(s).ceil() as u64 + 1;
-            while PreflopGpu::new(s, budget).is_err() { budget += 1; }
+            while PreflopGpu::new(s, budget).is_err() {
+                budget += 1;
+            }
             budget
         };
         let budget = budget_for(&s);
         let mut normal = PreflopGpu::new(&s, budget).expect("test requires CUDA");
         let pinned = normal.layout();
-        println!("squeezed normal plan: budget {budget} MB, batch {}, heads-up cache {}", pinned.0, pinned.1);
+        println!(
+            "squeezed normal plan: budget {budget} MB, batch {}, heads-up cache {}",
+            pinned.0, pinned.1
+        );
         let mut large = PreflopGpu::new_large_pinned(&s, 4000, Some(8), Some(pinned)).unwrap();
         assert_eq!(large.layout(), pinned);
         let (mut a, mut b) = (s.iteration, s.iteration);
         for round in 0..4 {
             normal.try_iterate_counter(&mut a, None).unwrap();
             large.try_iterate_counter(&mut b, None).unwrap();
-            let (want, got) = (normal.gaps_and_evs().unwrap(), large.gaps_and_evs().unwrap());
+            let (want, got) = (
+                normal.gaps_and_evs().unwrap(),
+                large.gaps_and_evs().unwrap(),
+            );
             assert!(bits(&normal) == bits(&large), "round {round}");
             assert_eq!(format!("{want:?}"), format!("{got:?}"), "round {round}");
         }
@@ -579,12 +799,21 @@ mod on_the_card {
     #[test]
     fn a_game_too_big_for_the_normal_plan_solves_in_large_game_mode() {
         let mut s = game(6, "static", &[2.5, 4.0], 3, true);
-        for _ in 0..4 { s.iterate(); }
+        for _ in 0..4 {
+            s.iterate();
+        }
         let (normal_need, large_need) = (minimum_need_mb(&s), large_need_mb(&s));
-        println!("{} nodes: normal plan {normal_need:.0} MB, large-game mode {large_need:.0} MB", s.nodes.len());
-        assert!(large_need + 4.0 < normal_need, "the fixture must leave a gap between the two modes");
+        println!(
+            "{} nodes: normal plan {normal_need:.0} MB, large-game mode {large_need:.0} MB",
+            s.nodes.len()
+        );
+        assert!(
+            large_need + 4.0 < normal_need,
+            "the fixture must leave a gap between the two modes"
+        );
         // plenty of room: the fast plans, never the large-game mode
-        let (mut roomy, selection) = PreflopGpu::new_throughput(&s, 4000).expect("test requires CUDA");
+        let (mut roomy, selection) =
+            PreflopGpu::new_throughput(&s, 4000).expect("test requires CUDA");
         assert!(selection.mode != "large_game" && roomy.large_game().is_none());
         // room for the large-game mode only
         let budget = ((normal_need + large_need) / 2.0) as u64;
@@ -598,21 +827,34 @@ mod on_the_card {
         // what it allocated is what it planned, within the slack it reserves
         let used = (used_bytes(&ctx) - before) as f64 / 1e6;
         println!("large-game mode in {budget} MB: {info:?}, {used:.1} MB allocated");
-        assert!(used <= info.need_mb && info.need_mb <= budget as f64, "allocated {used} MB, planned {} MB", info.need_mb);
-        assert!(used >= info.need_mb - 64.0 - 8.0, "allocated {used} MB, planned {} MB", info.need_mb);
+        assert!(
+            used <= info.need_mb && info.need_mb <= budget as f64,
+            "allocated {used} MB, planned {} MB",
+            info.need_mb
+        );
+        assert!(
+            used >= info.need_mb - 64.0 - 8.0,
+            "allocated {used} MB, planned {} MB",
+            info.need_mb
+        );
         // same solve as the roomy engine, to the rounding of their batch choices
         let (mut a, mut b) = (s.iteration, s.iteration);
         for round in 0..5 {
             roomy.try_iterate_counter(&mut a, None).unwrap();
             g.try_iterate_counter(&mut b, None).unwrap();
             let (want, got) = (roomy.gaps_and_evs().unwrap(), g.gaps_and_evs().unwrap());
-            assert!(close(&want, &got, 2e-4), "round {round}: {want:?} vs {got:?}");
+            assert!(
+                close(&want, &got, 2e-4),
+                "round {round}: {want:?} vs {got:?}"
+            );
         }
         g.sync_to_cpu(&mut s).unwrap();
         let (cpu, gpu) = (s.gaps_and_evs(), g.gaps_and_evs().unwrap());
         assert!(close(&cpu, &gpu, 5e-3), "cpu {cpu:?} gpu {gpu:?}");
         // a budget below even the large-game mode still declines, naming both
-        let error = PreflopGpu::new_throughput(&s, (large_need - 3.0).max(1.0) as u64).err().unwrap();
+        let error = PreflopGpu::new_throughput(&s, (large_need - 3.0).max(1.0) as u64)
+            .err()
+            .unwrap();
         assert!(error.contains("large-game mode"), "{error}");
     }
 }

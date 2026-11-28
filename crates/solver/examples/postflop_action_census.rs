@@ -16,13 +16,14 @@ fn main() {
 
 #[cfg(feature = "gpu")]
 mod census {
+    use std::{
+        collections::BTreeMap,
+        io::{self, Write},
+        time::Instant,
+    };
+
     use serde_json::{json, Value};
-    use solver::gpu::plan::GpuPlan;
-    use solver::tree::KIND_ACTION;
-    use solver::{Spot, SpotConfig};
-    use std::collections::BTreeMap;
-    use std::io::{self, Write};
-    use std::time::Instant;
+    use solver::{gpu::plan::GpuPlan, tree::KIND_ACTION, Spot, SpotConfig};
 
     #[derive(Clone, Copy, Default)]
     struct Counts {
@@ -62,7 +63,11 @@ mod census {
 
         fn fractions(self, total: Self) -> Value {
             let ratio = |part: u64, all: u64| {
-                if all == 0 { 0.0 } else { part as f64 / all as f64 }
+                if all == 0 {
+                    0.0
+                } else {
+                    part as f64 / all as f64
+                }
             };
             json!({
                 "span_fraction": ratio(self.spans, total.spans),
@@ -92,10 +97,13 @@ mod census {
             config.tree.rake_pct = rake;
             config.tree.rake_cap = 3.0;
             let config_json = serde_json::to_value(&config).unwrap();
-            emit("POSTFLOP_ACTION_CENSUS_STAGE", json!({
-                "stage": "building", "fixture_id": fixture_id, "board": board,
-                "cuda_initialized": false,
-            }));
+            emit(
+                "POSTFLOP_ACTION_CENSUS_STAGE",
+                json!({
+                    "stage": "building", "fixture_id": fixture_id, "board": board,
+                    "cuda_initialized": false,
+                }),
+            );
             let start = Instant::now();
             let spot = Spot::new(config).unwrap();
             let tree_build_ms = start.elapsed().as_secs_f64() * 1000.0;
@@ -113,7 +121,10 @@ mod census {
                 if span.count == 0 {
                     continue;
                 }
-                let mut counts = Counts { spans: 1, ..Counts::default() };
+                let mut counts = Counts {
+                    spans: 1,
+                    ..Counts::default()
+                };
                 let mut histogram: BTreeMap<usize, u64> = BTreeMap::new();
                 let mut actors = [0u64; 2];
                 let end = (span.start + span.count) as usize;
@@ -152,25 +163,33 @@ mod census {
                 }));
             }
             assert_eq!(total.nodes, plan.action_nodes.len() as u64);
-            let homogeneous: Vec<Value> = by_common_na.into_iter().map(|(na, counts)| json!({
-                "action_count": na, "counts": counts.values(nh, rake > 0.0),
-                "fractions_of_all_actions": counts.fractions(total),
-            })).collect();
-            emit("POSTFLOP_ACTION_CENSUS", json!({
-                "schema_version": 1, "fixture_id": fixture_id, "board": board,
-                "config": config_json, "use_isomorphism": true, "iso_active": plan.iso_active,
-                "hands": nh, "tree_nodes": spot.tree.nodes.len(), "plan_levels": plan.num_levels,
-                "tree_build_ms": tree_build_ms, "plan_build_ms": plan_build_ms,
-                "action_count_histogram": overall_na_histogram,
-                "total": total.values(nh, rake > 0.0),
-                "eligible_homogeneous_2_3_4": eligible.values(nh, rake > 0.0),
-                "eligible_fractions": eligible.fractions(total),
-                "homogeneous_by_action_count": homogeneous,
-                "mixed": mixed.values(nh, rake > 0.0), "levels": levels,
-                "cuda_initialized": false, "solver_iterations": 0,
-                "visit_definition": "one node visit per player sweep; two training sweeps per iteration; separate down/up hand rows and child visits describe scheduled work, not elapsed time or occupancy",
-                "limits": "CPU structure census only; no GPU resource or speed measurement; fractions do not weight individual instructions or kernel latency",
-            }));
+            let homogeneous: Vec<Value> = by_common_na
+                .into_iter()
+                .map(|(na, counts)| {
+                    json!({
+                        "action_count": na, "counts": counts.values(nh, rake > 0.0),
+                        "fractions_of_all_actions": counts.fractions(total),
+                    })
+                })
+                .collect();
+            emit(
+                "POSTFLOP_ACTION_CENSUS",
+                json!({
+                    "schema_version": 1, "fixture_id": fixture_id, "board": board,
+                    "config": config_json, "use_isomorphism": true, "iso_active": plan.iso_active,
+                    "hands": nh, "tree_nodes": spot.tree.nodes.len(), "plan_levels": plan.num_levels,
+                    "tree_build_ms": tree_build_ms, "plan_build_ms": plan_build_ms,
+                    "action_count_histogram": overall_na_histogram,
+                    "total": total.values(nh, rake > 0.0),
+                    "eligible_homogeneous_2_3_4": eligible.values(nh, rake > 0.0),
+                    "eligible_fractions": eligible.fractions(total),
+                    "homogeneous_by_action_count": homogeneous,
+                    "mixed": mixed.values(nh, rake > 0.0), "levels": levels,
+                    "cuda_initialized": false, "solver_iterations": 0,
+                    "visit_definition": "one node visit per player sweep; two training sweeps per iteration; separate down/up hand rows and child visits describe scheduled work, not elapsed time or occupancy",
+                    "limits": "CPU structure census only; no GPU resource or speed measurement; fractions do not weight individual instructions or kernel latency",
+                }),
+            );
         }
     }
 }

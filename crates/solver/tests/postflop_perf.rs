@@ -2,10 +2,9 @@
 //! cargo test --release -p solver --features gpu --test postflop_perf -- --ignored --nocapture
 #![cfg(feature = "gpu")]
 
-use solver::gpu::GpuSolver;
-use solver::{Solver, Spot, SpotConfig};
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
+
+use solver::{gpu::GpuSolver, Solver, Spot, SpotConfig};
 
 fn median(mut samples: Vec<f64>) -> f64 {
     samples.sort_by(f64::total_cmp);
@@ -16,7 +15,8 @@ fn median(mut samples: Vec<f64>) -> f64 {
 #[ignore = "manual CUDA performance benchmark"]
 fn postflop_timings() {
     for (board, rake) in [("Ks7h2d", 0.0), ("Ks7s2d", 0.05), ("Ks7h2dQhTc", 0.05)] {
-        let mut cfg: SpotConfig = serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
+        let mut cfg: SpotConfig =
+            serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
         cfg.board = board.into();
         cfg.tree.rake_pct = rake;
         cfg.tree.rake_cap = 3.0;
@@ -30,15 +30,22 @@ fn postflop_timings() {
             loop {
                 gpu.iterate().unwrap();
                 if gpu.iteration % 20 == 0 {
-                    let pct = gpu.exploitability(&s).unwrap()
-                        / s.spot.tree.config.starting_pot * 100.0;
-                    println!("CONVERGENCE board={board} iteration={} pct={pct:.9}", gpu.iteration);
+                    let pct =
+                        gpu.exploitability(&s).unwrap() / s.spot.tree.config.starting_pot * 100.0;
+                    println!(
+                        "CONVERGENCE board={board} iteration={} pct={pct:.9}",
+                        gpu.iteration
+                    );
                     if pct <= 0.3 || gpu.iteration >= 400 {
                         println!(
                             "POSTFLOP_TARGET board={board} iteration={} seconds={:.3} pct={pct:.9}",
-                            gpu.iteration, start.elapsed().as_secs_f64(),
+                            gpu.iteration,
+                            start.elapsed().as_secs_f64(),
                         );
-                        assert!(pct <= 0.3, "benchmark did not converge within 400 iterations");
+                        assert!(
+                            pct <= 0.3,
+                            "benchmark did not converge within 400 iterations"
+                        );
                         break;
                     }
                 }

@@ -12,10 +12,12 @@
 //! so card removal between all three hands is exact at the class level. Shares
 //! are Monte-Carlo estimates (`samples` boards per class triple); 4+ way pots
 //! keep the coupled-deck model.
-use super::equity::{NUM_CLASSES, class_index};
-use crate::evaluator::evaluate7;
-use rayon::prelude::*;
 use std::sync::{Arc, OnceLock};
+
+use rayon::prelude::*;
+
+use super::equity::{class_index, NUM_CLASSES};
+use crate::evaluator::evaluate7;
 
 pub const MODEL: &str = "three_way_table_v1";
 pub const CACHE_PATH: &str = "cache/preflop_eq169x3.bin";
@@ -78,9 +80,13 @@ fn simulate(t: [usize; 3], combos: &[Vec<u64>], samples: u32) -> ([f32; 3], f32)
     let mut deals = Vec::new();
     for &cx in &combos[x] {
         for &cy in &combos[y] {
-            if cx & cy != 0 { continue; }
+            if cx & cy != 0 {
+                continue;
+            }
             for &cz in &combos[z] {
-                if (cx | cy) & cz == 0 { deals.push([cx, cy, cz]); }
+                if (cx | cy) & cz == 0 {
+                    deals.push([cx, cy, cz]);
+                }
             }
         }
     }
@@ -97,7 +103,10 @@ fn simulate(t: [usize; 3], combos: &[Vec<u64>], samples: u32) -> ([f32; 3], f32)
         let used = deal[0] | deal[1] | deal[2];
         let mut m = 0;
         for c in 0..52u8 {
-            if used & (1u64 << c) == 0 { deck[m] = c; m += 1; }
+            if used & (1u64 << c) == 0 {
+                deck[m] = c;
+                m += 1;
+            }
         }
         for k in 0..5 {
             let r = k + rng.below(m - k);
@@ -111,11 +120,20 @@ fn simulate(t: [usize; 3], combos: &[Vec<u64>], samples: u32) -> ([f32; 3], f32)
         let best = values.iter().copied().max().unwrap();
         let winners = values.iter().filter(|&&v| v == best).count() as f64;
         for seat in 0..3 {
-            if values[seat] == best { sums[seat] += 1.0 / winners; }
+            if values[seat] == best {
+                sums[seat] += 1.0 / winners;
+            }
         }
     }
     let s = samples as f64;
-    ([(sums[0] / s) as f32, (sums[1] / s) as f32, (sums[2] / s) as f32], w as f32)
+    (
+        [
+            (sums[0] / s) as f32,
+            (sums[1] / s) as f32,
+            (sums[2] / s) as f32,
+        ],
+        w as f32,
+    )
 }
 
 impl ThreeWayTable {
@@ -123,11 +141,15 @@ impl ThreeWayTable {
     /// cached when missing. PREFLOP_EQ3_SAMPLES overrides the board count.
     pub fn shared() -> Arc<Self> {
         static TABLE: OnceLock<Arc<ThreeWayTable>> = OnceLock::new();
-        TABLE.get_or_init(|| {
-            let samples = std::env::var("PREFLOP_EQ3_SAMPLES").ok()
-                .and_then(|v| v.parse().ok()).unwrap_or(DEFAULT_SAMPLES);
-            Arc::new(Self::load_or_build(CACHE_PATH, samples))
-        }).clone()
+        TABLE
+            .get_or_init(|| {
+                let samples = std::env::var("PREFLOP_EQ3_SAMPLES")
+                    .ok()
+                    .and_then(|v| v.parse().ok())
+                    .unwrap_or(DEFAULT_SAMPLES);
+                Arc::new(Self::load_or_build(CACHE_PATH, samples))
+            })
+            .clone()
     }
 
     pub fn load_or_build(path: &str, samples: u32) -> Self {
@@ -144,7 +166,10 @@ impl ThreeWayTable {
 
     pub fn build(samples: u32) -> Self {
         let combos = combos();
-        let rows: Vec<([f32; 3], f32)> = triples().par_iter().map(|&t| simulate(t, &combos, samples)).collect();
+        let rows: Vec<([f32; 3], f32)> = triples()
+            .par_iter()
+            .map(|&t| simulate(t, &combos, samples))
+            .collect();
         Self::from_rows(&rows, samples)
     }
 
@@ -157,7 +182,10 @@ impl ThreeWayTable {
                 let c = t[hero];
                 let (mut sum, mut count) = (0f32, 0f32);
                 for seat in 0..3 {
-                    if t[seat] == c { sum += shares[seat]; count += 1.0; }
+                    if t[seat] == c {
+                        sum += shares[seat];
+                        count += 1.0;
+                    }
                 }
                 let share = sum / count;
                 let others: Vec<usize> = (0..3).filter(|&s| s != hero).map(|s| t[s]).collect();
@@ -181,7 +209,9 @@ impl ThreeWayTable {
             return None;
         }
         let f = |k: usize| f32::from_le_bytes(bytes[12 + 4 * k..16 + 4 * k].try_into().unwrap());
-        let rows: Vec<([f32; 3], f32)> = (0..count).map(|i| ([f(4 * i), f(4 * i + 1), f(4 * i + 2)], f(4 * i + 3))).collect();
+        let rows: Vec<([f32; 3], f32)> = (0..count)
+            .map(|i| ([f(4 * i), f(4 * i + 1), f(4 * i + 2)], f(4 * i + 3)))
+            .collect();
         Some(Self::from_rows(&rows, samples))
     }
 
@@ -195,7 +225,11 @@ impl ThreeWayTable {
             let fraction = self.w[(x * N + y) * N + z];
             for (hero, a, b) in [(x, y, z), (y, x, z), (z, x, y)] {
                 let at = (hero * N + a) * N + b;
-                let share = if fraction > 0.0 { self.ew[at] / fraction } else { 0.0 };
+                let share = if fraction > 0.0 {
+                    self.ew[at] / fraction
+                } else {
+                    0.0
+                };
                 bytes.extend_from_slice(&share.to_le_bytes());
             }
             bytes.extend_from_slice(&fraction.to_le_bytes());
@@ -214,7 +248,9 @@ impl ThreeWayTable {
         for (h, share) in out.iter_mut().enumerate() {
             let (mut num, mut den) = (0f64, 0f64);
             for (i, &da) in a.iter().enumerate() {
-                if da == 0.0 { continue; }
+                if da == 0.0 {
+                    continue;
+                }
                 let row = (h * N + i) * N;
                 let (ew, w) = (&self.ew[row..row + N], &self.w[row..row + N]);
                 let (mut n, mut d) = (0f32, 0f32);
@@ -245,7 +281,11 @@ impl ThreeWayTable {
     /// Hero h's share of class triple (h, a, b), when it can be dealt.
     pub fn share(&self, h: usize, a: usize, b: usize) -> f32 {
         let at = (h * N + a) * N + b;
-        if self.w[at] > 0.0 { self.ew[at] / self.w[at] } else { 0.0 }
+        if self.w[at] > 0.0 {
+            self.ew[at] / self.w[at]
+        } else {
+            0.0
+        }
     }
 }
 

@@ -6,10 +6,13 @@
 //! directory with a cleared solver environment, so the developer's
 //! SOLVER_ALGO/SOLVER_ISO/SOLVER_GPU settings cannot change the result.
 
+use std::{
+    path::{Path, PathBuf},
+    process::{Command, Output},
+    time::{SystemTime, UNIX_EPOCH},
+};
+
 use solver::{Algorithm, Solver};
-use std::path::{Path, PathBuf};
-use std::process::{Command, Output};
-use std::time::{SystemTime, UNIX_EPOCH};
 
 const CONFIG: &str = r#"{
   "board": "Th9h2c",
@@ -81,7 +84,9 @@ fn assert_ok(out: &Output) {
 /// RSS is unavailable (NaN) on some platforms. Check the actual result,
 /// not unrelated diagnostics on the same line.
 fn assert_finite_exploitability(done: &str) {
-    let value = done.split("exploitability ").nth(1)
+    let value = done
+        .split("exploitability ")
+        .nth(1)
         .and_then(|s| s.split('%').next())
         .and_then(|s| s.parse::<f64>().ok())
         .expect("done line must contain exploitability");
@@ -134,7 +139,10 @@ fn fresh_save_then_resume_adds_the_delta() {
     );
     // `check_every` is 10, but the final `iteration >= max_iterations` check
     // must still measure the real exploitability for a short delta.
-    let done = stdout.lines().find(|l| l.starts_with("done:")).unwrap_or("");
+    let done = stdout
+        .lines()
+        .find(|l| l.starts_with("done:"))
+        .unwrap_or("");
     assert!(
         done.contains(&format!("done: iter {}", first + 4)),
         "done line should report the stop iteration:\n{stdout}"
@@ -146,10 +154,16 @@ fn fresh_save_then_resume_adds_the_delta() {
 #[test]
 fn resume_stops_early_on_target() {
     let dir = workdir("target");
-    assert_ok(&solve_cli(&dir, &["spot.json", "3", "0", "--save", "base.gto"]));
+    assert_ok(&solve_cli(
+        &dir,
+        &["spot.json", "3", "0", "--save", "base.gto"],
+    ));
     // check_every is 10: the first target check after iteration 3 is at 10,
     // so a target this loose must stop there instead of running all 100.
-    let out = solve_cli(&dir, &["resume", "base.gto", "100", "50", "--save", "early.gto"]);
+    let out = solve_cli(
+        &dir,
+        &["resume", "base.gto", "100", "50", "--save", "early.gto"],
+    );
     assert_ok(&out);
     let stdout = String::from_utf8_lossy(&out.stdout);
     assert!(
@@ -248,10 +262,16 @@ fn fresh_save_records_env_and_resume_keeps_it() {
     assert_eq!(base.algo, Algorithm::CfrPlus);
     assert!(!base.use_isomorphism, "the save must record SOLVER_ISO=0");
 
-    let out = solve_cli(&dir, &["resume", "base.gto", "1", "0", "--save", "next.gto"]);
+    let out = solve_cli(
+        &dir,
+        &["resume", "base.gto", "1", "0", "--save", "next.gto"],
+    );
     assert_ok(&out);
     let stdout = String::from_utf8_lossy(&out.stdout);
-    let loaded_line = stdout.lines().find(|l| l.starts_with("loaded ")).unwrap_or("");
+    let loaded_line = stdout
+        .lines()
+        .find(|l| l.starts_with("loaded "))
+        .unwrap_or("");
     assert!(
         loaded_line.contains("algo CfrPlus, isomorphism off"),
         "resume must keep the save's settings, not the defaults:\n{stdout}"
@@ -261,7 +281,10 @@ fn fresh_save_records_env_and_resume_keeps_it() {
         !stderr.contains("SOLVER_ALGO=") && !stderr.contains("SOLVER_ISO="),
         "nothing was overridden, so there should be no warning:\n{stderr}"
     );
-    let done = stdout.lines().find(|l| l.starts_with("done:")).unwrap_or("");
+    let done = stdout
+        .lines()
+        .find(|l| l.starts_with("done:"))
+        .unwrap_or("");
     assert_finite_exploitability(done);
     let next = load(&dir.join("next.gto"));
     assert_eq!(next.algo, Algorithm::CfrPlus);
@@ -274,7 +297,10 @@ fn fresh_save_records_env_and_resume_keeps_it() {
 #[test]
 fn resume_env_override_warns_and_wins() {
     let dir = workdir("env-override");
-    assert_ok(&solve_cli(&dir, &["spot.json", "2", "0", "--save", "base.gto"]));
+    assert_ok(&solve_cli(
+        &dir,
+        &["spot.json", "2", "0", "--save", "base.gto"],
+    ));
     let base = load(&dir.join("base.gto"));
     assert_eq!((base.algo, base.use_isomorphism), (Algorithm::Dcfr, true));
 
@@ -318,12 +344,21 @@ fn legacy_save_without_engine_settings_resumes_with_defaults() {
         obj.remove("use_isomorphism");
     });
     let stripped = load(&base);
-    assert_eq!((stripped.algo, stripped.use_isomorphism), (Algorithm::Dcfr, true));
+    assert_eq!(
+        (stripped.algo, stripped.use_isomorphism),
+        (Algorithm::Dcfr, true)
+    );
 
-    let out = solve_cli(&dir, &["resume", "base.gto", "1", "0", "--save", "next.gto"]);
+    let out = solve_cli(
+        &dir,
+        &["resume", "base.gto", "1", "0", "--save", "next.gto"],
+    );
     assert_ok(&out);
     let stdout = String::from_utf8_lossy(&out.stdout);
-    let loaded_line = stdout.lines().find(|l| l.starts_with("loaded ")).unwrap_or("");
+    let loaded_line = stdout
+        .lines()
+        .find(|l| l.starts_with("loaded "))
+        .unwrap_or("");
     assert!(
         loaded_line.contains("algo Dcfr, isomorphism on"),
         "a legacy save must resume with the pre-field defaults:\n{stdout}"
@@ -369,20 +404,31 @@ fn pcfr_resume_warns_about_missing_predictions() {
     let dir = workdir("pcfr-warning");
     let env = &[("SOLVER_ALGO", "pcfr+"), ("SOLVER_STORAGE", "f32")];
     assert_ok(&solve_cli_env(
-        &dir, &["spot.json", "3", "0", "--save", "base.gto"], env,
+        &dir,
+        &["spot.json", "3", "0", "--save", "base.gto"],
+        env,
     ));
     let out = solve_cli_env(
-        &dir, &["resume", "base.gto", "1", "0", "--save", "next.gto"],
+        &dir,
+        &["resume", "base.gto", "1", "0", "--save", "next.gto"],
         &[("SOLVER_STORAGE", "f32")],
     );
     assert_ok(&out);
     let stderr = String::from_utf8_lossy(&out.stderr);
-    assert!(stderr.contains("PCFR+ prediction state is not stored"), "{stderr}");
-    assert!(stderr.contains("may differ from an uninterrupted run"), "{stderr}");
+    assert!(
+        stderr.contains("PCFR+ prediction state is not stored"),
+        "{stderr}"
+    );
+    assert!(
+        stderr.contains("may differ from an uninterrupted run"),
+        "{stderr}"
+    );
     assert_eq!(load(&dir.join("next.gto")).iteration, 4);
 
     let out = solve_cli_env(
-        &dir, &["resume", "base.gto", "1", "0"], &[("SOLVER_ALGO", "dcfr")],
+        &dir,
+        &["resume", "base.gto", "1", "0"],
+        &[("SOLVER_ALGO", "dcfr")],
     );
     assert_ok(&out);
     assert!(!String::from_utf8_lossy(&out.stderr).contains("prediction state"));

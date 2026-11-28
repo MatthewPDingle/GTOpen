@@ -37,9 +37,12 @@
 //!   dealt sum.
 //!
 //! None of them changes how a total is split between the players.
-use super::equity::{class_parts, NUM_CLASSES};
-use super::leafnet::POT_TYPES;
 use std::sync::OnceLock;
+
+use super::{
+    equity::{class_parts, NUM_CLASSES},
+    leafnet::POT_TYPES,
+};
 
 /// Which leaves have their total pinned (env PREFLOP_LEAF_PIN).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -59,7 +62,9 @@ impl PinTotal {
     /// The total this setting pins a leaf to, if it pins it.
     pub fn target(self, known: LeafTotal) -> Option<f64> {
         match (self, known) {
-            (PinTotal::Off, _) | (_, LeafTotal::Unknown) | (PinTotal::Exact, LeafTotal::Rule(_)) => None,
+            (PinTotal::Off, _)
+            | (_, LeafTotal::Unknown)
+            | (PinTotal::Exact, LeafTotal::Rule(_)) => None,
             (_, LeafTotal::Exact(t)) | (PinTotal::Rule, LeafTotal::Rule(t)) => Some(t),
         }
     }
@@ -97,8 +102,16 @@ impl LeafBooks {
     /// that is none of these is an error: a typo must not run a long solve
     /// with the setting silently off.
     pub fn from_env() -> Result<Self, String> {
-        let get = |key: &str| std::env::var(key).map(|v| v.trim().to_ascii_lowercase()).unwrap_or_default();
-        Self::parse(&get("PREFLOP_LEAF_PIN"), &get("PREFLOP_LEAF_PIN_SUM"), &get("PREFLOP_LEAF_BLOCKING"))
+        let get = |key: &str| {
+            std::env::var(key)
+                .map(|v| v.trim().to_ascii_lowercase())
+                .unwrap_or_default()
+        };
+        Self::parse(
+            &get("PREFLOP_LEAF_PIN"),
+            &get("PREFLOP_LEAF_PIN_SUM"),
+            &get("PREFLOP_LEAF_BLOCKING"),
+        )
     }
 
     /// The three settings from their names ("" is the default).
@@ -107,17 +120,29 @@ impl LeafBooks {
             "" | "off" | "0" => PinTotal::Off,
             "exact" => PinTotal::Exact,
             "rule" => PinTotal::Rule,
-            other => return Err(format!("PREFLOP_LEAF_PIN must be off, exact or rule, not \"{other}\"")),
+            other => {
+                return Err(format!(
+                    "PREFLOP_LEAF_PIN must be off, exact or rule, not \"{other}\""
+                ))
+            }
         };
         let sum = match sum {
             "" | "dealt" => PinSum::Dealt,
             "plain" => PinSum::Plain,
-            other => return Err(format!("PREFLOP_LEAF_PIN_SUM must be dealt or plain, not \"{other}\"")),
+            other => {
+                return Err(format!(
+                    "PREFLOP_LEAF_PIN_SUM must be dealt or plain, not \"{other}\""
+                ))
+            }
         };
         let blocking = match blocking {
             "" | "off" | "0" => false,
             "on" | "1" => true,
-            other => return Err(format!("PREFLOP_LEAF_BLOCKING must be off or on, not \"{other}\"")),
+            other => {
+                return Err(format!(
+                    "PREFLOP_LEAF_BLOCKING must be off or on, not \"{other}\""
+                ))
+            }
         };
         Ok(LeafBooks { pin, sum, blocking })
     }
@@ -125,7 +150,10 @@ impl LeafBooks {
     /// Settings that contradict each other or need what the net lacks.
     pub fn check(&self, net_has_rule: bool) -> Result<(), String> {
         if self.pin == PinTotal::Rule && !net_has_rule {
-            return Err("PREFLOP_LEAF_PIN=rule needs a leaf net file with a \"total_rule\" in its header".into());
+            return Err(
+                "PREFLOP_LEAF_PIN=rule needs a leaf net file with a \"total_rule\" in its header"
+                    .into(),
+            );
         }
         if self.sum == PinSum::Plain && self.pin == PinTotal::Off {
             return Err("PREFLOP_LEAF_PIN_SUM=plain does nothing without PREFLOP_LEAF_PIN".into());
@@ -192,25 +220,44 @@ impl TotalRule {
     /// The rule in a net file's header, if it has one. A rule that cannot be
     /// read is an error (the file was written wrongly), not a missing rule.
     pub fn from_header(header: &serde_json::Value) -> Result<Option<Self>, String> {
-        let Some(rule) = header.get("total_rule").filter(|r| !r.is_null()) else { return Ok(None) };
+        let Some(rule) = header.get("total_rule").filter(|r| !r.is_null()) else {
+            return Ok(None);
+        };
         let form = match rule.get("form").and_then(|v| v.as_str()) {
             Some("linear") => RuleForm::Linear,
             Some("share") => RuleForm::Share,
-            other => return Err(format!("total_rule form must be \"linear\" or \"share\", not {other:?}")),
+            other => {
+                return Err(format!(
+                    "total_rule form must be \"linear\" or \"share\", not {other:?}"
+                ))
+            }
         };
-        let numbers = |v: Option<&serde_json::Value>, n: usize, what: &str| -> Result<Vec<f64>, String> {
-            v.and_then(|v| v.as_array())
-                .filter(|a| a.len() == n)
-                .and_then(|a| a.iter().map(|x| x.as_f64().filter(|x| x.is_finite())).collect::<Option<Vec<f64>>>())
-                .ok_or_else(|| format!("total_rule {what} must be {n} numbers"))
-        };
+        let numbers =
+            |v: Option<&serde_json::Value>, n: usize, what: &str| -> Result<Vec<f64>, String> {
+                v.and_then(|v| v.as_array())
+                    .filter(|a| a.len() == n)
+                    .and_then(|a| {
+                        a.iter()
+                            .map(|x| x.as_f64().filter(|x| x.is_finite()))
+                            .collect::<Option<Vec<f64>>>()
+                    })
+                    .ok_or_else(|| format!("total_rule {what} must be {n} numbers"))
+            };
         let mut coef = [[0f64; 4]; 4];
         for (t, name) in POT_TYPES.iter().enumerate() {
-            coef[t].copy_from_slice(&numbers(rule.get("coef").and_then(|c| c.get(name)), 4, &format!("coef.{name}"))?);
+            coef[t].copy_from_slice(&numbers(
+                rule.get("coef").and_then(|c| c.get(name)),
+                4,
+                &format!("coef.{name}"),
+            )?);
         }
         let mut valid = [[0f64; 2]; 4];
         for (i, key) in VALID_KEYS.iter().enumerate() {
-            valid[i].copy_from_slice(&numbers(rule.get("valid").and_then(|c| c.get(key)), 2, &format!("valid.{key}"))?);
+            valid[i].copy_from_slice(&numbers(
+                rule.get("valid").and_then(|c| c.get(key)),
+                2,
+                &format!("valid.{key}"),
+            )?);
             if valid[i][0] > valid[i][1] {
                 return Err(format!("total_rule valid.{key} must be [lowest, highest]"));
             }
@@ -220,17 +267,29 @@ impl TotalRule {
 
     /// The rule's total (before the bounds) for a raked leaf below its cap,
     /// or None outside the inputs it was fitted on.
-    fn total(&self, pot_type: usize, pot_bb: f64, stack_bb: f64, rake_frac: f64, k: f64) -> Option<f64> {
+    fn total(
+        &self,
+        pot_type: usize,
+        pot_bb: f64,
+        stack_bb: f64,
+        rake_frac: f64,
+        k: f64,
+    ) -> Option<f64> {
         let spr = stack_bb / pot_bb;
         let inputs = [rake_frac, k, pot_bb, spr];
-        if inputs.iter().zip(&self.valid).any(|(v, r)| *v < r[0] - 1e-9 || *v > r[1] + 1e-9) {
+        if inputs
+            .iter()
+            .zip(&self.valid)
+            .any(|(v, r)| *v < r[0] - 1e-9 || *v > r[1] + 1e-9)
+        {
             return None;
         }
         let c = &self.coef[pot_type.min(3)];
         let t = match self.form {
             RuleForm::Linear => c[0] + c[1] * k + c[2] * pot_bb.ln() + c[3] * spr.ln(),
             RuleForm::Share => {
-                let share = c[0] + c[1] * (k / rake_frac).ln() + c[2] * spr.ln() + c[3] * pot_bb.ln();
+                let share =
+                    c[0] + c[1] * (k / rake_frac).ln() + c[2] * spr.ln() + c[3] * pot_bb.ln();
                 1.0 - rake_frac - (k - rake_frac) * share.clamp(0.0, 1.0)
             }
         };
@@ -241,8 +300,14 @@ impl TotalRule {
 /// What a heads-up flop leaf's two values add up to, as a fraction of the
 /// pot. `stack_bb` is the effective stack behind, `rake_cap_bb` = 0 means
 /// the rake has no cap, `pot_type` indexes [`POT_TYPES`].
-pub fn leaf_total(rule: Option<&TotalRule>, pot_bb: f64, stack_bb: f64, rake_frac: f64, rake_cap_bb: f64,
-                  pot_type: usize) -> LeafTotal {
+pub fn leaf_total(
+    rule: Option<&TotalRule>,
+    pot_bb: f64,
+    stack_bb: f64,
+    rake_frac: f64,
+    rake_cap_bb: f64,
+    pot_type: usize,
+) -> LeafTotal {
     if !(rake_frac > 0.0) {
         return LeafTotal::Exact(1.0);
     }
@@ -272,7 +337,10 @@ pub fn disjoint_share() -> &'static [f64] {
         let mut table = vec![0f64; NUM_CLASSES * NUM_CLASSES];
         for h in 0..NUM_CLASSES {
             for g in h..NUM_CLASSES {
-                let free = combos[h].iter().map(|a| combos[g].iter().filter(|&&b| a & b == 0).count()).sum::<usize>();
+                let free = combos[h]
+                    .iter()
+                    .map(|a| combos[g].iter().filter(|&&b| a & b == 0).count())
+                    .sum::<usize>();
                 let share = free as f64 / (combos[h].len() * combos[g].len()) as f64;
                 table[h * NUM_CLASSES + g] = share;
                 table[g * NUM_CLASSES + h] = share;
@@ -289,7 +357,13 @@ fn class_card_masks(idx: usize) -> Vec<u64> {
     let mut out = Vec::new();
     for s1 in 0..4u8 {
         for s2 in 0..4u8 {
-            let keep = if hi == lo { s1 < s2 } else if suited { s1 == s2 } else { s1 != s2 };
+            let keep = if hi == lo {
+                s1 < s2
+            } else if suited {
+                s1 == s2
+            } else {
+                s1 != s2
+            };
             if keep {
                 out.push(card(hi, s1) | card(lo, s2));
             }
@@ -320,7 +394,10 @@ impl Blocking {
     /// the ranges is empty.
     pub fn of(oop: &[f32], ip: &[f32]) -> Option<Blocking> {
         let table = disjoint_share();
-        let (so, si) = (oop.iter().map(|&v| v as f64).sum::<f64>(), ip.iter().map(|&v| v as f64).sum::<f64>());
+        let (so, si) = (
+            oop.iter().map(|&v| v as f64).sum::<f64>(),
+            ip.iter().map(|&v| v as f64).sum::<f64>(),
+        );
         if !(so > 0.0 && si > 0.0) {
             return None;
         }
@@ -335,19 +412,27 @@ impl Blocking {
             }
             free[0][h] = sum / si;
         }
-        let mean: f64 = (0..NUM_CLASSES).map(|h| oop[h] as f64 / so * free[0][h]).sum();
+        let mean: f64 = (0..NUM_CLASSES)
+            .map(|h| oop[h] as f64 / so * free[0][h])
+            .sum();
         if !(mean > 0.0) {
             return None;
         }
         free.iter_mut().flatten().for_each(|v| *v /= mean);
-        Some(Blocking { rel: free, together: mean * DECK })
+        Some(Blocking {
+            rel: free,
+            together: mean * DECK,
+        })
     }
 
     /// The weights of the dealt sum: each side's add up to 1.
     pub fn weights(&self, oop: &[f32], ip: &[f32]) -> [Vec<f64>; 2] {
         let mut w = [plain_weights(oop), plain_weights(ip)];
         for side in 0..2 {
-            w[side].iter_mut().zip(&self.rel[side]).for_each(|(w, r)| *w *= r);
+            w[side]
+                .iter_mut()
+                .zip(&self.rel[side])
+                .for_each(|(w, r)| *w *= r);
         }
         w
     }
@@ -356,23 +441,36 @@ impl Blocking {
 /// A range's class shares (adding up to 1): the weights of the plain sum.
 pub fn plain_weights(range: &[f32]) -> Vec<f64> {
     let sum: f64 = range.iter().map(|&v| v as f64).sum();
-    range.iter().map(|&v| if sum > 0.0 { v as f64 / sum } else { 0.0 }).collect()
+    range
+        .iter()
+        .map(|&v| if sum > 0.0 { v as f64 / sum } else { 0.0 })
+        .collect()
 }
 
 /// The two players' values (`balanced` plus `corr`, out of position's 169
 /// classes then in position's, fractions of the pot) added up with `weights`.
 pub fn weighted_total(corr: &[f32], balanced: &[f32], weights: &[Vec<f64>; 2]) -> f64 {
-    (0..2).map(|side| {
-        let at = side * NUM_CLASSES;
-        (0..NUM_CLASSES).map(|h| weights[side][h] * (balanced[at + h] as f64 + corr[at + h] as f64)).sum::<f64>()
-    }).sum()
+    (0..2)
+        .map(|side| {
+            let at = side * NUM_CLASSES;
+            (0..NUM_CLASSES)
+                .map(|h| weights[side][h] * (balanced[at + h] as f64 + corr[at + h] as f64))
+                .sum::<f64>()
+        })
+        .sum()
 }
 
 /// Shift every class of both players by the same amount so that the values
 /// add up to `target`. A class's value stays within what a hand can win or
 /// lose (`room` = stack behind over pot); where that stops some classes the
 /// rest is shifted again, a few times. Returns the total afterwards.
-pub fn pin_total(corr: &mut [f32], balanced: &[f32], weights: &[Vec<f64>; 2], target: f64, room: f32) -> f64 {
+pub fn pin_total(
+    corr: &mut [f32],
+    balanced: &[f32],
+    weights: &[Vec<f64>; 2],
+    target: f64,
+    room: f32,
+) -> f64 {
     let mut now = weighted_total(corr, balanced, weights);
     for _ in 0..4 {
         let miss = target - now;
@@ -410,14 +508,28 @@ pub struct LeafSums {
 /// the leaf's sums. `norm` are the two reaches by class, `invested` what
 /// each of the two has put in over the pot, `measure` asks for the dealt
 /// sums even where the settings do not need them.
-pub fn book_leaf(books: LeafBooks, measure: bool, corr: &mut [f32], balanced: &[f32], norm: [&[f32]; 2], room: f32,
-                 invested: [f64; 2], known: LeafTotal) -> LeafSums {
+pub fn book_leaf(
+    books: LeafBooks,
+    measure: bool,
+    corr: &mut [f32],
+    balanced: &[f32],
+    norm: [&[f32]; 2],
+    room: f32,
+    invested: [f64; 2],
+    known: LeafTotal,
+) -> LeafSums {
     let plain = [plain_weights(norm[0]), plain_weights(norm[1])];
     let target = books.pin.target(known);
     let need_dealt = measure || books.blocking || (target.is_some() && books.sum == PinSum::Dealt);
-    let blocking = if need_dealt { Blocking::of(norm[0], norm[1]) } else { None };
+    let blocking = if need_dealt {
+        Blocking::of(norm[0], norm[1])
+    } else {
+        None
+    };
     let dealt_weights = blocking.as_ref().map(|b| b.weights(norm[0], norm[1]));
-    let net_dealt = dealt_weights.as_ref().map(|w| weighted_total(corr, balanced, w));
+    let net_dealt = dealt_weights
+        .as_ref()
+        .map(|w| weighted_total(corr, balanced, w));
     let mut pinned = false;
     if let Some(t) = target {
         match (books.sum, &dealt_weights) {
@@ -432,7 +544,9 @@ pub fn book_leaf(books: LeafBooks, measure: bool, corr: &mut [f32], balanced: &[
             (PinSum::Dealt, None) => {}
         }
     }
-    let dealt = dealt_weights.as_ref().map(|w| weighted_total(corr, balanced, w));
+    let dealt = dealt_weights
+        .as_ref()
+        .map(|w| weighted_total(corr, balanced, w));
     // Blocking: book factor x (pot x value - invested) where the solve books
     // (pot x value - invested), by pricing with factor x value + (1 - factor) x invested / pot.
     if let (true, Some(b)) = (books.blocking, &blocking) {
@@ -441,13 +555,20 @@ pub fn book_leaf(books: LeafBooks, measure: bool, corr: &mut [f32], balanced: &[
                 let i = side * NUM_CLASSES + h;
                 let factor = b.rel[side][h];
                 let value = balanced[i] as f64 + corr[i] as f64;
-                corr[i] = (factor * value + (1.0 - factor) * invested[side] - balanced[i] as f64) as f32;
+                corr[i] =
+                    (factor * value + (1.0 - factor) * invested[side] - balanced[i] as f64) as f32;
             }
         }
     }
     let booked = weighted_total(corr, balanced, &plain);
     let fair = known.value();
-    LeafSums { net_dealt, dealt, pinned, booked, fair }
+    LeafSums {
+        net_dealt,
+        dealt,
+        pinned,
+        booked,
+        fair,
+    }
 }
 
 #[cfg(test)]
@@ -484,18 +605,27 @@ mod tests {
         let at = |a: usize, b: usize| t[a * NUM_CLASSES + b];
         let (aa, kk) = (class_index(12, 12, false), class_index(11, 11, false));
         let (aks, ako) = (class_index(12, 11, true), class_index(12, 11, false));
-        assert_eq!((at(aa, aa), at(aa, kk), at(aks, aks), at(ako, ako)), (1.0 / 6.0, 1.0, 12.0 / 16.0, 7.0 / 12.0));
+        assert_eq!(
+            (at(aa, aa), at(aa, kk), at(aks, aks), at(ako, ako)),
+            (1.0 / 6.0, 1.0, 12.0 / 16.0, 7.0 / 12.0)
+        );
         assert!(at(aa, aks) == 0.5 && at(aa, aks) == at(aks, aa));
         // any two cards leave 1,225 of the 1,326 combos for the other player
         for h in 0..NUM_CLASSES {
-            let free: f64 = (0..NUM_CLASSES).map(|g| class_combos(g) as f64 * at(h, g)).sum();
+            let free: f64 = (0..NUM_CLASSES)
+                .map(|g| class_combos(g) as f64 * at(h, g))
+                .sum();
             assert!((free - 1225.0).abs() < 1e-9, "class {h}: {free}");
         }
     }
 
     #[test]
     fn blocking_drops_what_the_other_range_holds() {
-        let (aa, kk, qq) = (class_index(12, 12, false), class_index(11, 11, false), class_index(10, 10, false));
+        let (aa, kk, qq) = (
+            class_index(12, 12, false),
+            class_index(11, 11, false),
+            class_index(10, 10, false),
+        );
         let aks = class_index(12, 11, true);
         // oop: aces and kings; ip: ace-king suited only. Each pair blocks
         // half of the ace-king combos, so both still count the same, and
@@ -504,47 +634,95 @@ mod tests {
         let mut ip = vec![0f32; NUM_CLASSES];
         (oop[aa], oop[kk], ip[aks]) = (3.0, 3.0, 0.2);
         let b = Blocking::of(&oop, &ip).unwrap();
-        assert!((b.rel[0][aa] - 1.0).abs() < 1e-9 && (b.rel[0][kk] - 1.0).abs() < 1e-9 && (b.rel[0][qq] - 2.0).abs() < 1e-9);
-        assert!((b.rel[1][aks] - 1.0).abs() < 1e-9 && (b.together - 0.5 * 1326.0 / 1225.0).abs() < 1e-9);
+        assert!(
+            (b.rel[0][aa] - 1.0).abs() < 1e-9
+                && (b.rel[0][kk] - 1.0).abs() < 1e-9
+                && (b.rel[0][qq] - 2.0).abs() < 1e-9
+        );
+        assert!(
+            (b.rel[1][aks] - 1.0).abs() < 1e-9 && (b.together - 0.5 * 1326.0 / 1225.0).abs() < 1e-9
+        );
         // aces and queens: aces count half as much as queens
         let mut oop = vec![0f32; NUM_CLASSES];
         (oop[aa], oop[qq]) = (0.5, 0.5);
         let b = Blocking::of(&oop, &ip).unwrap();
         let w = b.weights(&oop, &ip);
-        assert!((w[0][aa] - 1.0 / 3.0).abs() < 1e-9 && (w[0][qq] - 2.0 / 3.0).abs() < 1e-9 && (w[1][aks] - 1.0).abs() < 1e-9);
+        assert!(
+            (w[0][aa] - 1.0 / 3.0).abs() < 1e-9
+                && (w[0][qq] - 2.0 / 3.0).abs() < 1e-9
+                && (w[1][aks] - 1.0).abs() < 1e-9
+        );
         // two full ranges: every class counts as it is, and they meet as often as the deck says
         let full: Vec<f32> = (0..NUM_CLASSES).map(class_combos).collect();
         let b = Blocking::of(&full, &full).unwrap();
-        assert!(b.rel.iter().flatten().all(|r| (r - 1.0).abs() < 1e-9) && (b.together - 1.0).abs() < 1e-9);
+        assert!(
+            b.rel.iter().flatten().all(|r| (r - 1.0).abs() < 1e-9)
+                && (b.together - 1.0).abs() < 1e-9
+        );
         assert!(Blocking::of(&vec![0.0; NUM_CLASSES], &ip).is_none());
         // the same two ranges and numbers as tools/datagen/test_total_rule.py (test_dealt_weights)
-        let oop: Vec<f32> = (0..NUM_CLASSES).map(|h| if h % 2 == 0 { ((h * 37) % 11 + 1) as f32 } else { 0.0 }).collect();
+        let oop: Vec<f32> = (0..NUM_CLASSES)
+            .map(|h| {
+                if h % 2 == 0 {
+                    ((h * 37) % 11 + 1) as f32
+                } else {
+                    0.0
+                }
+            })
+            .collect();
         let ip: Vec<f32> = (0..NUM_CLASSES).map(|g| ((g * 53) % 7) as f32).collect();
         let b = Blocking::of(&oop, &ip).unwrap();
         let w = b.weights(&oop, &ip);
-        for (got, want) in [(w[0][168], 0.0039421507), (w[0][0], 0.0019710754), (w[1][1], 0.0079351133),
-                            (w[1][160], 0.0058782930), (b.together, 1.0004269767)] {
+        for (got, want) in [
+            (w[0][168], 0.0039421507),
+            (w[0][0], 0.0019710754),
+            (w[1][1], 0.0079351133),
+            (w[1][160], 0.0058782930),
+            (b.together, 1.0004269767),
+        ] {
             assert!((got - want).abs() < 1e-9, "{got} vs {want}");
         }
         // both sides' weights always add up to 1
         let mut next = noise(5);
-        let (oop, ip): (Vec<f32>, Vec<f32>) = (0..NUM_CLASSES).map(|h| (next(), if h % 4 == 0 { 0.0 } else { next() })).unzip();
+        let (oop, ip): (Vec<f32>, Vec<f32>) = (0..NUM_CLASSES)
+            .map(|h| (next(), if h % 4 == 0 { 0.0 } else { next() }))
+            .unzip();
         let w = Blocking::of(&oop, &ip).unwrap().weights(&oop, &ip);
-        assert!(w.iter().all(|side| (side.iter().sum::<f64>() - 1.0).abs() < 1e-9));
+        assert!(w
+            .iter()
+            .all(|side| (side.iter().sum::<f64>() - 1.0).abs() < 1e-9));
     }
 
     #[test]
     fn the_total_is_exact_without_rake_and_at_the_cap() {
         let r = rule("linear");
         // no rake: the whole pot, with or without a rule
-        assert_eq!(leaf_total(None, 6.5, 97.0, 0.0, 0.0, 1), LeafTotal::Exact(1.0));
-        assert_eq!(leaf_total(Some(&r), 6.5, 97.0, 0.0, 3.0, 1), LeafTotal::Exact(1.0));
+        assert_eq!(
+            leaf_total(None, 6.5, 97.0, 0.0, 0.0, 1),
+            LeafTotal::Exact(1.0)
+        );
+        assert_eq!(
+            leaf_total(Some(&r), 6.5, 97.0, 0.0, 3.0, 1),
+            LeafTotal::Exact(1.0)
+        );
         // 5% of 60 bb is the 3 bb cap: the pot minus the cap
-        assert_eq!(leaf_total(None, 60.0, 70.0, 0.05, 3.0, 3), LeafTotal::Exact(1.0 - 3.0 / 60.0));
-        assert_eq!(leaf_total(Some(&r), 80.0, 60.0, 0.05, 3.0, 3), LeafTotal::Exact(1.0 - 3.0 / 80.0));
+        assert_eq!(
+            leaf_total(None, 60.0, 70.0, 0.05, 3.0, 3),
+            LeafTotal::Exact(1.0 - 3.0 / 60.0)
+        );
+        assert_eq!(
+            leaf_total(Some(&r), 80.0, 60.0, 0.05, 3.0, 3),
+            LeafTotal::Exact(1.0 - 3.0 / 80.0)
+        );
         // below the cap nothing is known without a rule, and nothing at all without a cap
-        assert_eq!(leaf_total(None, 6.5, 97.0, 0.05, 3.0, 1), LeafTotal::Unknown);
-        assert_eq!(leaf_total(Some(&r), 6.5, 97.0, 0.05, 0.0, 1), LeafTotal::Unknown);
+        assert_eq!(
+            leaf_total(None, 6.5, 97.0, 0.05, 3.0, 1),
+            LeafTotal::Unknown
+        );
+        assert_eq!(
+            leaf_total(Some(&r), 6.5, 97.0, 0.05, 0.0, 1),
+            LeafTotal::Unknown
+        );
         // the settings: off pins nothing, exact only what is exact
         let below = leaf_total(Some(&r), 6.5, 97.0, 0.05, 3.0, 1);
         assert!(matches!(below, LeafTotal::Rule(_)));
@@ -579,7 +757,10 @@ mod tests {
                 other => other.value(),
             };
             match (got, want) {
-                (Some(g), Some(w)) => assert!((g - w).abs() < 1e-6, "{form} type {pot_type} pot {pot}: {g} vs {w}"),
+                (Some(g), Some(w)) => assert!(
+                    (g - w).abs() < 1e-6,
+                    "{form} type {pot_type} pot {pot}: {g} vs {w}"
+                ),
                 (None, None) => {}
                 other => panic!("{form} type {pot_type} pot {pot}: {other:?}"),
             }
@@ -588,59 +769,122 @@ mod tests {
 
     #[test]
     fn a_rule_or_setting_that_cannot_be_read_is_refused() {
-        assert_eq!(TotalRule::from_header(&serde_json::json!({"sizes": [1, 2]})).unwrap(), None);
+        assert_eq!(
+            TotalRule::from_header(&serde_json::json!({"sizes": [1, 2]})).unwrap(),
+            None
+        );
         let good = serde_json::json!({"form": "linear",
             "coef": {"limped": [1, 0, 0, 0], "srp": [1, 0, 0, 0], "3bet": [1, 0, 0, 0], "4bet": [1, 0, 0, 0]},
             "valid": {"rake_frac": [0.05, 0.05], "cap_over_pot": [0.0, 1.0], "pot_bb": [1, 100], "stack_over_pot": [0, 50]}});
-        assert!(TotalRule::from_header(&serde_json::json!({"total_rule": good})).unwrap().is_some());
-        for (path, bad) in [("/form", serde_json::json!("cubic")), ("/coef/srp", serde_json::json!([1, 0, 0])),
-                            ("/coef/3bet", serde_json::json!([1, 0, "x", 0])), ("/valid/pot_bb", serde_json::json!([100, 1])),
-                            ("/valid", serde_json::json!({}))] {
+        assert!(
+            TotalRule::from_header(&serde_json::json!({"total_rule": good}))
+                .unwrap()
+                .is_some()
+        );
+        for (path, bad) in [
+            ("/form", serde_json::json!("cubic")),
+            ("/coef/srp", serde_json::json!([1, 0, 0])),
+            ("/coef/3bet", serde_json::json!([1, 0, "x", 0])),
+            ("/valid/pot_bb", serde_json::json!([100, 1])),
+            ("/valid", serde_json::json!({})),
+        ] {
             let mut rule = good.clone();
             *rule.pointer_mut(path).unwrap() = bad;
-            assert!(TotalRule::from_header(&serde_json::json!({"total_rule": rule})).is_err(), "{path}");
+            assert!(
+                TotalRule::from_header(&serde_json::json!({"total_rule": rule})).is_err(),
+                "{path}"
+            );
         }
         assert_eq!(LeafBooks::parse("", "", "").unwrap(), LeafBooks::default());
         assert!(LeafBooks::default().is_default() && LeafBooks::default().check(false).is_ok());
         let books = LeafBooks::parse("rule", "dealt", "on").unwrap();
-        assert_eq!(books, LeafBooks { pin: PinTotal::Rule, sum: PinSum::Dealt, blocking: true });
-        assert!(books.check(true).is_ok() && books.check(false).is_err(), "a rule pin needs a rule");
-        for bad in [("everywhere", "", ""), ("exact", "booked", ""), ("", "", "deck")] {
+        assert_eq!(
+            books,
+            LeafBooks {
+                pin: PinTotal::Rule,
+                sum: PinSum::Dealt,
+                blocking: true
+            }
+        );
+        assert!(
+            books.check(true).is_ok() && books.check(false).is_err(),
+            "a rule pin needs a rule"
+        );
+        for bad in [
+            ("everywhere", "", ""),
+            ("exact", "booked", ""),
+            ("", "", "deck"),
+        ] {
             assert!(LeafBooks::parse(bad.0, bad.1, bad.2).is_err(), "{bad:?}");
         }
-        assert!(LeafBooks::parse("", "plain", "").unwrap().check(true).is_err(), "nothing to pin");
-        assert!(LeafBooks::parse("exact", "plain", "on").unwrap().check(true).is_err(), "two ways at once");
-        assert!(LeafBooks::parse("exact", "plain", "").unwrap().check(false).is_ok());
+        assert!(
+            LeafBooks::parse("", "plain", "")
+                .unwrap()
+                .check(true)
+                .is_err(),
+            "nothing to pin"
+        );
+        assert!(
+            LeafBooks::parse("exact", "plain", "on")
+                .unwrap()
+                .check(true)
+                .is_err(),
+            "two ways at once"
+        );
+        assert!(LeafBooks::parse("exact", "plain", "")
+            .unwrap()
+            .check(false)
+            .is_ok());
     }
 
     #[test]
     fn pinning_moves_every_class_alike_and_respects_what_a_hand_can_win() {
         let mut next = noise(12345);
         let oop: Vec<f32> = (0..NUM_CLASSES).map(|_| next()).collect();
-        let ip: Vec<f32> = (0..NUM_CLASSES).map(|h| if h % 3 == 0 { 0.0 } else { next() }).collect();
+        let ip: Vec<f32> = (0..NUM_CLASSES)
+            .map(|h| if h % 3 == 0 { 0.0 } else { next() })
+            .collect();
         let weights = Blocking::of(&oop, &ip).unwrap().weights(&oop, &ip);
         let balanced: Vec<f32> = (0..2 * NUM_CLASSES).map(|_| 0.2 + 0.6 * next()).collect();
         let net: Vec<f32> = (0..2 * NUM_CLASSES).map(|_| 0.1 * (next() - 0.4)).collect();
         let before = weighted_total(&net, &balanced, &weights);
         let mut corr = net.clone();
         let after = pin_total(&mut corr, &balanced, &weights, 0.95, 5.0);
-        assert!((before - 0.95).abs() > 0.01, "the net's total is off: {before}");
-        assert!((after - 0.95).abs() < 1e-6 && (weighted_total(&corr, &balanced, &weights) - after).abs() < 1e-12);
+        assert!(
+            (before - 0.95).abs() > 0.01,
+            "the net's total is off: {before}"
+        );
+        assert!(
+            (after - 0.95).abs() < 1e-6
+                && (weighted_total(&corr, &balanced, &weights) - after).abs() < 1e-12
+        );
         // one shift for every class of both players, also the ones a range does not hold
         let shift = corr[0] - net[0];
         assert!(((before + 2.0 * shift as f64) - 0.95).abs() < 1e-5);
-        assert!(corr.iter().zip(&net).all(|(c, n)| ((c - n) - shift).abs() < 1e-6));
+        assert!(corr
+            .iter()
+            .zip(&net)
+            .all(|(c, n)| ((c - n) - shift).abs() < 1e-6));
         // a total that is already right is left alone
         let again = corr.clone();
         pin_total(&mut corr, &balanced, &weights, after, 5.0);
         assert_eq!(corr, again);
         // with nothing behind a class is worth between nothing and the pot:
         // classes at that edge stay there and the others make up the rest
-        let mut corr: Vec<f32> = balanced.iter().map(|b| if *b > 0.5 { 1.0 - b } else { 0.0 }).collect();
+        let mut corr: Vec<f32> = balanced
+            .iter()
+            .map(|b| if *b > 0.5 { 1.0 - b } else { 0.0 })
+            .collect();
         let before = weighted_total(&corr, &balanced, &weights);
         let after = pin_total(&mut corr, &balanced, &weights, 1.0, 0.0);
-        assert!(before > 1.2 && (after - 1.0).abs() < 1e-3, "{before} -> {after}");
-        assert!(corr.iter().zip(&balanced).all(|(c, b)| c + b >= -1e-6 && c + b <= 1.0 + 1e-6));
+        assert!(
+            before > 1.2 && (after - 1.0).abs() < 1e-3,
+            "{before} -> {after}"
+        );
+        assert!(corr
+            .iter()
+            .zip(&balanced)
+            .all(|(c, b)| c + b >= -1e-6 && c + b <= 1.0 + 1e-6));
     }
 
     /// One leaf under every setting: what is pinned, and what the books show.
@@ -648,24 +892,56 @@ mod tests {
     fn the_books_of_a_leaf_under_each_setting() {
         // two tight ranges that block each other, as in a 4-bet pot
         let mut next = noise(77);
-        let (aa, kk, qq) = (class_index(12, 12, false), class_index(11, 11, false), class_index(10, 10, false));
-        let (aks, ako, a5s) = (class_index(12, 11, true), class_index(12, 11, false), class_index(12, 3, true));
+        let (aa, kk, qq) = (
+            class_index(12, 12, false),
+            class_index(11, 11, false),
+            class_index(10, 10, false),
+        );
+        let (aks, ako, a5s) = (
+            class_index(12, 11, true),
+            class_index(12, 11, false),
+            class_index(12, 3, true),
+        );
         let mut oop = vec![0f32; NUM_CLASSES];
         let mut ip = vec![0f32; NUM_CLASSES];
-        for (h, w) in [(aa, 6.0), (kk, 6.0), (qq, 3.0), (aks, 4.0), (ako, 6.0), (a5s, 2.0)] {
+        for (h, w) in [
+            (aa, 6.0),
+            (kk, 6.0),
+            (qq, 3.0),
+            (aks, 4.0),
+            (ako, 6.0),
+            (a5s, 2.0),
+        ] {
             oop[h] = w;
             ip[h] = w * (0.5 + next());
         }
         // values that rise with the class's strength, so the blocked classes are worth most
-        let balanced: Vec<f32> = (0..2 * NUM_CLASSES).map(|i| {
-            let h = i % NUM_CLASSES;
-            if h == aa { 1.1 } else if h == kk { 0.8 } else { 0.3 + 0.1 * next() }
-        }).collect();
+        let balanced: Vec<f32> = (0..2 * NUM_CLASSES)
+            .map(|i| {
+                let h = i % NUM_CLASSES;
+                if h == aa {
+                    1.1
+                } else if h == kk {
+                    0.8
+                } else {
+                    0.3 + 0.1 * next()
+                }
+            })
+            .collect();
         let net: Vec<f32> = (0..2 * NUM_CLASSES).map(|_| 0.04 * next()).collect();
         let (room, invested) = (3.0f32, [0.48, 0.5]);
         let run = |books: LeafBooks, known: LeafTotal, measure: bool| {
             let mut corr = net.clone();
-            let sums = book_leaf(books, measure, &mut corr, &balanced, [&oop, &ip], room, invested, known);
+            let sums = book_leaf(
+                books,
+                measure,
+                &mut corr,
+                &balanced,
+                [&oop, &ip],
+                room,
+                invested,
+                known,
+            );
             (corr, sums)
         };
         let exact = LeafTotal::Exact(0.96);
@@ -673,37 +949,84 @@ mod tests {
         // off: the net's values untouched; the dealt sums only on request
         let (corr, sums) = run(LeafBooks::default(), exact, false);
         assert_eq!(corr, net);
-        assert_eq!((sums.net_dealt, sums.dealt, sums.pinned, sums.fair), (None, None, false, Some(0.96)));
+        assert_eq!(
+            (sums.net_dealt, sums.dealt, sums.pinned, sums.fair),
+            (None, None, false, Some(0.96))
+        );
         assert!((sums.booked - weighted_total(&net, &balanced, &plain)).abs() < 1e-12);
         let (corr, measured) = run(LeafBooks::default(), exact, true);
         assert_eq!(corr, net);
         let net_dealt = measured.net_dealt.unwrap();
         assert_eq!(measured.dealt, Some(net_dealt));
         // the blocked classes are worth most, so the plain sum is above the dealt one
-        assert!(sums.booked > net_dealt + 0.01, "{} vs {net_dealt}", sums.booked);
+        assert!(
+            sums.booked > net_dealt + 0.01,
+            "{} vs {net_dealt}",
+            sums.booked
+        );
         // the pin on the dealt sum: values at the right level, the books still above the pot minus rake
-        let pin = LeafBooks { pin: PinTotal::Exact, ..Default::default() };
+        let pin = LeafBooks {
+            pin: PinTotal::Exact,
+            ..Default::default()
+        };
         let (corr, a) = run(pin, exact, false);
-        assert!(a.pinned && (a.net_dealt.unwrap() - net_dealt).abs() < 1e-12 && (a.dealt.unwrap() - 0.96).abs() < 1e-6);
-        assert!((a.booked - a.fair.unwrap() - (sums.booked - net_dealt)).abs() < 1e-5, "the gap between the sums stays");
+        assert!(
+            a.pinned
+                && (a.net_dealt.unwrap() - net_dealt).abs() < 1e-12
+                && (a.dealt.unwrap() - 0.96).abs() < 1e-6
+        );
+        assert!(
+            (a.booked - a.fair.unwrap() - (sums.booked - net_dealt)).abs() < 1e-5,
+            "the gap between the sums stays"
+        );
         let shift = corr[0] - net[0];
-        assert!(corr.iter().zip(&net).all(|(c, n)| ((c - n) - shift).abs() < 1e-6));
+        assert!(corr
+            .iter()
+            .zip(&net)
+            .all(|(c, n)| ((c - n) - shift).abs() < 1e-6));
         // a leaf whose total is not known is left alone, and so is a ruled one under "exact"
         for known in [LeafTotal::Unknown, LeafTotal::Rule(0.93)] {
             let (corr, s) = run(pin, known, false);
             assert!(corr == net && !s.pinned && s.fair == known.value());
         }
-        let (_, ruled) = run(LeafBooks { pin: PinTotal::Rule, ..Default::default() }, LeafTotal::Rule(0.93), false);
+        let (_, ruled) = run(
+            LeafBooks {
+                pin: PinTotal::Rule,
+                ..Default::default()
+            },
+            LeafTotal::Rule(0.93),
+            false,
+        );
         assert!(ruled.pinned && (ruled.dealt.unwrap() - 0.93).abs() < 1e-6);
         // the pin on the plain sum: the books add up, the values sit below their level
-        let (_, b) = run(LeafBooks { pin: PinTotal::Exact, sum: PinSum::Plain, ..Default::default() }, exact, true);
+        let (_, b) = run(
+            LeafBooks {
+                pin: PinTotal::Exact,
+                sum: PinSum::Plain,
+                ..Default::default()
+            },
+            exact,
+            true,
+        );
         assert!(b.pinned && (b.booked - 0.96).abs() < 1e-6 && b.dealt.unwrap() < 0.95);
         // blocking at the leaf: the books show the dealt sum, pinned or not
-        let leaf = LeafBooks { blocking: true, ..Default::default() };
+        let leaf = LeafBooks {
+            blocking: true,
+            ..Default::default()
+        };
         let (_, c) = run(leaf, exact, false);
         assert!(!c.pinned && (c.booked - net_dealt).abs() < 1e-6 && c.fair == Some(0.96));
-        let (corr, c) = run(LeafBooks { pin: PinTotal::Exact, ..leaf }, exact, false);
-        assert!(c.pinned && (c.dealt.unwrap() - 0.96).abs() < 1e-6 && (c.booked - 0.96).abs() < 1e-6);
+        let (corr, c) = run(
+            LeafBooks {
+                pin: PinTotal::Exact,
+                ..leaf
+            },
+            exact,
+            false,
+        );
+        assert!(
+            c.pinned && (c.dealt.unwrap() - 0.96).abs() < 1e-6 && (c.booked - 0.96).abs() < 1e-6
+        );
         // a class is booked by its factor: factor x (value - invested) is what the books pay over what was put in
         let blocking = Blocking::of(&oop, &ip).unwrap();
         let (pinned_only, _) = run(pin, exact, false);
@@ -712,10 +1035,20 @@ mod tests {
             let value = (balanced[i] + pinned_only[i]) as f64;
             let booked = (balanced[i] + corr[i]) as f64;
             let want = blocking.rel[side][h] * (value - invested[side]);
-            assert!((booked - invested[side] - want).abs() < 1e-5, "side {side} class {h}");
+            assert!(
+                (booked - invested[side] - want).abs() < 1e-5,
+                "side {side} class {h}"
+            );
         }
-        assert!(blocking.rel[0][aa] < 0.95 && blocking.rel[0][0] > 1.3, "aces meet this range less often than deuces: {} {}",
-                blocking.rel[0][aa], blocking.rel[0][0]);
-        assert!(blocking.together < 0.95, "these ranges are dealt together less often than two full ranges");
+        assert!(
+            blocking.rel[0][aa] < 0.95 && blocking.rel[0][0] > 1.3,
+            "aces meet this range less often than deuces: {} {}",
+            blocking.rel[0][aa],
+            blocking.rel[0][0]
+        );
+        assert!(
+            blocking.together < 0.95,
+            "these ranges are dealt together less often than two full ranges"
+        );
     }
 }

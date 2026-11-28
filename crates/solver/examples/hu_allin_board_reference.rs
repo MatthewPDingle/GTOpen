@@ -1,7 +1,8 @@
 //! Bounded research control: exact future-board equity for fixed private cards.
 //! No solver, policies, game mutation, GPU allocation or training is involved.
-use serde::{Deserialize, Serialize};
 use std::{collections::HashSet, fs, time::Instant};
+
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -39,7 +40,13 @@ fn score(hole: &[u8; 4], board: &[u8; 5]) -> u8 {
     b[2..].copy_from_slice(board);
     let x = solver::evaluator::evaluate7(&a);
     let y = solver::evaluator::evaluate7(&b);
-    if x > y { 2 } else if x == y { 1 } else { 0 }
+    if x > y {
+        2
+    } else if x == y {
+        1
+    } else {
+        0
+    }
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -62,10 +69,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Each unordered five-card board appears exactly once. Preflop all-in
         // payoffs are independent of the order in which its five cards arrive.
         for a in 0..44 {
-            for b in a+1..45 {
-                for c in b+1..46 {
-                    for d in c+1..47 {
-                        for e in d+1..48 {
+            for b in a + 1..45 {
+                for c in b + 1..46 {
+                    for d in c + 1..47 {
+                        for e in d + 1..48 {
                             let board = [deck[a], deck[b], deck[c], deck[d], deck[e]];
                             counts[score(&hole, &board) as usize] += 1;
                         }
@@ -86,7 +93,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         results.push(ResultRow {
             private_cards: hole,
             exact_boards,
-            wins: counts[2], ties: counts[1], losses: counts[0],
+            wins: counts[2],
+            ties: counts[1],
+            losses: counts[0],
             equity: (counts[2] as f64 + 0.5 * counts[1] as f64) / exact_boards as f64,
             exact_seconds,
             sampled_scores,

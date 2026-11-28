@@ -1,9 +1,10 @@
 //! Registered shared-reference CV learning screen; unchanged quality gates.
+use std::{path::Path, sync::Arc, time::Instant};
+
 use serde_json::{json, Value};
 use solver::preflop::{
     convergence_research::Experiment, equity::EquityTable, gpu::PreflopGpu, PreflopSolver,
 };
-use std::{path::Path, sync::Arc, time::Instant};
 fn main() -> Result<(), String> {
     let a: Vec<_> = std::env::args().skip(1).collect();
     if a.len() != 6 {
@@ -11,10 +12,13 @@ fn main() -> Result<(), String> {
     }
     let samples: u32 = a[2].parse().map_err(|_| "samples")?;
     let seed: u64 = a[3].parse().map_err(|_| "seed")?;
-    let mode=a[4].as_str();
-    if ![64,1024].contains(&samples) || ![42,314159].contains(&seed)
-        || !["control","old32","shared32","shared64"].contains(&mode)
-        || (samples==1024 && mode!="control") || (seed!=42 && mode=="old32") {
+    let mode = a[4].as_str();
+    if ![64, 1024].contains(&samples)
+        || ![42, 314159].contains(&seed)
+        || !["control", "old32", "shared32", "shared64"].contains(&mode)
+        || (samples == 1024 && mode != "control")
+        || (seed != 42 && mode == "old32")
+    {
         return Err("unregistered case".into());
     }
     let out = Path::new(&a[5]);
@@ -68,11 +72,11 @@ fn main() -> Result<(), String> {
     std::fs::create_dir_all(out).map_err(|e| e.to_string())?;
     let mut g = PreflopGpu::new(&s, 4096)?;
     g.configure_research(Experiment::new("gamma15", samples, 1000, seed)?)?;
-    let storage=match mode {
-        "shared32"=>g.enable_research_shared_control_variate(32,4096)?,
-        "shared64"=>g.enable_research_shared_control_variate(64,4096)?,
-        "old32"=>json!({"persistent_extra_bytes":g.enable_research_control_variate(32,4096)?}),
-        _=>json!({"persistent_extra_bytes":0}),
+    let storage = match mode {
+        "shared32" => g.enable_research_shared_control_variate(32, 4096)?,
+        "shared64" => g.enable_research_shared_control_variate(64, 4096)?,
+        "old32" => json!({"persistent_extra_bytes":g.enable_research_control_variate(32,4096)?}),
+        _ => json!({"persistent_extra_bytes":0}),
     };
     let mut streak = 0;
     let mut checks = Vec::new();
@@ -124,8 +128,8 @@ fn main() -> Result<(), String> {
             break;
         }
     }
-    let shared_stats=g.research_shared_control_variate_stats();
-    let cv_stats=g.research_control_variate_stats();
+    let shared_stats = g.research_shared_control_variate_stats();
+    let cv_stats = g.research_control_variate_stats();
     drop(g);
     let save = out.join("final.gtop");
     s.save_game(save.to_str().ok_or("invalid save path")?)?;

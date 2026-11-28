@@ -3,15 +3,22 @@
 //! computed here independently as a linear program on a river spot where
 //! OOP's whole strategy is the one fitted decision.
 
-use solver::cards::card_mask;
-use solver::evaluator::evaluate7;
-use solver::query::PathStep;
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{LockMode, Solver, Spot, SpotConfig};
 use std::sync::Arc;
 
+use solver::{
+    cards::card_mask,
+    evaluator::evaluate7,
+    query::PathStep,
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    LockMode, Solver, Spot, SpotConfig,
+};
+
 fn sizing(bet: &str) -> StreetSizing {
-    StreetSizing { bet: parse_sizes(bet).unwrap(), raise: vec![], donk: vec![] }
+    StreetSizing {
+        bet: parse_sizes(bet).unwrap(),
+        raise: vec![],
+        donk: vec![],
+    }
 }
 
 const POT: f64 = 100.0;
@@ -82,7 +89,13 @@ impl Model {
                 }
                 w[i][j] = a.weight as f64 * b.weight as f64;
                 let sb = strength(b.c1, b.c2);
-                sd[i][j] = if sa > sb { 1.0 } else if sa < sb { -1.0 } else { 0.0 };
+                sd[i][j] = if sa > sb {
+                    1.0
+                } else if sa < sb {
+                    -1.0
+                } else {
+                    0.0
+                };
             }
         }
         // chips per (hand, hand) pair: normalize by the total pair weight
@@ -92,7 +105,11 @@ impl Model {
                 *x /= tot;
             }
         }
-        Model { wi: h0.iter().map(|h| h.weight as f64).collect(), w, sd }
+        Model {
+            wi: h0.iter().map(|h| h.weight as f64).collect(),
+            w,
+            sd,
+        }
     }
 
     fn value(&self, bet: &[f64]) -> f64 {
@@ -105,7 +122,9 @@ impl Model {
         }
         for j in 0..m {
             let fold: f64 = (0..n).map(|i| bet[i] * self.w[i][j] * POT / 2.0).sum();
-            let call: f64 = (0..n).map(|i| bet[i] * self.w[i][j] * self.sd[i][j] * (POT / 2.0 + BET)).sum();
+            let call: f64 = (0..n)
+                .map(|i| bet[i] * self.w[i][j] * self.sd[i][j] * (POT / 2.0 + BET))
+                .sum();
             v += fold.min(call);
         }
         v
@@ -119,7 +138,9 @@ impl Model {
             for j in 0..m {
                 let w = self.w[i][j];
                 v += (1.0 - bet[i]) * w * self.sd[i][j] * POT / 2.0;
-                v += bet[i] * w * ((1.0 - call[j]) * POT / 2.0 + call[j] * self.sd[i][j] * (POT / 2.0 + BET));
+                v += bet[i]
+                    * w
+                    * ((1.0 - call[j]) * POT / 2.0 + call[j] * self.sd[i][j] * (POT / 2.0 + BET));
             }
         }
         v
@@ -160,7 +181,9 @@ impl Model {
         let mut c = vec![0.0; nv];
         let mut c0 = -(m as f64) * l;
         for i in 0..n {
-            let ci: f64 = (0..m).map(|j| self.w[i][j] * self.sd[i][j] * POT / 2.0).sum();
+            let ci: f64 = (0..m)
+                .map(|j| self.w[i][j] * self.sd[i][j] * POT / 2.0)
+                .sum();
             c[i] = -ci;
             c0 += ci;
         }
@@ -168,7 +191,9 @@ impl Model {
             c[n + j] = 1.0;
         }
         let r: f64 = self.wi.iter().sum();
-        let eq: Vec<f64> = (0..nv).map(|k| if k < n { self.wi[k] } else { 0.0 }).collect();
+        let eq: Vec<f64> = (0..nv)
+            .map(|k| if k < n { self.wi[k] } else { 0.0 })
+            .collect();
         c0 + simplex_max(&c, &rows, &eq, t * r)
     }
 }
@@ -209,12 +234,16 @@ fn simplex_max(c: &[f64], rows: &[(Vec<f64>, f64)], eq: &[f64], beq: f64) -> f64
     }
     t[obj][ncol] = z;
     for _ in 0..200_000 {
-        let Some(e) = (0..ncol).find(|&j| t[obj][j] < -1e-9) else { break };
+        let Some(e) = (0..ncol).find(|&j| t[obj][j] < -1e-9) else {
+            break;
+        };
         let mut best: Option<(f64, usize)> = None;
         for k in 0..nr {
             if t[k][e] > 1e-10 {
                 let ratio = t[k][ncol] / t[k][e];
-                if best.map_or(true, |(r, bk)| ratio < r - 1e-12 || (ratio <= r + 1e-12 && basis[k] < basis[bk])) {
+                if best.map_or(true, |(r, bk)| {
+                    ratio < r - 1e-12 || (ratio <= r + 1e-12 && basis[k] < basis[bk])
+                }) {
                     best = Some((ratio, k));
                 }
             }
@@ -236,8 +265,11 @@ fn simplex_max(c: &[f64], rows: &[(Vec<f64>, f64)], eq: &[f64], beq: f64) -> f64
         }
         basis[pr] = e;
     }
-    assert!(basis.iter().all(|&b| b != nv + ke) || t[basis.iter().position(|&b| b == nv + ke).unwrap()][ncol].abs() < 1e-7,
-        "LP infeasible");
+    assert!(
+        basis.iter().all(|&b| b != nv + ke)
+            || t[basis.iter().position(|&b| b == nv + ke).unwrap()][ncol].abs() < 1e-7,
+        "LP infeasible"
+    );
     t[obj][ncol]
 }
 
@@ -266,7 +298,10 @@ fn avg_bet(s: &Solver) -> Vec<f64> {
 
 /// IP's call probability per combo facing the bet, from the solve.
 fn ip_call(s: &Solver) -> Vec<f64> {
-    let idx = s.walk_path(&[PathStep::Action { index: 1 }]).unwrap().node_idx;
+    let idx = s
+        .walk_path(&[PathStep::Action { index: 1 }])
+        .unwrap()
+        .node_idx;
     let node = &s.spot.tree.nodes[idx as usize];
     let nh = s.spot.hands[1].len();
     let sig = s.average_strategy(idx, node);
@@ -302,16 +337,38 @@ fn full_fit_matches_the_constrained_lp_and_beats_raking() {
     for &t in &[0.25f64, 0.75] {
         let freqs = vec![(1.0 - t) as f32, t as f32];
         let opt = model.optimum(t);
-        let (rake, _) = locked_value(&lock_with(BASE, LockMode::Range { freqs: freqs.clone() }), &model);
-        let (quick, _) = locked_value(&lock_with(BASE, LockMode::Fit { freqs: freqs.clone() }), &model);
+        let (rake, _) = locked_value(
+            &lock_with(
+                BASE,
+                LockMode::Range {
+                    freqs: freqs.clone(),
+                },
+            ),
+            &model,
+        );
+        let (quick, _) = locked_value(
+            &lock_with(
+                BASE,
+                LockMode::Fit {
+                    freqs: freqs.clone(),
+                },
+            ),
+            &model,
+        );
         let s = full_fit(&freqs, 1500);
         let (full, ff) = locked_value(&s, &model);
         eprintln!("t={t}: lp={opt:.4} full={full:.4} quick={quick:.4} rake={rake:.4} (chips per pair, pot {POT})");
         assert!((ff - t).abs() < 1e-4, "fit locked at {ff}, target {t}");
         // within 0.02% of pot of the exact constrained optimum
-        assert!(full > opt - 0.02 && full < opt + 0.005, "full fit {full} vs LP {opt}");
+        assert!(
+            full > opt - 0.02 && full < opt + 0.005,
+            "full fit {full} vs LP {opt}"
+        );
         // raking and the quick fit lose far more to a best response here
-        assert!(full > rake + 1.0 && full > quick + 1.0, "full {full} quick {quick} rake {rake}");
+        assert!(
+            full > rake + 1.0 && full > quick + 1.0,
+            "full {full} quick {quick} rake {rake}"
+        );
     }
 }
 
@@ -322,10 +379,26 @@ fn quick_fit_loses_less_ev_than_raking_against_the_current_strategy() {
     let call = ip_call(&base);
     for &t in &[0.25f64, 0.4, 0.7, 0.85] {
         let freqs = vec![(1.0 - t) as f32, t as f32];
-        let rake = lock_with(BASE, LockMode::Range { freqs: freqs.clone() });
-        let quick = lock_with(BASE, LockMode::Fit { freqs: freqs.clone() });
-        let (vr, fr) = (model.value_vs(&root_bet(&rake), &call), model.freq(&root_bet(&rake)));
-        let (vq, fq) = (model.value_vs(&root_bet(&quick), &call), model.freq(&root_bet(&quick)));
+        let rake = lock_with(
+            BASE,
+            LockMode::Range {
+                freqs: freqs.clone(),
+            },
+        );
+        let quick = lock_with(
+            BASE,
+            LockMode::Fit {
+                freqs: freqs.clone(),
+            },
+        );
+        let (vr, fr) = (
+            model.value_vs(&root_bet(&rake), &call),
+            model.freq(&root_bet(&rake)),
+        );
+        let (vq, fq) = (
+            model.value_vs(&root_bet(&quick), &call),
+            model.freq(&root_bet(&quick)),
+        );
         eprintln!("t={t}: quick {vq:.4}@{fq:.4} rake {vr:.4}@{fr:.4}");
         assert!((fq - t).abs() < 1e-4 && (fr - t).abs() < 1e-4);
         assert!(vq >= vr - 1e-3, "quick {vq} below rake {vr} at {t}");
@@ -435,6 +508,10 @@ fn fit_below_a_chance_node_with_isomorphism() {
                 bet += h.reach as f64 * st[1] as f64;
             }
         }
-        assert!((bet / tot - 0.6).abs() < 1e-3, "{storage:?}: locked bet {}", bet / tot);
+        assert!(
+            (bet / tot - 0.6).abs() < 1e-3,
+            "{storage:?}: locked bet {}",
+            bet / tot
+        );
     }
 }

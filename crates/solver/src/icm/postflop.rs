@@ -7,10 +7,13 @@
 //! linear in chips and reproduce chip EV exactly. ICM makes the game
 //! general-sum, so each player gets its own payoff per terminal.
 
-use super::{icm_after_hand, malmuth_harville_groups, state_count, Group};
-use crate::preflop::FieldGroup;
-use crate::tree::{Tree, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN};
 use serde::{Deserialize, Serialize};
+
+use super::{icm_after_hand, malmuth_harville_groups, state_count, Group};
+use crate::{
+    preflop::FieldGroup,
+    tree::{Tree, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN},
+};
 
 /// Tournament payouts for a postflop spot.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -39,7 +42,11 @@ impl PostflopIcm {
     /// as groups of one, which the grouped DP prices exactly.
     pub fn groups(&self) -> Vec<Group> {
         let mut out: Vec<Group> = Vec::new();
-        let all = self.others.iter().map(|&s| (s, 1)).chain(self.field_groups.iter().map(|g| (g.stack, g.count)));
+        let all = self
+            .others
+            .iter()
+            .map(|&s| (s, 1))
+            .chain(self.field_groups.iter().map(|g| (g.stack, g.count)));
         for (stack, count) in all {
             match out.iter_mut().find(|g| g.stack == stack) {
                 Some(g) => g.count += count,
@@ -52,7 +59,9 @@ impl PostflopIcm {
 
     /// Each hand player's chips behind at the root.
     pub fn behind_for(&self, players: usize, effective: f64) -> Vec<f64> {
-        self.behind.clone().unwrap_or_else(|| vec![effective; players])
+        self.behind
+            .clone()
+            .unwrap_or_else(|| vec![effective; players])
     }
 
     pub fn validate(&self, players: usize, effective: f64, rake_pct: f64) -> Result<(), String> {
@@ -63,11 +72,17 @@ impl PostflopIcm {
         if behind.len() != players {
             return Err(format!("ICM behind needs one stack per player ({players})"));
         }
-        if behind.iter().any(|b| !b.is_finite() || *b < effective - 1e-9) {
+        if behind
+            .iter()
+            .any(|b| !b.is_finite() || *b < effective - 1e-9)
+        {
             return Err("ICM behind stacks must each cover the effective stack".into());
         }
         let groups = self.groups();
-        if groups.iter().any(|g| !g.stack.is_finite() || g.stack <= 0.0) {
+        if groups
+            .iter()
+            .any(|g| !g.stack.is_finite() || g.stack <= 0.0)
+        {
             return Err("ICM stacks of other players must be positive".into());
         }
         let total = players + groups.iter().map(|g| g.count).sum::<usize>();
@@ -100,16 +115,29 @@ impl IcmPricer {
         let groups = icm.groups();
         let players = reference.len() + groups.iter().map(|g| g.count).sum::<usize>();
         let prizes: f64 = icm.payouts.iter().take(players).sum();
-        let chips = reference.iter().sum::<f64>() + groups.iter().map(|g| g.stack * g.count as f64).sum::<f64>();
+        let chips = reference.iter().sum::<f64>()
+            + groups.iter().map(|g| g.stack * g.count as f64).sum::<f64>();
         let (start_equity, _) = malmuth_harville_groups(&reference, &groups, &icm.payouts);
-        IcmPricer { reference, groups, payouts: icm.payouts.clone(), start_equity, scale: chips / prizes }
+        IcmPricer {
+            reference,
+            groups,
+            payouts: icm.payouts.clone(),
+            start_equity,
+            scale: chips / prizes,
+        }
     }
 
     /// Each hand player's prize change, in bb equivalents, for final stacks.
     pub fn value(&self, after: &[f64]) -> Vec<f64> {
-        let fin: Vec<f64> = after.iter().map(|&x| if x < 1e-9 { 0.0 } else { x }).collect();
+        let fin: Vec<f64> = after
+            .iter()
+            .map(|&x| if x < 1e-9 { 0.0 } else { x })
+            .collect();
         let (eq, _) = icm_after_hand(&self.reference, &fin, &self.groups, &self.payouts);
-        eq.iter().zip(&self.start_equity).map(|(a, b)| (a - b) * self.scale).collect()
+        eq.iter()
+            .zip(&self.start_equity)
+            .map(|(a, b)| (a - b) * self.scale)
+            .collect()
     }
 
     pub fn start_equity(&self) -> &[f64] {
@@ -139,12 +167,15 @@ impl HuIcmPayoffs {
         let mut win = [vec![0f32; n], vec![0f32; n]];
         let mut lose = [vec![0f32; n], vec![0f32; n]];
         let tie = [vec![0f32; n], vec![0f32; n]];
-        let mut cache: std::collections::HashMap<[u64; 2], [f32; 2]> = std::collections::HashMap::new();
+        let mut cache: std::collections::HashMap<[u64; 2], [f32; 2]> =
+            std::collections::HashMap::new();
         let mut price = |s: [f64; 2]| -> [f32; 2] {
-            *cache.entry([s[0].to_bits(), s[1].to_bits()]).or_insert_with(|| {
-                let v = pricer.value(&s);
-                [v[0] as f32, v[1] as f32]
-            })
+            *cache
+                .entry([s[0].to_bits(), s[1].to_bits()])
+                .or_insert_with(|| {
+                    let v = pricer.value(&s);
+                    [v[0] as f32, v[1] as f32]
+                })
         };
         for (ni, node) in tree.nodes.iter().enumerate() {
             let put = node.put;
@@ -171,7 +202,13 @@ impl HuIcmPayoffs {
                 _ => {}
             }
         }
-        HuIcmPayoffs { win, lose, tie, scale: pricer.scale, start_equity: pricer.start_equity().to_vec() }
+        HuIcmPayoffs {
+            win,
+            lose,
+            tie,
+            scale: pricer.scale,
+            start_equity: pricer.start_equity().to_vec(),
+        }
     }
 }
 

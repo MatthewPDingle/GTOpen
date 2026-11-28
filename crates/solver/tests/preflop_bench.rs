@@ -1,16 +1,22 @@
 //! Manual benchmark for regret-based pruning (not part of the suite):
 //! cargo test --release --test preflop_bench -- --ignored --nocapture
 
-use solver::preflop::equity::EquityTable;
-use solver::preflop::{PreflopConfig, PreflopSolver};
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
+
+use solver::preflop::{equity::EquityTable, PreflopConfig, PreflopSolver};
 
 #[test]
 #[ignore]
 fn bench_pruning_six_max() {
     let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", 20000));
-    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec![
             "UTG".into(),
@@ -20,7 +26,8 @@ fn bench_pruning_six_max() {
             "SB".into(),
             "BB".into(),
         ],
-        stack: 100.0, stacks: None,
+        stack: 100.0,
+        stacks: None,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -36,13 +43,19 @@ fn bench_pruning_six_max() {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     };
     for prune in [false, true] {
         let mut s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
         s.prune = prune;
         // warm both runs identically past the pruning warmup
-        let warm: u32 = std::env::var("BENCH_WARM").ok().and_then(|v| v.parse().ok()).unwrap_or(40);
+        let warm: u32 = std::env::var("BENCH_WARM")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(40);
         for _ in 0..warm {
             s.iterate();
         }

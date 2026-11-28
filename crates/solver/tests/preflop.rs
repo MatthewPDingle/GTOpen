@@ -1,9 +1,12 @@
 //! Preflop solver validation: CFR vs an independent push/fold oracle,
 //! structural sanity of the action grammar, and model invariants.
 
-use solver::preflop::equity::{class_prob, EquityTable, NUM_CLASSES};
-use solver::preflop::{PreflopConfig, PreflopSolver};
 use std::sync::{Arc, OnceLock};
+
+use solver::preflop::{
+    equity::{class_prob, EquityTable, NUM_CLASSES},
+    PreflopConfig, PreflopSolver,
+};
 
 // These established convergence/profile regressions pin their original payoff
 // game. New-model conservation and traversal tests live in preflop/multiway.rs
@@ -16,37 +19,88 @@ fn legacy_solver(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<PreflopSolv
 
 #[test]
 fn dataset_contexts_replace_position_prior_and_preserve_measured_hands() {
-    use solver::preflop::{archetypes, BucketPolicy};
-    use solver::preflop::dataset::{DatasetModel, DatasetRow};
-    let mut cfg=hu_push_fold_config(10.0);
-    cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
-    cfg.posts=vec![0.0,0.5,1.0]; cfg.limp=true;cfg.open_raises=vec![2.0];
-    let mut solver=legacy_solver(cfg,table()).unwrap();solver.iterate();
-    let mut stats=archetypes()[3].1.clone();
-    let rows=vec![0,-1,-2].into_iter().map(|role|DatasetRow{
-        players:3,role,open_raise:if role==0 {17.0}else{31.0},open_limp:8.0,
-        iso_raise:12.0,limp_behind:21.0,opening:None,responses:Default::default(),
-    }).collect();
-    stats.dataset=Some(DatasetModel{contextual_reraise:None,site:"Test".into(),min_players:5,max_players:7,ante:true,small_blind_bb:Some(0.5),
-        empirical_opening:false,scope:"fixture".into(),rows,response_policies:vec![],response_notes:Default::default()});
-    let (_,btn)=solver.generate_profile(0,&stats,"context").unwrap();
-    let (_,sb)=solver.generate_profile(1,&stats,"context").unwrap();
-    assert!((btn.pfr-17.0).abs()<1e-4);
-    assert!((sb.pfr-31.0).abs()<1e-4);
+    use solver::preflop::{
+        archetypes,
+        dataset::{DatasetModel, DatasetRow},
+        BucketPolicy,
+    };
+    let mut cfg = hu_push_fold_config(10.0);
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.limp = true;
+    cfg.open_raises = vec![2.0];
+    let mut solver = legacy_solver(cfg, table()).unwrap();
+    solver.iterate();
+    let mut stats = archetypes()[3].1.clone();
+    let rows = vec![0, -1, -2]
+        .into_iter()
+        .map(|role| DatasetRow {
+            players: 3,
+            role,
+            open_raise: if role == 0 { 17.0 } else { 31.0 },
+            open_limp: 8.0,
+            iso_raise: 12.0,
+            limp_behind: 21.0,
+            opening: None,
+            responses: Default::default(),
+        })
+        .collect();
+    stats.dataset = Some(DatasetModel {
+        contextual_reraise: None,
+        site: "Test".into(),
+        min_players: 5,
+        max_players: 7,
+        ante: true,
+        small_blind_bb: Some(0.5),
+        empirical_opening: false,
+        scope: "fixture".into(),
+        rows,
+        response_policies: vec![],
+        response_notes: Default::default(),
+    });
+    let (_, btn) = solver.generate_profile(0, &stats, "context").unwrap();
+    let (_, sb) = solver.generate_profile(1, &stats, "context").unwrap();
+    assert!((btn.pfr - 17.0).abs() < 1e-4);
+    assert!((sb.pfr - 31.0).abs() < 1e-4);
     assert!(btn.context_note.unwrap().contains("extrapolated"));
-    let d=stats.dataset.as_mut().unwrap();d.empirical_opening=true;
+    let d = stats.dataset.as_mut().unwrap();
+    d.empirical_opening = true;
     for row in &mut d.rows {
-        row.opening=Some(BucketPolicy{ raise_multiples: Vec::new(), raise_sizes: Vec::new(),call:vec![0.2;169],raise:vec![0.3;169],jam:vec![0.0;169],raise_size:"min".into()});
+        row.opening = Some(BucketPolicy {
+            raise_multiples: Vec::new(),
+            raise_sizes: Vec::new(),
+            call: vec![0.2; 169],
+            raise: vec![0.3; 169],
+            jam: vec![0.0; 169],
+            raise_size: "min".into(),
+        });
     }
-    let (profile,implied)=solver.generate_profile(0,&stats,"empirical").unwrap();
-    let policy=profile.buckets[0].as_ref().unwrap();
-    assert!(policy.call.iter().all(|&x|x==0.2));assert!(policy.raise.iter().all(|&x|x==0.3));
-    assert!((implied.pfr-30.0).abs()<1e-4);
-    let saved=serde_json::to_string(&profile).unwrap();
-    let restored:solver::preflop::SeatProfile=serde_json::from_str(&saved).unwrap();
-    assert!(restored.response.unwrap().source_stats.unwrap().dataset.unwrap().empirical_opening);
-    stats.dataset.as_mut().unwrap().rows[0].opening.as_mut().unwrap().raise[0]=0.99;
-    assert!(solver.generate_profile(0,&stats,"invalid").unwrap_err().contains("probabilities"));
+    let (profile, implied) = solver.generate_profile(0, &stats, "empirical").unwrap();
+    let policy = profile.buckets[0].as_ref().unwrap();
+    assert!(policy.call.iter().all(|&x| x == 0.2));
+    assert!(policy.raise.iter().all(|&x| x == 0.3));
+    assert!((implied.pfr - 30.0).abs() < 1e-4);
+    let saved = serde_json::to_string(&profile).unwrap();
+    let restored: solver::preflop::SeatProfile = serde_json::from_str(&saved).unwrap();
+    assert!(
+        restored
+            .response
+            .unwrap()
+            .source_stats
+            .unwrap()
+            .dataset
+            .unwrap()
+            .empirical_opening
+    );
+    stats.dataset.as_mut().unwrap().rows[0]
+        .opening
+        .as_mut()
+        .unwrap()
+        .raise[0] = 0.99;
+    assert!(solver
+        .generate_profile(0, &stats, "invalid")
+        .unwrap_err()
+        .contains("probabilities"));
 }
 
 fn table() -> Arc<EquityTable> {
@@ -57,124 +111,265 @@ fn table() -> Arc<EquityTable> {
 #[test]
 fn measured_responses_reach_size_bands_squeezes_and_cold_reraises() {
     use solver::preflop::{archetypes, BucketPolicy};
-    let mut cfg=hu_push_fold_config(100.0);
-    cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
-    cfg.limp=true;cfg.open_raises=vec![2.0];cfg.raise_mults=vec![3.0];cfg.max_raises=3;
-    let mut s=legacy_solver(cfg,table()).unwrap();s.iterate();
-    let flat=|call,raise|BucketPolicy{ raise_multiples: Vec::new(), raise_sizes: Vec::new(),call:vec![call;169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()};
-    let mut st=archetypes()[3].1.clone();
+    let mut cfg = hu_push_fold_config(100.0);
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.limp = true;
+    cfg.open_raises = vec![2.0];
+    cfg.raise_mults = vec![3.0];
+    cfg.max_raises = 3;
+    let mut s = legacy_solver(cfg, table()).unwrap();
+    s.iterate();
+    let flat = |call, raise| BucketPolicy {
+        raise_multiples: Vec::new(),
+        raise_sizes: Vec::new(),
+        call: vec![call; 169],
+        raise: vec![raise; 169],
+        jam: vec![0.0; 169],
+        raise_size: "min".into(),
+    };
+    let mut st = archetypes()[3].1.clone();
     let rows:Vec<_>=[0,-1,-2].iter().map(|r|serde_json::json!({"players":3,"role":r,"open_raise":20,"open_limp":10,"iso_raise":10,"limp_behind":20,
         "responses":{"raise":0,"reraise":0,"squeeze":3,"cold_reraise":2,"raise_2.5":1}})).collect();
     st.dataset=Some(serde_json::from_value(serde_json::json!({"site":"Fixture","min_players":3,"max_players":3,"ante":false,"empirical_opening":false,"scope":"fixture","rows":rows,
         "response_policies":[flat(0.2,0.3),flat(0.6,0.1),flat(0.05,0.15),flat(0.4,0.2)]})).unwrap());
-    st.cont_vs_raise_bands=Some(vec![(999.0,99.0)]); // Must not overwrite measured bands.
-    let profiles:Vec<_>=(0..3).map(|seat|Some(s.generate_profile(seat,&st,"learned").unwrap().0)).collect();
-    s.set_table(vec![false;3],profiles).unwrap();
-    for (path,expected) in [(vec!["raise","fold"],0.6),(vec!["raise","call"],0.4),
-                            (vec!["raise","raise"],0.05),(vec!["raise","raise","fold"],0.2)] {
-        let mut node=0;
+    st.cont_vs_raise_bands = Some(vec![(999.0, 99.0)]); // Must not overwrite measured bands.
+    let profiles: Vec<_> = (0..3)
+        .map(|seat| Some(s.generate_profile(seat, &st, "learned").unwrap().0))
+        .collect();
+    s.set_table(vec![false; 3], profiles).unwrap();
+    for (path, expected) in [
+        (vec!["raise", "fold"], 0.6),
+        (vec!["raise", "call"], 0.4),
+        (vec!["raise", "raise"], 0.05),
+        (vec!["raise", "raise", "fold"], 0.2),
+    ] {
+        let mut node = 0;
         for kind in path {
-            let a=s.nodes[node].actions.iter().position(|a|a.kind==kind).unwrap();node=s.child(node,a);
+            let a = s.nodes[node]
+                .actions
+                .iter()
+                .position(|a| a.kind == kind)
+                .unwrap();
+            node = s.child(node, a);
         }
-        let sig=s.average_strategy(node);
-        let call=s.nodes[node].actions.iter().position(|a|a.kind=="call").unwrap();
-        assert!((sig[call*169]-expected).abs()<1e-6,"wrong conditional response at node {node}");
+        let sig = s.average_strategy(node);
+        let call = s.nodes[node]
+            .actions
+            .iter()
+            .position(|a| a.kind == "call")
+            .unwrap();
+        assert!(
+            (sig[call * 169] - expected).abs() < 1e-6,
+            "wrong conditional response at node {node}"
+        );
     }
-    let encoded=serde_json::to_string(&s.seat_profiles).unwrap();
-    let restored:Vec<Option<solver::preflop::SeatProfile>>=serde_json::from_str(&encoded).unwrap();
-    assert_eq!(restored[2].as_ref().unwrap().response.as_ref().unwrap().cold_reraise.as_ref().unwrap().call[0],0.05);
-    st.dataset.as_mut().unwrap().rows[0].responses.insert("raise".into(),999);
-    assert!(s.generate_profile(0,&st,"bad index").unwrap_err().contains("reference"));
+    let encoded = serde_json::to_string(&s.seat_profiles).unwrap();
+    let restored: Vec<Option<solver::preflop::SeatProfile>> =
+        serde_json::from_str(&encoded).unwrap();
+    assert_eq!(
+        restored[2]
+            .as_ref()
+            .unwrap()
+            .response
+            .as_ref()
+            .unwrap()
+            .cold_reraise
+            .as_ref()
+            .unwrap()
+            .call[0],
+        0.05
+    );
+    st.dataset.as_mut().unwrap().rows[0]
+        .responses
+        .insert("raise".into(), 999);
+    assert!(s
+        .generate_profile(0, &st, "bad index")
+        .unwrap_err()
+        .contains("reference"));
 }
 
 #[test]
 fn limp_policies_route_by_paid_entry_free_check_and_voluntary_limper_count() {
     use solver::preflop::{archetypes, BucketPolicy, LimpContextPolicy, ProfileResponse};
     for sb in [0.5, 1.0] {
-        let mut cfg=hu_push_fold_config(20.0);
-        cfg.positions=vec!["CO".into(),"BTN".into(),"SB".into(),"BB".into()];
-        cfg.posts=vec![0.0,0.0,sb,1.0];cfg.ante=0.1;cfg.limp=true;cfg.open_raises=vec![3.0];
-        let mut s=legacy_solver(cfg,table()).unwrap();s.iterate();
-        let mut profiles=Vec::new();
+        let mut cfg = hu_push_fold_config(20.0);
+        cfg.positions = vec!["CO".into(), "BTN".into(), "SB".into(), "BB".into()];
+        cfg.posts = vec![0.0, 0.0, sb, 1.0];
+        cfg.ante = 0.1;
+        cfg.limp = true;
+        cfg.open_raises = vec![3.0];
+        let mut s = legacy_solver(cfg, table()).unwrap();
+        s.iterate();
+        let mut profiles = Vec::new();
         for seat in 0..4 {
-            let mut p=s.generate_profile(seat,&archetypes()[3].1,"fixture").unwrap().0;
-            p.response=Some(ProfileResponse {limp_contexts:[false,true].into_iter().flat_map(|free_check|
-                (1..=3).map(move |limpers| {
-                    let raise=limpers as f32/10.0;
-                    LimpContextPolicy {limpers,free_check,policy:BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
-                        call:vec![if free_check {1.0-raise}else{0.1};169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()
-                    }}
-                })).collect(),..Default::default()});
+            let mut p = s
+                .generate_profile(seat, &archetypes()[3].1, "fixture")
+                .unwrap()
+                .0;
+            p.response = Some(ProfileResponse {
+                limp_contexts: [false, true]
+                    .into_iter()
+                    .flat_map(|free_check| {
+                        (1..=3).map(move |limpers| {
+                            let raise = limpers as f32 / 10.0;
+                            LimpContextPolicy {
+                                limpers,
+                                free_check,
+                                policy: BucketPolicy {
+                                    raise_multiples: Vec::new(),
+                                    raise_sizes: Vec::new(),
+                                    call: vec![if free_check { 1.0 - raise } else { 0.1 }; 169],
+                                    raise: vec![raise; 169],
+                                    jam: vec![0.0; 169],
+                                    raise_size: "min".into(),
+                                },
+                            }
+                        })
+                    })
+                    .collect(),
+                ..Default::default()
+            });
             profiles.push(Some(p));
         }
-        let encoded=serde_json::to_string(&profiles).unwrap();
-        s.set_table(vec![false;4],serde_json::from_str(&encoded).unwrap()).unwrap();
-        let last=if sb==1.0 {"check"}else{"call"};
-        for (path,count,free) in [
-            (vec!["call"],1,false),
-            (vec!["call","call"],2,sb==1.0),
-            (vec!["call","fold",last],if sb==1.0 {1}else{2},true),
-            (vec!["call","call",last],if sb==1.0 {2}else{3},true),
+        let encoded = serde_json::to_string(&profiles).unwrap();
+        s.set_table(vec![false; 4], serde_json::from_str(&encoded).unwrap())
+            .unwrap();
+        let last = if sb == 1.0 { "check" } else { "call" };
+        for (path, count, free) in [
+            (vec!["call"], 1, false),
+            (vec!["call", "call"], 2, sb == 1.0),
+            (
+                vec!["call", "fold", last],
+                if sb == 1.0 { 1 } else { 2 },
+                true,
+            ),
+            (
+                vec!["call", "call", last],
+                if sb == 1.0 { 2 } else { 3 },
+                true,
+            ),
         ] {
-            let mut node=0;
-            for kind in path {let a=s.nodes[node].actions.iter().position(|a|a.kind==kind).unwrap();node=s.child(node,a);}
-            let sigma=s.average_strategy(node);
-            let raise=s.nodes[node].actions.iter().position(|a|a.kind=="raise").unwrap();
-            assert!((sigma[raise*169]-count as f32/10.0).abs()<1e-6,"wrong limper count");
-            let passive=s.nodes[node].actions.iter().position(|a|a.kind==if free {"check"}else{"call"}).unwrap();
-            assert!((sigma[passive*169]-if free {1.0-count as f32/10.0}else{0.1}).abs()<1e-6);
+            let mut node = 0;
+            for kind in path {
+                let a = s.nodes[node]
+                    .actions
+                    .iter()
+                    .position(|a| a.kind == kind)
+                    .unwrap();
+                node = s.child(node, a);
+            }
+            let sigma = s.average_strategy(node);
+            let raise = s.nodes[node]
+                .actions
+                .iter()
+                .position(|a| a.kind == "raise")
+                .unwrap();
+            assert!(
+                (sigma[raise * 169] - count as f32 / 10.0).abs() < 1e-6,
+                "wrong limper count"
+            );
+            let passive = s.nodes[node]
+                .actions
+                .iter()
+                .position(|a| a.kind == if free { "check" } else { "call" })
+                .unwrap();
+            assert!(
+                (sigma[passive * 169] - if free { 1.0 - count as f32 / 10.0 } else { 0.1 }).abs()
+                    < 1e-6
+            );
         }
     }
 }
 
 #[test]
 fn published_ignition_responses_generate_and_roundtrip_for_all_table_sizes() {
-    let path=std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../docs/ignition/models.json");
-    let models:serde_json::Value=serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
-    let st:solver::preflop::HudStats=serde_json::from_value(models[0]["stats"].clone()).unwrap();
-    let d=st.dataset.as_ref().unwrap();d.validate().unwrap();
+    let path =
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../docs/ignition/models.json");
+    let models: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
+    let st: solver::preflop::HudStats = serde_json::from_value(models[0]["stats"].clone()).unwrap();
+    let d = st.dataset.as_ref().unwrap();
+    d.validate().unwrap();
     assert!(!d.response_policies.is_empty());
-    for n in [3,6,8,9] {
-        let mut cfg=hu_push_fold_config(4.0);
-        cfg.positions=(0..n).map(|i|format!("P{i}")).collect();cfg.posts=vec![0.0;n];cfg.posts[n-2]=0.5;cfg.posts[n-1]=1.0;
-        let mut s=legacy_solver(cfg,table()).unwrap();s.iterate();
-        let mut profiles=Vec::new();
+    for n in [3, 6, 8, 9] {
+        let mut cfg = hu_push_fold_config(4.0);
+        cfg.positions = (0..n).map(|i| format!("P{i}")).collect();
+        cfg.posts = vec![0.0; n];
+        cfg.posts[n - 2] = 0.5;
+        cfg.posts[n - 1] = 1.0;
+        let mut s = legacy_solver(cfg, table()).unwrap();
+        s.iterate();
+        let mut profiles = Vec::new();
         for seat in 0..n {
-            let (p,_)=s.generate_profile(seat,&st,"Ignition").unwrap();
-            let row=d.resolve(&s.cfg,seat).unwrap();
-            assert_eq!(p.buckets[0].as_ref().unwrap().call,row.opening.as_ref().unwrap().call);
-            assert_eq!(p.buckets[0].as_ref().unwrap().raise,row.opening.as_ref().unwrap().raise);
-            if n==8 && seat<2 {
-                assert!(d.response_notes[&format!("open_{n}_{}",n-3-seat)].starts_with("Position-adjusted estimate"));
+            let (p, _) = s.generate_profile(seat, &st, "Ignition").unwrap();
+            let row = d.resolve(&s.cfg, seat).unwrap();
+            assert_eq!(
+                p.buckets[0].as_ref().unwrap().call,
+                row.opening.as_ref().unwrap().call
+            );
+            assert_eq!(
+                p.buckets[0].as_ref().unwrap().raise,
+                row.opening.as_ref().unwrap().raise
+            );
+            if n == 8 && seat < 2 {
+                assert!(d.response_notes[&format!("open_{n}_{}", n - 3 - seat)]
+                    .starts_with("Position-adjusted estimate"));
             }
-            let contexts=&p.response.as_ref().unwrap().limp_contexts;
-            assert_eq!(contexts.len(),6);
-            assert_eq!(contexts[0].free_check,seat==n-1);
+            let contexts = &p.response.as_ref().unwrap().limp_contexts;
+            assert_eq!(contexts.len(), 6);
+            assert_eq!(contexts[0].free_check, seat == n - 1);
             for context in contexts {
-                let key=format!("limps_{}_{}",if context.free_check {"free"}else{"paid"},context.limpers);
-                let expected=&d.response_policies[row.responses[&key]];
-                assert_eq!(context.policy.call,expected.call);
-                assert_eq!(context.policy.raise,expected.raise);
+                let key = format!(
+                    "limps_{}_{}",
+                    if context.free_check { "free" } else { "paid" },
+                    context.limpers
+                );
+                let expected = &d.response_policies[row.responses[&key]];
+                assert_eq!(context.policy.call, expected.call);
+                assert_eq!(context.policy.raise, expected.raise);
             }
-            for (b,key) in [(2,"raise"),(3,"squeeze"),(4,"reraise")] {
-                let expected=&d.response_policies[row.responses[key]];
-                assert_eq!(p.buckets[b].as_ref().unwrap().call,expected.call);
-                assert_eq!(p.buckets[b].as_ref().unwrap().raise,expected.raise);
+            for (b, key) in [(2, "raise"), (3, "squeeze"), (4, "reraise")] {
+                let expected = &d.response_policies[row.responses[key]];
+                assert_eq!(p.buckets[b].as_ref().unwrap().call, expected.call);
+                assert_eq!(p.buckets[b].as_ref().unwrap().raise, expected.raise);
             }
-            let encoded=serde_json::to_string(&p).unwrap();
-            let restored:solver::preflop::SeatProfile=serde_json::from_str(&encoded).unwrap();
-            assert_eq!(restored.response.as_ref().unwrap().source_stats.as_ref().unwrap().dataset.as_ref().unwrap().response_policies.len(),d.response_policies.len());
+            let encoded = serde_json::to_string(&p).unwrap();
+            let restored: solver::preflop::SeatProfile = serde_json::from_str(&encoded).unwrap();
+            assert_eq!(
+                restored
+                    .response
+                    .as_ref()
+                    .unwrap()
+                    .source_stats
+                    .as_ref()
+                    .unwrap()
+                    .dataset
+                    .as_ref()
+                    .unwrap()
+                    .response_policies
+                    .len(),
+                d.response_policies.len()
+            );
             profiles.push(Some(restored));
         }
-        s.set_table(vec![false;n],profiles).unwrap();
+        s.set_table(vec![false; n], profiles).unwrap();
     }
 }
 
 fn hu_push_fold_config(stack: f64) -> PreflopConfig {
-    PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
-        stack, stacks: None,
+        stack,
+        stacks: None,
         posts: vec![0.5, 1.0],
         ante: 0.0,
         limp: false,
@@ -190,7 +385,10 @@ fn hu_push_fold_config(stack: f64) -> PreflopConfig {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     }
 }
 
@@ -224,10 +422,7 @@ fn push_fold_oracle(eq: &EquityTable, stack: f64) -> (Vec<f32>, Vec<f32>, Vec<f6
             call_br[h] = if call_margin[h] > 0.0 { 1.0 } else { 0.0 };
         }
         // SB best response vs averaged call range.
-        let p_call: f64 = (0..NUM_CLASSES)
-            .map(|j| prob[j] * call_mix[j])
-            .sum::<f64>()
-            / total;
+        let p_call: f64 = (0..NUM_CLASSES).map(|j| prob[j] * call_mix[j]).sum::<f64>() / total;
         let mut cdist: Vec<f32> = (0..NUM_CLASSES)
             .map(|j| (prob[j] * call_mix[j]) as f32)
             .collect();
@@ -354,7 +549,14 @@ fn hu_push_fold_matches_oracle() {
 #[test]
 fn six_max_limp_tree_sanity() {
     let eq = table();
-    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec![
             "UTG".into(),
@@ -364,7 +566,8 @@ fn six_max_limp_tree_sanity() {
             "SB".into(),
             "BB".into(),
         ],
-        stack: 100.0, stacks: None,
+        stack: 100.0,
+        stacks: None,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -380,11 +583,17 @@ fn six_max_limp_tree_sanity() {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     };
     let mut s = legacy_solver(cfg, eq.clone()).unwrap();
     let action_nodes = s.nodes.iter().filter(|n| n.kind == 0).count();
-    assert!(action_nodes > 100, "tree suspiciously small: {action_nodes}");
+    assert!(
+        action_nodes > 100,
+        "tree suspiciously small: {action_nodes}"
+    );
 
     // UTG's root actions must include limp (limp=true), a raise and fold
     let kinds: Vec<&str> = s.nodes[0].actions.iter().map(|a| a.kind.as_str()).collect();
@@ -404,7 +613,10 @@ fn six_max_limp_tree_sanity() {
         s.iterate();
     }
     let g2: f64 = s.br_gaps().iter().sum();
-    assert!(g2 < g1, "BR gap should shrink with iterations: {g1} -> {g2}");
+    assert!(
+        g2 < g1,
+        "BR gap should shrink with iterations: {g1} -> {g2}"
+    );
 }
 
 /// Rake drains EV: with rake on, total EV goes negative (and not absurdly).
@@ -423,7 +635,10 @@ fn rake_drains_total_ev() {
         s.iterate();
     }
     let total: f64 = s.evs().iter().sum();
-    assert!(total < 0.0, "rake should make the game net negative, got {total}");
+    assert!(
+        total < 0.0,
+        "rake should make the game net negative, got {total}"
+    );
     assert!(total > -1.0, "rake drain implausibly large: {total}");
 }
 
@@ -435,7 +650,12 @@ fn estimate_matches_build() {
     let mut cfgs = vec![hu_push_fold_config(10.0)];
     let mut six = hu_push_fold_config(100.0);
     six.positions = vec![
-        "UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into(),
+        "UTG".into(),
+        "HJ".into(),
+        "CO".into(),
+        "BTN".into(),
+        "SB".into(),
+        "BB".into(),
     ];
     six.posts = vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0];
     six.limp = true;
@@ -468,10 +688,18 @@ use solver::preflop::{
 };
 
 fn hu_limp_config() -> PreflopConfig {
-    PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
-        stack: 25.0, stacks: None,
+        stack: 25.0,
+        stacks: None,
         posts: vec![0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -487,12 +715,17 @@ fn hu_limp_config() -> PreflopConfig {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     }
 }
 
 fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
-    BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
+    BucketPolicy {
+        raise_multiples: Vec::new(),
+        raise_sizes: Vec::new(),
         call: vec![call; NUM_CLASSES],
         raise: vec![raise; NUM_CLASSES],
         jam: vec![0.0; NUM_CLASSES],
@@ -503,7 +736,14 @@ fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
 fn profile_with(bucket: u8, pol: BucketPolicy, name: &str) -> SeatProfile {
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
     buckets[bucket as usize] = Some(pol);
-    SeatProfile { name: name.into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None, response: None }
+    SeatProfile {
+        name: name.into(),
+        buckets,
+        vs_raise_bands: None,
+        postflop: None,
+        limp_defense: None,
+        response: None,
+    }
 }
 
 fn agg_freq(s: &PreflopSolver, node: usize, act_pred: impl Fn(&str) -> bool) -> f64 {
@@ -528,12 +768,24 @@ fn buckets_are_tagged_correctly() {
     let eq = table();
     let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     assert_eq!(s.nodes[0].bucket, BUCKET_UNOPENED);
-    let limp = s.nodes[0].actions.iter().position(|a| a.kind == "call").unwrap();
-    let open = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let limp = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "call")
+        .unwrap();
+    let open = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "raise")
+        .unwrap();
     assert_eq!(s.nodes[s.child(0, limp)].bucket, BUCKET_VS_LIMPS);
     let vs_raise = s.child(0, open);
     assert_eq!(s.nodes[vs_raise].bucket, BUCKET_VS_RAISE);
-    let threebet = s.nodes[vs_raise].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let threebet = s.nodes[vs_raise]
+        .actions
+        .iter()
+        .position(|a| a.kind == "raise")
+        .unwrap();
     let vs_3bet = s.child(vs_raise, threebet);
     assert_eq!(s.nodes[vs_3bet].bucket, BUCKET_VS_3BET);
     // ...and the SAME bucket at every deeper re-raise: fold-to-3bet+ covers
@@ -550,10 +802,18 @@ fn buckets_are_tagged_correctly() {
     cfg3.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
     cfg3.posts = vec![0.0, 0.5, 1.0];
     let s3 = legacy_solver(cfg3, eq).unwrap();
-    let open3 = s3.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let open3 = s3.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "raise")
+        .unwrap();
     let n1 = s3.child(0, open3); // SB facing the raise
     assert_eq!(s3.nodes[n1].bucket, BUCKET_VS_RAISE);
-    let call3 = s3.nodes[n1].actions.iter().position(|a| a.kind == "call").unwrap();
+    let call3 = s3.nodes[n1]
+        .actions
+        .iter()
+        .position(|a| a.kind == "call")
+        .unwrap();
     let n2 = s3.child(n1, call3); // BB facing raise + cold caller
     assert_eq!(s3.nodes[n2].bucket, BUCKET_SQUEEZE);
 }
@@ -573,7 +833,10 @@ fn never_threebettor_gets_attacked_wider() {
     let pol = flat_policy(0.5, 0.0); // calls half of everything, raises nothing
     s.set_table(
         vec![false, false],
-        vec![None, Some(profile_with(BUCKET_VS_RAISE, pol, "never-3bets"))],
+        vec![
+            None,
+            Some(profile_with(BUCKET_VS_RAISE, pol, "never-3bets")),
+        ],
     )
     .unwrap();
     for _ in 0..400 {
@@ -637,7 +900,11 @@ fn omc_raises_get_respect() {
         .1;
     let bb_node = s.child(0, max_raise);
     let bb = s.average_strategy(bb_node);
-    let fold_a = s.nodes[bb_node].actions.iter().position(|a| a.kind == "fold").unwrap();
+    let fold_a = s.nodes[bb_node]
+        .actions
+        .iter()
+        .position(|a| a.kind == "fold")
+        .unwrap();
     assert!(
         bb[fold_a * NUM_CLASSES + qq] > 0.5,
         "QQ should mostly fold to the OMC raise, folds {:.3}",
@@ -667,7 +934,17 @@ fn whale_bleeds_and_gets_exploited() {
     }
     s.set_table(
         vec![false, false],
-        vec![None, Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None, response: None })],
+        vec![
+            None,
+            Some(SeatProfile {
+                name: "whale".into(),
+                buckets,
+                vs_raise_bands: None,
+                postflop: None,
+                limp_defense: None,
+                response: None,
+            }),
+        ],
     )
     .unwrap();
     for _ in 0..400 {
@@ -679,7 +956,10 @@ fn whale_bleeds_and_gets_exploited() {
         "SB should exploit the whale: EV {base_ev_sb:.3} -> {ev_sb:.3}"
     );
     let bleed = s.br_gaps()[1];
-    assert!(bleed > 0.3, "the whale should bleed plainly, got {bleed:.3} bb");
+    assert!(
+        bleed > 0.3,
+        "the whale should bleed plainly, got {bleed:.3} bb"
+    );
 }
 
 /// Frozen seats keep their exact average strategy while others keep moving.
@@ -690,7 +970,11 @@ fn frozen_seat_stops_adapting() {
     for _ in 0..200 {
         s.iterate();
     }
-    let open = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let open = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "raise")
+        .unwrap();
     let bb_node = s.child(0, open);
     let before = s.average_strategy(bb_node);
     let sb_before = s.average_strategy(0);
@@ -711,7 +995,10 @@ fn frozen_seat_stops_adapting() {
         .map(|(a, b)| (a - b).abs())
         .fold(0f32, f32::max);
     assert!(bb_moved < 1e-4, "frozen BB moved: {bb_moved}");
-    assert!(sb_moved > 1e-3, "live SB should keep adapting, moved {sb_moved}");
+    assert!(
+        sb_moved > 1e-3,
+        "live SB should keep adapting, moved {sb_moved}"
+    );
 }
 
 /// Point locks pin a single node and unlock cleanly.
@@ -733,7 +1020,10 @@ fn point_lock_roundtrip() {
         .filter(|(_, a)| a.kind == "raise")
         .map(|(a, _)| locked[a * NUM_CLASSES])
         .sum();
-    assert!(raise_mass > 0.99, "point lock should force raising, got {raise_mass}");
+    assert!(
+        raise_mass > 0.99,
+        "point lock should force raising, got {raise_mass}"
+    );
     assert!(s.has_overrides());
     assert!(s.unlock_point(&[]).unwrap());
     let unlocked = s.average_strategy(0);
@@ -748,7 +1038,7 @@ fn point_lock_roundtrip() {
 /// P2: equilibrium-distortion generation hits its stat targets and puts the
 /// right hands in the right slices.
 #[test]
-fn generated_profiles_match_stats()  {
+fn generated_profiles_match_stats() {
     let eq = table();
     let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..400 {
@@ -764,8 +1054,16 @@ fn generated_profiles_match_stats()  {
         .unwrap()
         .1;
     let (whale, implied) = s.generate_profile(1, &whale_stats, "whale").unwrap();
-    assert!((implied.vpip - 60.0).abs() < 3.0, "implied vpip {}", implied.vpip);
-    assert!((implied.pfr - 8.0).abs() < 2.0, "implied pfr {}", implied.pfr);
+    assert!(
+        (implied.vpip - 60.0).abs() < 3.0,
+        "implied vpip {}",
+        implied.vpip
+    );
+    assert!(
+        (implied.pfr - 8.0).abs() < 2.0,
+        "implied pfr {}",
+        implied.pfr
+    );
     let b0 = whale.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
     let cont_aa = b0.call[aa] + b0.raise[aa] + b0.jam[aa];
     assert!(cont_aa > 0.99, "AA must be in a 60% range");
@@ -799,15 +1097,22 @@ fn generated_profiles_match_stats()  {
     let b0 = nit.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
     assert!(b0.raise[aa] > 0.9, "AA must be in the OMC's raising range");
     let cont_72 = b0.call[seven_deuce] + b0.raise[seven_deuce] + b0.jam[seven_deuce];
-    assert!(cont_72 < 0.05, "72o must be out of a 12% range, got {cont_72}");
+    assert!(
+        cont_72 < 0.05,
+        "72o must be out of a 12% range, got {cont_72}"
+    );
 
     // applying a generated profile keeps the solver healthy
-    s.set_table(vec![false, false], vec![None, Some(whale)]).unwrap();
+    s.set_table(vec![false, false], vec![None, Some(whale)])
+        .unwrap();
     for _ in 0..100 {
         s.iterate();
     }
     let evs = s.evs();
-    assert!(evs[0] > 0.0, "SB should profit vs the generated whale: {evs:?}");
+    assert!(
+        evs[0] > 0.0,
+        "SB should profit vs the generated whale: {evs:?}"
+    );
 }
 
 /// A bucket the baseline never reaches has no equilibrium ordering to
@@ -820,10 +1125,18 @@ fn generated_profiles_match_stats()  {
 #[test]
 fn unreached_bucket_falls_back_to_card_appeal() {
     let eq = table();
-    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 40.0, stacks: None,
+        stack: 40.0,
+        stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: false,
@@ -839,7 +1152,10 @@ fn unreached_bucket_falls_back_to_card_appeal() {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     };
     let mut s = legacy_solver(cfg, eq).unwrap();
     for _ in 0..300 {
@@ -857,9 +1173,21 @@ fn unreached_bucket_falls_back_to_card_appeal() {
     let aks = solver::preflop::equity::class_index(12, 11, true);
     let seven_deuce = solver::preflop::equity::class_index(5, 0, false);
     let three_two = solver::preflop::equity::class_index(1, 0, false);
-    assert!(cont(aa) > 0.99, "AA must head an appeal-ordered range, got {}", cont(aa));
-    assert!(cont(aks) > 0.99, "AKs must be in a ~22% range, got {}", cont(aks));
-    assert!(cont(seven_deuce) < 0.05, "72o out, got {}", cont(seven_deuce));
+    assert!(
+        cont(aa) > 0.99,
+        "AA must head an appeal-ordered range, got {}",
+        cont(aa)
+    );
+    assert!(
+        cont(aks) > 0.99,
+        "AKs must be in a ~22% range, got {}",
+        cont(aks)
+    );
+    assert!(
+        cont(seven_deuce) < 0.05,
+        "72o out, got {}",
+        cont(seven_deuce)
+    );
     assert!(cont(three_two) < 0.05, "32o out, got {}", cont(three_two));
 
     // A nit at the same data-less seat: defend-vs-raise must come out
@@ -882,8 +1210,16 @@ fn unreached_bucket_falls_back_to_card_appeal() {
     let ncont = |h: usize| nvr.call[h] + nvr.raise[h] + nvr.jam[h];
     let qq = solver::preflop::equity::class_index(10, 10, false);
     let six_two_s = solver::preflop::equity::class_index(4, 0, true);
-    assert!(ncont(qq) > 0.99, "QQ continues vs a raise, got {}", ncont(qq));
-    assert!(ncont(six_two_s) < 0.05, "62s must not be in a nit's defend, got {}", ncont(six_two_s));
+    assert!(
+        ncont(qq) > 0.99,
+        "QQ continues vs a raise, got {}",
+        ncont(qq)
+    );
+    assert!(
+        ncont(six_two_s) < 0.05,
+        "62s must not be in a nit's defend, got {}",
+        ncont(six_two_s)
+    );
 }
 
 /// Saved games restore the WHOLE session bit-for-bit: config, solver state,
@@ -901,7 +1237,8 @@ fn game_save_load_roundtrip() {
         .unwrap()
         .1;
     let (prof, _) = s.generate_profile(1, &whale_stats, "whale").unwrap();
-    s.set_table(vec![false, false], vec![None, Some(prof)]).unwrap();
+    s.set_table(vec![false, false], vec![None, Some(prof)])
+        .unwrap();
     for _ in 0..30 {
         s.iterate();
     }
@@ -915,7 +1252,10 @@ fn game_save_load_roundtrip() {
     let a = s.average_strategy(0);
     let b = l.average_strategy(0);
     for (x, y) in a.iter().zip(b.iter()) {
-        assert!((x - y).abs() < 1e-7, "root strategy must survive the roundtrip");
+        assert!(
+            (x - y).abs() < 1e-7,
+            "root strategy must survive the roundtrip"
+        );
     }
     // resuming the solve from the loaded state works and stays sane
     let mut l = l;
@@ -930,8 +1270,7 @@ fn game_save_load_roundtrip() {
 #[test]
 fn calibrated_realization_works() {
     use solver::preflop::RealizationFit;
-    let fit = RealizationFit::load("../../cache/realization_fit.json")
-        .expect("shipped fit table");
+    let fit = RealizationFit::load("../../cache/realization_fit.json").expect("shipped fit table");
     let ci = solver::preflop::equity::class_index;
     // aggressor+IP beats defender+OOP at the same holdings
     let m_def = fit.seat_mult(-0.5, 8.0, 0.5, -0.5);
@@ -944,7 +1283,10 @@ fn calibrated_realization_works() {
     assert!(fit.eval(m0, s76) > fit.eval(m0, o76));
     assert!(fit.eval(m0, s76) > fit.eval(m0, s72));
     let (a9o, s32) = (ci(7, 12, false), ci(1, 0, true));
-    assert!(fit.eval(m_def, a9o) >= fit.eval(m_def, s32), "A9o must not crater below 32s");
+    assert!(
+        fit.eval(m_def, a9o) >= fit.eval(m_def, s32),
+        "A9o must not crater below 32s"
+    );
     // clip bounds hold at extremes
     for k in [ci(12, 12, false), ci(0, 0, false), ci(5, 0, false)] {
         let r = fit.eval(fit.seat_mult(0.5, 80.0, 0.9, 0.5), k);
@@ -964,8 +1306,15 @@ fn calibrated_realization_works() {
     }
     assert!(cal.br_gaps().iter().all(|g| g.is_finite() && *g < 1.0));
     let (a, b) = (cal.average_strategy(0), sta.average_strategy(0));
-    let diff = a.iter().zip(b.iter()).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max);
-    assert!(diff > 0.02, "calibrated should reshape strategies, max diff {diff}");
+    let diff = a
+        .iter()
+        .zip(b.iter())
+        .map(|(x, y)| (x - y).abs())
+        .fold(0f32, f32::max);
+    assert!(
+        diff > 0.02,
+        "calibrated should reshape strategies, max diff {diff}"
+    );
 
     // push/fold anchors: all-in terminals bypass R entirely
     let mut pf = hu_push_fold_config(10.0);
@@ -975,7 +1324,11 @@ fn calibrated_realization_works() {
         s.iterate();
     }
     let aa = solver::preflop::equity::class_index(12, 12, false);
-    let jam_a = s.nodes[0].actions.iter().position(|a| a.kind == "jam").unwrap();
+    let jam_a = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "jam")
+        .unwrap();
     let sb = s.average_strategy(0);
     assert!(sb[jam_a * NUM_CLASSES + aa] > 0.99, "AA still jams at 10bb");
 }
@@ -991,11 +1344,23 @@ fn calibrated_realization_works() {
 fn hu_postflop_position_bb_is_oop() {
     let eq = table();
     let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
-    assert_eq!(s.postflop_order(), vec![1, 0], "HU: BB first (OOP), SB/button last");
+    assert_eq!(
+        s.postflop_order(),
+        vec![1, 0],
+        "HU: BB first (OOP), SB/button last"
+    );
     // limp, check -> flop terminal
-    let limp = s.nodes[0].actions.iter().position(|a| a.kind == "call").unwrap();
+    let limp = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "call")
+        .unwrap();
     let bb_node = s.child(0, limp);
-    let check = s.nodes[bb_node].actions.iter().position(|a| a.kind == "check").unwrap();
+    let check = s.nodes[bb_node]
+        .actions
+        .iter()
+        .position(|a| a.kind == "check")
+        .unwrap();
     let term = s.child(bb_node, check);
     assert_eq!(s.nodes[term].kind, 2, "expected a pot_share terminal");
     let ex = s.export_spot(&[limp, check]).unwrap();
@@ -1061,7 +1426,10 @@ fn frozen_average_survives_hero_cycles() {
     let na = s.nodes[node].actions.len();
     let uni = 1.0 / na as f32;
     let max_dev = after.iter().map(|x| (x - uni).abs()).fold(0f32, f32::max);
-    assert!(max_dev > 0.3, "frozen average flipped to ~uniform (max dev {max_dev})");
+    assert!(
+        max_dev > 0.3,
+        "frozen average flipped to ~uniform (max dev {max_dev})"
+    );
 }
 
 /// Leaving hero mode restores the frozen flags the table had before it —
@@ -1111,7 +1479,10 @@ fn frozen_seat_refused_as_hero() {
     let iter_before = s.iteration;
     // the confirmed failure sequence starts here — it must be refused
     let err = s.set_hero(Some(1)).unwrap_err();
-    assert!(err.contains("frozen"), "refusal must name the freeze, got: {err}");
+    assert!(
+        err.contains("frozen"),
+        "refusal must name the freeze, got: {err}"
+    );
     // ...and refused BEFORE any state is touched: no hero, flags intact,
     // learning not reset
     assert_eq!(s.seat_frozen, vec![false, true]);
@@ -1143,8 +1514,15 @@ fn frozen_seat_refused_as_hero() {
     // off still restores the pin
     s.set_hero(Some(0)).unwrap();
     let err = s.set_hero(Some(1)).unwrap_err();
-    assert!(err.contains("frozen"), "hero switch onto the pinned seat, got: {err}");
-    assert_eq!(s.hero, Some(0), "failed switch must leave hero mode as it was");
+    assert!(
+        err.contains("frozen"),
+        "hero switch onto the pinned seat, got: {err}"
+    );
+    assert_eq!(
+        s.hero,
+        Some(0),
+        "failed switch must leave hero mode as it was"
+    );
     s.set_hero(None).unwrap();
     assert_eq!(s.seat_frozen, vec![false, true]);
 }
@@ -1166,7 +1544,17 @@ fn fully_ruled_frozen_seat_allowed_as_hero() {
     }
     s.set_table(
         vec![true, false],
-        vec![Some(SeatProfile { name: "station".into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None, response: None }), None],
+        vec![
+            Some(SeatProfile {
+                name: "station".into(),
+                buckets,
+                vs_raise_bands: None,
+                postflop: None,
+                limp_defense: None,
+                response: None,
+            }),
+            None,
+        ],
     )
     .unwrap();
     for _ in 0..50 {
@@ -1209,7 +1597,17 @@ fn hero_on_ruled_seat_learns_free_exploit() {
     }
     s.set_table(
         vec![false, false],
-        vec![Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None, response: None }), None],
+        vec![
+            Some(SeatProfile {
+                name: "whale".into(),
+                buckets,
+                vs_raise_bands: None,
+                postflop: None,
+                limp_defense: None,
+                response: None,
+            }),
+            None,
+        ],
     )
     .unwrap();
     for _ in 0..200 {
@@ -1227,7 +1625,10 @@ fn hero_on_ruled_seat_learns_free_exploit() {
         .zip(exploit.iter())
         .map(|(a, b)| (a - b).abs())
         .fold(0f32, f32::max);
-    assert!(diff > 0.2, "hero must escape its own profile, max diff {diff}");
+    assert!(
+        diff > 0.2,
+        "hero must escape its own profile, max diff {diff}"
+    );
     let aa = solver::preflop::equity::class_index(12, 12, false);
     let aggr_aa: f32 = s.nodes[0]
         .actions
@@ -1270,7 +1671,10 @@ fn rake_cap_zero_is_uncapped() {
     }
     let free_total: f64 = free.evs().iter().sum();
     let raked_total: f64 = raked.evs().iter().sum();
-    assert!(free_total.abs() < 0.05, "no-rake game conserves chips, got {free_total}");
+    assert!(
+        free_total.abs() < 0.05,
+        "no-rake game conserves chips, got {free_total}"
+    );
     assert!(
         raked_total < -0.05,
         "rake_pct=10 with cap 0 must charge rake (0 = uncapped), got {raked_total}"
@@ -1283,7 +1687,10 @@ fn rake_cap_zero_is_uncapped() {
 fn lock_point_before_solve_is_rejected() {
     let eq = table();
     let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
-    assert!(s.lock_point(&[], None).is_err(), "as-solved lock needs a solve first");
+    assert!(
+        s.lock_point(&[], None).is_err(),
+        "as-solved lock needs a solve first"
+    );
     assert!(!s.has_overrides());
     // an explicit policy is fine at iteration 0
     s.lock_point(&[], Some(flat_policy(1.0, 0.0))).unwrap();
@@ -1321,7 +1728,10 @@ fn impossible_economics_are_rejected() {
         mutate(&mut cfg);
         match legacy_solver(cfg, eq.clone()) {
             Ok(_) => panic!("{what}: config unexpectedly accepted"),
-            Err(e) => assert!(e.contains(needle), "{what}: error should name {needle}: {e}"),
+            Err(e) => assert!(
+                e.contains(needle),
+                "{what}: error should name {needle}: {e}"
+            ),
         }
     };
     reject("negative rake", "rake_pct", &|c| c.rake_pct = -5.0);
@@ -1333,15 +1743,31 @@ fn impossible_economics_are_rejected() {
     reject("negative ante", "ante", &|c| c.ante = -0.25);
     reject("NaN post", "posts", &|c| c.posts = vec![0.5, f64::NAN]);
     reject("negative post", "posts", &|c| c.posts = vec![-0.5, 1.0]);
-    reject("negative open", "open_raises", &|c| c.open_raises = vec![-2.5]);
+    reject("negative open", "open_raises", &|c| {
+        c.open_raises = vec![-2.5]
+    });
     reject("zero open", "open_raises", &|c| c.open_raises = vec![0.0]);
-    reject("infinite open", "open_raises", &|c| c.open_raises = vec![2.5, f64::INFINITY]);
-    reject("over-stack open", "open_raises", &|c| c.open_raises = vec![250.0]);
-    reject("zero raise mult", "raise_mults", &|c| c.raise_mults = vec![0.0]);
-    reject("NaN raise mult", "raise_mults", &|c| c.raise_mults = vec![f64::NAN]);
-    reject("zero all-in threshold", "allin_threshold", &|c| c.allin_threshold = 0.0);
-    reject("threshold above 1", "allin_threshold", &|c| c.allin_threshold = 1.5);
-    reject("NaN threshold", "allin_threshold", &|c| c.allin_threshold = f64::NAN);
+    reject("infinite open", "open_raises", &|c| {
+        c.open_raises = vec![2.5, f64::INFINITY]
+    });
+    reject("over-stack open", "open_raises", &|c| {
+        c.open_raises = vec![250.0]
+    });
+    reject("zero raise mult", "raise_mults", &|c| {
+        c.raise_mults = vec![0.0]
+    });
+    reject("NaN raise mult", "raise_mults", &|c| {
+        c.raise_mults = vec![f64::NAN]
+    });
+    reject("zero all-in threshold", "allin_threshold", &|c| {
+        c.allin_threshold = 0.0
+    });
+    reject("threshold above 1", "allin_threshold", &|c| {
+        c.allin_threshold = 1.5
+    });
+    reject("NaN threshold", "allin_threshold", &|c| {
+        c.allin_threshold = f64::NAN
+    });
 }
 
 /// Boundary values are all VALID (0% rake, uncapped, jam threshold 1.0) and
@@ -1421,11 +1847,19 @@ fn load_rejects_malformed_point_locks() {
     };
     // the review's reproducer: a 1-entry sigma at the root
     reject(serde_json::json!([[0, [1.0]]]), "expected", "short sigma");
-    reject(serde_json::json!([[999_999, [1.0]]]), "out of range", "oob node index");
+    reject(
+        serde_json::json!([[999_999, [1.0]]]),
+        "out of range",
+        "oob node index",
+    );
     let na = s.nodes[0].actions.len();
     let mut sigma = vec![0.5f32; na * NUM_CLASSES];
     sigma[0] = -1.0;
-    reject(serde_json::json!([[0, sigma]]), "finite", "negative frequency");
+    reject(
+        serde_json::json!([[0, sigma]]),
+        "finite",
+        "negative frequency",
+    );
     // a lock on a terminal: 0 actions x 169 classes = 0 entries, so only
     // the node-kind check stands between an empty sigma and the consumers
     let term = s
@@ -1443,9 +1877,17 @@ fn load_rejects_malformed_point_locks() {
     // to panic serves it verbatim
     s.save_game(&path).unwrap();
     let uniform = vec![1.0f32 / na as f32; na * NUM_CLASSES];
-    doctor_pf_header(&path, "point_locks", serde_json::json!([[0, uniform.clone()]]));
+    doctor_pf_header(
+        &path,
+        "point_locks",
+        serde_json::json!([[0, uniform.clone()]]),
+    );
     let l = PreflopSolver::load_game(&path, eq).unwrap();
-    assert_eq!(l.average_strategy(0), uniform, "the lock must be served verbatim");
+    assert_eq!(
+        l.average_strategy(0),
+        uniform,
+        "the lock must be served verbatim"
+    );
     std::fs::remove_file(&path).ok();
 }
 
@@ -1505,7 +1947,10 @@ fn failed_save_leaves_previous_game_intact() {
     for _ in 0..5 {
         s.iterate();
     }
-    assert!(s.save_game(&path).is_err(), "blocked staging path must fail the save");
+    assert!(
+        s.save_game(&path).is_err(),
+        "blocked staging path must fail the save"
+    );
     assert_eq!(
         before,
         std::fs::read(&path).unwrap(),
@@ -1525,10 +1970,18 @@ fn failed_save_leaves_previous_game_intact() {
 #[test]
 fn call_only_seat_never_raises() {
     let eq = table();
-    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0, stacks: None,
+        stack: 100.0,
+        stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -1544,7 +1997,10 @@ fn call_only_seat_never_raises() {
         realization: "raw".into(),
         call_only_seats: vec![0],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     };
     let s = legacy_solver(cfg.clone(), eq.clone()).unwrap();
     let (mut masked_nodes, mut others_raise) = (0, 0);
@@ -1552,13 +2008,26 @@ fn call_only_seat_never_raises() {
         if nd.kind != 0 {
             continue;
         }
-        let has_raise = nd.actions.iter().any(|a| a.kind == "raise" || a.kind == "jam");
+        let has_raise = nd
+            .actions
+            .iter()
+            .any(|a| a.kind == "raise" || a.kind == "jam");
         if nd.actor == 0 {
             masked_nodes += 1;
-            assert!(!has_raise, "call-only seat offered a raise: {:?}",
-                nd.actions.iter().map(|a| a.label.clone()).collect::<Vec<_>>());
-            assert!(nd.actions.iter().any(|a| a.kind == "call" || a.kind == "check"),
-                "call-only seat should still be able to limp/call/check");
+            assert!(
+                !has_raise,
+                "call-only seat offered a raise: {:?}",
+                nd.actions
+                    .iter()
+                    .map(|a| a.label.clone())
+                    .collect::<Vec<_>>()
+            );
+            assert!(
+                nd.actions
+                    .iter()
+                    .any(|a| a.kind == "call" || a.kind == "check"),
+                "call-only seat should still be able to limp/call/check"
+            );
         } else if has_raise {
             others_raise += 1;
         }
@@ -1569,7 +2038,10 @@ fn call_only_seat_never_raises() {
     // out-of-range index is refused
     let mut bad = cfg;
     bad.call_only_seats = vec![7];
-    let err = match legacy_solver(bad, eq) { Err(e) => e, Ok(_) => panic!("bad index accepted") };
+    let err = match legacy_solver(bad, eq) {
+        Err(e) => e,
+        Ok(_) => panic!("bad index accepted"),
+    };
     assert!(err.contains("call_only_seats"));
 }
 
@@ -1578,10 +2050,18 @@ fn call_only_seat_never_raises() {
 #[test]
 fn per_seat_size_menus() {
     let eq = table();
-    let mut cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let mut cfg = PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0, stacks: None,
+        stack: 100.0,
+        stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -1597,7 +2077,10 @@ fn per_seat_size_menus() {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     };
     cfg.open_raises_by_seat = Some(vec![vec![2.5, 3.0, 5.0], vec![], vec![]]);
     cfg.raise_mults_by_seat = Some(vec![vec![2.5, 4.0], vec![], vec![]]);
@@ -1631,7 +2114,10 @@ fn per_seat_size_menus() {
     // wrong length rejected
     let mut bad = cfg;
     bad.open_raises_by_seat = Some(vec![vec![2.5]]);
-    let err = match legacy_solver(bad, eq) { Err(e) => e, Ok(_) => panic!("bad len accepted") };
+    let err = match legacy_solver(bad, eq) {
+        Err(e) => e,
+        Ok(_) => panic!("bad len accepted"),
+    };
     assert!(err.contains("open_raises_by_seat"));
 }
 
@@ -1642,10 +2128,18 @@ fn per_seat_size_menus() {
 #[test]
 fn banded_vs_raise_tightens_vs_big_opens() {
     let eq = table();
-    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 40.0, stacks: None,
+        stack: 40.0,
+        stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: false,
@@ -1662,7 +2156,10 @@ fn banded_vs_raise_tightens_vs_big_opens() {
         call_only_seats: vec![],
         // hero (BTN) explores two open sizes; the ruled seats stay pinned
         open_raises_by_seat: Some(vec![vec![2.5, 5.0], vec![], vec![]]),
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     };
     let mut s = legacy_solver(cfg, eq.clone()).unwrap();
     for _ in 0..200 {
@@ -1688,7 +2185,10 @@ fn banded_vs_raise_tightens_vs_big_opens() {
         dataset: None,
     };
     let (prof, implied) = s.generate_profile(1, &stats, "banded").unwrap();
-    let bands = prof.vs_raise_bands.as_ref().expect("bands must be generated");
+    let bands = prof
+        .vs_raise_bands
+        .as_ref()
+        .expect("bands must be generated");
     assert_eq!(bands.len(), 2, "one policy per band");
     // the legacy single policy stays as the band-less fallback, anchored at
     // the bands' mid response, and the readback reports it
@@ -1774,7 +2274,8 @@ fn set_table_validates_and_applies_hand_built_bands() {
         (3.0, flat_policy(1.0, 0.0)),
         (999.0, flat_policy(0.0, 0.0)),
     ]);
-    s.set_table(vec![false, false], vec![None, Some(prof)]).unwrap();
+    s.set_table(vec![false, false], vec![None, Some(prof)])
+        .unwrap();
     let open_to = |s: &PreflopSolver, to: f64| {
         let a = s.nodes[0]
             .actions
@@ -1786,7 +2287,10 @@ fn set_table_validates_and_applies_hand_built_bands() {
     let fold25 = agg_freq(&s, open_to(&s, 2.5), |k| k == "fold");
     let fold50 = agg_freq(&s, open_to(&s, 5.0), |k| k == "fold");
     assert!(fold25 < 1e-6, "BB must defend 100% vs 2.5x, folds {fold25}");
-    assert!(fold50 > 1.0 - 1e-6, "BB must fold 100% vs 5x, folds {fold50}");
+    assert!(
+        fold50 > 1.0 - 1e-6,
+        "BB must fold 100% vs 5x, folds {fold50}"
+    );
 }
 
 /// Profile generation rejects non-finite / out-of-range stats with an error
@@ -1804,17 +2308,83 @@ fn hud_stats_validation_names_the_field() {
             .1
     };
     let cases: Vec<(HudStats, &str)> = vec![
-        (HudStats { vpip: f64::NAN, ..base() }, "vpip"),
-        (HudStats { pfr: -1.0, ..base() }, "pfr"),
-        (HudStats { threebet: 101.0, ..base() }, "threebet"),
-        (HudStats { fold_to_3bet: f64::INFINITY, ..base() }, "fold_to_3bet"),
-        (HudStats { squeeze: -0.1, ..base() }, "squeeze"),
-        (HudStats { fourbet: Some(f64::NAN), ..base() }, "fourbet"),
-        (HudStats { flatten: 1.5, ..base() }, "flatten"),
-        (HudStats { cont_vs_raise: Some(150.0), ..base() }, "cont_vs_raise"),
-        (HudStats { cont_squeeze: Some(-2.0), ..base() }, "cont_squeeze"),
-        (HudStats { raise_size: "huge".into(), ..base() }, "raise_size"),
-        (HudStats { cont_vs_raise_bands: Some(vec![]), ..base() }, "cont_vs_raise_bands"),
+        (
+            HudStats {
+                vpip: f64::NAN,
+                ..base()
+            },
+            "vpip",
+        ),
+        (
+            HudStats {
+                pfr: -1.0,
+                ..base()
+            },
+            "pfr",
+        ),
+        (
+            HudStats {
+                threebet: 101.0,
+                ..base()
+            },
+            "threebet",
+        ),
+        (
+            HudStats {
+                fold_to_3bet: f64::INFINITY,
+                ..base()
+            },
+            "fold_to_3bet",
+        ),
+        (
+            HudStats {
+                squeeze: -0.1,
+                ..base()
+            },
+            "squeeze",
+        ),
+        (
+            HudStats {
+                fourbet: Some(f64::NAN),
+                ..base()
+            },
+            "fourbet",
+        ),
+        (
+            HudStats {
+                flatten: 1.5,
+                ..base()
+            },
+            "flatten",
+        ),
+        (
+            HudStats {
+                cont_vs_raise: Some(150.0),
+                ..base()
+            },
+            "cont_vs_raise",
+        ),
+        (
+            HudStats {
+                cont_squeeze: Some(-2.0),
+                ..base()
+            },
+            "cont_squeeze",
+        ),
+        (
+            HudStats {
+                raise_size: "huge".into(),
+                ..base()
+            },
+            "raise_size",
+        ),
+        (
+            HudStats {
+                cont_vs_raise_bands: Some(vec![]),
+                ..base()
+            },
+            "cont_vs_raise_bands",
+        ),
         (
             HudStats {
                 cont_vs_raise_bands: Some(vec![(5.0, 30.0), (3.0, 20.0)]),
@@ -1823,16 +2393,25 @@ fn hud_stats_validation_names_the_field() {
             "ascending",
         ),
         (
-            HudStats { cont_vs_raise_bands: Some(vec![(f64::NAN, 30.0)]), ..base() },
+            HudStats {
+                cont_vs_raise_bands: Some(vec![(f64::NAN, 30.0)]),
+                ..base()
+            },
             "cont_vs_raise_bands",
         ),
         (
-            HudStats { cont_vs_raise_bands: Some(vec![(3.0, 120.0)]), ..base() },
+            HudStats {
+                cont_vs_raise_bands: Some(vec![(3.0, 120.0)]),
+                ..base()
+            },
             "cont_vs_raise_bands",
         ),
         // a band continue below the 3-bet stat couldn't even hold the raises
         (
-            HudStats { cont_vs_raise_bands: Some(vec![(3.0, 1.0)]), ..base() },
+            HudStats {
+                cont_vs_raise_bands: Some(vec![(3.0, 1.0)]),
+                ..base()
+            },
             "threebet",
         ),
     ];
@@ -1848,9 +2427,11 @@ fn hud_stats_validation_names_the_field() {
         Err(e) => e,
         Ok(_) => panic!("unsolved generate must still be refused"),
     };
-    assert!(err.contains("solve"), "valid stats must clear validation: {err}");
+    assert!(
+        err.contains("solve"),
+        "valid stats must clear validation: {err}"
+    );
 }
-
 
 // ---------------------------------------------------------------------------
 // Regression tests for the 2026-09 audit fixes (hero mode, profile
@@ -1858,7 +2439,10 @@ fn hud_stats_validation_names_the_field() {
 // ---------------------------------------------------------------------------
 
 fn max_abs_diff(a: &[f32], b: &[f32]) -> f32 {
-    a.iter().zip(b).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max)
+    a.iter()
+        .zip(b)
+        .map(|(x, y)| (x - y).abs())
+        .fold(0f32, f32::max)
 }
 
 fn first_action_node_of(s: &PreflopSolver, seat: u8) -> usize {
@@ -1887,27 +2471,56 @@ fn unchanged_table_in_hero_mode_is_a_no_op() {
     let (r0, s0) = s.arena_snapshot();
     // exactly what the lab's applyModel sends for an all-live table
     s.set_table(vec![false, false], vec![None, None]).unwrap();
-    assert_eq!(s.hero, Some(0), "an unchanged table must not leave hero mode");
-    assert_eq!(s.iteration, iter_before, "an unchanged table must not reset the solve");
-    assert_eq!(s.seat_frozen, vec![false, true], "hero mask must survive a no-op table push");
+    assert_eq!(
+        s.hero,
+        Some(0),
+        "an unchanged table must not leave hero mode"
+    );
+    assert_eq!(
+        s.iteration, iter_before,
+        "an unchanged table must not reset the solve"
+    );
+    assert_eq!(
+        s.seat_frozen,
+        vec![false, true],
+        "hero mask must survive a no-op table push"
+    );
     let (r1, s1) = s.arena_snapshot();
-    assert!(r0 == r1 && s0 == s1, "an unchanged table must not touch the arenas");
+    assert!(
+        r0 == r1 && s0 == s1,
+        "an unchanged table must not touch the arenas"
+    );
     // re-applying the same hero is a no-op too (it used to re-zero the hero)
     s.set_hero(Some(0)).unwrap();
-    assert_eq!(s.iteration, iter_before, "re-applying the current hero must not reset it");
+    assert_eq!(
+        s.iteration, iter_before,
+        "re-applying the current hero must not reset it"
+    );
 
     // a renamed profile is still the same table
     s.set_hero(None).unwrap();
     let prof = profile_with(BUCKET_VS_RAISE, flat_policy(0.5, 0.2), "a");
-    s.set_table(vec![false, false], vec![None, Some(prof.clone())]).unwrap();
+    s.set_table(vec![false, false], vec![None, Some(prof.clone())])
+        .unwrap();
     for _ in 0..50 {
         s.iterate();
     }
     let it = s.iteration;
-    let renamed = SeatProfile { name: "b".into(), ..prof };
-    s.set_table(vec![false, false], vec![None, Some(renamed)]).unwrap();
-    assert_eq!(s.iteration, it, "renaming a profile must not reset the solve");
-    assert_eq!(s.seat_profiles[1].as_ref().unwrap().name, "b", "the new name is kept");
+    let renamed = SeatProfile {
+        name: "b".into(),
+        ..prof
+    };
+    s.set_table(vec![false, false], vec![None, Some(renamed)])
+        .unwrap();
+    assert_eq!(
+        s.iteration, it,
+        "renaming a profile must not reset the solve"
+    );
+    assert_eq!(
+        s.seat_profiles[1].as_ref().unwrap().name,
+        "b",
+        "the new name is kept"
+    );
 }
 
 /// REGRESSION (audit 2026-09, high): switching hero A -> B froze A at the
@@ -1957,7 +2570,10 @@ fn hero_exit_and_switch_restore_the_solved_strategy() {
     // hero off: everyone back on the table, iteration count restored
     s.set_hero(None).unwrap();
     assert_eq!(s.seat_frozen, vec![false, false]);
-    assert_eq!(s.iteration, table_iter, "hero off must restore the table's iteration count");
+    assert_eq!(
+        s.iteration, table_iter,
+        "hero off must restore the table's iteration count"
+    );
     assert!(max_abs_diff(&solved_sb, &s.average_strategy(node_sb)) < 1e-6);
     assert!(max_abs_diff(&solved_bb, &s.average_strategy(node_bb)) < 1e-6);
 }
@@ -1985,7 +2601,10 @@ fn hero_backup_survives_save_load() {
     std::fs::remove_file(&path).ok();
     assert_eq!(l.hero, Some(0));
     l.set_hero(None).unwrap();
-    assert_eq!(l.iteration, table_iter, "the table's iteration count rides along in the save");
+    assert_eq!(
+        l.iteration, table_iter,
+        "the table's iteration count rides along in the save"
+    );
     assert!(
         max_abs_diff(&solved, &l.average_strategy(node)) < 1e-6,
         "hero off after a load must restore the solved strategy"
@@ -2029,7 +2648,11 @@ fn bb_generated_profile_has_sane_defense() {
     );
     // the same stats at a seat WITH unopened data stay sane too
     let (_, btn) = s.generate_profile(0, &tag, "tag").unwrap();
-    assert!(btn.cont_vs_raise < 70.0, "BTN TAG continues {}% vs a raise", btn.cont_vs_raise);
+    assert!(
+        btn.cont_vs_raise < 70.0,
+        "BTN TAG continues {}% vs a raise",
+        btn.cont_vs_raise
+    );
 }
 
 /// REGRESSION (audit 2026-09, medium): a fold-win terminal raked the whole
@@ -2069,7 +2692,11 @@ fn fold_win_rakes_the_matched_pot_only() {
     let mut cfg2 = s.cfg.clone();
     cfg2.no_flop_no_drop = true;
     let s2 = legacy_solver(cfg2, table()).unwrap();
-    let nd2 = s2.nodes.iter().find(|n| n.actions.is_empty() && n.winner == 0 && (n.invested[0] - 3.0).abs() < 1e-9).unwrap();
+    let nd2 = s2
+        .nodes
+        .iter()
+        .find(|n| n.actions.is_empty() && n.winner == 0 && (n.invested[0] - 3.0).abs() < 1e-9)
+        .unwrap();
     assert_eq!(s2.fold_win_rake(nd2), 0.0);
 }
 
@@ -2096,9 +2723,10 @@ fn live_seats_exclude_frozen_and_ruled() {
         vs_raise_bands: None,
         postflop: None,
         limp_defense: None,
-            response: None,
+        response: None,
     };
-    s.set_table(vec![false, false], vec![None, Some(full)]).unwrap();
+    s.set_table(vec![false, false], vec![None, Some(full)])
+        .unwrap();
     assert_eq!(s.live_seats(), vec![true, false]);
     for _ in 0..20 {
         s.iterate(); // a changed table resets the solve; hero needs a solved table
@@ -2120,27 +2748,42 @@ fn ruled_seat_frozen_as_solved_keeps_its_play() {
     }
     // rule BB "call everything" facing a raise, solve on against it
     let prof = profile_with(BUCKET_VS_RAISE, flat_policy(1.0, 0.0), "station");
-    s.set_table(vec![false, false], vec![None, Some(prof)]).unwrap();
+    s.set_table(vec![false, false], vec![None, Some(prof)])
+        .unwrap();
     for _ in 0..100 {
         s.iterate();
     }
     let node = (0..s.nodes.len())
-        .find(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == 1 && s.nodes[i].bucket == BUCKET_VS_RAISE)
+        .find(|&i| {
+            s.nodes[i].kind == 0 && s.nodes[i].actor == 1 && s.nodes[i].bucket == BUCKET_VS_RAISE
+        })
         .unwrap();
-    let call_idx = s.nodes[node].actions.iter().position(|a| a.kind == "call").unwrap();
+    let call_idx = s.nodes[node]
+        .actions
+        .iter()
+        .position(|a| a.kind == "call")
+        .unwrap();
     let aa = solver::preflop::equity::class_index(12, 12, false);
     // switch BB to Frozen (as solved): it must keep calling, not go uniform
     s.set_table(vec![false, true], vec![None, None]).unwrap();
     let call_aa = s.average_strategy(node)[call_idx * NUM_CLASSES + aa];
-    assert!(call_aa > 0.99, "frozen ruled seat must keep the profile's play, got call {call_aa}");
+    assert!(
+        call_aa > 0.99,
+        "frozen ruled seat must keep the profile's play, got call {call_aa}"
+    );
     for _ in 0..50 {
         s.iterate();
     }
     let after = s.average_strategy(node)[call_idx * NUM_CLASSES + aa];
-    assert!((after - call_aa).abs() < 1e-6, "the pin must hold through further solving, got {after}");
+    assert!(
+        (after - call_aa).abs() < 1e-6,
+        "the pin must hold through further solving, got {after}"
+    );
     // a never-solved live seat still cannot be frozen "as solved"
     let mut fresh = legacy_solver(hu_limp_config(), table()).unwrap();
-    assert!(fresh.set_table(vec![false, true], vec![None, None]).is_err());
+    assert!(fresh
+        .set_table(vec![false, true], vec![None, None])
+        .is_err());
 }
 
 /// A profile seat facing a raise PLUS a re-raise COLD (it has not entered
@@ -2150,10 +2793,18 @@ fn ruled_seat_frozen_as_solved_keeps_its_play() {
 #[test]
 fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
     let eq = table();
-    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0, stacks: None,
+        stack: 100.0,
+        stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: false,
@@ -2169,7 +2820,10 @@ fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     };
     let mut s = legacy_solver(cfg, eq).unwrap();
     for _ in 0..30 {
@@ -2180,11 +2834,26 @@ fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
     buckets[BUCKET_VS_RAISE as usize] = Some(flat_policy(0.30, 0.06));
     buckets[BUCKET_VS_3BET as usize] = Some(flat_policy(0.70, 0.0));
-    let prof = SeatProfile { name: "adelaide".into(), buckets: buckets.clone(), vs_raise_bands: None, postflop: None, limp_defense: None, response: None };
-    s.set_table(vec![false, false, false], vec![None, None, Some(prof.clone())]).unwrap();
+    let prof = SeatProfile {
+        name: "adelaide".into(),
+        buckets: buckets.clone(),
+        vs_raise_bands: None,
+        postflop: None,
+        limp_defense: None,
+        response: None,
+    };
+    s.set_table(
+        vec![false, false, false],
+        vec![None, None, Some(prof.clone())],
+    )
+    .unwrap();
 
     let raise_at = |s: &PreflopSolver, node: usize| {
-        s.nodes[node].actions.iter().position(|a| a.kind == "raise").expect("raise")
+        s.nodes[node]
+            .actions
+            .iter()
+            .position(|a| a.kind == "raise")
+            .expect("raise")
     };
     // BTN raises, SB 3-bets, BB faces it COLD
     let r1 = raise_at(&s, 0);
@@ -2200,12 +2869,17 @@ fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
 
     // the same profile on the SB, which RAISED and now faces BTN's 4-bet:
     // the flat continue rate applies as before
-    s.set_table(vec![false, false, false], vec![None, Some(prof), None]).unwrap();
+    s.set_table(vec![false, false, false], vec![None, Some(prof), None])
+        .unwrap();
     let r1 = raise_at(&s, 0);
     let sb = s.child(0, r1);
     let r2 = raise_at(&s, sb);
     let bb = s.child(sb, r2);
-    let call_i = s.nodes[bb].actions.iter().position(|a| a.kind == "call").unwrap();
+    let call_i = s.nodes[bb]
+        .actions
+        .iter()
+        .position(|a| a.kind == "call")
+        .unwrap();
     let btn = s.child(bb, call_i); // BB calls; BTN to act vs the 3-bet
     let r3 = raise_at(&s, btn);
     let sb2 = s.child(btn, r3); // BTN 4-bets; SB (the 3-bettor) faces it having invested
@@ -2238,10 +2912,25 @@ fn reach_freq(s: &PreflopSolver, path: &[usize], act_pred: impl Fn(&str) -> bool
 }
 
 fn six_max_cfg() -> PreflopConfig {
-    PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
-        positions: vec!["UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0, stacks: None,
+        positions: vec![
+            "UTG".into(),
+            "HJ".into(),
+            "CO".into(),
+            "BTN".into(),
+            "SB".into(),
+            "BB".into(),
+        ],
+        stack: 100.0,
+        stacks: None,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -2257,7 +2946,10 @@ fn six_max_cfg() -> PreflopConfig {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     }
 }
 
@@ -2302,12 +2994,29 @@ fn raiser_facing_3bet_continues_a_share_of_its_opens() {
         implied.cont_vs_3bet
     );
     // install it on UTG and read the node: UTG opens, BTN 3-bets, blinds fold
-    s.set_table(vec![false, false, false, false, false, false], vec![Some(prof), None, None, None, None, None]).unwrap();
-    let raise_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "raise").expect("raise");
-    let fold_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "fold").expect("fold");
+    s.set_table(
+        vec![false, false, false, false, false, false],
+        vec![Some(prof), None, None, None, None, None],
+    )
+    .unwrap();
+    let raise_i = |s: &PreflopSolver, node: usize| {
+        s.nodes[node]
+            .actions
+            .iter()
+            .position(|a| a.kind == "raise")
+            .expect("raise")
+    };
+    let fold_i = |s: &PreflopSolver, node: usize| {
+        s.nodes[node]
+            .actions
+            .iter()
+            .position(|a| a.kind == "fold")
+            .expect("fold")
+    };
     let mut path = Vec::new();
     let mut node = 0usize;
-    for pick in [raise_i, fold_i, fold_i, raise_i, fold_i, fold_i] { // UTG raise, HJ/CO fold, BTN 3-bet, SB/BB fold
+    for pick in [raise_i, fold_i, fold_i, raise_i, fold_i, fold_i] {
+        // UTG raise, HJ/CO fold, BTN 3-bet, SB/BB fold
         let i = pick(&s, node);
         path.push(i);
         node = s.child(node, i);
@@ -2334,15 +3043,24 @@ fn profile_opens_wider_on_the_button_than_utg() {
     assert!(
         btn.pfr > utg.pfr * 1.5 && btn.vpip > utg.vpip * 1.3,
         "BTN {:.1}/{:.1} should be much wider than UTG {:.1}/{:.1}",
-        btn.vpip, btn.pfr, utg.vpip, utg.pfr
+        btn.vpip,
+        btn.pfr,
+        utg.vpip,
+        utg.pfr
     );
     // a position-blind player (naiveté 1) opens the same everywhere
     let mut blind = tag_stats();
     blind.flatten = 1.0;
     let (_, u2) = s.generate_profile(0, &blind, "blind").unwrap();
     let (_, b2) = s.generate_profile(3, &blind, "blind").unwrap();
-    assert!((u2.pfr - b2.pfr).abs() < 1.0 && (u2.vpip - b2.vpip).abs() < 1.5,
-        "naiveté 1 must be position-blind: UTG {:.1}/{:.1} vs BTN {:.1}/{:.1}", u2.vpip, u2.pfr, b2.vpip, b2.pfr);
+    assert!(
+        (u2.pfr - b2.pfr).abs() < 1.0 && (u2.vpip - b2.vpip).abs() < 1.5,
+        "naiveté 1 must be position-blind: UTG {:.1}/{:.1} vs BTN {:.1}/{:.1}",
+        u2.vpip,
+        u2.pfr,
+        b2.vpip,
+        b2.pfr
+    );
 }
 
 /// After limping, a raise is met with the limp-defence policy: the
@@ -2362,14 +3080,40 @@ fn limper_defends_at_its_after_limping_rate() {
     whale.cont_vs_raise = Some(45.0);
     whale.cont_vs_raise_limped = Some(65.0);
     let (prof, _) = s.generate_profile(1, &whale, "whale").unwrap(); // HJ
-    assert!(prof.limp_defense.is_some(), "a limping player gets a limp-defence policy");
-    s.set_table(vec![false; 6], vec![None, Some(prof), None, None, None, None]).unwrap();
-    let call_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "call").expect("call");
-    let raise_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "raise").expect("raise");
-    let fold_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "fold").expect("fold");
+    assert!(
+        prof.limp_defense.is_some(),
+        "a limping player gets a limp-defence policy"
+    );
+    s.set_table(
+        vec![false; 6],
+        vec![None, Some(prof), None, None, None, None],
+    )
+    .unwrap();
+    let call_i = |s: &PreflopSolver, node: usize| {
+        s.nodes[node]
+            .actions
+            .iter()
+            .position(|a| a.kind == "call")
+            .expect("call")
+    };
+    let raise_i = |s: &PreflopSolver, node: usize| {
+        s.nodes[node]
+            .actions
+            .iter()
+            .position(|a| a.kind == "raise")
+            .expect("raise")
+    };
+    let fold_i = |s: &PreflopSolver, node: usize| {
+        s.nodes[node]
+            .actions
+            .iter()
+            .position(|a| a.kind == "fold")
+            .expect("fold")
+    };
     let mut path = Vec::new();
     let mut node = 0usize;
-    for pick in [fold_i, call_i, fold_i, raise_i, fold_i, fold_i] { // UTG fold, HJ limp, CO fold, BTN raise, SB/BB fold
+    for pick in [fold_i, call_i, fold_i, raise_i, fold_i, fold_i] {
+        // UTG fold, HJ limp, CO fold, BTN raise, SB/BB fold
         let i = pick(&s, node);
         path.push(i);
         node = s.child(node, i);
@@ -2398,20 +3142,42 @@ fn first_in_stats_drive_the_entry_buckets() {
     tag.pfr = 12.4;
     tag.flatten = 1.0; // position-blind, so the implied numbers are the inputs
     let (_, plain) = s.generate_profile(2, &tag, "tag").unwrap();
-    assert!((plain.vpip - 16.9).abs() < 1.0 && (plain.pfr - 12.4).abs() < 1.0, "fallback = VPIP/PFR: {plain:?}");
+    assert!(
+        (plain.vpip - 16.9).abs() < 1.0 && (plain.pfr - 12.4).abs() < 1.0,
+        "fallback = VPIP/PFR: {plain:?}"
+    );
     tag.open_raise = Some(17.4);
     tag.open_limp = Some(1.7);
     tag.iso_raise = Some(14.6);
     tag.limp_behind = Some(9.2);
     let (prof, fi) = s.generate_profile(2, &tag, "tag").unwrap();
-    assert!((fi.pfr - 17.4).abs() < 1.0, "first-in raise should be the open_raise input, got {:.1}", fi.pfr);
-    assert!((fi.vpip - 19.1).abs() < 1.0, "first-in continue = raise + limp, got {:.1}", fi.vpip);
+    assert!(
+        (fi.pfr - 17.4).abs() < 1.0,
+        "first-in raise should be the open_raise input, got {:.1}",
+        fi.pfr
+    );
+    assert!(
+        (fi.vpip - 19.1).abs() < 1.0,
+        "first-in continue = raise + limp, got {:.1}",
+        fi.vpip
+    );
     let vl = prof.buckets[BUCKET_VS_LIMPS as usize].as_ref().unwrap();
-    let pct = |v: &Vec<f32>| (0..NUM_CLASSES).map(|h| class_prob(h) as f64 * v[h] as f64).sum::<f64>() * 100.0;
+    let pct = |v: &Vec<f32>| {
+        (0..NUM_CLASSES)
+            .map(|h| class_prob(h) as f64 * v[h] as f64)
+            .sum::<f64>()
+            * 100.0
+    };
     let iso = pct(&vl.raise) + pct(&vl.jam);
     let behind = pct(&vl.call);
-    assert!((iso - 14.6).abs() < 1.5, "iso-raise over limpers should follow iso_raise, got {iso:.1}");
-    assert!((behind - 9.2).abs() < 1.5, "limp-behind should follow limp_behind, got {behind:.1}");
+    assert!(
+        (iso - 14.6).abs() < 1.5,
+        "iso-raise over limpers should follow iso_raise, got {iso:.1}"
+    );
+    assert!(
+        (behind - 9.2).abs() < 1.5,
+        "limp-behind should follow limp_behind, got {behind:.1}"
+    );
 }
 
 /// Range ORDER comes from the reference solve, not from equity vs random:
@@ -2433,14 +3199,26 @@ fn opening_order_follows_the_reference_solve_at_low_naivete() {
     st.flatten = 0.0;
     let (gto, _) = s.generate_profile(1, &st, "gto").unwrap();
     let un = gto.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
-    assert!(un.raise[s76] > 0.9, "solver-shaped 20% open must raise 76s, got {}", un.raise[s76]);
-    assert!(un.raise[kto] < 0.1, "solver-shaped 20% open must fold KTo, got {}", un.raise[kto]);
+    assert!(
+        un.raise[s76] > 0.9,
+        "solver-shaped 20% open must raise 76s, got {}",
+        un.raise[s76]
+    );
+    assert!(
+        un.raise[kto] < 0.1,
+        "solver-shaped 20% open must fold KTo, got {}",
+        un.raise[kto]
+    );
     st.flatten = 1.0;
     let (naive, _) = s.generate_profile(1, &st, "naive").unwrap();
     let un = naive.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
-    assert!(un.raise[kto] > un.raise[s76], "card-appeal player raises KTo before 76s: KTo {} 76s {}", un.raise[kto], un.raise[s76]);
+    assert!(
+        un.raise[kto] > un.raise[s76],
+        "card-appeal player raises KTo before 76s: KTo {} 76s {}",
+        un.raise[kto],
+        un.raise[s76]
+    );
 }
-
 
 #[test]
 fn distinct_limp_entry_ranges_keep_their_conditional_defense() {
@@ -2454,24 +3232,55 @@ fn distinct_limp_entry_ranges_keep_their_conditional_defense() {
     st.limp_behind = Some(55.0);
     st.cont_vs_raise_limped = Some(68.7);
     let (p, _) = s.generate_profile(1, &st, "asymmetric limper").unwrap();
-    for (entry, defense) in [(BUCKET_UNOPENED, p.response.as_ref().unwrap().limp_unopened.as_ref().unwrap()),
-                              (BUCKET_VS_LIMPS, p.limp_defense.as_ref().unwrap())] {
+    for (entry, defense) in [
+        (
+            BUCKET_UNOPENED,
+            p.response.as_ref().unwrap().limp_unopened.as_ref().unwrap(),
+        ),
+        (BUCKET_VS_LIMPS, p.limp_defense.as_ref().unwrap()),
+    ] {
         let range = &p.buckets[entry as usize].as_ref().unwrap().call;
-        let total: f64 = (0..NUM_CLASSES).map(|h| class_prob(h) as f64 * range[h] as f64).sum();
-        let defend: f64 = (0..NUM_CLASSES).map(|h| class_prob(h) as f64 * range[h] as f64
-            * (defense.call[h] + defense.raise[h] + defense.jam[h]) as f64).sum();
-        assert!((defend / total - 0.687).abs() < 0.005, "entry {entry}: {}", defend / total);
+        let total: f64 = (0..NUM_CLASSES)
+            .map(|h| class_prob(h) as f64 * range[h] as f64)
+            .sum();
+        let defend: f64 = (0..NUM_CLASSES)
+            .map(|h| {
+                class_prob(h) as f64
+                    * range[h] as f64
+                    * (defense.call[h] + defense.raise[h] + defense.jam[h]) as f64
+            })
+            .sum();
+        assert!(
+            (defend / total - 0.687).abs() < 0.005,
+            "entry {entry}: {}",
+            defend / total
+        );
     }
-    s.set_table(vec![false; 6], vec![None, Some(p), None, None, None, None]).unwrap();
+    s.set_table(vec![false; 6], vec![None, Some(p), None, None, None, None])
+        .unwrap();
     // UTG fold / limp, HJ limp, CO fold, BTN raise, blinds fold; UTG folds if it limped.
     for behind in [false, true] {
         let mut path = Vec::new();
         let mut node = 0;
-        let mut kinds = vec![if behind {"call"} else {"fold"}, "call", "fold", "raise", "fold", "fold"];
-        if behind { kinds.push("fold"); }
+        let mut kinds = vec![
+            if behind { "call" } else { "fold" },
+            "call",
+            "fold",
+            "raise",
+            "fold",
+            "fold",
+        ];
+        if behind {
+            kinds.push("fold");
+        }
         for kind in kinds {
-            let a = s.nodes[node].actions.iter().position(|a| a.kind == kind).unwrap();
-            path.push(a); node = s.child(node, a);
+            let a = s.nodes[node]
+                .actions
+                .iter()
+                .position(|a| a.kind == kind)
+                .unwrap();
+            path.push(a);
+            node = s.child(node, a);
         }
         assert_eq!(s.nodes[node].actor, 1);
         let cont = reach_freq(&s, &path, |k| k != "fold");
@@ -2482,66 +3291,123 @@ fn distinct_limp_entry_ranges_keep_their_conditional_defense() {
 #[test]
 fn adaptive_profiles_learn_large_responses_and_preserve_locks() {
     use solver::preflop::ProfileResponse;
-    let mut cfg = six_max_cfg(); cfg.stack = 20.0; cfg.add_allin = true;
+    let mut cfg = six_max_cfg();
+    cfg.stack = 20.0;
+    cfg.add_allin = true;
     let mut s = legacy_solver(cfg, table()).unwrap();
     let mut p = profile_with(BUCKET_VS_RAISE, flat_policy(1.0, 0.0), "station");
     p.buckets = vec![Some(flat_policy(1.0, 0.0)); NUM_BUCKETS];
-    p.response = Some(ProfileResponse { contextual_reraise: None, limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
-    s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
+    p.response = Some(ProfileResponse {
+        contextual_reraise: None,
+        limp_unopened: None,
+        adaptive_from: Some(0.25),
+        source_stats: None,
+        cold_reraise: None,
+        limp_contexts: vec![],
+    });
+    s.set_table(
+        vec![false; 6],
+        vec![None, Some(p.clone()), None, None, None, None],
+    )
+    .unwrap();
     assert!(s.live_seats()[1]);
     assert!(s.set_hero(Some(0)).unwrap_err().contains("joint solving"));
-    let small = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
-    let jam = s.nodes[0].actions.iter().position(|a| a.kind == "jam").unwrap();
-    let sn = s.child(0, small); let jn = s.child(0, jam);
+    let small = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "raise")
+        .unwrap();
+    let jam = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "jam")
+        .unwrap();
+    let sn = s.child(0, small);
+    let jn = s.child(0, jam);
     let sig = s.average_strategy(sn);
-    let call = s.nodes[sn].actions.iter().position(|a| a.kind == "call").unwrap();
+    let call = s.nodes[sn]
+        .actions
+        .iter()
+        .position(|a| a.kind == "call")
+        .unwrap();
     assert_eq!(sig[call * NUM_CLASSES], 1.0);
     let js = s.average_strategy(jn);
     assert!(js.iter().all(|v| *v > 0.0 && *v < 1.0));
-    let mut lock = vec![0.0; js.len()]; lock[..NUM_CLASSES].fill(1.0);
+    let mut lock = vec![0.0; js.len()];
+    lock[..NUM_CLASSES].fill(1.0);
     s.lock_point(&[jam], Some(flat_policy(0.0, 0.0))).unwrap();
     assert_eq!(s.average_strategy(jn), lock);
     s.iterate();
     p.response.as_mut().unwrap().adaptive_from = Some(0.5);
-    s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
+    s.set_table(
+        vec![false; 6],
+        vec![None, Some(p.clone()), None, None, None, None],
+    )
+    .unwrap();
     assert_eq!(s.iteration, 0);
-    s.iterate(); p.limp_defense = Some(flat_policy(0.5, 0.0));
-    s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
+    s.iterate();
+    p.limp_defense = Some(flat_policy(0.5, 0.0));
+    s.set_table(
+        vec![false; 6],
+        vec![None, Some(p.clone()), None, None, None, None],
+    )
+    .unwrap();
     assert_eq!(s.iteration, 0);
     let path = std::env::temp_dir().join(format!("gtopen_adaptive_{}.gtop", std::process::id()));
     let path = path.to_str().unwrap();
     s.save_game(path).unwrap();
     let loaded = PreflopSolver::load_game(path, table()).unwrap();
     std::fs::remove_file(path).unwrap();
-    assert_eq!(serde_json::to_value(&s.seat_profiles).unwrap(), serde_json::to_value(&loaded.seat_profiles).unwrap());
+    assert_eq!(
+        serde_json::to_value(&s.seat_profiles).unwrap(),
+        serde_json::to_value(&loaded.seat_profiles).unwrap()
+    );
     assert_eq!(loaded.average_strategy(jn), lock);
     p.response.as_mut().unwrap().adaptive_from = Some(f64::NAN);
-    assert!(s.set_table(vec![false; 6], vec![None, Some(p), None, None, None, None]).is_err());
+    assert!(s
+        .set_table(vec![false; 6], vec![None, Some(p), None, None, None, None])
+        .is_err());
 }
-
 
 #[test]
 fn adaptive_gap_respects_fixed_actions_instead_of_reporting_their_bleed() {
     use solver::preflop::ProfileResponse;
     let mut s = legacy_solver(hu_push_fold_config(10.0), table()).unwrap();
     let mut p = profile_with(BUCKET_UNOPENED, flat_policy(0.0, 0.0), "fold first in");
-    p.response = Some(ProfileResponse { contextual_reraise: None, limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
-    s.set_table(vec![false; 2], vec![Some(p.clone()), None]).unwrap();
-    assert!(s.br_gaps()[0].abs() < 1e-7, "cannot deviate from the fixed opening action");
+    p.response = Some(ProfileResponse {
+        contextual_reraise: None,
+        limp_unopened: None,
+        adaptive_from: Some(0.25),
+        source_stats: None,
+        cold_reraise: None,
+        limp_contexts: vec![],
+    });
+    s.set_table(vec![false; 2], vec![Some(p.clone()), None])
+        .unwrap();
+    assert!(
+        s.br_gaps()[0].abs() < 1e-7,
+        "cannot deviate from the fixed opening action"
+    );
     p.response.as_mut().unwrap().adaptive_from = None;
     s.set_table(vec![false; 2], vec![Some(p), None]).unwrap();
-    assert!(s.br_gaps()[0] > 0.1, "legacy fixed profile must still report its unrestricted bleed");
+    assert!(
+        s.br_gaps()[0] > 0.1,
+        "legacy fixed profile must still report its unrestricted bleed"
+    );
 }
-
 
 #[test]
 fn equal_blinds_allow_checks_and_keep_bb_out_of_position_heads_up() {
     let mut cfg = hu_push_fold_config(20.0);
-    cfg.posts = vec![1.0, 1.0]; cfg.limp = true;
+    cfg.posts = vec![1.0, 1.0];
+    cfg.limp = true;
     let s = legacy_solver(cfg, table()).unwrap();
     assert_eq!(s.postflop_order(), vec![1, 0]);
     assert_eq!(s.nodes[0].actions[0].kind, "check");
-    assert!(!s.nodes[0].actions.iter().any(|a| a.kind == "fold" || a.kind == "call"));
+    assert!(!s.nodes[0]
+        .actions
+        .iter()
+        .any(|a| a.kind == "fold" || a.kind == "call"));
     let bb = s.child(0, 0);
     assert_eq!(s.nodes[bb].actor, 1);
     assert_eq!(s.nodes[bb].actions[0].kind, "check");
@@ -2553,56 +3419,89 @@ fn equal_blinds_allow_checks_and_keep_bb_out_of_position_heads_up() {
     let mut node = 0;
     // UTG limps, next three seats fold; the SB already matches the live bet.
     for kind in ["call", "fold", "fold", "fold"] {
-        let a = s.nodes[node].actions.iter().position(|a| a.kind == kind).unwrap();
+        let a = s.nodes[node]
+            .actions
+            .iter()
+            .position(|a| a.kind == kind)
+            .unwrap();
         node = s.child(node, a);
     }
     assert_eq!(s.nodes[node].actor, 4);
     assert_eq!(s.nodes[node].actions[0].kind, "check");
-    assert!(!s.nodes[node].actions.iter().any(|a| a.kind == "call" || a.kind == "fold"));
+    assert!(!s.nodes[node]
+        .actions
+        .iter()
+        .any(|a| a.kind == "call" || a.kind == "fold"));
     assert_eq!(s.nodes[node].pot, 3.0);
 }
 #[test]
 fn observed_open_sizes_preserve_mass_and_unreachable_views_hide_placeholders() {
     use solver::preflop::{BucketPolicy, SeatProfile, NUM_BUCKETS};
-    let mut cfg=hu_push_fold_config(30.0);
-    cfg.limp=true; cfg.open_raises=vec![2.0,2.5,3.0,5.0];cfg.raise_mults=vec![2.5];cfg.max_raises=2;
-    let mut s=legacy_solver(cfg,table()).unwrap();
+    let mut cfg = hu_push_fold_config(30.0);
+    cfg.limp = true;
+    cfg.open_raises = vec![2.0, 2.5, 3.0, 5.0];
+    cfg.raise_mults = vec![2.5];
+    cfg.max_raises = 2;
+    let mut s = legacy_solver(cfg, table()).unwrap();
     assert!(s.node_view(&[]).unwrap().strategy_note.is_some());
     s.iterate();
-    let mut pol=flat_policy(0.2,0.6);
-    pol.raise_sizes=vec![(2.0,2.0),(2.6,1.0),(5.0,1.0)];
+    let mut pol = flat_policy(0.2, 0.6);
+    pol.raise_sizes = vec![(2.0, 2.0), (2.6, 1.0), (5.0, 1.0)];
     pol.jam.fill(0.1);
-    let mut buckets=vec![None;NUM_BUCKETS];buckets[0]=Some(pol.clone());
-    let p=SeatProfile{name:"measured sizes".into(),buckets,vs_raise_bands:None,postflop:None,limp_defense:None,response:None};
-    s.set_table(vec![false;2],vec![Some(p.clone()),None]).unwrap();
-    let root=s.node_view(&[]).unwrap();
-    for (size,expected) in [(2.0,0.3),(2.5,0.15),(3.0,0.0),(5.0,0.15)] {
-        let i=root.actions.iter().position(|a|a.kind=="raise" && a.to==size).unwrap();
-        assert!((root.actions[i].freq-expected).abs()<1e-6);
-        if size==3.0 {
-            let v=s.node_view(&[i]).unwrap();
+    let mut buckets = vec![None; NUM_BUCKETS];
+    buckets[0] = Some(pol.clone());
+    let p = SeatProfile {
+        name: "measured sizes".into(),
+        buckets,
+        vs_raise_bands: None,
+        postflop: None,
+        limp_defense: None,
+        response: None,
+    };
+    s.set_table(vec![false; 2], vec![Some(p.clone()), None])
+        .unwrap();
+    let root = s.node_view(&[]).unwrap();
+    for (size, expected) in [(2.0, 0.3), (2.5, 0.15), (3.0, 0.0), (5.0, 0.15)] {
+        let i = root
+            .actions
+            .iter()
+            .position(|a| a.kind == "raise" && a.to == size)
+            .unwrap();
+        assert!((root.actions[i].freq - expected).abs() < 1e-6);
+        if size == 3.0 {
+            let v = s.node_view(&[i]).unwrap();
             assert!(v.strategy.is_none());
             assert!(v.strategy_note.as_ref().unwrap().contains("Unreachable"));
             assert!(v.history.last().unwrap().strategy_note.is_some());
-            let call=v.actions.iter().position(|a|a.kind=="call").unwrap();
-            assert!(!s.node_view(&[i,call]).unwrap().exportable);
-            assert!(s.export_spot(&[i,call]).is_err());
+            let call = v.actions.iter().position(|a| a.kind == "call").unwrap();
+            assert!(!s.node_view(&[i, call]).unwrap().exportable);
+            assert!(s.export_spot(&[i, call]).is_err());
         }
     }
-    assert!((root.actions.iter().map(|a|a.freq).sum::<f32>()-1.0).abs()<1e-6);
-    let jam=root.actions.iter().find(|a|a.kind=="jam").unwrap();assert!((jam.freq-0.1).abs()<1e-6);
-    let restored:BucketPolicy=serde_json::from_str(&serde_json::to_string(&pol).unwrap()).unwrap();
-    assert_eq!(restored.raise_sizes,pol.raise_sizes);
+    assert!((root.actions.iter().map(|a| a.freq).sum::<f32>() - 1.0).abs() < 1e-6);
+    let jam = root.actions.iter().find(|a| a.kind == "jam").unwrap();
+    assert!((jam.freq - 0.1).abs() < 1e-6);
+    let restored: BucketPolicy =
+        serde_json::from_str(&serde_json::to_string(&pol).unwrap()).unwrap();
+    assert_eq!(restored.raise_sizes, pol.raise_sizes);
     // Legacy saves omit size distributions and retain their exact min/max behavior.
-    let mut old=serde_json::to_value(&pol).unwrap();old.as_object_mut().unwrap().remove("raise_sizes");
-    assert!(serde_json::from_value::<BucketPolicy>(old).unwrap().raise_sizes.is_empty());
-    let mut bad=p.clone();bad.buckets[0].as_mut().unwrap().raise_sizes=vec![(2.0,-1.0)];
-    assert!(s.set_table(vec![false;2],vec![Some(bad),None]).is_err());
+    let mut old = serde_json::to_value(&pol).unwrap();
+    old.as_object_mut().unwrap().remove("raise_sizes");
+    assert!(serde_json::from_value::<BucketPolicy>(old)
+        .unwrap()
+        .raise_sizes
+        .is_empty());
+    let mut bad = p.clone();
+    bad.buckets[0].as_mut().unwrap().raise_sizes = vec![(2.0, -1.0)];
+    assert!(s.set_table(vec![false; 2], vec![Some(bad), None]).is_err());
     // Moving to one available size preserves all ordinary raise mass, never creates a jam.
-    pol.raise_sizes=vec![(1000.0,1.0)];
-    let mut modified=p;modified.buckets[0]=Some(pol);
-    s.set_table(vec![false;2],vec![Some(modified),None]).unwrap();
-    let v=s.node_view(&[]).unwrap();assert!((v.actions.iter().find(|a|a.to==5.0).unwrap().freq-0.6).abs()<1e-6);
+    pol.raise_sizes = vec![(1000.0, 1.0)];
+    let mut modified = p;
+    modified.buckets[0] = Some(pol);
+    s.set_table(vec![false; 2], vec![Some(modified), None])
+        .unwrap();
+    let v = s.node_view(&[]).unwrap();
+    assert!((v.actions.iter().find(|a| a.to == 5.0).unwrap().freq - 0.6).abs() < 1e-6);
 }
 
 #[test]
@@ -2613,27 +3512,42 @@ fn hu_leaf_values_price_a_flop_like_the_terminal_model() {
             "positions": ["SB", "BB"], "stack": 100.0, "posts": [0.5, 1.0], "limp": false,
             "open_raises": [2.5], "raise_mults": [3.0], "max_raises": 1, "add_allin": false,
             "rake_pct": 0.0, "rake_cap": 0.0, "realization": realization,
-        })).unwrap();
+        }))
+        .unwrap();
         PreflopSolver::new(cfg, table()).unwrap()
     };
     let wide = vec![1.0f32; NUM_CLASSES];
     let mut tight = vec![0.0f32; NUM_CLASSES];
-    for k in 0..20 { tight[k * 7] = 1.0; }
+    for k in 0..20 {
+        tight[k * 7] = 1.0;
+    }
     let range_value = |v: &[f32], r: &[f32]| {
-        let m: f64 = (0..NUM_CLASSES).map(|k| class_prob(k) as f64 * r[k] as f64).sum();
-        (0..NUM_CLASSES).map(|k| class_prob(k) as f64 * r[k] as f64 * v[k] as f64).sum::<f64>() / m
+        let m: f64 = (0..NUM_CLASSES)
+            .map(|k| class_prob(k) as f64 * r[k] as f64)
+            .sum();
+        (0..NUM_CLASSES)
+            .map(|k| class_prob(k) as f64 * r[k] as f64 * v[k] as f64)
+            .sum::<f64>()
+            / m
     };
     // raw and balanced split the pot exactly (no rake): range values add to 1
     for m in ["raw", "balanced"] {
         let mut s = mk(m);
-        let v = s.hu_leaf_values([&wide, &tight], 6.0, 50.0, 0.0, 0.0).unwrap();
+        let v = s
+            .hu_leaf_values([&wide, &tight], 6.0, 50.0, 0.0, 0.0)
+            .unwrap();
         let total = range_value(&v[0], &wide) + range_value(&v[1], &tight);
         assert!((total - 1.0).abs() < 0.02, "{m}: {total}");
-        assert!(range_value(&v[1], &tight) > 0.5, "{m}: the tight range is ahead");
+        assert!(
+            range_value(&v[1], &tight) > 0.5,
+            "{m}: the tight range is ahead"
+        );
     }
     // rake comes off: 5% capped at 3bb of a 6bb pot
     let mut s = mk("raw");
-    let v = s.hu_leaf_values([&wide, &wide], 6.0, 50.0, 5.0, 3.0).unwrap();
+    let v = s
+        .hu_leaf_values([&wide, &wide], 6.0, 50.0, 5.0, 3.0)
+        .unwrap();
     let total = range_value(&v[0], &wide) + range_value(&v[1], &wide);
     assert!((total - 0.95).abs() < 0.02, "raked total {total}");
     // the solver is unchanged afterwards

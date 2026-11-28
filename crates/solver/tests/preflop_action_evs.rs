@@ -1,8 +1,9 @@
-use solver::preflop::{
-    BucketPolicy, PreflopConfig, PreflopSolver,
-    equity::{EquityTable, NUM_CLASSES, class_prob},
-};
 use std::sync::Arc;
+
+use solver::preflop::{
+    equity::{class_prob, EquityTable, NUM_CLASSES},
+    BucketPolicy, PreflopConfig, PreflopSolver,
+};
 #[test]
 fn conditional_action_values_match_closed_form_and_do_not_change_strategy() {
     let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({

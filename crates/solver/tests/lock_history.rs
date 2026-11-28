@@ -3,10 +3,13 @@
 //! whole or not at all, and history refuses to replay over locks changed
 //! behind its back.
 
-use solver::query::{PathStep, PostflopStats};
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{LockMode, Solver, Spot, SpotConfig};
 use std::sync::Arc;
+
+use solver::{
+    query::{PathStep, PostflopStats},
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    LockMode, Solver, Spot, SpotConfig,
+};
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
     StreetSizing {
@@ -62,16 +65,29 @@ fn lock(s: &mut Solver, path: &[PathStep], mode: LockMode, freeze_path: bool) ->
 fn undo_and_redo_restore_exact_locks() {
     let mut s = river();
     let at = node_idx(&s, &vs_bet());
-    lock(&mut s, &vs_bet(), LockMode::Range { freqs: vec![0.7, 0.3] }, false);
+    lock(
+        &mut s,
+        &vs_bet(),
+        LockMode::Range {
+            freqs: vec![0.7, 0.3],
+        },
+        false,
+    );
     let range_lock = s.locks[&at].clone();
 
     // a per-hand edit on top, then keep solving: the solved base moves, so a
     // replayed range lock would no longer match the one being restored
-    lock(&mut s, &vs_bet(), LockMode::Hands {
-        edits: vec![
-            solver::query::HandEdit { combo: "QdQh".into(), freqs: vec![1.0, 0.0] },
-        ],
-    }, false);
+    lock(
+        &mut s,
+        &vs_bet(),
+        LockMode::Hands {
+            edits: vec![solver::query::HandEdit {
+                combo: "QdQh".into(),
+                freqs: vec![1.0, 0.0],
+            }],
+        },
+        false,
+    );
     assert_ne!(s.locks[&at], range_lock);
     let hands_lock = s.locks[&at].clone();
     for _ in 0..40 {
@@ -80,10 +96,17 @@ fn undo_and_redo_restore_exact_locks() {
 
     let h = s.lock_history();
     assert_eq!(h.undo.len(), 2);
-    assert!(h.undo[0].starts_with("Lock · QcJc9c3d2d All-in 100"), "{:?}", h.undo);
+    assert!(
+        h.undo[0].starts_with("Lock · QcJc9c3d2d All-in 100"),
+        "{:?}",
+        h.undo
+    );
 
     assert!(s.undo_lock_edit().unwrap().is_some());
-    assert_eq!(s.locks[&at], range_lock, "undo restores the earlier sigma bit for bit");
+    assert_eq!(
+        s.locks[&at], range_lock,
+        "undo restores the earlier sigma bit for bit"
+    );
     assert!(s.undo_lock_edit().unwrap().is_some());
     assert!(s.locks.is_empty() && s.lock_labels.is_empty());
     assert_eq!(s.undo_lock_edit().unwrap(), None, "nothing left to undo");
@@ -108,18 +131,30 @@ fn a_new_edit_clears_redo_and_noops_add_nothing() {
     assert_eq!((h.undo.len(), h.redo.len()), (1, 0));
 
     // unlocking a node that isn't locked changes nothing: no entry
-    s.record_lock_edit(|s| Ok((s.unlock_node(ROOT)?, "Unlock".to_string()))).unwrap();
+    s.record_lock_edit(|s| Ok((s.unlock_node(ROOT)?, "Unlock".to_string())))
+        .unwrap();
     assert_eq!(s.lock_history().undo.len(), 1);
 }
 
 #[test]
 fn freezing_the_line_locks_earlier_decisions_and_undoes_as_one() {
     let mut s = river();
-    let frozen = lock(&mut s, &vs_bet(), LockMode::Range { freqs: vec![0.5, 0.5] }, true);
+    let frozen = lock(
+        &mut s,
+        &vs_bet(),
+        LockMode::Range {
+            freqs: vec![0.5, 0.5],
+        },
+        true,
+    );
     assert_eq!(frozen, 1, "the root is the one earlier decision");
     let root = 0;
     assert!(s.locks.contains_key(&root));
-    assert!(s.lock_labels[&root].contains("frozen on the line to"), "{}", s.lock_labels[&root]);
+    assert!(
+        s.lock_labels[&root].contains("frozen on the line to"),
+        "{}",
+        s.lock_labels[&root]
+    );
 
     // frozen = exactly the solved strategy at the time of the lock
     let node = &s.spot.tree.nodes[root as usize];
@@ -127,7 +162,11 @@ fn freezing_the_line_locks_earlier_decisions_and_undoes_as_one() {
     s.solved_strategy_into(node, &mut solved);
     assert_eq!(s.locks[&root], solved);
 
-    assert_eq!(s.lock_history().undo.len(), 1, "one edit for the lock and its line");
+    assert_eq!(
+        s.lock_history().undo.len(),
+        1,
+        "one edit for the lock and its line"
+    );
     s.undo_lock_edit().unwrap();
     assert!(s.locks.is_empty());
 }
@@ -135,11 +174,21 @@ fn freezing_the_line_locks_earlier_decisions_and_undoes_as_one() {
 #[test]
 fn freezing_the_line_keeps_existing_locks_on_it() {
     let mut s = river();
-    lock(&mut s, ROOT, LockMode::Range { freqs: vec![0.2, 0.8] }, false);
+    lock(
+        &mut s,
+        ROOT,
+        LockMode::Range {
+            freqs: vec![0.2, 0.8],
+        },
+        false,
+    );
     let mine = s.locks[&0].clone();
     let frozen = lock(&mut s, &vs_bet(), LockMode::Freeze, true);
     assert_eq!(frozen, 0);
-    assert_eq!(s.locks[&0], mine, "an existing lock on the line is never overwritten");
+    assert_eq!(
+        s.locks[&0], mine,
+        "an existing lock on the line is never overwritten"
+    );
 }
 
 #[test]
@@ -156,7 +205,12 @@ fn a_failed_edit_rolls_back() {
 
     // a refused target lock freezes nothing on the line
     let bad = s.record_lock_edit(|s| {
-        let n = s.lock_node_on_line(&vs_bet(), LockMode::Range { freqs: vec![1.0] }, "x".into(), true)?;
+        let n = s.lock_node_on_line(
+            &vs_bet(),
+            LockMode::Range { freqs: vec![1.0] },
+            "x".into(),
+            true,
+        )?;
         Ok((n, "x".to_string()))
     });
     assert!(bad.is_err());
@@ -169,7 +223,14 @@ fn undo_refuses_after_locks_changed_outside_history() {
     lock(&mut s, ROOT, LockMode::Freeze, false);
     // an unrecorded mutation of the same node (e.g. a script calling the
     // engine directly) breaks the history's assumption
-    s.lock_node(ROOT, LockMode::Range { freqs: vec![0.9, 0.1] }, "direct".into()).unwrap();
+    s.lock_node(
+        ROOT,
+        LockMode::Range {
+            freqs: vec![0.9, 0.1],
+        },
+        "direct".into(),
+    )
+    .unwrap();
     let changed = s.locks[&0].clone();
     assert!(s.undo_lock_edit().is_err());
     assert_eq!(s.locks[&0], changed, "a refused undo changes nothing");
@@ -181,8 +242,13 @@ fn undo_refuses_after_locks_changed_outside_history() {
 fn path_descriptions_name_actions_and_cards() {
     let s = river();
     assert_eq!(s.path_description(ROOT).unwrap(), "QcJc9c3d2d root");
-    assert_eq!(s.path_description(&vs_bet()).unwrap(), "QcJc9c3d2d All-in 100");
-    assert!(s.path_description(&[PathStep::Action { index: 9 }]).is_err());
+    assert_eq!(
+        s.path_description(&vs_bet()).unwrap(),
+        "QcJc9c3d2d All-in 100"
+    );
+    assert!(s
+        .path_description(&[PathStep::Action { index: 9 }])
+        .is_err());
 }
 
 #[test]
@@ -268,10 +334,28 @@ fn the_lock_list_says_where_each_lock_is_and_what_it_does() {
     // decision after the turn checks through and a river card
     let ip_node = vec![check.clone()];
     let oop_vs_bet = vec![check.clone(), bet.clone()];
-    let river = vec![check.clone(), check.clone(), PathStep::Card { card: "9s".into() }];
-    lock(&mut s, &ip_node, LockMode::Range { freqs: vec![0.25, 0.75] }, false);
+    let river = vec![
+        check.clone(),
+        check.clone(),
+        PathStep::Card { card: "9s".into() },
+    ];
+    lock(
+        &mut s,
+        &ip_node,
+        LockMode::Range {
+            freqs: vec![0.25, 0.75],
+        },
+        false,
+    );
     lock(&mut s, &oop_vs_bet, LockMode::Freeze, false);
-    lock(&mut s, &river, LockMode::Range { freqs: vec![1.0, 0.0] }, false);
+    lock(
+        &mut s,
+        &river,
+        LockMode::Range {
+            freqs: vec![1.0, 0.0],
+        },
+        false,
+    );
 
     let view = s.locks_view();
     assert_eq!(view.profile, [0, 0]);
@@ -283,19 +367,41 @@ fn the_lock_list_says_where_each_lock_is_and_what_it_does() {
         assert!(s.locks.contains_key(&idx), "{:?}", l.line);
         assert_eq!(l.kind, "manual");
         assert_eq!(l.actions.len(), l.freqs.len());
-        assert!((l.freqs.iter().sum::<f32>() - 1.0).abs() < 1e-4, "{:?}", l.freqs);
+        assert!(
+            (l.freqs.iter().sum::<f32>() - 1.0).abs() < 1e-4,
+            "{:?}",
+            l.freqs
+        );
     }
-    let ip = view.locks.iter().find(|l| l.line == ["Check"]).expect("IP's lock after the check");
+    let ip = view
+        .locks
+        .iter()
+        .find(|l| l.line == ["Check"])
+        .expect("IP's lock after the check");
     assert_eq!(ip.player, 1);
-    assert!((ip.freqs[1] - 0.75).abs() < 0.02, "IP bets 75% of the time: {:?}", ip.freqs);
-    let deep = view.locks.iter().find(|l| l.line.len() == 3).expect("the river lock");
+    assert!(
+        (ip.freqs[1] - 0.75).abs() < 0.02,
+        "IP bets 75% of the time: {:?}",
+        ip.freqs
+    );
+    let deep = view
+        .locks
+        .iter()
+        .find(|l| l.line.len() == 3)
+        .expect("the river lock");
     assert_eq!(deep.line[..2], ["Check", "Check"]);
     assert_eq!((deep.player, deep.street), (0, 2));
-    assert!(deep.freqs[0] > 0.999, "OOP always checks the river: {:?}", deep.freqs);
+    assert!(
+        deep.freqs[0] > 0.999,
+        "OOP always checks the river: {:?}",
+        deep.freqs
+    );
 
     // clearing everything is one edit, and one undo brings all three back
     let before = s.locks.clone();
-    let n = s.record_lock_edit(|s| Ok((s.clear_all_locks(), "Clear all locks".to_string()))).unwrap();
+    let n = s
+        .record_lock_edit(|s| Ok((s.clear_all_locks(), "Clear all locks".to_string())))
+        .unwrap();
     assert_eq!(n, 3);
     assert!(s.locks.is_empty() && s.locks_view().locks.is_empty());
     s.undo_lock_edit().unwrap();
@@ -313,7 +419,13 @@ fn freezing_the_own_line_leaves_the_other_player_free() {
     let label = s.path_description(&path).unwrap();
     let frozen = s
         .record_lock_edit(|s| {
-            s.lock_node(&path, LockMode::Range { freqs: vec![0.5, 0.5] }, label.clone())?;
+            s.lock_node(
+                &path,
+                LockMode::Range {
+                    freqs: vec![0.5, 0.5],
+                },
+                label.clone(),
+            )?;
             let n = s.freeze_own_line(&path, &label)?;
             Ok((n, "Lock".to_string()))
         })
@@ -321,12 +433,27 @@ fn freezing_the_own_line_leaves_the_other_player_free() {
     assert_eq!(frozen, 1, "only OOP's own check is kept as solved");
     assert!(s.locks.contains_key(&0), "the root is OOP's decision");
     let ip_node = node_idx(&s, &[check.clone()]);
-    assert!(!s.locks.contains_key(&ip_node), "IP's decision stays free to answer the lock");
-    let kept = s.locks_view().locks.into_iter().find(|l| l.line.is_empty()).unwrap();
+    assert!(
+        !s.locks.contains_key(&ip_node),
+        "IP's decision stays free to answer the lock"
+    );
+    let kept = s
+        .locks_view()
+        .locks
+        .into_iter()
+        .find(|l| l.line.is_empty())
+        .unwrap();
     assert_eq!(kept.kind, "kept");
 
     // the old all-players freeze still takes both
     let mut s = turn();
-    let frozen = lock(&mut s, &path, LockMode::Range { freqs: vec![0.5, 0.5] }, true);
+    let frozen = lock(
+        &mut s,
+        &path,
+        LockMode::Range {
+            freqs: vec![0.5, 0.5],
+        },
+        true,
+    );
     assert_eq!(frozen, 2);
 }

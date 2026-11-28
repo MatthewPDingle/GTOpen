@@ -1,8 +1,5 @@
 //! Prospective research-only output accounting; no poker calculations.
-use std::error::Error;
-use std::fs::OpenOptions;
-use std::io::Write;
-use std::path::Path;
+use std::{error::Error, fs::OpenOptions, io::Write, path::Path};
 
 /// Kept inside the registered aggregate limit, including a partial-I/O failure.
 pub const FAILURE_RESERVE: usize = 256;
@@ -36,7 +33,8 @@ pub fn emit(
     limit: usize,
 ) -> Result<(), Box<dyn Error>> {
     let direct_len = direct.map_or(0, |(_, bytes)| bytes.len());
-    let complete = direct_len.checked_add(stdout.len())
+    let complete = direct_len
+        .checked_add(stdout.len())
         .and_then(|bytes| bytes.checked_add(stderr.len()))
         .and_then(|bytes| bytes.checked_add(FAILURE_RESERVE))
         .ok_or("Output byte count overflow")?;
@@ -63,14 +61,14 @@ pub fn emit(
 pub fn entry(run: fn() -> Result<(), Box<dyn Error>>) {
     std::panic::set_hook(Box::new(|_| {}));
     match std::panic::catch_unwind(run) {
-        Ok(Ok(())) => {},
+        Ok(Ok(())) => {}
         Ok(Err(_)) => {
             let _ = std::io::stderr().lock().write_all(ERROR);
             std::process::exit(1);
-        },
+        }
         Err(_) => {
             let _ = std::io::stderr().lock().write_all(PANIC);
             std::process::exit(101);
-        },
+        }
     }
 }

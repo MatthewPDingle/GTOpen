@@ -2,14 +2,21 @@
 //! today's lock-and-re-adapt solve, trust = 0 the unlocked solve, and the
 //! levels in between must trade EV against the read for safety.
 
-use solver::game::Dealt;
-use solver::query::{PathStep, PostflopStats};
-use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Solver, Spot, SpotConfig};
 use std::sync::Arc;
 
+use solver::{
+    game::Dealt,
+    query::{PathStep, PostflopStats},
+    tree::{parse_sizes, StreetSizing, TreeConfig},
+    Solver, Spot, SpotConfig,
+};
+
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
-    StreetSizing { bet: parse_sizes(bet).unwrap(), raise: parse_sizes(raise).unwrap(), donk: vec![] }
+    StreetSizing {
+        bet: parse_sizes(bet).unwrap(),
+        raise: parse_sizes(raise).unwrap(),
+        donk: vec![],
+    }
 }
 
 /// River spot: OOP bets 75% or checks, IP can raise or bet 75% when
@@ -70,7 +77,11 @@ fn locked(spot: fn() -> Spot, base: usize) -> Solver {
 }
 
 fn root_strategies(s: &Solver) -> Vec<Option<Vec<f32>>> {
-    s.node_view(&[]).unwrap().players[0].hands.iter().map(|h| h.strategy.clone()).collect()
+    s.node_view(&[]).unwrap().players[0]
+        .hands
+        .iter()
+        .map(|h| h.strategy.clone())
+        .collect()
 }
 
 /// A villain node below the root: OOP checks, IP to act.
@@ -83,7 +94,10 @@ fn trust_validation_and_inactive_cases() {
     assert!(s.set_trust(Some(-0.1)).is_err());
     assert!(s.set_trust(Some(f32::NAN)).is_err());
     s.set_trust(Some(0.5)).unwrap();
-    assert!(s.rnr_active().is_none(), "no profile lock: nothing to trust");
+    assert!(
+        s.rnr_active().is_none(),
+        "no profile lock: nothing to trust"
+    );
     assert!(s.trust_readout().is_err());
     let mut s = locked(river, 10);
     s.set_trust(Some(1.0)).unwrap();
@@ -131,7 +145,10 @@ fn trust_zero_is_the_unlocked_solve() {
         let fb = b.traverse_avg(0, 1, w0, Dealt::default());
         assert_eq!(fa, fb);
         let (ea, eb) = (a.exploitability(), b.exploitability());
-        assert!((ea - eb).abs() <= 1e-6 * eb.abs().max(1.0), "trust-0 exploitability {ea} vs unlocked {eb}");
+        assert!(
+            (ea - eb).abs() <= 1e-6 * eb.abs().max(1.0),
+            "trust-0 exploitability {ea} vs unlocked {eb}"
+        );
     }
 }
 
@@ -149,7 +166,10 @@ fn trust_game_converges() {
     let late = s.exploitability();
     assert!(late.is_finite() && late >= -1e-6);
     assert!(late < early, "trust-game exploitability {early} -> {late}");
-    assert!(late < 0.5, "trust game should converge below 0.5% pot, got {late} chips");
+    assert!(
+        late < 0.5,
+        "trust game should converge below 0.5% pot, got {late} chips"
+    );
 }
 
 #[test]
@@ -163,7 +183,11 @@ fn frontier_trades_ev_vs_read_for_safety() {
         }
         let r = s.trust_readout().unwrap();
         assert_eq!((r.hero, r.villain), (0, 1));
-        assert!(r.exploitability < 0.5, "trust {trust}: not converged ({} chips)", r.exploitability);
+        assert!(
+            r.exploitability < 0.5,
+            "trust {trust}: not converged ({} chips)",
+            r.exploitability
+        );
         // zero-sum: hero's worst case is the pot minus the best response
         let worst = r.hero_worst_case_ev.unwrap();
         assert!((worst + r.villain_best_response_ev - 100.0).abs() < 1e-6);
@@ -174,12 +198,24 @@ fn frontier_trades_ev_vs_read_for_safety() {
     let tol = 0.3; // chips, about the convergence level
     for w in rows.windows(2) {
         let ((t0, read0, worst0), (t1, read1, worst1)) = (w[0], w[1]);
-        assert!(read1 >= read0 - tol, "EV vs read fell from trust {t0} to {t1}: {read0} -> {read1}");
-        assert!(worst1 <= worst0 + tol, "worst case rose from trust {t0} to {t1}: {worst0} -> {worst1}");
+        assert!(
+            read1 >= read0 - tol,
+            "EV vs read fell from trust {t0} to {t1}: {read0} -> {read1}"
+        );
+        assert!(
+            worst1 <= worst0 + tol,
+            "worst case rose from trust {t0} to {t1}: {worst0} -> {worst1}"
+        );
     }
     let (first, last) = (rows[0], rows[rows.len() - 1]);
-    assert!(last.1 > first.1 + 1.0, "the over-folding read should be worth exploiting: {rows:?}");
-    assert!(last.2 < first.2 - 1.0, "full trust should be exploitable: {rows:?}");
+    assert!(
+        last.1 > first.1 + 1.0,
+        "the over-folding read should be worth exploiting: {rows:?}"
+    );
+    assert!(
+        last.2 < first.2 - 1.0,
+        "full trust should be exploitable: {rows:?}"
+    );
 }
 
 #[test]
@@ -187,12 +223,20 @@ fn read_locks_still_shown_and_free_villain_differs_off_read() {
     // the read is what Browse shows at a profile node; the free villain's
     // own strategy there is visible through the free view
     let mut s = locked(river, 30);
-    let read = s.node_view(CHECKED).unwrap().players[1].hands.iter().map(|h| h.strategy.clone()).collect::<Vec<_>>();
+    let read = s.node_view(CHECKED).unwrap().players[1]
+        .hands
+        .iter()
+        .map(|h| h.strategy.clone())
+        .collect::<Vec<_>>();
     s.set_trust(Some(0.3)).unwrap();
     for _ in 0..100 {
         s.iterate();
     }
-    let after = s.node_view(CHECKED).unwrap().players[1].hands.iter().map(|h| h.strategy.clone()).collect::<Vec<_>>();
+    let after = s.node_view(CHECKED).unwrap().players[1]
+        .hands
+        .iter()
+        .map(|h| h.strategy.clone())
+        .collect::<Vec<_>>();
     assert_eq!(read, after, "profile locks stay the read");
 }
 
@@ -205,13 +249,20 @@ fn warm_started_sweep_converges_at_every_level() {
         for trust in [1.0f32, 0.9, 0.7, 0.4, 0.0] {
             let epoch = s.average_epoch;
             s.set_trust(Some(trust)).unwrap();
-            assert_eq!(s.average_epoch != epoch, trust != 1.0, "only a changed dial restarts");
+            assert_eq!(
+                s.average_epoch != epoch,
+                trust != 1.0,
+                "only a changed dial restarts"
+            );
             for _ in 0..300 {
                 s.iterate();
             }
             let x = s.exploitability() / pot * 100.0;
             eprintln!("trust {trust}: {x:.3}% pot");
-            assert!(x < 0.5, "trust {trust}: warm-started solve stuck at {x}% pot");
+            assert!(
+                x < 0.5,
+                "trust {trust}: warm-started solve stuck at {x}% pot"
+            );
         }
     }
 }
@@ -234,18 +285,31 @@ fn read_and_free_villain_learn_apart_off_the_profile() {
             }
         }
         eprintln!("trust {trust}: exploitability {xs:?} chips");
-        assert!(xs[2] < 0.05, "trust {trust}: trust game stuck at {} chips", xs[2]);
+        assert!(
+            xs[2] < 0.05,
+            "trust {trust}: trust game stuck at {} chips",
+            xs[2]
+        );
         assert!(xs[2] < xs[0]);
         // the read villain best-responds at the open node too: playing it
         // like the free villain would leave him a gain there
         let w0 = &s.spot.weights[0];
         let value = |cfv: &[f32]| {
-            s.spot.weights[1].iter().zip(cfv).map(|(&w, &v)| w as f64 * v as f64).sum::<f64>() / s.pair_weight_sum()
+            s.spot.weights[1]
+                .iter()
+                .zip(cfv)
+                .map(|(&w, &v)| w as f64 * v as f64)
+                .sum::<f64>()
+                / s.pair_weight_sum()
         };
         let br = value(&s.traverse_br_view(0, 1, w0, Dealt::default(), false));
         let avg = value(&s.traverse_avg_view(0, 1, w0, Dealt::default(), false));
         eprintln!("trust {trust}: read villain gain {} chips", br - avg);
-        assert!(br - avg < 0.05, "trust {trust}: the read villain could gain {} chips", br - avg);
+        assert!(
+            br - avg < 0.05,
+            "trust {trust}: the read villain could gain {} chips",
+            br - avg
+        );
     }
 }
 
@@ -259,7 +323,11 @@ fn new_trust_level_keeps_the_pre_lock_average_at_locked_nodes() {
         idx.into_iter()
             .map(|i| {
                 let node = &s.spot.tree.nodes[i as usize];
-                let mut v = vec![0f32; node.num_children as usize * s.spot.hands[node.player as usize].len()];
+                let mut v = vec![
+                    0f32;
+                    node.num_children as usize
+                        * s.spot.hands[node.player as usize].len()
+                ];
                 s.solved_strategy_into(node, &mut v);
                 (i, v)
             })

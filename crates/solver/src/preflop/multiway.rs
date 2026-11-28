@@ -4,9 +4,10 @@
 //! cards before taking the board. This couples hand strengths without the old
 //! independent heads-up product. It is NOT exact compatible-card dealing:
 //! overlapping narrow ranges remain a material source of card-removal error.
+use std::sync::{Arc, OnceLock};
+
 use super::equity::{class_index, NUM_CLASSES};
 use crate::evaluator::evaluate7;
-use std::sync::{Arc, OnceLock};
 
 pub const SAMPLES: usize = 1024;
 pub const MODEL: &str = "coupled_deck_v1";
@@ -34,8 +35,18 @@ const QUAD_T2: [f64; 2] = [0.211324865405187, 0.788675134594813];
 const QUAD_W2: [f64; 2] = [0.5, 0.5];
 const QUAD_T3: [f64; 3] = [0.112701665379258, 0.5, 0.887298334620742];
 const QUAD_W3: [f64; 3] = [0.277777777777778, 0.444444444444444, 0.277777777777778];
-const QUAD_T4: [f64; 4] = [0.069431844202974, 0.330009478207572, 0.669990521792428, 0.930568155797026];
-const QUAD_W4: [f64; 4] = [0.173927422568727, 0.326072577431273, 0.326072577431273, 0.173927422568727];
+const QUAD_T4: [f64; 4] = [
+    0.069431844202974,
+    0.330009478207572,
+    0.669990521792428,
+    0.930568155797026,
+];
+const QUAD_W4: [f64; 4] = [
+    0.173927422568727,
+    0.326072577431273,
+    0.326072577431273,
+    0.173927422568727,
+];
 
 pub struct CoupledDeck {
     /// Particle-major ascending class order and strict/inclusive CDF indices.
@@ -131,7 +142,10 @@ impl CoupledDeck {
     }
 
     fn equities_with_rule<const Q: usize>(
-        &self, opponents: &[Vec<f32>], points: [f64; Q], weights: [f64; Q],
+        &self,
+        opponents: &[Vec<f32>],
+        points: [f64; Q],
+        weights: [f64; Q],
     ) -> [f64; NUM_CLASSES] {
         let mut sums = [0.0; NUM_CLASSES];
         let mut cdfs = [[0.0f64; NUM_CLASSES + 1]; 8];
@@ -166,9 +180,10 @@ impl CoupledDeck {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::preflop::equity::{class_prob, EquityTable};
-    use crate::preflop::{PreflopConfig, PreflopSolver};
-
+    use crate::preflop::{
+        equity::{class_prob, EquityTable},
+        PreflopConfig, PreflopSolver,
+    };
 
     impl CoupledDeck {
         /// All hero classes against normalized independent opponent class weights.
@@ -210,8 +225,13 @@ mod tests {
         let actual = table.equities(opponents);
         let expected = table.old_five_point_equities(opponents);
         for h in 0..NUM_CLASSES {
-            assert!(actual[h].is_finite() && (actual[h] - expected[h]).abs() < 2e-12,
-                "{label}, opponents {}, hand {h}: {} vs {}", opponents.len(), actual[h], expected[h]);
+            assert!(
+                actual[h].is_finite() && (actual[h] - expected[h]).abs() < 2e-12,
+                "{label}, opponents {}, hand {h}: {} vs {}",
+                opponents.len(),
+                actual[h],
+                expected[h]
+            );
         }
     }
 
@@ -236,8 +256,13 @@ mod tests {
         let table = CoupledDeck::shared();
         for n in 0..=8 {
             for sparse in [false, true] {
-                let opponents: Vec<Vec<f32>> = (0..n).map(|q| quadrature_test_range(q, sparse)).collect();
-                assert_rule_matches_old(&table, &opponents, if sparse { "sparse" } else { "dense" });
+                let opponents: Vec<Vec<f32>> =
+                    (0..n).map(|q| quadrature_test_range(q, sparse)).collect();
+                assert_rule_matches_old(
+                    &table,
+                    &opponents,
+                    if sparse { "sparse" } else { "dense" },
+                );
             }
             // Every opponent holds the same class; its corresponding hero
             // class ties on every particle and must receive 1/(n+1).
@@ -255,20 +280,31 @@ mod tests {
         // Keep all 1024 particles and all169 hero classes; do not use a reduced
         // sample test that might conceal a final averaging regression.
         for group_width in [NUM_CLASSES, 13] {
-            let mut table = CoupledDeck { order: vec![], lower: vec![], upper: vec![] };
+            let mut table = CoupledDeck {
+                order: vec![],
+                lower: vec![],
+                upper: vec![],
+            };
             for _ in 0..SAMPLES {
                 for h in 0..NUM_CLASSES {
                     table.order.push(h as u32);
                     table.lower.push((h / group_width * group_width) as u32);
-                    table.upper.push(((h / group_width + 1) * group_width).min(NUM_CLASSES) as u32);
+                    table
+                        .upper
+                        .push(((h / group_width + 1) * group_width).min(NUM_CLASSES) as u32);
                 }
             }
             for n in 0..=8 {
-                let opponents: Vec<Vec<f32>> = (0..n).map(|q| quadrature_test_range(q, q % 2 == 0)).collect();
+                let opponents: Vec<Vec<f32>> = (0..n)
+                    .map(|q| quadrature_test_range(q, q % 2 == 0))
+                    .collect();
                 assert_rule_matches_old(&table, &opponents, "synthetic tie groups");
                 if group_width == NUM_CLASSES {
                     let expected = 1.0 / (n + 1) as f64;
-                    assert!(table.equities(&opponents).iter().all(|&x| (x - expected).abs() < 2e-12));
+                    assert!(table
+                        .equities(&opponents)
+                        .iter()
+                        .all(|&x| (x - expected).abs() < 2e-12));
                 }
             }
         }
@@ -276,10 +312,18 @@ mod tests {
 
     #[test]
     fn coupled_payoffs_flow_through_cfr_and_charge_rake_once() {
-        let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+        let cfg = PreflopConfig {
+            bb_ante: 0.0,
+            leaf_net: None,
+            card_removal: false,
+            limper_extra: 0.0,
+            caller_extra: 0.0,
+            raise_mults_oop: None,
+            fourbet_mults_oop: None,
             utg_straddle: false,
             positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-            stack: 4.0, stacks: None,
+            stack: 4.0,
+            stacks: None,
             posts: vec![0.0, 0.5, 1.0],
             ante: 0.0,
             limp: true,
@@ -295,7 +339,10 @@ mod tests {
             realization: "raw".into(),
             call_only_seats: vec![],
             open_raises_by_seat: None,
-            fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+            fourbet_mults: None,
+            fourbet_mults_by_seat: None,
+            raise_mults_by_seat: None,
+            icm: None,
         };
         let mut s = PreflopSolver::new(cfg, Arc::new(EquityTable::build(8))).unwrap();
         assert_eq!(s.multiway_equity_model(), MODEL);
@@ -380,41 +427,66 @@ mod tests {
     }
 }
 
-
 #[cfg(all(test, feature = "preflop-research"))]
 mod sampled_rank_inventory {
-    use super::*;
     use std::collections::BTreeSet;
-    fn count(keys:&[(u32,u32)], width:usize)->usize {
-        keys.chunks(width).map(|chunk|chunk.iter().copied().collect::<BTreeSet<_>>().len()).sum()
+
+    use super::*;
+    fn count(keys: &[(u32, u32)], width: usize) -> usize {
+        keys.chunks(width)
+            .map(|chunk| chunk.iter().copied().collect::<BTreeSet<_>>().len())
+            .sum()
     }
     #[test]
     #[ignore = "D13 immutable sampled-rank export"]
     fn export_fixed_rank_groups() {
-        let distinct:Vec<_>=(0..169).map(|i|(i,i+1)).collect();
-        assert_eq!(count(&distinct,169),169);assert_eq!(count(&distinct,32),169);
-        let equal=vec![(0,169);169];assert_eq!(count(&equal,169),1);assert_eq!(count(&equal,32),6);
-        let boundary:Vec<_>=(0..169).map(|i|if (30..35).contains(&i){(30,35)}else{(i,i+1)}).collect();
-        assert_eq!(count(&boundary,169),165);assert_eq!(count(&boundary,32),166);
-        let deck=CoupledDeck::shared();let mut rows=Vec::new();
+        let distinct: Vec<_> = (0..169).map(|i| (i, i + 1)).collect();
+        assert_eq!(count(&distinct, 169), 169);
+        assert_eq!(count(&distinct, 32), 169);
+        let equal = vec![(0, 169); 169];
+        assert_eq!(count(&equal, 169), 1);
+        assert_eq!(count(&equal, 32), 6);
+        let boundary: Vec<_> = (0..169)
+            .map(|i| {
+                if (30..35).contains(&i) {
+                    (30, 35)
+                } else {
+                    (i, i + 1)
+                }
+            })
+            .collect();
+        assert_eq!(count(&boundary, 169), 165);
+        assert_eq!(count(&boundary, 32), 166);
+        let deck = CoupledDeck::shared();
+        let mut rows = Vec::new();
         for sample in 0..SAMPLES {
-            let base=sample*NUM_CLASSES;let order=&deck.order[base..base+NUM_CLASSES];
-            assert_eq!(order.iter().copied().collect::<BTreeSet<_>>(),(0..169).collect());
-            let keys:Vec<_>=(0..NUM_CLASSES).map(|h|(deck.lower[base+h],deck.upper[base+h])).collect();
-            let mut at=0usize;
-            while at<NUM_CLASSES {
-                let h=order[at] as usize;let (lo,hi)=keys[h];
-                assert_eq!(lo as usize,at);assert!(hi>lo&&hi<=169);
-                for &h in &order[lo as usize..hi as usize]{assert_eq!(keys[h as usize],(lo,hi));}
-                at=hi as usize;
+            let base = sample * NUM_CLASSES;
+            let order = &deck.order[base..base + NUM_CLASSES];
+            assert_eq!(
+                order.iter().copied().collect::<BTreeSet<_>>(),
+                (0..169).collect()
+            );
+            let keys: Vec<_> = (0..NUM_CLASSES)
+                .map(|h| (deck.lower[base + h], deck.upper[base + h]))
+                .collect();
+            let mut at = 0usize;
+            while at < NUM_CLASSES {
+                let h = order[at] as usize;
+                let (lo, hi) = keys[h];
+                assert_eq!(lo as usize, at);
+                assert!(hi > lo && hi <= 169);
+                for &h in &order[lo as usize..hi as usize] {
+                    assert_eq!(keys[h as usize], (lo, hi));
+                }
+                at = hi as usize;
             }
             rows.push(serde_json::json!({"sample":sample,"global_groups":count(&keys,169),"warp_groups":count(&keys,32)}));
         }
-        let path=std::env::var("PREFLOP_GPU_RANK_INVENTORY_OUTPUT").unwrap();
+        let path = std::env::var("PREFLOP_GPU_RANK_INVENTORY_OUTPUT").unwrap();
         assert!(!std::path::Path::new(&path).exists());
-        let out=serde_json::json!({"model":MODEL,"samples":SAMPLES,"classes":NUM_CLASSES,
+        let out = serde_json::json!({"model":MODEL,"samples":SAMPLES,"classes":NUM_CLASSES,
             "order":deck.order,"lower":deck.lower,"upper":deck.upper,"rows":rows});
-        std::fs::write(&path,serde_json::to_vec(&out).unwrap()).unwrap();
+        std::fs::write(&path, serde_json::to_vec(&out).unwrap()).unwrap();
         println!("D13 static table exported: {path}");
     }
 }

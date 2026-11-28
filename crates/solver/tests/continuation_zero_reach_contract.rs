@@ -1,8 +1,11 @@
 //! Diagnose existing update semantics; does not qualify the compact bridge.
 #![cfg(feature = "preflop-research")]
-use solver::{cfr::Discounts, gpu::GpuSolver, store::Store};
-use solver::{parse_sizes, Algorithm, Solver, Spot, SpotConfig, StreetSizing, TreeConfig};
 use std::sync::Arc;
+
+use solver::{
+    cfr::Discounts, gpu::GpuSolver, parse_sizes, store::Store, Algorithm, Solver, Spot, SpotConfig,
+    StreetSizing, TreeConfig,
+};
 
 fn weights(sp: &Spot, p: usize, t: u32) -> Vec<f32> {
     sp.hands[p]

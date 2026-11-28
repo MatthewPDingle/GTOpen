@@ -1,10 +1,12 @@
 //! Isolated production-model audit/benchmark; never connects to the live server.
+use std::{sync::Arc, time::Instant};
+
 use serde_json::{json, Value};
-use solver::preflop::equity::{class_combos, class_index, EquityTable};
-use solver::preflop::multiway::CoupledDeck;
-use solver::preflop::{PreflopConfig, PreflopSolver};
-use std::sync::Arc;
-use std::time::Instant;
+use solver::preflop::{
+    equity::{class_combos, class_index, EquityTable},
+    multiway::CoupledDeck,
+    PreflopConfig, PreflopSolver,
+};
 
 fn main() {
     let args: Vec<_> = std::env::args().collect();

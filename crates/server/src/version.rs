@@ -47,7 +47,10 @@ fn valid_date(text: &str) -> bool {
         return false;
     }
     let num = |range: std::ops::Range<usize>| text[range].parse::<u32>().ok();
-    let digits = b.iter().enumerate().all(|(i, c)| i == 4 || i == 7 || c.is_ascii_digit());
+    let digits = b
+        .iter()
+        .enumerate()
+        .all(|(i, c)| i == 4 || i == 7 || c.is_ascii_digit());
     digits
         && matches!(num(0..4), Some(2000..=2999))
         && matches!(num(5..7), Some(1..=12))
@@ -57,8 +60,10 @@ fn valid_date(text: &str) -> bool {
 /// A release heading: `## 1.2.3 - 2026-11-18`.
 fn release_heading(line: &str) -> Option<Release> {
     let (version, date) = line.strip_prefix("## ")?.trim().split_once(" - ")?;
-    (parse_version(version).is_some() && valid_date(date))
-        .then(|| Release { version: version.to_string(), date: date.to_string() })
+    (parse_version(version).is_some() && valid_date(date)).then(|| Release {
+        version: version.to_string(),
+        date: date.to_string(),
+    })
 }
 
 /// Every release in the change log, newest first (file order).
@@ -74,7 +79,11 @@ pub fn latest_release(changelog: &str) -> Option<Release> {
 
 fn resolve(base: &Path, path: &str) -> PathBuf {
     let path = Path::new(path.trim());
-    if path.is_absolute() { path.to_path_buf() } else { base.join(path) }
+    if path.is_absolute() {
+        path.to_path_buf()
+    } else {
+        base.join(path)
+    }
 }
 
 /// The commit a checkout is on, shortened, read straight from its git files
@@ -147,10 +156,16 @@ mod tests {
         let text = "# Change log\n\nIntro.\n\n## 1.2.0 - 2026-12-01\n\n- New.\n\n## 1.1.9 - 2026-11-30\n\n## Before version numbers\n";
         assert_eq!(
             latest_release(text),
-            Some(Release { version: "1.2.0".into(), date: "2026-12-01".into() })
+            Some(Release {
+                version: "1.2.0".into(),
+                date: "2026-12-01".into()
+            })
         );
         assert_eq!(releases(text).len(), 2);
-        assert_eq!(latest_release("# Change log\n\n## Before version numbers\n"), None);
+        assert_eq!(
+            latest_release("# Change log\n\n## Before version numbers\n"),
+            None
+        );
     }
 
     #[test]
@@ -174,7 +189,9 @@ mod tests {
     fn the_repository_change_log_is_well_formed() {
         let text = std::fs::read_to_string(repo_root().join("CHANGELOG.md")).unwrap();
         for line in text.lines().filter(|l| l.starts_with("## ")) {
-            let looks_like_release = line[3..].trim_start().starts_with(|c: char| c.is_ascii_digit() || c == 'v');
+            let looks_like_release = line[3..]
+                .trim_start()
+                .starts_with(|c: char| c.is_ascii_digit() || c == 'v');
             assert!(
                 !looks_like_release || release_heading(line).is_some(),
                 "write release headings as `## 1.2.3 - YYYY-MM-DD`, got `{line}`"
@@ -187,9 +204,15 @@ mod tests {
             assert!(
                 parse_version(&newer.version) > parse_version(&older.version),
                 "versions must go down the file: {} is above {}",
-                newer.version, older.version
+                newer.version,
+                older.version
             );
-            assert!(newer.date >= older.date, "{} is dated before {}", newer.version, older.version);
+            assert!(
+                newer.date >= older.date,
+                "{} is dated before {}",
+                newer.version,
+                older.version
+            );
         }
     }
 
@@ -209,7 +232,11 @@ mod tests {
         assert_eq!(checkout_commit(&main).as_deref(), Some("012345678"));
         // on a branch, packed ref
         std::fs::remove_file(git.join("refs/heads/master")).unwrap();
-        std::fs::write(git.join("packed-refs"), format!("# pack-refs with: peeled\n{b} refs/heads/other\n{a} refs/heads/master\n")).unwrap();
+        std::fs::write(
+            git.join("packed-refs"),
+            format!("# pack-refs with: peeled\n{b} refs/heads/other\n{a} refs/heads/master\n"),
+        )
+        .unwrap();
         assert_eq!(checkout_commit(&main).as_deref(), Some("012345678"));
         // detached
         std::fs::write(git.join("HEAD"), format!("{b}\n")).unwrap();
@@ -219,7 +246,11 @@ mod tests {
         let tree_git = git.join("worktrees/tree");
         std::fs::create_dir_all(&tree).unwrap();
         std::fs::create_dir_all(&tree_git).unwrap();
-        std::fs::write(tree.join(".git"), format!("gitdir: {}\n", tree_git.display())).unwrap();
+        std::fs::write(
+            tree.join(".git"),
+            format!("gitdir: {}\n", tree_git.display()),
+        )
+        .unwrap();
         std::fs::write(tree_git.join("HEAD"), "ref: refs/heads/other\n").unwrap();
         std::fs::write(tree_git.join("commondir"), "../..\n").unwrap();
         assert_eq!(checkout_commit(&tree).as_deref(), Some("fedcba987"));
@@ -250,7 +281,10 @@ mod tests {
             .find_map(|line| line.strip_prefix("export const NEEDS_SERVER_LEVEL = "))
             .and_then(|rest| rest.trim_end_matches(';').trim().parse::<u32>().ok())
             .expect("web/js/version.js needs `export const NEEDS_SERVER_LEVEL = N;`");
-        assert_eq!(needs, SERVER_LEVEL, "raise SERVER_LEVEL and NEEDS_SERVER_LEVEL together");
+        assert_eq!(
+            needs, SERVER_LEVEL,
+            "raise SERVER_LEVEL and NEEDS_SERVER_LEVEL together"
+        );
         assert_eq!(version_info(&repo_root())["server_level"], SERVER_LEVEL);
     }
 }

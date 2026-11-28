@@ -10,14 +10,19 @@
 //! same way: a game mix with `"players": 3` (`crate::datagen_mix`) has the
 //! generator write jobs of these, fully determined by (mix, job, index, cap).
 
-use crate::cards::{card_mask, combo_from_index, parse_cards, rank, suit, NUM_COMBOS};
-use crate::datagen::{range_text, CHIPS_PER_BB};
-use crate::multiway::eval::{compatible_mass, showdown_equity};
-use crate::multiway::tree::MwTreeBuilder;
-use crate::multiway::{MwSpot, MwSpotConfig, MwTreeConfig, NP};
-use crate::preflop::equity::{class_index, NUM_CLASSES};
-use crate::tree::{BetSize, StreetSizing};
 use serde::{Deserialize, Serialize};
+
+use crate::{
+    cards::{card_mask, combo_from_index, parse_cards, rank, suit, NUM_COMBOS},
+    datagen::{range_text, CHIPS_PER_BB},
+    multiway::{
+        eval::{compatible_mass, showdown_equity},
+        tree::MwTreeBuilder,
+        MwSpot, MwSpotConfig, MwTreeConfig, NP,
+    },
+    preflop::equity::{class_index, NUM_CLASSES},
+    tree::{BetSize, StreetSizing},
+};
 
 /// Format name written in the header of a three-player job file.
 pub const FORMAT3: &str = "gtopen-flop-values-3p";
@@ -73,7 +78,11 @@ fn is_one(x: &f64) -> bool {
 pub fn menu_tree3(pot_bb: f64, stack_bb: f64, rake_pct: f64, rake_cap_bb: f64) -> MwTreeConfig {
     let street = |bet: f64, raise: bool| StreetSizing {
         bet: vec![BetSize::PotPct(bet)],
-        raise: if raise { vec![BetSize::PotPct(60.0)] } else { Vec::new() },
+        raise: if raise {
+            vec![BetSize::PotPct(60.0)]
+        } else {
+            Vec::new()
+        },
         donk: Vec::new(),
     };
     let streets = [street(33.0, true), street(75.0, true), street(75.0, false)];
@@ -144,8 +153,12 @@ impl Inputs3 {
 pub fn estimated_vram_bytes3(ex: &Inputs3) -> u64 {
     match ex.tree_size() {
         Ok((entries, nodes)) => {
-            let arenas = entries.saturating_mul(4).saturating_add(nodes.saturating_mul(16));
-            arenas.saturating_add(arenas / 10).saturating_add(1_000_000_000)
+            let arenas = entries
+                .saturating_mul(4)
+                .saturating_add(nodes.saturating_mul(16));
+            arenas
+                .saturating_add(arenas / 10)
+                .saturating_add(1_000_000_000)
         }
         Err(_) => u64::MAX,
     }
@@ -282,7 +295,10 @@ pub const CARD_SHARE: u64 = 80;
 /// Bytes a three-player solve may plan for: the free memory less 1 GB and
 /// the reserve, and at most [`CARD_SHARE`] of the card (memory in MB).
 pub fn plan_budget(free_mb: u64, total_mb: u64, reserve_gb: f64) -> u64 {
-    free_mb.saturating_sub(1024 + (reserve_gb * 1000.0) as u64).min(total_mb * CARD_SHARE / 100) * 1_000_000
+    free_mb
+        .saturating_sub(1024 + (reserve_gb * 1000.0) as u64)
+        .min(total_mb * CARD_SHARE / 100)
+        * 1_000_000
 }
 
 /// What the three range averages of a record may add up to, in starting
@@ -314,7 +330,9 @@ pub fn sanity3(r: &Record3) -> Option<String> {
     let mut total = 0f64;
     for p in 0..NP {
         let v = &r.values;
-        if v.reach[p].len() != NUM_CLASSES || v.eq[p].len() != NUM_CLASSES || v.value[p].len() != NUM_CLASSES
+        if v.reach[p].len() != NUM_CLASSES
+            || v.eq[p].len() != NUM_CLASSES
+            || v.value[p].len() != NUM_CLASSES
             || ex.range[p].len() != NUM_CLASSES
         {
             return Some("a list is not 169 long".into());
@@ -335,7 +353,9 @@ pub fn sanity3(r: &Record3) -> Option<String> {
                 let hi = 1.0 + 2.0 * ex.stack_bb / ex.pot_bb + 1e-3;
                 let lo = -ex.stack_bb / ex.pot_bb - 1e-3;
                 if !x.is_finite() || (x as f64) > hi || (x as f64) < lo {
-                    return Some(format!("player {p} class {k}: value {x} outside {lo:.3} to {hi:.3}"));
+                    return Some(format!(
+                        "player {p} class {k}: value {x} outside {lo:.3} to {hi:.3}"
+                    ));
                 }
                 wsum += v.reach[p][k] as f64;
                 vsum += v.reach[p][k] as f64 * x as f64;
@@ -350,7 +370,9 @@ pub fn sanity3(r: &Record3) -> Option<String> {
     if !(lowest..=highest).contains(&total) {
         return Some(format!("the three range values add up to {total:.3} of the pot ({lowest:.3} to {highest:.3} expected)"));
     }
-    if !(r.exploit_pct_pot.is_finite() && r.exploit_pct_pot >= 0.0) || r.gaps_pct_pot.iter().any(|g| !(g.is_finite() && *g >= 0.0)) {
+    if !(r.exploit_pct_pot.is_finite() && r.exploit_pct_pot >= 0.0)
+        || r.gaps_pct_pot.iter().any(|g| !(g.is_finite() && *g >= 0.0))
+    {
         return Some("bad exploitability".into());
     }
     None
@@ -358,15 +380,20 @@ pub fn sanity3(r: &Record3) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::multiway::solver::Dealt;
-    use crate::multiway::MwSolver;
-    use crate::store::Storage;
     use std::sync::Arc;
+
+    use super::*;
+    use crate::{
+        multiway::{solver::Dealt, MwSolver},
+        store::Storage,
+    };
 
     pub(crate) fn narrow() -> Inputs3 {
         let mut range: [Vec<f32>; NP] = std::array::from_fn(|_| vec![0f32; NUM_CLASSES]);
-        for (p, text) in ["AA,AKs,QJs,77", "QQ,KQs,98s,66", "TT,AJs,87s,55"].iter().enumerate() {
+        for (p, text) in ["AA,AKs,QJs,77", "QQ,KQs,98s,66", "TT,AJs,87s,55"]
+            .iter()
+            .enumerate()
+        {
             let r = crate::range::Range::parse(text).unwrap();
             for idx in 0..NUM_COMBOS {
                 if r.weights[idx] > 0.0 {
@@ -378,8 +405,17 @@ mod tests {
         }
         // narrow ranges and a short stack: a tree small enough for a test
         Inputs3 {
-            job: 1, index: 0, board: "Ks7d2c".into(), pot_type: "3bet".into(), pot_bb: 9.0, stack_bb: 4.0,
-            rake_pct: 0.0, rake_cap_bb: 0.0, range, attempt: 0, pot_scale: 1.0,
+            job: 1,
+            index: 0,
+            board: "Ks7d2c".into(),
+            pot_type: "3bet".into(),
+            pot_bb: 9.0,
+            stack_bb: 4.0,
+            rake_pct: 0.0,
+            rake_cap_bb: 0.0,
+            range,
+            attempt: 0,
+            pot_scale: 1.0,
         }
     }
 
@@ -388,7 +424,11 @@ mod tests {
         let ex = narrow();
         let cfg = ex.spot_config();
         assert_eq!(cfg.tree.max_raises, 1);
-        assert!(cfg.tree.sizing.iter().all(|s| !s[0].raise.is_empty() && !s[1].raise.is_empty() && s[2].raise.is_empty()));
+        assert!(cfg
+            .tree
+            .sizing
+            .iter()
+            .all(|s| !s[0].raise.is_empty() && !s[1].raise.is_empty() && s[2].raise.is_empty()));
         assert_eq!(cfg.tree.starting_pot, ex.pot_bb * CHIPS_PER_BB);
         let spot = MwSpot::new(cfg).unwrap();
         let nh = ex.hand_counts().unwrap();
@@ -413,7 +453,8 @@ mod tests {
         }
         let w = &spot.weights;
         let reach = [&w[0][..], &w[1][..], &w[2][..]];
-        let cfv: [Vec<f32>; NP] = std::array::from_fn(|p| s.node_values(0, p, reach, Dealt::default(), false));
+        let cfv: [Vec<f32>; NP] =
+            std::array::from_fn(|p| s.node_values(0, p, reach, Dealt::default(), false));
         let v = class_values(&spot, &cfv);
         // without rake the three range averages add up to the pot
         let (evs, gaps) = s.exploitability();
@@ -430,14 +471,31 @@ mod tests {
                 }
             }
             let avg = (evs[p] + spot.tree.root_put()) / pot;
-            let best = v.value[p].iter().flatten().cloned().fold(f32::MIN, f32::max) as f64;
-            let worst = v.value[p].iter().flatten().cloned().fold(f32::MAX, f32::min) as f64;
-            assert!(worst <= avg + 1e-3 && avg <= best + 1e-3, "player {p}: {worst} {avg} {best}");
+            let best = v.value[p]
+                .iter()
+                .flatten()
+                .cloned()
+                .fold(f32::MIN, f32::max) as f64;
+            let worst = v.value[p]
+                .iter()
+                .flatten()
+                .cloned()
+                .fold(f32::MAX, f32::min) as f64;
+            assert!(
+                worst <= avg + 1e-3 && avg <= best + 1e-3,
+                "player {p}: {worst} {avg} {best}"
+            );
         }
         let rec = Record3 {
-            kind: "example".into(), inputs: ex.clone(), values: v.clone(), iterations: 15,
-            exploit_pct_pot: gaps.iter().sum::<f64>() / 3.0 / pot * 100.0, gaps_pct_pot: gaps.map(|g| g / pot * 100.0),
-            ended: "iterations".into(), seconds: 0.0, tree_bytes: estimated_vram_bytes3(&ex),
+            kind: "example".into(),
+            inputs: ex.clone(),
+            values: v.clone(),
+            iterations: 15,
+            exploit_pct_pot: gaps.iter().sum::<f64>() / 3.0 / pot * 100.0,
+            gaps_pct_pot: gaps.map(|g| g / pot * 100.0),
+            ended: "iterations".into(),
+            seconds: 0.0,
+            tree_bytes: estimated_vram_bytes3(&ex),
         };
         assert_eq!(sanity3(&rec), None);
         // the record reads back as written
@@ -446,7 +504,9 @@ mod tests {
         assert_eq!(compare_values3(&back.values, &rec.values), (0.0, 0.0));
         // a made-up value is caught
         let mut bad = rec.clone();
-        let k = (0..NUM_CLASSES).find(|&k| bad.values.value[0][k].is_some()).unwrap();
+        let k = (0..NUM_CLASSES)
+            .find(|&k| bad.values.value[0][k].is_some())
+            .unwrap();
         bad.values.value[0][k] = Some(9.0);
         assert!(sanity3(&bad).is_some());
         assert!(compare_values3(&bad.values, &rec.values).1 > 1.0);
@@ -457,7 +517,11 @@ mod tests {
                 *x += 1.0 / 3.0;
             }
         }
-        assert!(sanity3(&double).unwrap().contains("add up to"), "{:?}", sanity3(&double));
+        assert!(
+            sanity3(&double).unwrap().contains("add up to"),
+            "{:?}",
+            sanity3(&double)
+        );
     }
 
     #[test]
@@ -467,27 +531,47 @@ mod tests {
         assert_eq!(plan_budget(31_900, 34_190, 0.0), 27_352 * 1_000_000);
         // a reserve below what stays free anyway changes nothing; a bigger one comes out of the free memory
         assert_eq!(plan_budget(31_900, 34_190, 3.0), 27_352 * 1_000_000);
-        assert_eq!(plan_budget(31_900, 34_190, 6.0), (31_900 - 1024 - 6000) * 1_000_000);
+        assert_eq!(
+            plan_budget(31_900, 34_190, 6.0),
+            (31_900 - 1024 - 6000) * 1_000_000
+        );
         // another program already on the card: what is free, less 1 GB
-        assert_eq!(plan_budget(12_000, 34_190, 0.0), (12_000 - 1024) * 1_000_000);
+        assert_eq!(
+            plan_budget(12_000, 34_190, 0.0),
+            (12_000 - 1024) * 1_000_000
+        );
         assert_eq!(plan_budget(5_000, 34_190, 6.0), 0);
         assert!(plan_budget(8_000, 8_590, 0.0) > 6 * GB);
     }
 
     #[test]
     fn the_total_allows_rake_on_the_final_pot_and_deep_stacks() {
-        let span = |pot_bb, stack_bb, rake_pct, rake_cap_bb| total_span(&Inputs3 { pot_bb, stack_bb, rake_pct, rake_cap_bb, ..narrow() });
+        let span = |pot_bb, stack_bb, rake_pct, rake_cap_bb| {
+            total_span(&Inputs3 {
+                pot_bb,
+                stack_bb,
+                rake_pct,
+                rake_cap_bb,
+                ..narrow()
+            })
+        };
         let inside = |(lo, hi): (f64, f64), x: f64| lo <= x && x <= hi;
         // two finished pool solves the first rule turned away (jobs ...586 and ...587)
         assert!(inside(span(7.94, 55.06, 0.10, 8.5), 0.6855));
         assert!(inside(span(3.39, 135.43, 0.0, 0.0), 1.1229));
         // without rake nothing can be missing beyond the slack, however deep
         let (lo, hi) = span(10.0, 100.0, 0.0, 0.0);
-        assert!((lo - 0.75).abs() < 1e-9 && (hi - 1.25).abs() < 1e-9, "{lo} {hi}");
+        assert!(
+            (lo - 0.75).abs() < 1e-9 && (hi - 1.25).abs() < 1e-9,
+            "{lo} {hi}"
+        );
         // the cap bounds what rake can take; without a cap it is the share of all the money
         assert!((span(10.0, 100.0, 0.05, 2.0).0 - (0.75 - 0.2)).abs() < 1e-9);
         assert!((span(10.0, 10.0, 0.05, 0.0).0 - (1.0 - 0.2 - 0.16)).abs() < 1e-9);
         // rake never lets the total pass the pot
-        assert_eq!(span(10.0, 100.0, 0.05, 2.0).1, span(10.0, 100.0, 0.0, 0.0).1);
+        assert_eq!(
+            span(10.0, 100.0, 0.05, 2.0).1,
+            span(10.0, 100.0, 0.0, 0.0).1
+        );
     }
 }

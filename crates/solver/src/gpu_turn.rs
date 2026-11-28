@@ -15,8 +15,10 @@
 //! `GTOPEN_GPU_TURN=0` switches it off; any other value is the lock file
 //! to use.
 
-use std::fs::{File, OpenOptions};
-use std::path::{Path, PathBuf};
+use std::{
+    fs::{File, OpenOptions},
+    path::{Path, PathBuf},
+};
 
 /// Holds this process's turn on the card until dropped.
 pub struct GpuTurn {
@@ -59,7 +61,11 @@ pub fn default_path() -> Option<PathBuf> {
         .filter(|c| c.is_ascii_alphanumeric() || *c == '-')
         .take(40)
         .collect();
-    let card = if card.is_empty() { "0".to_string() } else { card };
+    let card = if card.is_empty() {
+        "0".to_string()
+    } else {
+        card
+    };
     Some(shared_dir().join(format!("gtopen-gpu-{card}.lock")))
 }
 
@@ -80,7 +86,10 @@ fn shared_dir() -> PathBuf {
 pub fn take() -> GpuTurn {
     match default_path() {
         Some(path) => take_at(&path, |p| {
-            eprintln!("  waiting for the GPU: another GTOpen solve has it ({})", p.display())
+            eprintln!(
+                "  waiting for the GPU: another GTOpen solve has it ({})",
+                p.display()
+            )
         }),
         None => GpuTurn::none(),
     }
@@ -114,10 +123,15 @@ pub fn take_at(path: &Path, waiting: impl FnOnce(&Path)) -> GpuTurn {
 
 #[cfg(test)]
 mod tests {
+    use std::{
+        sync::{
+            atomic::{AtomicBool, AtomicU32, Ordering},
+            Arc,
+        },
+        time::Duration,
+    };
+
     use super::*;
-    use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
-    use std::sync::Arc;
-    use std::time::Duration;
 
     fn lock_file(name: &str) -> PathBuf {
         let dir = std::env::temp_dir().join(format!("gtopen-gpu-turn-test-{}", std::process::id()));
@@ -140,11 +154,20 @@ mod tests {
             turn.held()
         });
         std::thread::sleep(Duration::from_millis(300));
-        assert!(told.load(Ordering::SeqCst), "the second solve says it is waiting");
-        assert!(!got.load(Ordering::SeqCst), "and does not start while the first holds the card");
+        assert!(
+            told.load(Ordering::SeqCst),
+            "the second solve says it is waiting"
+        );
+        assert!(
+            !got.load(Ordering::SeqCst),
+            "and does not start while the first holds the card"
+        );
 
         drop(first);
-        assert!(second.join().unwrap(), "it gets its turn once the first is done");
+        assert!(
+            second.join().unwrap(),
+            "it gets its turn once the first is done"
+        );
         assert!(got.load(Ordering::SeqCst));
     }
 
@@ -159,7 +182,11 @@ mod tests {
                     for _ in 0..20 {
                         let turn = take_at(&path, |_| {});
                         assert!(turn.held());
-                        assert_eq!(inside.fetch_add(1, Ordering::SeqCst), 0, "two solves held the card at once");
+                        assert_eq!(
+                            inside.fetch_add(1, Ordering::SeqCst),
+                            0,
+                            "two solves held the card at once"
+                        );
                         std::thread::sleep(Duration::from_millis(2));
                         inside.fetch_sub(1, Ordering::SeqCst);
                     }
@@ -189,7 +216,10 @@ mod tests {
         assert!(first.held());
         let waited = AtomicBool::new(false);
         let file = File::open(&path).unwrap();
-        assert!(matches!(file.try_lock(), Err(std::fs::TryLockError::WouldBlock)));
+        assert!(matches!(
+            file.try_lock(),
+            Err(std::fs::TryLockError::WouldBlock)
+        ));
         drop(first);
         let second = take_at(&path, |_| waited.store(true, Ordering::SeqCst));
         assert!(second.held() && !waited.load(Ordering::SeqCst));

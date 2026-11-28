@@ -15,10 +15,16 @@ fn same_class_all_in_terminals_are_zero_sum_for_raw_and_static() {
                 "open_raises": [], "raise_mults": [], "max_raises": 1,
                 "add_allin": true, "limp": false, "realization": realization,
                 "rake_pct": 0.0, "card_removal": card_removal
-            })).unwrap();
+            }))
+            .unwrap();
             let solver = PreflopSolver::new(cfg, eq.clone()).unwrap();
-            let node = solver.nodes.iter().position(|nd| nd.kind == KIND_POT_SHARE
-                && nd.live == 3 && nd.invested == [5.0, 5.0]).expect("called all-in");
+            let node = solver
+                .nodes
+                .iter()
+                .position(|nd| {
+                    nd.kind == KIND_POT_SHARE && nd.live == 3 && nd.invested == [5.0, 5.0]
+                })
+                .expect("called all-in");
             for h in 0..NUM_CLASSES {
                 let mut reaches = vec![vec![0.0; NUM_CLASSES]; 2];
                 reaches[0][h] = 1.0;
@@ -28,7 +34,10 @@ fn same_class_all_in_terminals_are_zero_sum_for_raw_and_static() {
                     let mut out = [0.0; NUM_CLASSES];
                     solver.terminal_value(node, p, &reaches, &mut out);
                     payoffs[p] = out[h];
-                    assert_eq!(out[h], 0.0, "{realization}, removal={card_removal}, seat={p}, class={h}");
+                    assert_eq!(
+                        out[h], 0.0,
+                        "{realization}, removal={card_removal}, seat={p}, class={h}"
+                    );
                 }
                 assert_eq!(payoffs[0] + payoffs[1], 0.0);
             }

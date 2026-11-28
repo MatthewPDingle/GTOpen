@@ -2,19 +2,26 @@
 //! cargo test --release -p solver --features gpu --test preflop_perf -- --ignored --nocapture
 #![cfg(feature = "gpu")]
 
-use solver::preflop::equity::EquityTable;
-use solver::preflop::{gpu::PreflopGpu, PreflopConfig, PreflopSolver};
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
+
+use solver::preflop::{equity::EquityTable, gpu::PreflopGpu, PreflopConfig, PreflopSolver};
 
 fn config(n: usize) -> PreflopConfig {
     let mut posts = vec![0.0; n];
     posts[n - 2] = 0.5;
     posts[n - 1] = 1.0;
-    PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: (0..n).map(|p| format!("P{p}")).collect(),
-        stack: if n == 8 { 150.0 } else { 100.0 }, stacks: None,
+        stack: if n == 8 { 150.0 } else { 100.0 },
+        stacks: None,
         posts,
         ante: 0.0,
         limp: true,
@@ -30,7 +37,10 @@ fn config(n: usize) -> PreflopConfig {
         realization: if n == 6 { "static" } else { "calibrated" }.into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
+        fourbet_mults: None,
+        fourbet_mults_by_seat: None,
+        raise_mults_by_seat: None,
+        icm: None,
     }
 }
 
@@ -45,31 +55,44 @@ fn fingerprint(values: impl IntoIterator<Item = u32>) -> u64 {
 #[test]
 #[ignore = "manual time to fixed preflop accuracy"]
 fn preflop_target() {
-    let path=concat!(env!("CARGO_MANIFEST_DIR"),"/../../cache/preflop_eq169.bin");
-    let eq=Arc::new(EquityTable::load_or_build(path,20000));
-    for n in [6,8] {
-        let mut s=PreflopSolver::new(config(n),eq.clone()).unwrap();
-        if n==8 {assert!(s.fit.is_some());}
-        let mut gpu=PreflopGpu::new(&s,20000).unwrap();
-        let start=Instant::now();
-        let (gaps,evs)=loop {
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
+    let eq = Arc::new(EquityTable::load_or_build(path, 20000));
+    for n in [6, 8] {
+        let mut s = PreflopSolver::new(config(n), eq.clone()).unwrap();
+        if n == 8 {
+            assert!(s.fit.is_some());
+        }
+        let mut gpu = PreflopGpu::new(&s, 20000).unwrap();
+        let start = Instant::now();
+        let (gaps, evs) = loop {
             gpu.iterate(&mut s).unwrap();
-            if s.iteration%25==0 {
-                let (gaps,evs)=gpu.gaps_and_evs().unwrap();
-                let total:f64=gaps.iter().sum();
-                println!("TARGET_CHECK seats={n} iteration={} gap={total:.12}",s.iteration);
-                if total<=0.03 {break (gaps,evs);}
-                assert!(s.iteration<2000,"target not reached in the fixed iteration cap");
+            if s.iteration % 25 == 0 {
+                let (gaps, evs) = gpu.gaps_and_evs().unwrap();
+                let total: f64 = gaps.iter().sum();
+                println!(
+                    "TARGET_CHECK seats={n} iteration={} gap={total:.12}",
+                    s.iteration
+                );
+                if total <= 0.03 {
+                    break (gaps, evs);
+                }
+                assert!(
+                    s.iteration < 2000,
+                    "target not reached in the fixed iteration cap"
+                );
             }
         };
-        let seconds=start.elapsed().as_secs_f64();
+        let seconds = start.elapsed().as_secs_f64();
         gpu.sync_to_cpu(&mut s).unwrap();
-        let (regrets,strategy)=s.arena_snapshot();
-        let hash=fingerprint(regrets.iter().chain(&strategy).map(|v|v.to_bits()));
-        println!("METRIC_JSON {}",serde_json::json!({
-            "metrics":{format!("preflop.{n}.target_seconds"):seconds},
-            "seats":n,"iteration":s.iteration,"gap_total":gaps.iter().sum::<f64>(),
-            "gaps":gaps,"evs":evs,"arena_hash":format!("{hash:016x}")
-        }));
+        let (regrets, strategy) = s.arena_snapshot();
+        let hash = fingerprint(regrets.iter().chain(&strategy).map(|v| v.to_bits()));
+        println!(
+            "METRIC_JSON {}",
+            serde_json::json!({
+                "metrics":{format!("preflop.{n}.target_seconds"):seconds},
+                "seats":n,"iteration":s.iteration,"gap_total":gaps.iter().sum::<f64>(),
+                "gaps":gaps,"evs":evs,"arena_hash":format!("{hash:016x}")
+            })
+        );
     }
 }

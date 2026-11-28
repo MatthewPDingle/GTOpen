@@ -119,8 +119,14 @@ impl Store {
         }
         match self {
             Store::F32(b) => Store::F32(dup(b)),
-            Store::I16 { q, scale } => Store::I16 { q: dup(q), scale: dup(scale) },
-            Store::U16 { q, scale } => Store::U16 { q: dup(q), scale: dup(scale) },
+            Store::I16 { q, scale } => Store::I16 {
+                q: dup(q),
+                scale: dup(scale),
+            },
+            Store::U16 { q, scale } => Store::U16 {
+                q: dup(q),
+                scale: dup(scale),
+            },
         }
     }
 

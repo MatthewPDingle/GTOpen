@@ -13,29 +13,28 @@
 //! a small gap is not evidence of an accurate poker model or a Nash equilibrium.
 
 pub mod equity;
+pub mod icm;
 pub mod multiway;
 pub mod three_way;
-pub mod icm;
 pub use icm::{FieldGroup, IcmConfig, IcmSummary};
-pub mod reference;
-pub mod dataset;
 pub mod contextual;
+pub mod dataset;
 pub mod evidence;
+pub mod leaf_fix;
+mod leaf_model;
+pub mod leaf_total;
 pub mod leafnet;
 pub mod leafnet_catalog;
-mod leaf_model;
-pub mod leaf_fix;
-pub mod leaf_total;
+pub mod reference;
 pub use leaf_model::{FlopLeaf, LeafRefresh, LeafTerminalSums};
 mod continuation;
 pub mod removal;
 pub mod rnr;
 pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};
-mod save;
-#[cfg(feature = "gpu")]
-pub mod gpu;
 #[cfg(feature = "preflop-research")]
-pub mod convergence_research;
+mod convergence_behavioral_transition;
+#[cfg(feature = "preflop-research")]
+pub mod convergence_policy_repair;
 #[cfg(feature = "preflop-research")]
 mod convergence_quality;
 #[cfg(feature = "preflop-research")]
@@ -43,22 +42,27 @@ mod convergence_refine;
 #[cfg(feature = "preflop-research")]
 mod convergence_refine_gpu;
 #[cfg(feature = "preflop-research")]
-pub mod convergence_policy_repair;
-#[cfg(feature = "preflop-research")]
-mod convergence_behavioral_transition;
+pub mod convergence_research;
+#[cfg(feature = "gpu")]
+pub mod gpu;
+mod save;
 #[cfg(feature = "preflop-research")]
 pub use convergence_refine_gpu::AncestorResearchState;
 #[cfg(feature = "preflop-research")]
 mod convergence_fixed_units;
+use std::{
+    cell::UnsafeCell,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+};
+
 #[cfg(feature = "preflop-research")]
 pub use convergence_fixed_units::FixedUnitResearchState;
-
 use equity::{class_combos, class_prob, EquityTable, NUM_CLASSES};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::cell::UnsafeCell;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
 
 const KIND_ACTION: u8 = 0;
 const KIND_FOLD_WIN: u8 = 1;
@@ -192,27 +196,43 @@ pub struct PreflopConfig {
     pub fourbet_mults_oop: Option<Vec<f64>>,
 }
 
-fn is_false(value: &bool) -> bool { !*value }
-fn is_zero(value: &f64) -> bool { *value == 0.0 }
+fn is_false(value: &bool) -> bool {
+    !*value
+}
+fn is_zero(value: &f64) -> bool {
+    *value == 0.0
+}
 
 impl PreflopConfig {
     /// Seat `seat`'s starting stack (bb, before antes).
     #[inline]
     pub fn stack_of(&self, seat: usize) -> f64 {
-        match &self.stacks { Some(v) => v[seat], None => self.stack }
+        match &self.stacks {
+            Some(v) => v[seat],
+            None => self.stack,
+        }
     }
     /// The deepest starting stack at the table.
     pub fn max_stack(&self) -> f64 {
-        match &self.stacks { Some(v) => v.iter().cloned().fold(f64::MIN, f64::max), None => self.stack }
+        match &self.stacks {
+            Some(v) => v.iter().cloned().fold(f64::MIN, f64::max),
+            None => self.stack,
+        }
     }
     /// True when some seat's stack differs from another's.
     pub fn unequal_stacks(&self) -> bool {
-        self.stacks.as_ref().is_some_and(|v| v.iter().any(|&x| x != v[0]))
+        self.stacks
+            .as_ref()
+            .is_some_and(|v| v.iter().any(|&x| x != v[0]))
     }
     /// What only the big blind pays of the dead antes (see `bb_ante`).
     #[inline]
     pub fn bb_extra(&self, seat: usize) -> f64 {
-        if seat + 1 == self.positions.len() { self.bb_ante } else { 0.0 }
+        if seat + 1 == self.positions.len() {
+            self.bb_ante
+        } else {
+            0.0
+        }
     }
     /// Seat `seat`'s dead ante: the per-seat ante, plus the big blind ante
     /// for the big blind. A node's `invested` holds it; it never counts
@@ -234,16 +254,23 @@ impl PreflopConfig {
     pub fn left(&self, seat: usize, invested: f64) -> f64 {
         self.stack_of(seat) - invested + self.ante_of(seat)
     }
-    pub fn first_to_act(&self) -> usize { usize::from(self.utg_straddle) }
+    pub fn first_to_act(&self) -> usize {
+        usize::from(self.utg_straddle)
+    }
     pub fn unraised_winner(&self) -> Option<usize> {
-        if self.utg_straddle {Some(0)} else {self.posts.iter().rposition(|p|*p>0.0)}
+        if self.utg_straddle {
+            Some(0)
+        } else {
+            self.posts.iter().rposition(|p| *p > 0.0)
+        }
     }
     fn posted_blind(&self, seat: usize) -> bool {
-        self.posts[seat]>0.0 && !(self.utg_straddle && seat==0)
+        self.posts[seat] > 0.0 && !(self.utg_straddle && seat == 0)
     }
     fn acts_before(&self, a: usize, b: usize) -> bool {
-        let n=self.positions.len();let start=self.first_to_act();
-        (a+n-start)%n < (b+n-start)%n
+        let n = self.positions.len();
+        let start = self.first_to_act();
+        (a + n - start) % n < (b + n - start) % n
     }
     fn opens_of(&self, actor: usize) -> &[f64] {
         match &self.open_raises_by_seat {
@@ -257,15 +284,23 @@ impl PreflopConfig {
     fn mults_of(&self, actor: usize, raises: u8, oop: bool) -> &[f64] {
         if raises >= 2 {
             if let Some(per) = &self.fourbet_mults_by_seat {
-                if !per[actor].is_empty() { return &per[actor]; }
+                if !per[actor].is_empty() {
+                    return &per[actor];
+                }
             }
             if oop {
-                if let Some(out) = &self.fourbet_mults_oop { return out; }
+                if let Some(out) = &self.fourbet_mults_oop {
+                    return out;
+                }
             }
-            if let Some(global) = &self.fourbet_mults { return global; }
+            if let Some(global) = &self.fourbet_mults {
+                return global;
+            }
         }
         if let Some(per) = &self.raise_mults_by_seat {
-            if !per[actor].is_empty() { return &per[actor]; }
+            if !per[actor].is_empty() {
+                return &per[actor];
+            }
         }
         match &self.raise_mults_oop {
             Some(out) if oop => out,
@@ -280,8 +315,12 @@ impl PreflopConfig {
         let n = self.positions.len();
         if n == 2 {
             let mut out = vec![0usize, 1];
-            out.sort_by(|&a, &b| self.posts[b].partial_cmp(&self.posts[a]).unwrap()
-                .then_with(|| b.cmp(&a))); // Equal blinds: seat 1 is still the BB/OOP.
+            out.sort_by(|&a, &b| {
+                self.posts[b]
+                    .partial_cmp(&self.posts[a])
+                    .unwrap()
+                    .then_with(|| b.cmp(&a))
+            }); // Equal blinds: seat 1 is still the BB/OOP.
             return out;
         }
         let mut blinds: Vec<usize> = (0..n).filter(|&i| self.posts[i] > 0.0).collect();
@@ -300,8 +339,10 @@ impl PreflopConfig {
     /// True when any size follows the action (limpers, callers, position).
     /// Such games save in a format older binaries refuse (save.rs).
     pub fn situational_sizing(&self) -> bool {
-        self.limper_extra != 0.0 || self.caller_extra != 0.0
-            || self.raise_mults_oop.is_some() || self.fourbet_mults_oop.is_some()
+        self.limper_extra != 0.0
+            || self.caller_extra != 0.0
+            || self.raise_mults_oop.is_some()
+            || self.fourbet_mults_oop.is_some()
     }
 }
 
@@ -351,10 +392,19 @@ fn default_raise_size() -> String {
 }
 impl BucketPolicy {
     fn valid_sizing(&self) -> bool {
-        (self.raise_sizes.is_empty() || self.raise_multiples.is_empty()) &&
-            self.raise_sizes.iter().chain(&self.raise_multiples)
-                .all(|(size,w)|size.is_finite() && *size>0.0 && w.is_finite() && *w>0.0) &&
-            self.raise_sizes.iter().chain(&self.raise_multiples).map(|x|x.1).sum::<f64>().is_finite()
+        (self.raise_sizes.is_empty() || self.raise_multiples.is_empty())
+            && self
+                .raise_sizes
+                .iter()
+                .chain(&self.raise_multiples)
+                .all(|(size, w)| size.is_finite() && *size > 0.0 && w.is_finite() && *w > 0.0)
+            && self
+                .raise_sizes
+                .iter()
+                .chain(&self.raise_multiples)
+                .map(|x| x.1)
+                .sum::<f64>()
+                .is_finite()
     }
 }
 
@@ -494,7 +544,13 @@ pub const NUM_BUCKETS: usize = 5;
 /// such a seat never needs solved averages.
 fn fully_ruled(p: &Option<SeatProfile>) -> bool {
     p.as_ref()
-        .map(|prof| prof.response.as_ref().and_then(|r| r.adaptive_from).is_none() && (0..NUM_BUCKETS).all(|b| prof.buckets.get(b).map_or(false, |x| x.is_some())))
+        .map(|prof| {
+            prof.response
+                .as_ref()
+                .and_then(|r| r.adaptive_from)
+                .is_none()
+                && (0..NUM_BUCKETS).all(|b| prof.buckets.get(b).map_or(false, |x| x.is_some()))
+        })
         .unwrap_or(false)
 }
 
@@ -508,25 +564,41 @@ pub(crate) fn validate_profiles(profiles: &[Option<SeatProfile>]) -> Result<(), 
                 && b.call.len() == NUM_CLASSES
                 && b.raise.len() == NUM_CLASSES
                 && b.jam.len() == NUM_CLASSES
-                && b.call.iter().chain(&b.raise).chain(&b.jam)
+                && b.call
+                    .iter()
+                    .chain(&b.raise)
+                    .chain(&b.jam)
                     .all(|v| v.is_finite() && *v >= 0.0)
         };
-        if p.response.as_ref().and_then(|r| r.adaptive_from)
-            .is_some_and(|f| !f.is_finite() || f <= 0.0 || f > 1.0) {
+        if p.response
+            .as_ref()
+            .and_then(|r| r.adaptive_from)
+            .is_some_and(|f| !f.is_finite() || f <= 0.0 || f > 1.0)
+        {
             return Err("adaptive_from must be a finite stack fraction in (0, 1]".into());
         }
-        if let Some(response)=&p.response {
-            if let Some(version) = &response.contextual_reraise { contextual::validate_version(version)?; }
-            let mut contexts=std::collections::HashSet::new();
+        if let Some(response) = &p.response {
+            if let Some(version) = &response.contextual_reraise {
+                contextual::validate_version(version)?;
+            }
+            let mut contexts = std::collections::HashSet::new();
             for c in &response.limp_contexts {
-                if !(1..=3).contains(&c.limpers) || !contexts.insert((c.limpers,c.free_check)) || !shaped(&c.policy) {
+                if !(1..=3).contains(&c.limpers)
+                    || !contexts.insert((c.limpers, c.free_check))
+                    || !shaped(&c.policy)
+                {
                     return Err("invalid limp context policy".into());
                 }
             }
         }
-        for b in p.buckets.iter().flatten().chain(p.limp_defense.iter())
+        for b in p
+            .buckets
+            .iter()
+            .flatten()
+            .chain(p.limp_defense.iter())
             .chain(p.response.iter().filter_map(|r| r.limp_unopened.as_ref()))
-            .chain(p.response.iter().filter_map(|r| r.cold_reraise.as_ref())) {
+            .chain(p.response.iter().filter_map(|r| r.cold_reraise.as_ref()))
+        {
             if !shaped(b) {
                 return Err("bucket policies need 169-class vectors".into());
             }
@@ -556,7 +628,6 @@ pub(crate) fn validate_profiles(profiles: &[Option<SeatProfile>]) -> Result<(), 
     }
     Ok(())
 }
-
 
 /// The M5-calibrated realization model: R = clip(dot(features)), fitted
 /// from this engine's own postflop solves (m5_spots/fit_phase_c.py). All
@@ -633,7 +704,9 @@ impl RealizationFit {
         Ok(RealizationFit {
             c0: g("c0")?,
             b_pos: g("pos")?,
-            b_spr: (0..nb).map(|i| g(&format!("spr{i}"))).collect::<Result<_, _>>()?,
+            b_spr: (0..nb)
+                .map(|i| g(&format!("spr{i}")))
+                .collect::<Result<_, _>>()?,
             b_range_eq: g("range_eq")?,
             b_init: g("initiative")?,
             class_base,
@@ -683,19 +756,20 @@ impl RealizationFit {
     /// Engine path: measured class base x an externally supplied (causally
     /// sane) positional weight, clipped.
     pub fn class_r(&self, k: usize, pos_weight: f64) -> f64 {
-        (self.class_base[k] as f64 * pos_weight)
-            .clamp(self.clip.0 as f64, self.clip.1 as f64)
+        (self.class_base[k] as f64 * pos_weight).clamp(self.clip.0 as f64, self.clip.1 as f64)
     }
 
     /// Pairwise relative scores, not a recovered rake-free postflop solve.
     /// Opposite orientations are complements, so every matched pair divides
     /// one pot. A common scale (including a common rake drain) cancels.
     pub fn balanced_share(&self, eq: f32, hero: usize, villain: usize, oop: bool) -> f32 {
-        let eq = if hero == villain {0.5} else {eq};
-        if !oop { return 1.0 - self.balanced_share(1.0-eq, villain, hero, true); }
+        let eq = if hero == villain { 0.5 } else { eq };
+        if !oop {
+            return 1.0 - self.balanced_share(1.0 - eq, villain, hero, true);
+        }
         let a = eq as f64 * self.class_base[hero] as f64 * 0.92;
-        let b = (1.0-eq as f64) * self.class_base[villain] as f64 * 1.08;
-        (a / (a+b).max(1e-12)) as f32
+        let b = (1.0 - eq as f64) * self.class_base[villain] as f64 * 1.08;
+        (a / (a + b).max(1e-12)) as f32
     }
 
     /// Measured per-class realization (169 entries) — the GPU engine uploads
@@ -714,7 +788,9 @@ impl RealizationFit {
 /// would 3-bet a single raise with (the VS RAISE raising + jamming slice),
 /// and among those split raise vs call the way his VS 3-BET+ policy does.
 fn cold_vs_3bet_policy(vs_raise: &BucketPolicy, vs_3bet: &BucketPolicy) -> BucketPolicy {
-    let mut out = BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
+    let mut out = BucketPolicy {
+        raise_multiples: Vec::new(),
+        raise_sizes: Vec::new(),
         call: vec![0.0; NUM_CLASSES],
         raise: vec![0.0; NUM_CLASSES],
         jam: vec![0.0; NUM_CLASSES],
@@ -725,7 +801,11 @@ fn cold_vs_3bet_policy(vs_raise: &BucketPolicy, vs_3bet: &BucketPolicy) -> Bucke
         let entered = (g(&vs_raise.raise) + g(&vs_raise.jam)).min(1.0);
         let (c3, r3, j3) = (g(&vs_3bet.call), g(&vs_3bet.raise), g(&vs_3bet.jam));
         let tot = c3 + r3 + j3;
-        let (rs, js) = if tot > 1e-9 { (r3 / tot, j3 / tot) } else { (0.0, 0.0) };
+        let (rs, js) = if tot > 1e-9 {
+            (r3 / tot, j3 / tot)
+        } else {
+            (0.0, 0.0)
+        };
         out.raise[h] = entered * rs;
         out.jam[h] = entered * js;
         out.call[h] = entered * (1.0 - rs - js).max(0.0);
@@ -840,7 +920,8 @@ pub struct PreflopSolver {
     /// Reuses inference across identical contexts without a 169-vector per node.
     /// Hard cap is 16,384 entries (33 MB vector payload); overflow stays correct
     /// by computing an uncached prediction. Old profiles allocate no entries.
-    contextual_cache: std::sync::RwLock<std::collections::HashMap<ContextualKey, Arc<BucketPolicy>>>,
+    contextual_cache:
+        std::sync::RwLock<std::collections::HashMap<ContextualKey, Arc<BucketPolicy>>>,
     /// "Trust the read" in hero mode (see rnr.rs); None = plain hero mode.
     pub(crate) trust: Option<f32>,
     /// The free types' arenas while the dial is active.
@@ -864,12 +945,24 @@ pub(crate) struct BalancedTables {
 }
 
 #[derive(PartialEq, Eq, Hash)]
-struct ContextualKey { seat: u8, entry: contextual::Entry, depth: bool, pot: u64, invested: u64, faced: u64, stack: u64 }
+struct ContextualKey {
+    seat: u8,
+    entry: contextual::Entry,
+    depth: bool,
+    pot: u64,
+    invested: u64,
+    faced: u64,
+    stack: u64,
+}
 
 impl PreflopSolver {
     pub(super) fn balanced_raw_equity(&self, h: usize, j: usize) -> f32 {
         // Sampling noise must not create/destroy chips, including identical classes.
-        if h == j {0.5} else {0.5*(self.eq.eq(h,j)+(1.0-self.eq.eq(j,h)))}
+        if h == j {
+            0.5
+        } else {
+            0.5 * (self.eq.eq(h, j) + (1.0 - self.eq.eq(j, h)))
+        }
     }
     /// The balanced pairwise tables, computed once per solver.
     pub(crate) fn balanced_tables(&self) -> &BalancedTables {
@@ -881,7 +974,10 @@ impl PreflopSolver {
                     let eq = self.balanced_raw_equity(h, j);
                     raw[h * NUM_CLASSES + j] = eq;
                     for (side, oop) in [(0, true), (1, false)] {
-                        rel[side][h * NUM_CLASSES + j] = self.fit.as_ref().map_or(eq, |f| f.balanced_share(eq, h, j, oop));
+                        rel[side][h * NUM_CLASSES + j] = self
+                            .fit
+                            .as_ref()
+                            .map_or(eq, |f| f.balanced_share(eq, h, j, oop));
                     }
                 }
             }
@@ -895,12 +991,23 @@ impl PreflopSolver {
     /// examples. Returns each class's value as a fraction of the pot
     /// (pot-share convention, as in datagen examples) per player, out of
     /// position first. Only for a plain two-seat game without ICM.
-    pub fn hu_leaf_values(&mut self, ranges: [&[f32]; 2], pot: f64, behind: f64, rake_pct: f64,
-                          rake_cap: f64) -> Result<[Vec<f32>; 2], String> {
+    pub fn hu_leaf_values(
+        &mut self,
+        ranges: [&[f32]; 2],
+        pot: f64,
+        behind: f64,
+        rake_pct: f64,
+        rake_cap: f64,
+    ) -> Result<[Vec<f32>; 2], String> {
         if self.n != 2 || self.icm.is_some() {
             return Err("hu_leaf_values needs a plain two-seat game".into());
         }
-        let saved = (self.cfg.stack, self.cfg.stacks.take(), self.cfg.rake_pct, self.cfg.rake_cap);
+        let saved = (
+            self.cfg.stack,
+            self.cfg.stacks.take(),
+            self.cfg.rake_pct,
+            self.cfg.rake_cap,
+        );
         // both players are given the same chips: no big blind ante here
         let bb_ante = std::mem::take(&mut self.cfg.bb_ante);
         self.cfg.stack = pot / 2.0 + behind - self.cfg.ante;
@@ -911,21 +1018,46 @@ impl PreflopSolver {
         let live = 0b11u32;
         let invested = vec![pot / 2.0; 2];
         let node = PNode {
-            kind: KIND_POT_SHARE, actor: 0, actions: Vec::new(), child_start: 0, pot,
-            r: self.realization_weights(live, &invested, pot), invested, live, winner: 0,
-            data_off: 0, aggressor: 255, posf: self.pos_fracs(live), bucket: 0, raises: 0, raised: 0,
+            kind: KIND_POT_SHARE,
+            actor: 0,
+            actions: Vec::new(),
+            child_start: 0,
+            pot,
+            r: self.realization_weights(live, &invested, pot),
+            invested,
+            live,
+            winner: 0,
+            data_off: 0,
+            aggressor: 255,
+            posf: self.pos_fracs(live),
+            bucket: 0,
+            raises: 0,
+            raised: 0,
             side_pots: Vec::new(),
         };
         let mut reaches = vec![Vec::new(), Vec::new()];
         for (seat, range) in [(oop, ranges[0]), (ip, ranges[1])] {
             // range weights are per-class frequencies; reaches are combo mass
-            let mass: f32 = range.iter().enumerate().map(|(k, w)| w * class_prob(k)).sum();
+            let mass: f32 = range
+                .iter()
+                .enumerate()
+                .map(|(k, w)| w * class_prob(k))
+                .sum();
             if range.len() != NUM_CLASSES || !(mass > 0.0) {
-                (self.cfg.stack, self.cfg.stacks, self.cfg.rake_pct, self.cfg.rake_cap) = saved;
+                (
+                    self.cfg.stack,
+                    self.cfg.stacks,
+                    self.cfg.rake_pct,
+                    self.cfg.rake_cap,
+                ) = saved;
                 self.cfg.bb_ante = bb_ante;
                 return Err("each range needs 169 weights with positive mass".into());
             }
-            reaches[seat] = range.iter().enumerate().map(|(k, w)| w * class_prob(k) / mass).collect();
+            reaches[seat] = range
+                .iter()
+                .enumerate()
+                .map(|(k, w)| w * class_prob(k) / mass)
+                .collect();
         }
         self.nodes.push(node);
         let idx = self.nodes.len() - 1;
@@ -939,7 +1071,12 @@ impl PreflopSolver {
         }
         self.nodes.pop();
         self.cfg.bb_ante = bb_ante;
-        (self.cfg.stack, self.cfg.stacks, self.cfg.rake_pct, self.cfg.rake_cap) = saved;
+        (
+            self.cfg.stack,
+            self.cfg.stacks,
+            self.cfg.rake_pct,
+            self.cfg.rake_cap,
+        ) = saved;
         Ok(out)
     }
 
@@ -992,7 +1129,9 @@ impl PreflopSolver {
             strat_sum: Arena::new(0),
             arena_len: 0,
             iteration: 0,
-            prune: std::env::var("PREFLOP_PRUNE").map(|v| v != "0").unwrap_or(true),
+            prune: std::env::var("PREFLOP_PRUNE")
+                .map(|v| v != "0")
+                .unwrap_or(true),
             fit,
             seat_frozen: vec![false; n],
             seat_profiles: vec![None; n],
@@ -1029,8 +1168,13 @@ impl PreflopSolver {
 
     /// Versioned payoff identity; old saves retain their original model.
     pub fn multiway_equity_model(&self) -> &'static str {
-        if self.three_way.is_some() { three_way::MODEL }
-        else if self.multiway.is_some() { multiway::MODEL } else { "legacy_product" }
+        if self.three_way.is_some() {
+            three_way::MODEL
+        } else if self.multiway.is_some() {
+            multiway::MODEL
+        } else {
+            "legacy_product"
+        }
     }
 
     /// Only change payoffs before learning. Saved arenas must never be resumed
@@ -1039,18 +1183,31 @@ impl PreflopSolver {
         if model != "legacy_product" && model != multiway::MODEL && model != three_way::MODEL {
             return Err(format!("unsupported multiway equity model: {model}"));
         }
-        if model == self.multiway_equity_model() { return Ok(()); }
+        if model == self.multiway_equity_model() {
+            return Ok(());
+        }
         if self.iteration != 0 {
             return Err("rebuild the game before changing its multiway equity model".into());
         }
-        self.multiway = if model == "legacy_product" { None } else { Some(multiway::CoupledDeck::shared()) };
-        self.three_way = if model == three_way::MODEL { Some(three_way::ThreeWayTable::shared()) } else { None };
+        self.multiway = if model == "legacy_product" {
+            None
+        } else {
+            Some(multiway::CoupledDeck::shared())
+        };
+        self.three_way = if model == three_way::MODEL {
+            Some(three_way::ThreeWayTable::shared())
+        } else {
+            None
+        };
         Ok(())
     }
 
     /// three_way_table_v1 with a specific table (tests and research use
     /// coarse ones; the production table comes from the cache).
-    pub fn set_three_way_table(&mut self, table: Arc<three_way::ThreeWayTable>) -> Result<(), String> {
+    pub fn set_three_way_table(
+        &mut self,
+        table: Arc<three_way::ThreeWayTable>,
+    ) -> Result<(), String> {
         if self.iteration != 0 {
             return Err("rebuild the game before changing its multiway equity model".into());
         }
@@ -1060,7 +1217,11 @@ impl PreflopSolver {
     }
 
     /// Showdown shares against normalized opponents in a pot with 3+ seats.
-    fn multiway_shares(&self, model: &multiway::CoupledDeck, opponents: &[Vec<f32>]) -> [f64; NUM_CLASSES] {
+    fn multiway_shares(
+        &self,
+        model: &multiway::CoupledDeck,
+        opponents: &[Vec<f32>],
+    ) -> [f64; NUM_CLASSES] {
         match (&self.three_way, opponents) {
             (Some(table), [a, b]) => table.shares(a, b),
             _ => model.equities(opponents),
@@ -1084,8 +1245,11 @@ impl PreflopSolver {
     fn pos_fracs(&self, live: u32) -> Vec<f32> {
         let mut out = vec![0f32; self.n];
         let order = self.postflop_order();
-        let live_order: Vec<usize> =
-            order.iter().cloned().filter(|&i| live & (1 << i) != 0).collect();
+        let live_order: Vec<usize> = order
+            .iter()
+            .cloned()
+            .filter(|&i| live & (1 << i) != 0)
+            .collect();
         let m = live_order.len().max(1);
         for (rank, &seat) in live_order.iter().enumerate() {
             out[seat] = if m < 2 {
@@ -1109,7 +1273,11 @@ impl PreflopSolver {
             (min_left / pot).max(0.0)
         };
         let order = self.postflop_order();
-        let live_order: Vec<usize> = order.iter().cloned().filter(|&i| live & (1 << i) != 0).collect();
+        let live_order: Vec<usize> = order
+            .iter()
+            .cloned()
+            .filter(|&i| live & (1 << i) != 0)
+            .collect();
         let m = live_order.len().max(1);
         for (rank, &seat) in live_order.iter().enumerate() {
             let w = if self.cfg.realization == "raw" || spr <= 1e-9 || m < 2 {
@@ -1151,7 +1319,8 @@ impl PreflopSolver {
                 aggressor: st.aggressor,
                 posf: Vec::new(),
                 bucket: 0,
-                raises: st.raises, raised: st.raised,
+                raises: st.raises,
+                raised: st.raised,
                 side_pots: Vec::new(),
             });
             return Ok(idx);
@@ -1182,7 +1351,8 @@ impl PreflopSolver {
                 aggressor: st.aggressor,
                 posf: self.pos_fracs(live),
                 bucket: 0,
-                raises: st.raises, raised: st.raised,
+                raises: st.raises,
+                raised: st.raised,
                 side_pots,
             });
             return Ok(idx);
@@ -1190,7 +1360,9 @@ impl PreflopSolver {
 
         // Transfer action ownership rather than cloning both Strings per
         // action. Trim Vec spare capacity to the old clone's exact length.
-        let acts = legal_actions_of(&self.cfg, &st, actor).into_boxed_slice().into_vec();
+        let acts = legal_actions_of(&self.cfg, &st, actor)
+            .into_boxed_slice()
+            .into_vec();
 
         let idx = self.nodes.len() as u32;
         let na = acts.len();
@@ -1208,21 +1380,25 @@ impl PreflopSolver {
             aggressor: st.aggressor,
             posf: Vec::new(),
             bucket: bucket_of(&st),
-            raises: st.raises, raised: st.raised,
+            raises: st.raises,
+            raised: st.raised,
             side_pots: Vec::new(),
         });
         self.arena_len += na * NUM_CLASSES;
-        if self.nodes.len() as u64 > lim_nodes
-            || (self.arena_len as f64 * 8.0 / 1e6) > lim_mb
-        {
+        if self.nodes.len() as u64 > lim_nodes || (self.arena_len as f64 * 8.0 / 1e6) > lim_mb {
             return Err("preflop tree too large; reduce sizes/raise cap or limps".into());
         }
 
         let mut kids: Vec<u32> = Vec::with_capacity(na);
         for a in 0..na {
             // This borrow ends before recursive build can reallocate nodes.
-            let ns = next_state_of(&self.cfg, self.n, &st, actor,
-                &self.nodes[idx as usize].actions[a]);
+            let ns = next_state_of(
+                &self.cfg,
+                self.n,
+                &st,
+                actor,
+                &self.nodes[idx as usize].actions[a],
+            );
             kids.push(self.build(ns, lim_nodes, lim_mb)?);
         }
         let cs = self.children.len() as u32;
@@ -1269,28 +1445,54 @@ impl PreflopSolver {
             return None;
         }
         if let Some(prof) = &self.seat_profiles[nd.actor as usize] {
-            if nd.bucket==BUCKET_VS_LIMPS {
-                let free=nd.actions.iter().any(|a|a.kind=="check");
-                let limpers=(0..self.n).filter(|&i|i!=nd.actor as usize &&
-                    nd.invested[i]>self.cfg.posts[i]+self.cfg.ante_of(i)+1e-9).count().clamp(1,3) as u8;
-                if let Some(c)=prof.response.as_ref().and_then(|r|r.limp_contexts.iter().find(|c|c.free_check==free && c.limpers==limpers)) {
-                    return Some(self.policy_sigma(node,&c.policy));
+            if nd.bucket == BUCKET_VS_LIMPS {
+                let free = nd.actions.iter().any(|a| a.kind == "check");
+                let limpers = (0..self.n)
+                    .filter(|&i| {
+                        i != nd.actor as usize
+                            && nd.invested[i] > self.cfg.posts[i] + self.cfg.ante_of(i) + 1e-9
+                    })
+                    .count()
+                    .clamp(1, 3) as u8;
+                if let Some(c) = prof.response.as_ref().and_then(|r| {
+                    r.limp_contexts
+                        .iter()
+                        .find(|c| c.free_check == free && c.limpers == limpers)
+                }) {
+                    return Some(self.policy_sigma(node, &c.policy));
                 }
             }
             if nd.bucket >= BUCKET_VS_RAISE
-                && prof.response.as_ref().and_then(|r| r.adaptive_from)
-                    .is_some_and(|f| self.faced_to(node) + 1e-9 >= self.cfg.stack_of(nd.actor as usize) * f)
+                && prof
+                    .response
+                    .as_ref()
+                    .and_then(|r| r.adaptive_from)
+                    .is_some_and(|f| {
+                        self.faced_to(node) + 1e-9 >= self.cfg.stack_of(nd.actor as usize) * f
+                    })
             {
                 return None;
             }
             if nd.bucket == BUCKET_VS_3BET {
-                if let Some(version) = prof.response.as_ref().and_then(|r|r.contextual_reraise.as_deref()) {
+                if let Some(version) = prof
+                    .response
+                    .as_ref()
+                    .and_then(|r| r.contextual_reraise.as_deref())
+                {
                     if let Some(policy) = self.contextual_policy(node, version) {
                         let sizing = if self.is_cold(nd) {
-                            prof.response.as_ref().and_then(|r|r.cold_reraise.as_ref())
-                                .or_else(||prof.buckets[BUCKET_VS_3BET as usize].as_ref())
-                        } else { prof.buckets[BUCKET_VS_3BET as usize].as_ref() };
-                        return Some(self.policy_sigma_with_sizes(node, &policy, sizing.unwrap_or(&policy)));
+                            prof.response
+                                .as_ref()
+                                .and_then(|r| r.cold_reraise.as_ref())
+                                .or_else(|| prof.buckets[BUCKET_VS_3BET as usize].as_ref())
+                        } else {
+                            prof.buckets[BUCKET_VS_3BET as usize].as_ref()
+                        };
+                        return Some(self.policy_sigma_with_sizes(
+                            node,
+                            &policy,
+                            sizing.unwrap_or(&policy),
+                        ));
                     }
                 }
             }
@@ -1299,10 +1501,15 @@ impl PreflopSolver {
             // after-limping continue rate — not the cold VS RAISE policy.
             if (nd.bucket == BUCKET_VS_RAISE || nd.bucket == BUCKET_SQUEEZE) && !self.is_cold(nd) {
                 // Earlier limpers retain their investment even after folding.
-                let behind = (0..self.n).filter(|&i|self.cfg.acts_before(i,nd.actor as usize)).any(|i|
-                    nd.invested[i] > self.cfg.posts[i] + self.cfg.ante_of(i) + 1e-9);
-                let ld = if behind { prof.limp_defense.as_ref() } else {
-                    prof.response.as_ref().and_then(|r| r.limp_unopened.as_ref())
+                let behind = (0..self.n)
+                    .filter(|&i| self.cfg.acts_before(i, nd.actor as usize))
+                    .any(|i| nd.invested[i] > self.cfg.posts[i] + self.cfg.ante_of(i) + 1e-9);
+                let ld = if behind {
+                    prof.limp_defense.as_ref()
+                } else {
+                    prof.response
+                        .as_ref()
+                        .and_then(|r| r.limp_unopened.as_ref())
                         .or(prof.limp_defense.as_ref())
                 };
                 if let Some(ld) = ld {
@@ -1315,8 +1522,7 @@ impl PreflopSolver {
             // policy overvalues large hero sizes in max-exploit studies).
             // Squeeze and re-raise buckets keep their single policies.
             if nd.bucket == BUCKET_VS_RAISE {
-                if let Some(bands) = prof.vs_raise_bands.as_ref().filter(|b| !b.is_empty())
-                {
+                if let Some(bands) = prof.vs_raise_bands.as_ref().filter(|b| !b.is_empty()) {
                     let faced = self.faced_to(node);
                     let pol = bands
                         .iter()
@@ -1339,7 +1545,7 @@ impl PreflopSolver {
                 // flat continue rate to his whole starting range made a 40/30
                 // player cold-call 3-bets with 70% of all hands.
                 if nd.bucket == BUCKET_VS_3BET && self.is_cold(nd) {
-                    if let Some(p) = prof.response.as_ref().and_then(|r|r.cold_reraise.as_ref()) {
+                    if let Some(p) = prof.response.as_ref().and_then(|r| r.cold_reraise.as_ref()) {
                         return Some(self.policy_sigma(node, p));
                     }
                     if let Some(vr) = prof
@@ -1374,17 +1580,28 @@ impl PreflopSolver {
             .map(|a| a.to)
             .unwrap_or_else(|| {
                 // the big blind's own ante is not part of what anyone bet
-                (0..self.n).map(|i| nd.invested[i] - self.cfg.bb_extra(i)).fold(0.0, f64::max) - self.cfg.ante
+                (0..self.n)
+                    .map(|i| nd.invested[i] - self.cfg.bb_extra(i))
+                    .fold(0.0, f64::max)
+                    - self.cfg.ante
             })
     }
 
     pub fn contextual_input(&self, node: usize) -> Option<contextual::ContextualInput> {
         let nd = self.nodes.get(node)?;
-        if nd.kind != KIND_ACTION || nd.bucket != BUCKET_VS_3BET { return None; }
+        if nd.kind != KIND_ACTION || nd.bucket != BUCKET_VS_3BET {
+            return None;
+        }
         Some(contextual::ContextualInput {
-            entry: if nd.raised & (1 << nd.actor) != 0 { contextual::Entry::Raised }
-                else if self.is_cold(nd) { contextual::Entry::Cold } else { contextual::Entry::Called },
-            raises: nd.raises, pot: nd.pot,
+            entry: if nd.raised & (1 << nd.actor) != 0 {
+                contextual::Entry::Raised
+            } else if self.is_cold(nd) {
+                contextual::Entry::Cold
+            } else {
+                contextual::Entry::Called
+            },
+            raises: nd.raises,
+            pot: nd.pot,
             invested: nd.invested[nd.actor as usize] - self.cfg.ante_of(nd.actor as usize),
             to_call: self.faced_to(node),
         })
@@ -1392,20 +1609,39 @@ impl PreflopSolver {
 
     fn contextual_policy(&self, node: usize, version: &str) -> Option<Arc<BucketPolicy>> {
         // No note allocation on the traversal path, including unsupported games.
-        if version != contextual::MODEL_ID || !contextual::is_supported(&self.cfg) { return None; }
+        if version != contextual::MODEL_ID || !contextual::is_supported(&self.cfg) {
+            return None;
+        }
         let input = self.contextual_input(node)?;
         let seat = self.nodes[node].actor;
-        let key = ContextualKey { seat, entry: input.entry, depth: input.raises >= 3,
-            pot: input.pot.to_bits(), invested: input.invested.to_bits(), faced: input.to_call.to_bits(), stack: self.cfg.stack_of(seat as usize).to_bits() };
-        if let Some(policy) = self.contextual_cache.read().unwrap().get(&key) { return Some(policy.clone()); }
-        let policy = Arc::new(contextual::predict(version, &self.cfg, seat as usize, &input).ok()?.policy?);
+        let key = ContextualKey {
+            seat,
+            entry: input.entry,
+            depth: input.raises >= 3,
+            pot: input.pot.to_bits(),
+            invested: input.invested.to_bits(),
+            faced: input.to_call.to_bits(),
+            stack: self.cfg.stack_of(seat as usize).to_bits(),
+        };
+        if let Some(policy) = self.contextual_cache.read().unwrap().get(&key) {
+            return Some(policy.clone());
+        }
+        let policy = Arc::new(
+            contextual::predict(version, &self.cfg, seat as usize, &input)
+                .ok()?
+                .policy?,
+        );
         let mut cache = self.contextual_cache.write().unwrap();
-        if cache.len() < 16_384 { cache.entry(key).or_insert_with(||policy.clone()); }
+        if cache.len() < 16_384 {
+            cache.entry(key).or_insert_with(|| policy.clone());
+        }
         Some(policy)
     }
 
     /// Diagnostic count; profiles absent/outside source support consume no cache.
-    pub fn contextual_cache_entries(&self) -> usize { self.contextual_cache.read().unwrap().len() }
+    pub fn contextual_cache_entries(&self) -> usize {
+        self.contextual_cache.read().unwrap().len()
+    }
 
     pub fn contextual_status(&self, node: usize) -> Option<contextual::ContextualStatus> {
         let nd = self.nodes.get(node)?;
@@ -1413,23 +1649,45 @@ impl PreflopSolver {
         let response = profile.response.as_ref()?;
         let version = response.contextual_reraise.as_ref()?;
         let context = self.contextual_input(node)?;
-        let remaining = self.cfg.stack_of(nd.actor as usize)-context.invested;
-        let call = (context.to_call-context.invested).min(remaining);
-        let nominal_price = Some(call/(context.pot+call));
-        let override_note = if self.point_locks.contains_key(&(node as u32)) { Some("Point lock takes precedence over the contextual model.".into()) }
-            else if self.hero == Some(nd.actor as usize) { Some("Hero mode learns its response instead of using its contextual opponent model.".into()) }
-            else if response.adaptive_from.is_some_and(|f|context.to_call+1e-9>=self.cfg.stack_of(nd.actor as usize)*f) {
-                Some(format!("Adaptive response: faced amount is at least {:.0}% of stack; the solver learns this response instead of forcing the contextual model.",response.adaptive_from.unwrap()*100.0))
-            } else { contextual::support_note(&self.cfg) };
+        let remaining = self.cfg.stack_of(nd.actor as usize) - context.invested;
+        let call = (context.to_call - context.invested).min(remaining);
+        let nominal_price = Some(call / (context.pot + call));
+        let override_note = if self.point_locks.contains_key(&(node as u32)) {
+            Some("Point lock takes precedence over the contextual model.".into())
+        } else if self.hero == Some(nd.actor as usize) {
+            Some(
+                "Hero mode learns its response instead of using its contextual opponent model."
+                    .into(),
+            )
+        } else if response
+            .adaptive_from
+            .is_some_and(|f| context.to_call + 1e-9 >= self.cfg.stack_of(nd.actor as usize) * f)
+        {
+            Some(format!("Adaptive response: faced amount is at least {:.0}% of stack; the solver learns this response instead of forcing the contextual model.",response.adaptive_from.unwrap()*100.0))
+        } else {
+            contextual::support_note(&self.cfg)
+        };
         if let Some(note) = override_note {
-            return Some(contextual::ContextualStatus {version:version.clone(), active:false, context, nominal_price, note});
+            return Some(contextual::ContextualStatus {
+                version: version.clone(),
+                active: false,
+                context,
+                nominal_price,
+                note,
+            });
         }
-        let prediction = contextual::predict(version,&self.cfg,nd.actor as usize,&context);
+        let prediction = contextual::predict(version, &self.cfg, nd.actor as usize, &context);
         let (active,note) = match prediction {
             Ok(p) => (p.policy.is_some(),p.note),
             Err(e) => (false,format!("Contextual prediction unavailable ({e}); using the saved non-contextual policy.")),
         };
-        Some(contextual::ContextualStatus {version:version.clone(),active,context,nominal_price,note})
+        Some(contextual::ContextualStatus {
+            version: version.clone(),
+            active,
+            context,
+            nominal_price,
+            note,
+        })
     }
 
     /// Compile a bucket policy into this node's concrete action menu.
@@ -1437,7 +1695,12 @@ impl PreflopSolver {
         self.policy_sigma_with_sizes(node, pol, pol)
     }
 
-    fn policy_sigma_with_sizes(&self, node: usize, pol: &BucketPolicy, sizing: &BucketPolicy) -> Vec<f32> {
+    fn policy_sigma_with_sizes(
+        &self,
+        node: usize,
+        pol: &BucketPolicy,
+        sizing: &BucketPolicy,
+    ) -> Vec<f32> {
         let nd = &self.nodes[node];
         let na = nd.actions.len();
         let (mut i_fold, mut i_pass, mut i_jam) = (None, None, None);
@@ -1460,25 +1723,39 @@ impl PreflopSolver {
         };
         let mut raise_weights = vec![0.0f64; na];
         let multiples = !sizing.raise_multiples.is_empty();
-        let samples = if multiples { &sizing.raise_multiples } else { &sizing.raise_sizes };
+        let samples = if multiples {
+            &sizing.raise_multiples
+        } else {
+            &sizing.raise_sizes
+        };
         if !raises.is_empty() && !samples.is_empty() {
             let previous = if multiples { self.faced_to(node) } else { 1.0 };
             for &(size, weight) in samples {
-                let target = raises.iter().min_by(|a,b| {
-                    // Work in log space without multiplying potentially large
-                    // finite amounts. Size samples never map directly to jams.
-                    let distance = |to:f64| {
-                        let ratio = (to / previous) / size;
-                        if ratio.is_finite() && ratio>0.0 {ratio.ln().abs()}
-                        else {(to.ln()-size.ln()-previous.ln()).abs()}
-                    };
-                    distance(a.0).total_cmp(&distance(b.0))
-                        .then(a.0.total_cmp(&b.0))
-                }).unwrap().1;
+                let target = raises
+                    .iter()
+                    .min_by(|a, b| {
+                        // Work in log space without multiplying potentially large
+                        // finite amounts. Size samples never map directly to jams.
+                        let distance = |to: f64| {
+                            let ratio = (to / previous) / size;
+                            if ratio.is_finite() && ratio > 0.0 {
+                                ratio.ln().abs()
+                            } else {
+                                (to.ln() - size.ln() - previous.ln()).abs()
+                            }
+                        };
+                        distance(a.0)
+                            .total_cmp(&distance(b.0))
+                            .then(a.0.total_cmp(&b.0))
+                    })
+                    .unwrap()
+                    .1;
                 raise_weights[target] += weight;
             }
             let total: f64 = raise_weights.iter().sum();
-            for w in &mut raise_weights { *w /= total; }
+            for w in &mut raise_weights {
+                *w /= total;
+            }
         }
         let distributed_raise = raise_weights.iter().any(|w| *w > 0.0);
         let jam_t = i_jam.or(i_raise).or(i_pass).or(i_fold);
@@ -1498,9 +1775,16 @@ impl PreflopSolver {
             }
             let f = (1.0 - (r + j + c)).max(0.0);
             if distributed_raise {
-                for a in 0..na { sigma[a * NUM_CLASSES + h] += (r as f64 * raise_weights[a]) as f32; }
+                for a in 0..na {
+                    sigma[a * NUM_CLASSES + h] += (r as f64 * raise_weights[a]) as f32;
+                }
             }
-            for (target, mass) in [(raise_t, if distributed_raise {0.0} else {r}), (jam_t, j), (pass_t, c), (fold_t, f)] {
+            for (target, mass) in [
+                (raise_t, if distributed_raise { 0.0 } else { r }),
+                (jam_t, j),
+                (pass_t, c),
+                (fold_t, f),
+            ] {
                 if let Some(a) = target {
                     if mass > 0.0 {
                         sigma[a * NUM_CLASSES + h] += mass;
@@ -1530,9 +1814,13 @@ impl PreflopSolver {
     /// Adaptive profiles converge within their fixed ordinary-action rules.
     /// Legacy fixed/frozen seats still report unrestricted bleed.
     pub(crate) fn constrained_br(&self, p: usize) -> bool {
-        !self.seat_frozen[p] && self.hero != Some(p)
-            && self.seat_profiles[p].as_ref().and_then(|p| p.response.as_ref())
-                .and_then(|r| r.adaptive_from).is_some()
+        !self.seat_frozen[p]
+            && self.hero != Some(p)
+            && self.seat_profiles[p]
+                .as_ref()
+                .and_then(|p| p.response.as_ref())
+                .and_then(|r| r.adaptive_from)
+                .is_some()
     }
 
     /// Seats with learning decisions, including adaptive profile responses.
@@ -1602,7 +1890,10 @@ impl PreflopSolver {
             }
         }
         for i in 0..self.n {
-            if frozen[i] && !table_frozen[i] && !fully_ruled(&profiles[i]) && !self.seat_has_average(i)
+            if frozen[i]
+                && !table_frozen[i]
+                && !fully_ruled(&profiles[i])
+                && !self.seat_has_average(i)
             {
                 return Err(format!(
                     "solve first — seat {} has no solved strategy to freeze (freezing it now would pin a uniform random strategy)",
@@ -1622,8 +1913,11 @@ impl PreflopSolver {
                 .map(|p| {
                     p.as_ref().map(|p| {
                         let mut q = p.clone();
-                        q.name.clear(); q.postflop = None;
-                        if let Some(r) = &mut q.response { r.source_stats = None; }
+                        q.name.clear();
+                        q.postflop = None;
+                        if let Some(r) = &mut q.response {
+                            r.source_stats = None;
+                        }
                         q
                     })
                 })
@@ -1656,7 +1950,12 @@ impl PreflopSolver {
     /// GPU-equivalence tooling.
     pub fn arena_snapshot(&self) -> (Vec<f32>, Vec<f32>) {
         // SAFETY: &self with no traversal running (callers hold the solver)
-        unsafe { (self.regrets.slice().to_vec(), self.strat_sum.slice().to_vec()) }
+        unsafe {
+            (
+                self.regrets.slice().to_vec(),
+                self.strat_sum.slice().to_vec(),
+            )
+        }
     }
 
     /// Wipe the learning state so a changed table converges fresh. Frozen
@@ -1708,9 +2007,14 @@ impl PreflopSolver {
                     .pre_hero_frozen
                     .clone()
                     .unwrap_or_else(|| self.seat_frozen.clone());
-                if self.seat_profiles.iter().enumerate().any(|(i, p)| i != h
-                    && !table_frozen[i] && p.as_ref().and_then(|p| p.response.as_ref())
-                        .and_then(|r| r.adaptive_from).is_some()) {
+                if self.seat_profiles.iter().enumerate().any(|(i, p)| {
+                    i != h
+                        && !table_frozen[i]
+                        && p.as_ref()
+                            .and_then(|p| p.response.as_ref())
+                            .and_then(|r| r.adaptive_from)
+                            .is_some()
+                }) {
                     return Err("adaptive profiles need joint solving: leave HERO off and set your target seat to Solver".into());
                 }
                 if table_frozen[h] && !fully_ruled(&self.seat_profiles[h]) {
@@ -1787,8 +2091,13 @@ impl PreflopSolver {
             .filter(|&i| self.nodes[i].kind == KIND_ACTION && self.nodes[i].actor as usize == seat)
             .collect();
         for node in nodes {
-            let Some(sig) = self.forced_sigma(node) else { continue };
-            let (off, len) = (self.nodes[node].data_off, self.nodes[node].actions.len() * NUM_CLASSES);
+            let Some(sig) = self.forced_sigma(node) else {
+                continue;
+            };
+            let (off, len) = (
+                self.nodes[node].data_off,
+                self.nodes[node].actions.len() * NUM_CLASSES,
+            );
             if sig.len() != len {
                 continue;
             }
@@ -1824,14 +2133,21 @@ impl PreflopSolver {
                 sums.extend_from_slice(&ss[off..off + len]);
             }
         }
-        HeroBackup { seat, iteration, regrets, sums }
+        HeroBackup {
+            seat,
+            iteration,
+            regrets,
+            sums,
+        }
     }
 
     /// Restore the backed-up hero blocks (if any) into the arenas and the
     /// table's iteration count. A hero-mode game saved before backups
     /// existed carries none: its hero keeps whatever its blocks hold.
     fn restore_hero_backup(&mut self) {
-        let Some(b) = self.hero_backup.take() else { return };
+        let Some(b) = self.hero_backup.take() else {
+            return;
+        };
         let blocks = self.seat_blocks(b.seat);
         let total: usize = blocks.iter().map(|x| x.1).sum();
         if b.regrets.len() != total || b.sums.len() != total {
@@ -1885,9 +2201,11 @@ impl PreflopSolver {
         }
         let sigma = match policy {
             Some(pol) => {
-                if !pol.valid_sizing() {return Err("invalid or conflicting raise size distributions".into());}
+                if !pol.valid_sizing() {
+                    return Err("invalid or conflicting raise size distributions".into());
+                }
                 self.policy_sigma(node, &pol)
-            },
+            }
             None => {
                 // same footgun set_table/set_hero guard against: before any
                 // solve the "current" average is uniform random
@@ -1924,8 +2242,7 @@ impl PreflopSolver {
             }
             if sum > 1e-12 {
                 for a in 0..na {
-                    out[a * NUM_CLASSES + h] =
-                        strat_sum[nd.data_off + a * NUM_CLASSES + h] / sum;
+                    out[a * NUM_CLASSES + h] = strat_sum[nd.data_off + a * NUM_CLASSES + h] / sum;
                 }
             } else {
                 let u = 1.0 / na as f32;
@@ -1963,7 +2280,10 @@ impl PreflopSolver {
         // Compare what the seats bet: every seat holds the per-seat ante,
         // but only the big blind holds the big blind ante.
         let bet = |q: usize| nd.invested[q] - self.cfg.bb_extra(q);
-        let matched = (0..nd.invested.len()).filter(|&q| q != w).map(bet).fold(0.0, f64::max);
+        let matched = (0..nd.invested.len())
+            .filter(|&q| q != w)
+            .map(bet)
+            .fold(0.0, f64::max);
         let own = if w < nd.invested.len() { bet(w) } else { 0.0 };
         let uncalled = (own - matched).max(0.0);
         self.rake_of(nd.pot - uncalled)
@@ -2067,29 +2387,34 @@ impl PreflopSolver {
                     for h in 0..NUM_CLASSES {
                         let mut raw_share = 0.0f32;
                         let mut relative_share = 0.0f32;
-                        let (raw_row, rel_row) = (&tables.raw[h * NUM_CLASSES..][..NUM_CLASSES], &rel[h * NUM_CLASSES..][..NUM_CLASSES]);
+                        let (raw_row, rel_row) = (
+                            &tables.raw[h * NUM_CLASSES..][..NUM_CLASSES],
+                            &rel[h * NUM_CLASSES..][..NUM_CLASSES],
+                        );
                         for j in 0..NUM_CLASSES {
                             raw_share += dist[j] * raw_row[j];
                             relative_share += dist[j] * rel_row[j];
                         }
-                        let share = raw_share + blend * (relative_share-raw_share);
+                        let share = raw_share + blend * (relative_share - raw_share);
                         let learned = corr.map_or(0.0, |c| nd.pot * c[h] as f64);
                         out[h] = (prob * (pot_eff * share as f64 + learned - inv_p)) as f32;
                     }
                     return;
                 }
-                let equities: Vec<[f32; NUM_CLASSES]> = dists.iter().map(|dist| {
-                    let mut values = [0.0; NUM_CLASSES];
-                    self.eq.eqs_vs_dist(dist, &mut values);
-                    values
-                }).collect();
+                let equities: Vec<[f32; NUM_CLASSES]> = dists
+                    .iter()
+                    .map(|dist| {
+                        let mut values = [0.0; NUM_CLASSES];
+                        self.eq.eqs_vs_dist(dist, &mut values);
+                        values
+                    })
+                    .collect();
                 // spr at this terminal (0 = everyone effectively all-in:
                 // no postflop play; no realization adjustment)
                 let mut min_left = f64::MAX;
                 for i in 0..self.n {
                     if nd.live & (1 << i) != 0 {
-                        min_left =
-                            min_left.min(self.cfg.left(i, nd.invested[i]));
+                        min_left = min_left.min(self.cfg.left(i, nd.invested[i]));
                     }
                 }
                 let spr = (min_left / nd.pot).max(0.0);
@@ -2103,8 +2428,7 @@ impl PreflopSolver {
                 // the gross pot and skip the rake deduction (no double
                 // charge). Multiway terminals keep the static heuristic (the
                 // postflop engine that produced the data is HU-only).
-                if let (Some(fit), 2, true) =
-                    (self.fit.as_ref(), nd.live.count_ones(), spr > 1e-9)
+                if let (Some(fit), 2, true) = (self.fit.as_ref(), nd.live.count_ones(), spr > 1e-9)
                 {
                     let posw = nd.r[p] as f64; // static positional weight
                     for h in 0..NUM_CLASSES {
@@ -2138,8 +2462,19 @@ impl PreflopSolver {
     /// Rake comes off the whole pot once, shared in proportion to pot size.
     /// A side-pot terminal always has a live all-in seat (zero SPR), so it is
     /// priced as showdown equity under every realization model.
-    fn side_pot_value(&self, nd: &PNode, p: usize, reaches: &[Vec<f32>], prob: f64, out: &mut [f32]) {
-        let scale = if nd.pot > 0.0 { (nd.pot - self.rake_of(nd.pot)) / nd.pot } else { 0.0 };
+    fn side_pot_value(
+        &self,
+        nd: &PNode,
+        p: usize,
+        reaches: &[Vec<f32>],
+        prob: f64,
+        out: &mut [f32],
+    ) {
+        let scale = if nd.pot > 0.0 {
+            (nd.pot - self.rake_of(nd.pot)) / nd.pot
+        } else {
+            0.0
+        };
         let mut won = [0f64; NUM_CLASSES];
         for &(amount, mask) in &nd.side_pots {
             if mask & (1 << p) == 0 {
@@ -2374,8 +2709,7 @@ impl PreflopSolver {
     /// — exact, and worth ~seat-count x in hero mode where everyone else is
     /// frozen.
     pub(crate) fn seat_static(&self, p: usize) -> bool {
-        self.seat_frozen[p]
-            || (self.hero != Some(p) && fully_ruled(&self.seat_profiles[p]))
+        self.seat_frozen[p] || (self.hero != Some(p) && fully_ruled(&self.seat_profiles[p]))
     }
 
     /// Install (or clear) the cooperative stop flag consulted by `iterate`
@@ -2625,7 +2959,12 @@ impl PreflopSolver {
     /// flop players' chips behind (heads-up only; 3-way spots take them
     /// from the tree) and the stacks of everyone else, folded players at
     /// this table included.
-    fn export_icm(&self, nd: &PNode, flop: &[usize], with_behind: bool) -> Option<crate::icm::postflop::PostflopIcm> {
+    fn export_icm(
+        &self,
+        nd: &PNode,
+        flop: &[usize],
+        with_behind: bool,
+    ) -> Option<crate::icm::postflop::PostflopIcm> {
         let icm = self.cfg.icm.as_ref()?;
         let mut others: Vec<f64> = (0..self.n)
             .filter(|i| !flop.contains(i))
@@ -2635,7 +2974,11 @@ impl PreflopSolver {
         others.extend(icm.field.iter().copied());
         Some(crate::icm::postflop::PostflopIcm {
             payouts: icm.payouts.clone(),
-            behind: with_behind.then(|| flop.iter().map(|&i| self.cfg.left(i, nd.invested[i])).collect()),
+            behind: with_behind.then(|| {
+                flop.iter()
+                    .map(|&i| self.cfg.left(i, nd.invested[i]))
+                    .collect()
+            }),
             others,
             field_groups: icm.field_groups.clone(),
         })
@@ -2663,7 +3006,11 @@ impl PreflopSolver {
                 label: act.label.clone(),
                 kind: act.kind.clone(),
                 to: act.to,
-                freq: if tot > 1e-12 { (freqs[a] / tot) as f32 } else { 0.0 },
+                freq: if tot > 1e-12 {
+                    (freqs[a] / tot) as f32
+                } else {
+                    0.0
+                },
             })
             .collect()
     }
@@ -2678,14 +3025,23 @@ impl PreflopSolver {
     }
 
     fn strategy_note(&self, node: usize, unreachable: &Option<String>) -> Option<String> {
-        if unreachable.is_some() { return unreachable.clone(); }
+        if unreachable.is_some() {
+            return unreachable.clone();
+        }
         let nd = &self.nodes[node];
-        if nd.kind != KIND_ACTION || self.forced_sigma(node).is_some() { return None; }
+        if nd.kind != KIND_ACTION || self.forced_sigma(node).is_some() {
+            return None;
+        }
         // SAFETY: read-only query while the server holds the solver lock.
         let sums = unsafe { self.strat_sum.slice() };
-        if sums[nd.data_off..nd.data_off + nd.actions.len()*NUM_CLASSES].iter().all(|v| *v <= 0.0) {
+        if sums[nd.data_off..nd.data_off + nd.actions.len() * NUM_CLASSES]
+            .iter()
+            .all(|v| *v <= 0.0)
+        {
             Some(format!("Not solved — {} has no accumulated strategy at this point. Re-solve after applying the player models.", self.cfg.positions[nd.actor as usize]))
-        } else { None }
+        } else {
+            None
+        }
     }
 
     pub fn node_view(&self, path: &[usize]) -> Result<PreflopNodeView, String> {
@@ -2759,9 +3115,16 @@ impl PreflopSolver {
         let strategy_note = self.strategy_note(node, &unreachable);
         // The postflop solvers start from one pot with chips behind every seat.
         let one_pot = nd.side_pots.is_empty();
-        let exportable = unreachable.is_none() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 && one_pot;
-        let exportable3 = unreachable.is_none() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3 && one_pot
-            && (0..self.n).all(|i| nd.live & (1 << i) == 0 || self.cfg.left(i, nd.invested[i]) > 1e-9);
+        let exportable = unreachable.is_none()
+            && nd.kind == KIND_POT_SHARE
+            && nd.live.count_ones() == 2
+            && one_pot;
+        let exportable3 = unreachable.is_none()
+            && nd.kind == KIND_POT_SHARE
+            && nd.live.count_ones() == 3
+            && one_pot
+            && (0..self.n)
+                .all(|i| nd.live & (1 << i) == 0 || self.cfg.left(i, nd.invested[i]) > 1e-9);
         let spr = if nd.kind == KIND_POT_SHARE {
             let mut min_left = f64::MAX;
             for i in 0..self.n {
@@ -2784,16 +3147,25 @@ impl PreflopSolver {
                 }
             })
             .collect();
-        let branch_probability: f64 = reaches.iter().map(|r| r.iter().map(|&w|w as f64).sum::<f64>()).product();
+        let branch_probability: f64 = reaches
+            .iter()
+            .map(|r| r.iter().map(|&w| w as f64).sum::<f64>())
+            .product();
         Ok(PreflopNodeView {
             branch_probability,
             low_reach: !path.is_empty() && branch_probability < 1e-5,
             model_evidence: self.node_model_evidence(node, strategy_note.as_deref()),
             continuation: if unreachable.is_none() {
                 self.continuation_estimate(node, &reaches)
-            } else { None },
+            } else {
+                None
+            },
             contextual_prediction: self.contextual_status(node),
-            strategy: if strategy_note.is_none() {strategy} else {None},
+            strategy: if strategy_note.is_none() {
+                strategy
+            } else {
+                None
+            },
             strategy_note,
             kind,
             actor,
@@ -2809,11 +3181,17 @@ impl PreflopSolver {
             spr,
             history,
             reaches_all,
-            side_pots: nd.side_pots.iter().map(|&(amount, mask)| PfSidePot {
-                amount,
-                seats: (0..self.n).filter(|&i| mask & (1 << i) != 0)
-                    .map(|i| self.cfg.positions[i].clone()).collect(),
-            }).collect(),
+            side_pots: nd
+                .side_pots
+                .iter()
+                .map(|&(amount, mask)| PfSidePot {
+                    amount,
+                    seats: (0..self.n)
+                        .filter(|&i| mask & (1 << i) != 0)
+                        .map(|i| self.cfg.positions[i].clone())
+                        .collect(),
+                })
+                .collect(),
         })
     }
 
@@ -2822,13 +3200,19 @@ impl PreflopSolver {
     /// The ranges, pot and stacks at a flop with three live players, in
     /// postflop action order, for the 3-way postflop solver.
     pub fn export_spot_3way(&self, path: &[usize]) -> Result<PreflopExport3, String> {
-        if let Some(note) = self.node_view(path)?.strategy_note { return Err(note); }
+        if let Some(note) = self.node_view(path)?.strategy_note {
+            return Err(note);
+        }
         let (node, reaches) = self.walk(path)?;
         let nd = &self.nodes[node];
         if nd.kind != KIND_POT_SHARE || nd.live.count_ones() != 3 {
             return Err("3-way export needs a flop node with exactly three live players".into());
         }
-        let seats: Vec<usize> = self.postflop_order().into_iter().filter(|&i| nd.live & (1 << i) != 0).collect();
+        let seats: Vec<usize> = self
+            .postflop_order()
+            .into_iter()
+            .filter(|&i| nd.live & (1 << i) != 0)
+            .collect();
         let range_of = |seat: usize| -> String {
             let mut parts: Vec<String> = Vec::new();
             for h in 0..NUM_CLASSES {
@@ -2842,10 +3226,16 @@ impl PreflopSolver {
             parts.join(",")
         };
         Ok(PreflopExport3 {
-            positions: seats.iter().map(|&i| self.cfg.positions[i].clone()).collect(),
+            positions: seats
+                .iter()
+                .map(|&i| self.cfg.positions[i].clone())
+                .collect(),
             ranges: seats.iter().map(|&i| range_of(i)).collect(),
             pot_bb: nd.pot,
-            stacks_bb: seats.iter().map(|&i| self.cfg.left(i, nd.invested[i])).collect(),
+            stacks_bb: seats
+                .iter()
+                .map(|&i| self.cfg.left(i, nd.invested[i]))
+                .collect(),
             rake_pct: self.cfg.rake_pct,
             rake_cap: self.cfg.rake_cap,
             icm: self.export_icm(nd, &seats, false),
@@ -2853,15 +3243,19 @@ impl PreflopSolver {
     }
 
     pub fn export_spot(&self, path: &[usize]) -> Result<PreflopExport, String> {
-        if let Some(note) = self.node_view(path)?.strategy_note { return Err(note); }
+        if let Some(note) = self.node_view(path)?.strategy_note {
+            return Err(note);
+        }
         let (node, reaches) = self.walk(path)?;
         let nd = &self.nodes[node];
         if nd.kind != KIND_POT_SHARE || nd.live.count_ones() != 2 {
             return Err("export needs a flop node with exactly two live players".into());
         }
         let order = self.postflop_order();
-        let live_seats: Vec<usize> =
-            order.into_iter().filter(|&i| nd.live & (1 << i) != 0).collect();
+        let live_seats: Vec<usize> = order
+            .into_iter()
+            .filter(|&i| nd.live & (1 << i) != 0)
+            .collect();
         let (oop, ip) = (live_seats[0], live_seats[1]);
         let range_of = |seat: usize| -> String {
             let mut parts: Vec<String> = Vec::new();
@@ -2886,7 +3280,10 @@ impl PreflopSolver {
             range_oop: range_of(oop),
             range_ip: range_of(ip),
             pot_bb: nd.pot,
-            eff_stack_bb: self.cfg.left(oop, nd.invested[oop]).min(self.cfg.left(ip, nd.invested[ip])),
+            eff_stack_bb: self
+                .cfg
+                .left(oop, nd.invested[oop])
+                .min(self.cfg.left(ip, nd.invested[ip])),
             rake_pct: self.cfg.rake_pct,
             rake_cap: self.cfg.rake_cap,
             icm: self.export_icm(nd, &[oop, ip], true),
@@ -2965,7 +3362,11 @@ impl PreflopSolver {
             return Err("no such seat".into());
         }
         validate_stats(stats)?;
-        let dataset_row = stats.dataset.as_ref().map(|d| d.resolve(&self.cfg, seat)).transpose()?;
+        let dataset_row = stats
+            .dataset
+            .as_ref()
+            .map(|d| d.resolve(&self.cfg, seat))
+            .transpose()?;
         // In unstraddled histories BB's unopened "policy" is only a free-check
         // placeholder. Facing a live straddle it is a paid decision. Generate
         // that unsupported entry from aggregate stats instead of copying 100% calls.
@@ -2998,10 +3399,12 @@ impl PreflopSolver {
             }
             m_table[b] /= self.n as f64;
         }
-        let mine_conf: Vec<f64> =
-            (0..NUM_BUCKETS).map(|b| (m_mine[b] / 1e-3).min(1.0)).collect();
-        let mine_share: Vec<f64> =
-            (0..NUM_BUCKETS).map(|b| (1.0 - stats.flatten) * mine_conf[b]).collect();
+        let mine_conf: Vec<f64> = (0..NUM_BUCKETS)
+            .map(|b| (m_mine[b] / 1e-3).min(1.0))
+            .collect();
+        let mine_share: Vec<f64> = (0..NUM_BUCKETS)
+            .map(|b| (1.0 - stats.flatten) * mine_conf[b])
+            .collect();
         let bucket_conf: Vec<f64> = (0..NUM_BUCKETS)
             .map(|b| {
                 let mass = mine_share[b] * m_mine[b] + (1.0 - mine_share[b]) * m_table[b];
@@ -3038,15 +3441,21 @@ impl PreflopSolver {
         };
         let fourbet = stats.fourbet.unwrap_or(stats.threebet * 0.4);
         let mut targets = [(0f64, 0f64); NUM_BUCKETS]; // (continue, raise)
-        // Entry buckets: the measured first-in / vs-limpers rates when
-        // given; else PFR raises and the VPIP−PFR gap limps — the only
-        // reading of VPIP/PFR alone, and a poor one for regs, whose gap is
-        // calls (a 17/12 TAG open-limps ~2%, not 5%).
+                                                       // Entry buckets: the measured first-in / vs-limpers rates when
+                                                       // given; else PFR raises and the VPIP−PFR gap limps — the only
+                                                       // reading of VPIP/PFR alone, and a poor one for regs, whose gap is
+                                                       // calls (a 17/12 TAG open-limps ~2%, not 5%).
         let gap = ((stats.vpip - stats.pfr) / 100.0).max(0.0);
-        let fi_raise = stats.open_raise.map(|v| v / 100.0).unwrap_or(stats.pfr / 100.0);
+        let fi_raise = stats
+            .open_raise
+            .map(|v| v / 100.0)
+            .unwrap_or(stats.pfr / 100.0);
         let fi_limp = stats.open_limp.map(|v| v / 100.0).unwrap_or(gap);
         targets[BUCKET_UNOPENED as usize] = ((fi_raise + fi_limp).min(1.0), fi_raise.min(1.0));
-        let vl_raise = stats.iso_raise.map(|v| v / 100.0).unwrap_or(stats.pfr / 100.0);
+        let vl_raise = stats
+            .iso_raise
+            .map(|v| v / 100.0)
+            .unwrap_or(stats.pfr / 100.0);
         let vl_limp = stats.limp_behind.map(|v| v / 100.0).unwrap_or(gap);
         targets[BUCKET_VS_LIMPS as usize] = ((vl_raise + vl_limp).min(1.0), vl_raise.min(1.0));
         // Continue-vs-aggression targets: the equilibrium's tightening ratio
@@ -3078,8 +3487,7 @@ impl PreflopSolver {
                 // fallback policy at the bands' mean — a mid response —
                 // instead of a VPIP blend that never saw the measured data.
                 (None, Some(bands)) => {
-                    let mean =
-                        bands.iter().map(|(_, p)| p).sum::<f64>() / bands.len() as f64;
+                    let mean = bands.iter().map(|(_, p)| p).sum::<f64>() / bands.len() as f64;
                     (mean / 100.0).clamp(stats.threebet / 100.0, 1.0)
                 }
                 (None, None) => gated_cont(BUCKET_VS_RAISE, 0.65, stats.threebet / 100.0),
@@ -3119,10 +3527,13 @@ impl PreflopSolver {
             }
             // blinds: a SB raises first-in ~35% when folded to; the last
             // blind (BB) never opens first-in and takes no shape
-            let blinds: Vec<usize> =
-                (0..self.n).filter(|&q| self.cfg.posted_blind(q)).collect();
+            let blinds: Vec<usize> = (0..self.n).filter(|&q| self.cfg.posted_blind(q)).collect();
             for (j, &q) in blinds.iter().enumerate() {
-                p[q] = if j + 1 < blinds.len() { SB_RFI } else { f64::NAN };
+                p[q] = if j + 1 < blinds.len() {
+                    SB_RFI
+                } else {
+                    f64::NAN
+                };
             }
             let vals: Vec<f64> = p.iter().cloned().filter(|v| !v.is_nan()).collect();
             let mean = if vals.is_empty() {
@@ -3131,11 +3542,21 @@ impl PreflopSolver {
                 vals.iter().sum::<f64>() / vals.len() as f64
             };
             p.into_iter()
-                .map(|v| if v.is_nan() { 1.0 } else { (v / mean).clamp(0.3, 3.0) })
+                .map(|v| {
+                    if v.is_nan() {
+                        1.0
+                    } else {
+                        (v / mean).clamp(0.3, 3.0)
+                    }
+                })
                 .collect()
         };
         let pos_factor = |b: usize| -> f64 {
-            let pos = if b == BUCKET_VS_LIMPS as usize { prior[seat].sqrt() } else { prior[seat] };
+            let pos = if b == BUCKET_VS_LIMPS as usize {
+                prior[seat].sqrt()
+            } else {
+                prior[seat]
+            };
             (1.0 - stats.flatten) * pos + stats.flatten
         };
         for b in [BUCKET_UNOPENED as usize, BUCKET_VS_LIMPS as usize] {
@@ -3149,9 +3570,11 @@ impl PreflopSolver {
         // the legacy prior as well would double-count them.
         if let Some(r) = dataset_row {
             if !paid_bb_entry {
-                targets[BUCKET_UNOPENED as usize] = ((r.open_raise+r.open_limp)/100.0,r.open_raise/100.0);
+                targets[BUCKET_UNOPENED as usize] =
+                    ((r.open_raise + r.open_limp) / 100.0, r.open_raise / 100.0);
             }
-            targets[BUCKET_VS_LIMPS as usize] = ((r.iso_raise+r.limp_behind)/100.0,r.iso_raise/100.0);
+            targets[BUCKET_VS_LIMPS as usize] =
+                ((r.iso_raise + r.limp_behind) / 100.0, r.iso_raise / 100.0);
         }
 
         // raw card appeal (equity vs random): how naive players rank hands —
@@ -3181,146 +3604,163 @@ impl PreflopSolver {
         // raised). Targets are fractions of that range; the policy is the
         // per-class probability given the class is held. Used for every
         // per-bucket policy and again per VS_RAISE size band.
-        let build_policy_w = |b: usize, t_cont: f64, t_raise: f64, weight: &[f64]| -> BucketPolicy {
-            let total: f64 = weight.iter().sum();
-            // Continuing range ordering: blend the equilibrium's playability
-            // ranking with raw card appeal by naiveté. Equilibrium defense
-            // vs raises is POLARIZED (calls 53s, folds Q9o — domination is
-            // priced in); naive players do the opposite, so their ranges
-            // must be appeal-ordered or whale call ranges come out absurd.
-            // The GTO ordering comes from the reference solve
-            // (reference.rs: a clean 9-max 100bb equilibrium), by bucket:
-            // what it opens with for the entry buckets, what it defends
-            // with (call + 3-bet) facing a raise. NOT the current solve —
-            // with profiles installed that is the previous profile's own
-            // policy (self-referential) or an exploiting hero, and an
-            // unconverged one is noise. Re-raise buckets go by strength: a
-            // human continues vs a 3-bet with his strongest hands.
-            let vs_reraise = b == BUCKET_VS_3BET as usize;
-            let ref_cont = |h: usize| -> f64 {
-                match b as u8 {
-                    BUCKET_VS_RAISE | BUCKET_SQUEEZE => {
-                        (reference::CALL_SCORE[h] + reference::THREEBET_SCORE[h]) as f64
+        let build_policy_w =
+            |b: usize, t_cont: f64, t_raise: f64, weight: &[f64]| -> BucketPolicy {
+                let total: f64 = weight.iter().sum();
+                // Continuing range ordering: blend the equilibrium's playability
+                // ranking with raw card appeal by naiveté. Equilibrium defense
+                // vs raises is POLARIZED (calls 53s, folds Q9o — domination is
+                // priced in); naive players do the opposite, so their ranges
+                // must be appeal-ordered or whale call ranges come out absurd.
+                // The GTO ordering comes from the reference solve
+                // (reference.rs: a clean 9-max 100bb equilibrium), by bucket:
+                // what it opens with for the entry buckets, what it defends
+                // with (call + 3-bet) facing a raise. NOT the current solve —
+                // with profiles installed that is the previous profile's own
+                // policy (self-referential) or an exploiting hero, and an
+                // unconverged one is noise. Re-raise buckets go by strength: a
+                // human continues vs a 3-bet with his strongest hands.
+                let vs_reraise = b == BUCKET_VS_3BET as usize;
+                let ref_cont = |h: usize| -> f64 {
+                    match b as u8 {
+                        BUCKET_VS_RAISE | BUCKET_SQUEEZE => {
+                            (reference::CALL_SCORE[h] + reference::THREEBET_SCORE[h]) as f64
+                        }
+                        _ => reference::OPEN_SCORE[h] as f64,
                     }
-                    _ => reference::OPEN_SCORE[h] as f64,
+                };
+                let rank_eq = rank_positions(&|h| ref_cont(h) + 1e-6 * strength[h]);
+                let eq_share = if vs_reraise { 0.0 } else { 1.0 - stats.flatten };
+                let key =
+                    |h: usize| -> f64 { eq_share * rank_eq[h] + (1.0 - eq_share) * rank_str[h] };
+                let mut order: Vec<usize> = (0..NUM_CLASSES).collect();
+                order.sort_by(|&x, &y| {
+                    key(x)
+                        .partial_cmp(&key(y))
+                        .unwrap()
+                        .then(strength[y].partial_cmp(&strength[x]).unwrap())
+                });
+                let mut cont = vec![0f32; NUM_CLASSES];
+                let mut acc = 0f64;
+                for &h in &order {
+                    if acc >= t_cont * total {
+                        break;
+                    }
+                    let avail = weight[h];
+                    if avail <= 1e-12 {
+                        continue;
+                    }
+                    let take = (t_cont * total - acc).min(avail);
+                    cont[h] = (take / avail) as f32;
+                    acc += take;
                 }
-            };
-            let rank_eq = rank_positions(&|h| ref_cont(h) + 1e-6 * strength[h]);
-            let eq_share = if vs_reraise { 0.0 } else { 1.0 - stats.flatten };
-            let key = |h: usize| -> f64 {
-                eq_share * rank_eq[h] + (1.0 - eq_share) * rank_str[h]
-            };
-            let mut order: Vec<usize> = (0..NUM_CLASSES).collect();
-            order.sort_by(|&x, &y| {
-                key(x)
-                    .partial_cmp(&key(y))
-                    .unwrap()
-                    .then(strength[y].partial_cmp(&strength[x]).unwrap())
-            });
-            let mut cont = vec![0f32; NUM_CLASSES];
-            let mut acc = 0f64;
-            for &h in &order {
-                if acc >= t_cont * total {
-                    break;
-                }
-                let avail = weight[h];
-                if avail <= 1e-12 {
-                    continue;
-                }
-                let take = (t_cont * total - acc).min(avail);
-                cont[h] = (take / avail) as f32;
-                acc += take;
-            }
-            // Raising slice within the continuing range: the reference
-            // solve's opening order for first-in (76s before KTo — a
-            // linear-by-equity raise range is what made every generated
-            // opening range look the same), its 3-bet order facing a raise,
-            // blended toward raw strength by naiveté (a whale raises KJo over
-            // 76s). Over limpers only half the GTO order: iso-raising wants
-            // domination (KTo) as much as playability. Re-raise buckets by
-            // strength: a human 4-bets his strongest hands, full stop.
-            let ref_raise = |h: usize| -> f64 {
-                match b as u8 {
-                    BUCKET_VS_RAISE | BUCKET_SQUEEZE => reference::THREEBET_SCORE[h] as f64,
-                    BUCKET_VS_3BET => 0.0,
-                    _ => reference::OPEN_SCORE[h] as f64,
-                }
-            };
-            let rank_rr = rank_positions(&|h| ref_raise(h) + 1e-6 * strength[h]);
-            // Half the GTO order for iso-raises (domination matters as much
-            // as playability) and for 3-bets / squeezes (the reference
-            // solve 3-bets JTs and A5s before AQs — fine for a solver, not
-            // how micro or live regs build a 3-bet range).
-            let r_share = if vs_reraise {
-                0.0
-            } else if b == BUCKET_UNOPENED as usize {
-                1.0 - stats.flatten
-            } else {
-                0.5 * (1.0 - stats.flatten)
-            };
-            let key_r = |h: usize| -> f64 { r_share * rank_rr[h] + (1.0 - r_share) * rank_str[h] };
-            let mut order_r: Vec<usize> = (0..NUM_CLASSES).collect();
-            order_r.sort_by(|&x, &y| {
-                key_r(x)
-                    .partial_cmp(&key_r(y))
-                    .unwrap()
-                    .then(strength[y].partial_cmp(&strength[x]).unwrap())
-            });
-            let mut raise = vec![0f32; NUM_CLASSES];
-            let mut racc = 0f64;
-            for &h in &order_r {
-                if racc >= t_raise * total {
-                    break;
-                }
-                let avail = weight[h] * cont[h] as f64;
-                if avail <= 1e-12 {
-                    continue;
-                }
-                let take = (t_raise * total - racc).min(avail);
-                raise[h] = (take / weight[h]) as f32;
-                racc += take;
-            }
-            let call: Vec<f32> = (0..NUM_CLASSES).map(|h| (cont[h] - raise[h]).max(0.0)).collect();
-            let jam = vec![0f32; NUM_CLASSES];
-            let (raise, jam) = if stats.raise_size == "jam" {
-                (jam.clone(), raise)
-            } else {
-                (raise, jam)
-            };
-            BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
-                call,
-                raise,
-                jam,
-                raise_size: if stats.raise_size == "jam" {
-                    "max".into()
+                // Raising slice within the continuing range: the reference
+                // solve's opening order for first-in (76s before KTo — a
+                // linear-by-equity raise range is what made every generated
+                // opening range look the same), its 3-bet order facing a raise,
+                // blended toward raw strength by naiveté (a whale raises KJo over
+                // 76s). Over limpers only half the GTO order: iso-raising wants
+                // domination (KTo) as much as playability. Re-raise buckets by
+                // strength: a human 4-bets his strongest hands, full stop.
+                let ref_raise = |h: usize| -> f64 {
+                    match b as u8 {
+                        BUCKET_VS_RAISE | BUCKET_SQUEEZE => reference::THREEBET_SCORE[h] as f64,
+                        BUCKET_VS_3BET => 0.0,
+                        _ => reference::OPEN_SCORE[h] as f64,
+                    }
+                };
+                let rank_rr = rank_positions(&|h| ref_raise(h) + 1e-6 * strength[h]);
+                // Half the GTO order for iso-raises (domination matters as much
+                // as playability) and for 3-bets / squeezes (the reference
+                // solve 3-bets JTs and A5s before AQs — fine for a solver, not
+                // how micro or live regs build a 3-bet range).
+                let r_share = if vs_reraise {
+                    0.0
+                } else if b == BUCKET_UNOPENED as usize {
+                    1.0 - stats.flatten
                 } else {
-                    stats.raise_size.clone()
-                },
-            }
-        };
+                    0.5 * (1.0 - stats.flatten)
+                };
+                let key_r =
+                    |h: usize| -> f64 { r_share * rank_rr[h] + (1.0 - r_share) * rank_str[h] };
+                let mut order_r: Vec<usize> = (0..NUM_CLASSES).collect();
+                order_r.sort_by(|&x, &y| {
+                    key_r(x)
+                        .partial_cmp(&key_r(y))
+                        .unwrap()
+                        .then(strength[y].partial_cmp(&strength[x]).unwrap())
+                });
+                let mut raise = vec![0f32; NUM_CLASSES];
+                let mut racc = 0f64;
+                for &h in &order_r {
+                    if racc >= t_raise * total {
+                        break;
+                    }
+                    let avail = weight[h] * cont[h] as f64;
+                    if avail <= 1e-12 {
+                        continue;
+                    }
+                    let take = (t_raise * total - racc).min(avail);
+                    raise[h] = (take / weight[h]) as f32;
+                    racc += take;
+                }
+                let call: Vec<f32> = (0..NUM_CLASSES)
+                    .map(|h| (cont[h] - raise[h]).max(0.0))
+                    .collect();
+                let jam = vec![0f32; NUM_CLASSES];
+                let (raise, jam) = if stats.raise_size == "jam" {
+                    (jam.clone(), raise)
+                } else {
+                    (raise, jam)
+                };
+                BucketPolicy {
+                    raise_multiples: Vec::new(),
+                    raise_sizes: Vec::new(),
+                    call,
+                    raise,
+                    jam,
+                    raise_size: if stats.raise_size == "jam" {
+                        "max".into()
+                    } else {
+                        stats.raise_size.clone()
+                    },
+                }
+            };
         let full: Vec<f64> = (0..NUM_CLASSES).map(|h| class_combos(h) as f64).collect();
         let build_policy = |b: usize, t_cont: f64, t_raise: f64| -> BucketPolicy {
             build_policy_w(b, t_cont, t_raise, &full)
         };
         let measured = |key: &str| -> Option<BucketPolicy> {
-            let d=stats.dataset.as_ref()?;
-            let i=dataset_row?.responses.get(key)?;
-            let mut p=d.response_policies[*i].clone();
-            p.raise_size=stats.raise_size.clone();
-            if stats.raise_size=="jam" {
-                for h in 0..NUM_CLASSES {p.jam[h]+=p.raise[h];p.raise[h]=0.0;}
-                p.raise_size="max".into(); p.raise_sizes.clear(); p.raise_multiples.clear();
+            let d = stats.dataset.as_ref()?;
+            let i = dataset_row?.responses.get(key)?;
+            let mut p = d.response_policies[*i].clone();
+            p.raise_size = stats.raise_size.clone();
+            if stats.raise_size == "jam" {
+                for h in 0..NUM_CLASSES {
+                    p.jam[h] += p.raise[h];
+                    p.raise[h] = 0.0;
+                }
+                p.raise_size = "max".into();
+                p.raise_sizes.clear();
+                p.raise_multiples.clear();
             }
             Some(p)
         };
         let mut buckets: Vec<Option<BucketPolicy>> = Vec::with_capacity(NUM_BUCKETS);
-        let free_limp=self.cfg.posts[seat]+1e-9>=self.cfg.posts.iter().copied().fold(0.0,f64::max);
-        let mut limp_contexts=Vec::new();
+        let free_limp =
+            self.cfg.posts[seat] + 1e-9 >= self.cfg.posts.iter().copied().fold(0.0, f64::max);
+        let mut limp_contexts = Vec::new();
         // Put the seat's actual check/call situation first for the editor.
-        for free in [free_limp,!free_limp] {
+        for free in [free_limp, !free_limp] {
             for limpers in 1..=3 {
-                let key=format!("limps_{}_{limpers}",if free {"free"}else{"paid"});
-                if let Some(policy)=measured(&key) {limp_contexts.push(LimpContextPolicy{limpers,free_check:free,policy});}
+                let key = format!("limps_{}_{limpers}", if free { "free" } else { "paid" });
+                if let Some(policy) = measured(&key) {
+                    limp_contexts.push(LimpContextPolicy {
+                        limpers,
+                        free_check: free,
+                        policy,
+                    });
+                }
             }
         }
         // the player's raising range, for the re-raise bucket: what it raises
@@ -3328,22 +3768,39 @@ impl PreflopSolver {
         let mut raise_range = vec![0f64; NUM_CLASSES];
         for b in 0..NUM_BUCKETS {
             let (t_cont, t_raise) = targets[b];
-            if b==BUCKET_VS_LIMPS as usize {
-                if let Some(c)=limp_contexts.iter().find(|c|c.free_check==free_limp && c.limpers==1) {
-                    buckets.push(Some(c.policy.clone()));continue;
+            if b == BUCKET_VS_LIMPS as usize {
+                if let Some(c) = limp_contexts
+                    .iter()
+                    .find(|c| c.free_check == free_limp && c.limpers == 1)
+                {
+                    buckets.push(Some(c.policy.clone()));
+                    continue;
                 }
             }
-            if b!=BUCKET_VS_3BET as usize {
-                let key=match b as u8 {BUCKET_VS_LIMPS=>"limps",BUCKET_VS_RAISE=>"raise",BUCKET_SQUEEZE=>"squeeze",_=>""};
-                if let Some(p)=measured(key) {buckets.push(Some(p));continue;}
+            if b != BUCKET_VS_3BET as usize {
+                let key = match b as u8 {
+                    BUCKET_VS_LIMPS => "limps",
+                    BUCKET_VS_RAISE => "raise",
+                    BUCKET_SQUEEZE => "squeeze",
+                    _ => "",
+                };
+                if let Some(p) = measured(key) {
+                    buckets.push(Some(p));
+                    continue;
+                }
             }
             if b == BUCKET_UNOPENED as usize && !paid_bb_entry {
-                if let Some(p) = dataset_row.and_then(|r|r.opening.as_ref()) {
+                if let Some(p) = dataset_row.and_then(|r| r.opening.as_ref()) {
                     let mut p = p.clone();
                     p.raise_size = stats.raise_size.clone();
                     if stats.raise_size == "jam" {
-                        for h in 0..NUM_CLASSES { p.jam[h] += p.raise[h]; p.raise[h] = 0.0; }
-                        p.raise_size = "max".into(); p.raise_sizes.clear(); p.raise_multiples.clear();
+                        for h in 0..NUM_CLASSES {
+                            p.jam[h] += p.raise[h];
+                            p.raise[h] = 0.0;
+                        }
+                        p.raise_size = "max".into();
+                        p.raise_sizes.clear();
+                        p.raise_multiples.clear();
                     }
                     buckets.push(Some(p));
                     continue;
@@ -3365,8 +3822,10 @@ impl PreflopSolver {
                     &[BUCKET_VS_RAISE, BUCKET_SQUEEZE],
                 ];
                 for tier in tiers {
-                    let mass: Vec<f64> =
-                        tier.iter().map(|&eb| m_mine[eb as usize].max(0.0)).collect();
+                    let mass: Vec<f64> = tier
+                        .iter()
+                        .map(|&eb| m_mine[eb as usize].max(0.0))
+                        .collect();
                     let tot: f64 = mass.iter().sum();
                     if tot <= 1e-9 {
                         continue;
@@ -3387,8 +3846,9 @@ impl PreflopSolver {
                 // "fold to 3-bet" is a share of the hands he RAISED, not of
                 // the deck: filled over the raising range (falls back to the
                 // deck for a player who never raises)
-                let pol = if let Some(p)=measured("reraise") { p }
-                else if raise_range.iter().sum::<f64>() >= 1.0 {
+                let pol = if let Some(p) = measured("reraise") {
+                    p
+                } else if raise_range.iter().sum::<f64>() >= 1.0 {
                     build_policy_w(b, t_cont, t_raise, &raise_range)
                 } else {
                     build_policy(b, t_cont, t_raise)
@@ -3400,16 +3860,26 @@ impl PreflopSolver {
         }
         // Condition each defense on the range that actually reached it.
         // Taking the union inflated defense for the narrower first-in range.
-        let defense_for = |entry: u8| stats.cont_vs_raise_limped.and_then(|pct| {
-            let p = buckets[entry as usize].as_ref()?;
-            let wt: Vec<f64> = (0..NUM_CLASSES)
-                .map(|h| class_combos(h) as f64 * p.call[h].min(1.0) as f64).collect();
-            if wt.iter().sum::<f64>() < 1.0 { return None; }
-            let t_cont = (pct / 100.0).clamp(0.0, 1.0);
-            Some(build_policy_w(BUCKET_VS_RAISE as usize, t_cont, 0.03f64.min(t_cont), &wt))
-        });
-        let limp_unopened = measured("limp_defense").or_else(||defense_for(BUCKET_UNOPENED));
-        let limp_defense = measured("limp_defense").or_else(||defense_for(BUCKET_VS_LIMPS));
+        let defense_for = |entry: u8| {
+            stats.cont_vs_raise_limped.and_then(|pct| {
+                let p = buckets[entry as usize].as_ref()?;
+                let wt: Vec<f64> = (0..NUM_CLASSES)
+                    .map(|h| class_combos(h) as f64 * p.call[h].min(1.0) as f64)
+                    .collect();
+                if wt.iter().sum::<f64>() < 1.0 {
+                    return None;
+                }
+                let t_cont = (pct / 100.0).clamp(0.0, 1.0);
+                Some(build_policy_w(
+                    BUCKET_VS_RAISE as usize,
+                    t_cont,
+                    0.03f64.min(t_cont),
+                    &wt,
+                ))
+            })
+        };
+        let limp_unopened = measured("limp_defense").or_else(|| defense_for(BUCKET_UNOPENED));
+        let limp_defense = measured("limp_defense").or_else(|| defense_for(BUCKET_VS_LIMPS));
         // Size-banded VS_RAISE: one policy per (max_faced_to_bb, continue%)
         // band, built by the same machinery at that band's continue target
         // (raise share stays the 3-bet stat). The legacy single policy above
@@ -3417,20 +3887,31 @@ impl PreflopSolver {
         let vs_raise_bands = if measured("raise").is_some() {
             // Published size estimates (or their explicitly pooled fallback)
             // must supersede the old reference-filled HUD bands in real play.
-            Some([(2.5,"raise_2.5"),(3.5,"raise_3.5"),(5.0,"raise_5"),(999.0,"raise_999")]
-                .iter().map(|&(to,key)|(to,measured(key).or_else(||measured("raise")).unwrap())).collect())
-        } else { stats.cont_vs_raise_bands.as_ref().map(|bands| {
-            bands
+            Some(
+                [
+                    (2.5, "raise_2.5"),
+                    (3.5, "raise_3.5"),
+                    (5.0, "raise_5"),
+                    (999.0, "raise_999"),
+                ]
                 .iter()
-                .map(|&(max_to, pct)| {
-                    let t_cont = (pct / 100.0).clamp(stats.threebet / 100.0, 1.0);
-                    (
-                        max_to,
-                        build_policy(BUCKET_VS_RAISE as usize, t_cont, stats.threebet / 100.0),
-                    )
-                })
-                .collect::<Vec<_>>()
-        }) };
+                .map(|&(to, key)| (to, measured(key).or_else(|| measured("raise")).unwrap()))
+                .collect(),
+            )
+        } else {
+            stats.cont_vs_raise_bands.as_ref().map(|bands| {
+                bands
+                    .iter()
+                    .map(|&(max_to, pct)| {
+                        let t_cont = (pct / 100.0).clamp(stats.threebet / 100.0, 1.0);
+                        (
+                            max_to,
+                            build_policy(BUCKET_VS_RAISE as usize, t_cont, stats.threebet / 100.0),
+                        )
+                    })
+                    .collect::<Vec<_>>()
+            })
+        };
 
         let combo_pct = |v: &Vec<f32>| -> f64 {
             (0..NUM_CLASSES)
@@ -3461,7 +3942,7 @@ impl PreflopSolver {
             }
         };
         let implied = ImpliedStats {
-            context_note: stats.dataset.as_ref().map(|d|d.note(&self.cfg)),
+            context_note: stats.dataset.as_ref().map(|d| d.note(&self.cfg)),
             vpip: cont_pct(BUCKET_UNOPENED),
             pfr: aggr_pct(BUCKET_UNOPENED),
             threebet: aggr_pct(BUCKET_VS_RAISE),
@@ -3476,7 +3957,17 @@ impl PreflopSolver {
                 vs_raise_bands,
                 postflop: None,
                 limp_defense,
-                response: Some(ProfileResponse { contextual_reraise: stats.dataset.as_ref().and_then(|d|d.contextual_reraise.clone()), limp_unopened, adaptive_from: None, source_stats: Some(stats.clone()), cold_reraise: measured("cold_reraise"), limp_contexts }),
+                response: Some(ProfileResponse {
+                    contextual_reraise: stats
+                        .dataset
+                        .as_ref()
+                        .and_then(|d| d.contextual_reraise.clone()),
+                    limp_unopened,
+                    adaptive_from: None,
+                    source_stats: Some(stats.clone()),
+                    cold_reraise: measured("cold_reraise"),
+                    limp_contexts,
+                }),
             },
             implied,
         ))
@@ -3509,21 +4000,37 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
         return Err("blockers (card_removal) do not support ICM games yet".into());
     }
     if cfg.utg_straddle {
-        if n<3 || cfg.posts[n-1]<=0.0 || cfg.posts[n-2]<=0.0
-            || cfg.posts[n-2]>cfg.posts[n-1] || cfg.posts[0]<2.0*cfg.posts[n-1]
-            || cfg.posts[1..n-2].iter().any(|p|*p!=0.0) {
+        if n < 3
+            || cfg.posts[n - 1] <= 0.0
+            || cfg.posts[n - 2] <= 0.0
+            || cfg.posts[n - 2] > cfg.posts[n - 1]
+            || cfg.posts[0] < 2.0 * cfg.posts[n - 1]
+            || cfg.posts[1..n - 2].iter().any(|p| *p != 0.0)
+        {
             return Err("UTG straddle requires 3+ seats, SB/BB in the last two seats, and posts[0] at least twice BB".into());
         }
-        for sizes in std::iter::once(&cfg.open_raises).chain(cfg.open_raises_by_seat.iter().flatten()) {
-            if sizes.iter().any(|&to|to<2.0*cfg.posts[0]-1e-9 && to<cfg.max_stack()-1e-9) {
-                return Err(format!("With a {} bb UTG straddle, opening raises must be at least {} bb (or all-in)",cfg.posts[0],2.0*cfg.posts[0]));
+        for sizes in
+            std::iter::once(&cfg.open_raises).chain(cfg.open_raises_by_seat.iter().flatten())
+        {
+            if sizes
+                .iter()
+                .any(|&to| to < 2.0 * cfg.posts[0] - 1e-9 && to < cfg.max_stack() - 1e-9)
+            {
+                return Err(format!(
+                    "With a {} bb UTG straddle, opening raises must be at least {} bb (or all-in)",
+                    cfg.posts[0],
+                    2.0 * cfg.posts[0]
+                ));
             }
         }
     }
     // Finiteness before the range checks: NaN passes every ordinary
     // comparison (NaN <= x is false) and would sail through into the tree.
     if !cfg.stack.is_finite() {
-        return Err(format!("stack must be a finite bb amount, got {}", cfg.stack));
+        return Err(format!(
+            "stack must be a finite bb amount, got {}",
+            cfg.stack
+        ));
     }
     if let Some(p) = cfg.posts.iter().find(|p| !p.is_finite() || **p < 0.0) {
         return Err(format!("posts must be finite and >= 0, got {p}"));
@@ -3532,7 +4039,10 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
         return Err(format!("ante must be finite and >= 0, got {}", cfg.ante));
     }
     if !cfg.bb_ante.is_finite() || cfg.bb_ante < 0.0 {
-        return Err(format!("bb_ante must be finite and >= 0, got {}", cfg.bb_ante));
+        return Err(format!(
+            "bb_ante must be finite and >= 0, got {}",
+            cfg.bb_ante
+        ));
     }
     let biggest_post = cfg.posts.iter().cloned().fold(0.0, f64::max);
     if let Some(stacks) = &cfg.stacks {
@@ -3553,7 +4063,9 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
         return Err("stack must exceed the biggest blind".into());
     }
     if let Some(&s) = cfg.call_only_seats.iter().find(|&&s| s >= n) {
-        return Err(format!("call_only_seats index {s} out of range for {n} seats"));
+        return Err(format!(
+            "call_only_seats index {s} out of range for {n} seats"
+        ));
     }
     for (name, per) in [
         ("open_raises_by_seat", &cfg.open_raises_by_seat),
@@ -3595,13 +4107,21 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
             ));
         }
     }
-    for &m in cfg.raise_mults.iter().chain(cfg.fourbet_mults.iter().flatten())
-        .chain(cfg.raise_mults_oop.iter().flatten()).chain(cfg.fourbet_mults_oop.iter().flatten()) {
+    for &m in cfg
+        .raise_mults
+        .iter()
+        .chain(cfg.fourbet_mults.iter().flatten())
+        .chain(cfg.raise_mults_oop.iter().flatten())
+        .chain(cfg.fourbet_mults_oop.iter().flatten())
+    {
         if !m.is_finite() || m <= 0.0 {
             return Err(format!("raise_mults must be finite and > 0, got {m}"));
         }
     }
-    for (name, extra) in [("limper_extra", cfg.limper_extra), ("caller_extra", cfg.caller_extra)] {
+    for (name, extra) in [
+        ("limper_extra", cfg.limper_extra),
+        ("caller_extra", cfg.caller_extra),
+    ] {
         if !extra.is_finite() || extra < 0.0 {
             return Err(format!("{name} must be finite and >= 0, got {extra}"));
         }
@@ -3625,7 +4145,10 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
         ));
     }
     if !cfg.rake_cap.is_finite() || cfg.rake_cap < 0.0 {
-        return Err(format!("rake_cap must be finite and >= 0, got {}", cfg.rake_cap));
+        return Err(format!(
+            "rake_cap must be finite and >= 0, got {}",
+            cfg.rake_cap
+        ));
     }
     // Opens at or below the biggest post are silently dropped by
     // `legal_actions_of` (and with max_raises = 0 no raise — jam included —
@@ -3708,7 +4231,11 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
             } else {
                 format!("Call {}", trim(to))
             };
-            acts.push(PAction { kind: "call".into(), to, label });
+            acts.push(PAction {
+                kind: "call".into(),
+                to,
+                label,
+            });
         }
     } else {
         acts.push(PAction {
@@ -3855,25 +4382,40 @@ fn next_state_of(
 /// Antes and folded seats' chips are dead money: antes go to the main pot,
 /// folded chips to every pot their contribution reaches. Each pot is
 /// (amount, mask of live seats eligible to win it).
-fn settle_pots(cfg: &PreflopConfig, invested: &[f64], live: u32) -> Option<(Vec<f64>, Vec<(f64, u32)>)> {
+fn settle_pots(
+    cfg: &PreflopConfig,
+    invested: &[f64],
+    live: u32,
+) -> Option<(Vec<f64>, Vec<(f64, u32)>)> {
     let n = invested.len();
     let is_live = |i: usize| live & (1 << i) != 0;
     // What each seat bet, on the common base of the per-seat ante: only the
     // big blind holds the big blind ante, and it is never returned.
     let bet = |i: usize| invested[i] - cfg.bb_extra(i);
-    let top = (0..n).filter(|&i| is_live(i))
+    let top = (0..n)
+        .filter(|&i| is_live(i))
         .max_by(|&a, &b| bet(a).partial_cmp(&bet(b)).unwrap())?;
-    let second = (0..n).filter(|&q| q != top).map(bet).fold(f64::MIN, f64::max);
+    let second = (0..n)
+        .filter(|&q| q != top)
+        .map(bet)
+        .fold(f64::MIN, f64::max);
     let mut inv = invested.to_vec();
     let refunded = bet(top) > second + 1e-9;
     if refunded {
         inv[top] = second + cfg.bb_extra(top);
     }
-    let mut levels: Vec<f64> = (0..n).filter(|&i| is_live(i)).map(|i| inv[i] - cfg.ante_of(i)).collect();
+    let mut levels: Vec<f64> = (0..n)
+        .filter(|&i| is_live(i))
+        .map(|i| inv[i] - cfg.ante_of(i))
+        .collect();
     levels.sort_by(|a, b| a.partial_cmp(b).unwrap());
     levels.dedup_by(|a, b| (*a - *b).abs() < 1e-9);
     if levels.len() < 2 {
-        return if refunded { Some((inv, Vec::new())) } else { None };
+        return if refunded {
+            Some((inv, Vec::new()))
+        } else {
+            None
+        };
     }
     let mut pots = Vec::with_capacity(levels.len());
     let mut prev = 0.0;
@@ -3967,7 +4509,9 @@ pub struct GpuCounts {
 /// configs still return quickly because counting stops there.
 pub fn estimate_tree(cfg: &PreflopConfig) -> Result<TreeEstimate, String> {
     let n = validate(cfg)?;
-    let cap = limit_nodes().saturating_add(limit_nodes() / 10).max(3_000_000);
+    let cap = limit_nodes()
+        .saturating_add(limit_nodes() / 10)
+        .max(3_000_000);
     let mut walk = CountWalk {
         cfg,
         n,
@@ -4063,7 +4607,11 @@ impl CountWalk<'_> {
         let (cfg, n) = (self.cfg, self.n);
         let gpu = &mut self.est.gpu;
         // equal stacks always settle to one pot with nothing returned
-        let settled = if cfg.unequal_stacks() { settle_pots(cfg, &st.invested, live) } else { None };
+        let settled = if cfg.unequal_stacks() {
+            settle_pots(cfg, &st.invested, live)
+        } else {
+            None
+        };
         let pots = settled.as_ref().map_or(0, |(_, pots)| pots.len());
         let multiway = live.count_ones() >= 3;
         if pots > 0 {
@@ -4085,10 +4633,14 @@ impl CountWalk<'_> {
             }
         } else if pots == 0 {
             gpu.heads_up_terminals += 1;
-            let invested = settled.as_ref().map_or(&st.invested, |(invested, _)| invested);
+            let invested = settled
+                .as_ref()
+                .map_or(&st.invested, |(invested, _)| invested);
             let pot: f64 = invested.iter().sum();
-            let left = (0..n).filter(|&q| live & (1 << q) != 0)
-                .map(|q| cfg.left(q, invested[q])).fold(f64::MAX, f64::min);
+            let left = (0..n)
+                .filter(|&q| live & (1 << q) != 0)
+                .map(|q| cfg.left(q, invested[q]))
+                .fold(f64::MAX, f64::min);
             if left / pot > 1e-9 {
                 gpu.leaf_terminals += 1;
             }
@@ -4165,7 +4717,9 @@ pub struct HudStats {
 /// errors naming the offending field. Garbage here (NaN percents, a 150%
 /// continue) would otherwise flow silently into range fills and clamps.
 fn validate_stats(stats: &HudStats) -> Result<(), String> {
-    if let Some(d) = &stats.dataset { d.validate()?; }
+    if let Some(d) = &stats.dataset {
+        d.validate()?;
+    }
     let pct = |name: &str, v: f64| -> Result<(), String> {
         if !v.is_finite() || !(0.0..=100.0).contains(&v) {
             return Err(format!("{name} must be a percent in [0, 100], got {v}"));
@@ -4278,9 +4832,15 @@ pub fn archetypes() -> Vec<(&'static str, HudStats)> {
         ..mk(vpip, pfr, threebet, f2b, squeeze, flatten, size)
     };
     vec![
-        ("Whale (loose-passive)", mk(60.0, 8.0, 2.0, 20.0, 2.0, 0.75, "min")),
+        (
+            "Whale (loose-passive)",
+            mk(60.0, 8.0, 2.0, 20.0, 2.0, 0.75, "min"),
+        ),
         ("Nit / OMC", mk(12.0, 1.5, 1.0, 15.0, 0.5, 0.25, "max")),
-        ("Calling station", mk(45.0, 10.0, 3.0, 15.0, 3.0, 0.6, "min")),
+        (
+            "Calling station",
+            mk(45.0, 10.0, 3.0, 15.0, 3.0, 0.6, "min"),
+        ),
         ("TAG", mk(24.0, 19.0, 7.0, 55.0, 6.0, 0.1, "min")),
         ("LAG", mk(30.0, 25.0, 11.0, 45.0, 9.0, 0.1, "min")),
         ("Maniac", mk(55.0, 40.0, 20.0, 25.0, 15.0, 0.5, "max")),
@@ -4289,10 +4849,22 @@ pub fn archetypes() -> Vec<(&'static str, HudStats)> {
         // 3-bet 8.5, fold-to-3bet-as-raiser 47, squeeze 7.5, cont-vs-raise
         // 28.3, squeeze-spot continue 35; limpers limp-CALL 71% (hence the
         // sticky cont overrides); modal sizes 2.5x open, 3x 3-bet.
-        ("CP Pool (anon avg)", mkm(29.0, 18.0, 8.5, 47.0, 7.5, 0.55, "min", 28.3, 35.0)),
-        ("CP Reg (raise-first)", mkm(23.0, 19.0, 9.0, 47.0, 6.0, 0.25, "min", 24.0, 28.0)),
-        ("CP Sticky Limper", mkm(42.0, 6.0, 4.0, 30.0, 4.5, 0.8, "min", 75.0, 72.0)),
-        ("CP Aggro 3-Bettor", mkm(32.0, 25.0, 16.0, 42.0, 14.0, 0.4, "max", 45.0, 40.0)),
+        (
+            "CP Pool (anon avg)",
+            mkm(29.0, 18.0, 8.5, 47.0, 7.5, 0.55, "min", 28.3, 35.0),
+        ),
+        (
+            "CP Reg (raise-first)",
+            mkm(23.0, 19.0, 9.0, 47.0, 6.0, 0.25, "min", 24.0, 28.0),
+        ),
+        (
+            "CP Sticky Limper",
+            mkm(42.0, 6.0, 4.0, 30.0, 4.5, 0.8, "min", 75.0, 72.0),
+        ),
+        (
+            "CP Aggro 3-Bettor",
+            mkm(32.0, 25.0, 16.0, 42.0, 14.0, 0.4, "max", 45.0, 40.0),
+        ),
     ]
 }
 
@@ -4323,14 +4895,12 @@ pub fn archetypes_all() -> Vec<Archetype> {
             note: String::new(),
         })
         .collect();
-    let file = std::env::var("ARCHETYPES_JSON")
-        .ok()
-        .or_else(|| {
-            ["cache/archetypes.json", "../../cache/archetypes.json"]
-                .iter()
-                .find(|p| std::path::Path::new(p).exists())
-                .map(|p| p.to_string())
-        });
+    let file = std::env::var("ARCHETYPES_JSON").ok().or_else(|| {
+        ["cache/archetypes.json", "../../cache/archetypes.json"]
+            .iter()
+            .find(|p| std::path::Path::new(p).exists())
+            .map(|p| p.to_string())
+    });
     if let Some(path) = file {
         if let Ok(text) = std::fs::read_to_string(&path) {
             match serde_json::from_str::<Vec<Archetype>>(&text) {
@@ -4359,7 +4929,14 @@ pub fn archetypes_all() -> Vec<Archetype> {
 pub fn archetype_postflop(name: &str) -> crate::query::PostflopStats {
     use crate::query::PostflopStats;
     let mk = |cbet: [f32; 3], fold_to_bet: [f32; 3], raise_bet: f32, donk: f32, sz: &str| {
-        PostflopStats { cbet, fold_to_bet, raise_bet, donk, bet_size: sz.into(), contextual_betting: None }
+        PostflopStats {
+            cbet,
+            fold_to_bet,
+            raise_bet,
+            donk,
+            bet_size: sz.into(),
+            contextual_betting: None,
+        }
     };
     if name.starts_with("Whale") {
         // passive and sticky: rarely barrels, near-never folds or raises
@@ -4405,21 +4982,39 @@ impl PreflopSolver {
     /// Read-only paired evaluation. Learning traversal and its pruning/update
     /// semantics remain separate. None means canceled, never a completed zero.
     fn traverse_checkpoint(
-        &self, node: usize, p: usize, reaches: &mut [Vec<f32>],
-        br_mode: u8, needs: CheckpointNeeds, depth: u32,
+        &self,
+        node: usize,
+        p: usize,
+        reaches: &mut [Vec<f32>],
+        br_mode: u8,
+        needs: CheckpointNeeds,
+        depth: u32,
     ) -> Option<CheckpointValues> {
-        if !needs.br && !needs.avg { return Some(CheckpointValues::default()); }
+        if !needs.br && !needs.avg {
+            return Some(CheckpointValues::default());
+        }
         #[cfg(test)]
         checkpoint_tests::observe_checkpoint_visit(self);
-        if depth < PAR_DEPTH && self.stop_requested() { return None; }
+        if depth < PAR_DEPTH && self.stop_requested() {
+            return None;
+        }
         let nd = &self.nodes[node];
         if nd.kind != KIND_ACTION {
             let mut values = vec![0f32; NUM_CLASSES];
             self.terminal_value(node, p, reaches, &mut values);
             return Some(match (needs.br, needs.avg) {
-                (true, true) => CheckpointValues { br: Some(values.clone()), avg: Some(values) },
-                (true, false) => CheckpointValues { br: Some(values), avg: None },
-                (false, true) => CheckpointValues { br: None, avg: Some(values) },
+                (true, true) => CheckpointValues {
+                    br: Some(values.clone()),
+                    avg: Some(values),
+                },
+                (true, false) => CheckpointValues {
+                    br: Some(values),
+                    avg: None,
+                },
+                (false, true) => CheckpointValues {
+                    br: None,
+                    avg: Some(values),
+                },
                 _ => unreachable!(),
             });
         }
@@ -4431,45 +5026,77 @@ impl PreflopSolver {
         let frozen = self.seat_frozen[actor];
         let sigma = forced.unwrap_or_else(|| self.average_strategy(node));
         assert_eq!(sigma.len(), na * NUM_CLASSES);
-        let maximize = actor == p && (br_mode == 2 ||
-            (br_mode == 3 && !has_forced && !frozen));
-        let child_needs: Vec<CheckpointNeeds> = (0..na).map(|a| {
-            let zero = self.prune && na > 1 &&
-                sigma[a * NUM_CLASSES..(a + 1) * NUM_CLASSES].iter().all(|&x| x == 0.0);
-            CheckpointNeeds { br: needs.br && (!zero || maximize), avg: needs.avg && !zero }
-        }).collect();
+        let maximize = actor == p && (br_mode == 2 || (br_mode == 3 && !has_forced && !frozen));
+        let child_needs: Vec<CheckpointNeeds> = (0..na)
+            .map(|a| {
+                let zero = self.prune
+                    && na > 1
+                    && sigma[a * NUM_CLASSES..(a + 1) * NUM_CLASSES]
+                        .iter()
+                        .all(|&x| x == 0.0);
+                CheckpointNeeds {
+                    br: needs.br && (!zero || maximize),
+                    avg: needs.avg && !zero,
+                }
+            })
+            .collect();
 
         let vals: Vec<CheckpointValues> = if depth < PAR_DEPTH && na > 1 {
             let base: &[Vec<f32>] = reaches;
-            (0..na).into_par_iter().map(|a| {
-                let want = child_needs[a];
-                if !want.br && !want.avg { return Some(CheckpointValues::default()); }
-                let mut r = base.to_vec();
-                for h in 0..NUM_CLASSES {
-                    r[actor][h] = base[actor][h] * sigma[a * NUM_CLASSES + h];
-                }
-                self.traverse_checkpoint(self.children[child_start + a] as usize,
-                    p, &mut r, br_mode, want, depth + 1)
-            }).collect::<Option<Vec<_>>>()?
+            (0..na)
+                .into_par_iter()
+                .map(|a| {
+                    let want = child_needs[a];
+                    if !want.br && !want.avg {
+                        return Some(CheckpointValues::default());
+                    }
+                    let mut r = base.to_vec();
+                    for h in 0..NUM_CLASSES {
+                        r[actor][h] = base[actor][h] * sigma[a * NUM_CLASSES + h];
+                    }
+                    self.traverse_checkpoint(
+                        self.children[child_start + a] as usize,
+                        p,
+                        &mut r,
+                        br_mode,
+                        want,
+                        depth + 1,
+                    )
+                })
+                .collect::<Option<Vec<_>>>()?
         } else {
             let saved = reaches[actor].clone();
             let mut vals = Vec::with_capacity(na);
             for a in 0..na {
                 let want = child_needs[a];
-                if !want.br && !want.avg { vals.push(CheckpointValues::default()); continue; }
+                if !want.br && !want.avg {
+                    vals.push(CheckpointValues::default());
+                    continue;
+                }
                 for h in 0..NUM_CLASSES {
                     reaches[actor][h] = saved[h] * sigma[a * NUM_CLASSES + h];
                 }
-                match self.traverse_checkpoint(self.children[child_start + a] as usize,
-                    p, reaches, br_mode, want, depth + 1) {
+                match self.traverse_checkpoint(
+                    self.children[child_start + a] as usize,
+                    p,
+                    reaches,
+                    br_mode,
+                    want,
+                    depth + 1,
+                ) {
                     Some(v) => vals.push(v),
-                    None => { reaches[actor].copy_from_slice(&saved); return None; }
+                    None => {
+                        reaches[actor].copy_from_slice(&saved);
+                        return None;
+                    }
                 }
             }
             reaches[actor].copy_from_slice(&saved);
             vals
         };
-        if depth < PAR_DEPTH && self.stop_requested() { return None; }
+        if depth < PAR_DEPTH && self.stop_requested() {
+            return None;
+        }
         let combine = |best_response: bool| {
             let mut out = vec![0f32; NUM_CLASSES];
             if actor == p {
@@ -4477,7 +5104,7 @@ impl PreflopSolver {
                     if best_response && maximize {
                         let mut best = f32::NEG_INFINITY;
                         for child in &vals {
-                            let v = child.br.as_ref().map_or(0.0, |v|v[h]);
+                            let v = child.br.as_ref().map_or(0.0, |v| v[h]);
                             best = best.max(v);
                         }
                         out[h] = best;
@@ -4485,7 +5112,8 @@ impl PreflopSolver {
                         let mut value = 0f32;
                         for (a, child) in vals.iter().enumerate() {
                             let child = if best_response { &child.br } else { &child.avg };
-                            value += sigma[a * NUM_CLASSES + h] * child.as_ref().map_or(0.0, |v|v[h]);
+                            value +=
+                                sigma[a * NUM_CLASSES + h] * child.as_ref().map_or(0.0, |v| v[h]);
                         }
                         out[h] = value;
                     }
@@ -4493,54 +5121,72 @@ impl PreflopSolver {
             } else {
                 for child in &vals {
                     let child = if best_response { &child.br } else { &child.avg };
-                    for h in 0..NUM_CLASSES { out[h] += child.as_ref().map_or(0.0, |v|v[h]); }
+                    for h in 0..NUM_CLASSES {
+                        out[h] += child.as_ref().map_or(0.0, |v| v[h]);
+                    }
                 }
             }
             out
         };
         Some(CheckpointValues {
-            br: needs.br.then(||combine(true)), avg: needs.avg.then(||combine(false)),
+            br: needs.br.then(|| combine(true)),
+            avg: needs.avg.then(|| combine(false)),
         })
     }
 
     /// Completed best-response gaps and average EVs, or None when canceled.
     /// A canceled recursion is latched even if the stop flag is later cleared.
     fn checkpoint_gaps_and_evs(&self) -> Option<(Vec<f64>, Vec<f64>)> {
-        if self.stop_requested() { return None; }
+        if self.stop_requested() {
+            return None;
+        }
         if self.rnr_active().is_some() && self.pf_free.is_some() {
             return self.rnr_gaps_and_evs();
         }
-        let pairs: Vec<(f64, f64)> = (0..self.n).into_par_iter().map(|p| {
-            let mut reaches = self.root_reaches();
-            let values = self.traverse_checkpoint(0, p, &mut reaches,
-                if self.constrained_br(p) {3} else {2}, CheckpointNeeds {br:true,avg:true}, 0)?;
-            let br = values.br.expect("requested BR root");
-            let avg = values.avg.expect("requested average root");
-            let (mut gap,mut ev) = (0f64,0f64);
-            for h in 0..NUM_CLASSES {
-                let weight = class_prob(h) as f64;
-                // Preserve subtraction in f32 before promotion, as in the
-                // original CPU checkpoint; separate f64 dots are not equivalent.
-                gap += weight * (br[h] - avg[h]) as f64;
-                ev += weight * avg[h] as f64;
-            }
-            Some((gap,ev))
-        }).collect::<Option<Vec<_>>>()?;
-        if self.stop_requested() { return None; }
+        let pairs: Vec<(f64, f64)> = (0..self.n)
+            .into_par_iter()
+            .map(|p| {
+                let mut reaches = self.root_reaches();
+                let values = self.traverse_checkpoint(
+                    0,
+                    p,
+                    &mut reaches,
+                    if self.constrained_br(p) { 3 } else { 2 },
+                    CheckpointNeeds {
+                        br: true,
+                        avg: true,
+                    },
+                    0,
+                )?;
+                let br = values.br.expect("requested BR root");
+                let avg = values.avg.expect("requested average root");
+                let (mut gap, mut ev) = (0f64, 0f64);
+                for h in 0..NUM_CLASSES {
+                    let weight = class_prob(h) as f64;
+                    // Preserve subtraction in f32 before promotion, as in the
+                    // original CPU checkpoint; separate f64 dots are not equivalent.
+                    gap += weight * (br[h] - avg[h]) as f64;
+                    ev += weight * avg[h] as f64;
+                }
+                Some((gap, ev))
+            })
+            .collect::<Option<Vec<_>>>()?;
+        if self.stop_requested() {
+            return None;
+        }
         Some(pairs.into_iter().unzip())
     }
 }
 
-
+#[cfg(test)]
+mod bb_ante_tests;
 #[cfg(test)]
 mod checkpoint_tests;
 #[cfg(test)]
-mod stacks_tests;
-#[cfg(test)]
-mod bb_ante_tests;
+mod equity_invariant_tests;
 #[cfg(test)]
 mod rake_tests;
 #[cfg(test)]
 mod removal_tests;
 #[cfg(test)]
-mod equity_invariant_tests;
+mod stacks_tests;

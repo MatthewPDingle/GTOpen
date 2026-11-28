@@ -6,17 +6,25 @@
 //! parallelize over cards and fold suit-isomorphic cards onto one
 //! representative, as the heads-up solver does.
 
-use super::eval::terminal_cfv;
-use super::game::MwSpot;
-use super::tree::{MwNode, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, NP};
-use crate::cfr::{regret_match, regret_match_inplace, regret_match_q, Algorithm, Discounts, RunOptions};
-use crate::scratch::Buf;
-use crate::store::{Storage, Store};
-use crate::tree::SENTINEL;
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
+
 use rayon::prelude::*;
 use serde::Serialize;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
+
+use super::{
+    eval::terminal_cfv,
+    game::MwSpot,
+    tree::{MwNode, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, NP},
+};
+use crate::{
+    cfr::{regret_match, regret_match_inplace, regret_match_q, Algorithm, Discounts, RunOptions},
+    scratch::Buf,
+    store::{Storage, Store},
+    tree::SENTINEL,
+};
 
 /// Cards dealt below the root board.
 #[derive(Debug, Copy, Clone, Default)]
@@ -99,7 +107,12 @@ impl MwSolver {
     }
 
     pub fn arena_bytes(&self) -> u64 {
-        let mut t: u64 = self.regrets.iter().chain(self.strat.iter()).map(Store::bytes).sum();
+        let mut t: u64 = self
+            .regrets
+            .iter()
+            .chain(self.strat.iter())
+            .map(Store::bytes)
+            .sum();
         if let Some(p) = &self.preds {
             t += p.iter().map(Store::bytes).sum::<u64>();
         }
@@ -134,7 +147,14 @@ impl MwSolver {
         for p in 0..NP {
             let mut out = Buf::zeroed(self.spot.hands[p].len());
             let w = &self.spot.weights;
-            self.cfr(0, p, [&w[0], &w[1], &w[2]], Dealt::default(), &disc, &mut out);
+            self.cfr(
+                0,
+                p,
+                [&w[0], &w[1], &w[2]],
+                Dealt::default(),
+                &disc,
+                &mut out,
+            );
         }
     }
 
@@ -148,23 +168,33 @@ impl MwSolver {
         let na = node.num_children as usize;
         let n = na * nh;
         let off = node.data_offset;
-        let preds = if self.algo == Algorithm::PcfrPlus { self.preds.as_deref() } else { None };
+        let preds = if self.algo == Algorithm::PcfrPlus {
+            self.preds.as_deref()
+        } else {
+            None
+        };
         match (&self.regrets[p], preds) {
             (Store::F32(rb), None) => regret_match(unsafe { rb.slice(off, n) }, na, nh, sigma),
             (Store::F32(rb), Some(pr)) => {
                 let r = unsafe { rb.slice(off, n) };
-                let Store::F32(pb) = &pr[p] else { unreachable!() };
+                let Store::F32(pb) = &pr[p] else {
+                    unreachable!()
+                };
                 let pv = unsafe { pb.slice(off, n) };
                 for i in 0..n {
                     sigma[i] = r[i].max(0.0) + pv[i];
                 }
                 regret_match_inplace(sigma, na, nh);
             }
-            (Store::I16 { q, .. }, None) => regret_match_q(unsafe { q.slice(off, n) }, na, nh, sigma),
+            (Store::I16 { q, .. }, None) => {
+                regret_match_q(unsafe { q.slice(off, n) }, na, nh, sigma)
+            }
             (Store::I16 { q, scale }, Some(pr)) => {
                 let qr = unsafe { q.slice(off, n) };
                 let kr = unsafe { scale.read_at(node_idx as usize) } / 32767.0;
-                let Store::I16 { q: pq, scale: ps } = &pr[p] else { unreachable!() };
+                let Store::I16 { q: pq, scale: ps } = &pr[p] else {
+                    unreachable!()
+                };
                 let qp = unsafe { pq.slice(off, n) };
                 let kp = unsafe { ps.read_at(node_idx as usize) } / 32767.0;
                 for i in 0..n {
@@ -192,11 +222,19 @@ impl MwSolver {
         let na = node.num_children as usize;
         let n = na * nh;
         let off = node.data_offset;
-        let preds = if self.algo == Algorithm::PcfrPlus { self.preds.as_deref() } else { None };
+        let preds = if self.algo == Algorithm::PcfrPlus {
+            self.preds.as_deref()
+        } else {
+            None
+        };
         match self.storage {
             Storage::F32 => {
-                let Store::F32(rb) = &self.regrets[p] else { unreachable!() };
-                let Store::F32(sb) = &self.strat[p] else { unreachable!() };
+                let Store::F32(rb) = &self.regrets[p] else {
+                    unreachable!()
+                };
+                let Store::F32(sb) = &self.strat[p] else {
+                    unreachable!()
+                };
                 let regrets = unsafe { rb.slice(off, n) };
                 let strat = unsafe { sb.slice(off, n) };
                 for a in 0..na {
@@ -205,11 +243,14 @@ impl MwSolver {
                         let r = regrets[base + i];
                         let d = if r > 0.0 { disc.pos } else { disc.neg };
                         regrets[base + i] = r * d + (vals[base + i] - out[i]);
-                        strat[base + i] = strat[base + i] * disc.strat + reach_p[i] * sigma[base + i];
+                        strat[base + i] =
+                            strat[base + i] * disc.strat + reach_p[i] * sigma[base + i];
                     }
                 }
                 if let Some(pr) = preds {
-                    let Store::F32(pb) = &pr[p] else { unreachable!() };
+                    let Store::F32(pb) = &pr[p] else {
+                        unreachable!()
+                    };
                     let pv = unsafe { pb.slice(off, n) };
                     for a in 0..na {
                         for i in 0..nh {
@@ -219,8 +260,20 @@ impl MwSolver {
                 }
             }
             Storage::Compressed => {
-                let Store::I16 { q: rq, scale: rscale } = &self.regrets[p] else { unreachable!() };
-                let Store::U16 { q: sq, scale: sscale } = &self.strat[p] else { unreachable!() };
+                let Store::I16 {
+                    q: rq,
+                    scale: rscale,
+                } = &self.regrets[p]
+                else {
+                    unreachable!()
+                };
+                let Store::U16 {
+                    q: sq,
+                    scale: sscale,
+                } = &self.strat[p]
+                else {
+                    unreachable!()
+                };
                 let rq = unsafe { rq.slice(off, n) };
                 let sq = unsafe { sq.slice(off, n) };
                 let kr = unsafe { rscale.read_at(node_idx as usize) } / 32767.0;
@@ -243,10 +296,18 @@ impl MwSolver {
                 }
                 unsafe {
                     let seed = ((self.iteration as u64) << 32) | node_idx as u64;
-                    rscale.write_at(node_idx as usize, crate::store::quantize_i16_unbiased(&rbuf, rmax, rq, seed));
+                    rscale.write_at(
+                        node_idx as usize,
+                        crate::store::quantize_i16_unbiased(&rbuf, rmax, rq, seed),
+                    );
                     sscale.write_at(
                         node_idx as usize,
-                        crate::store::quantize_u16_unbiased(&sbuf, smax, sq, seed ^ 0xD1B5_4A32_D192_ED03),
+                        crate::store::quantize_u16_unbiased(
+                            &sbuf,
+                            smax,
+                            sq,
+                            seed ^ 0xD1B5_4A32_D192_ED03,
+                        ),
                     );
                 }
                 if let Some(pr) = preds {
@@ -258,9 +319,14 @@ impl MwSolver {
                             pmax = pmax.max(d.abs());
                         }
                     }
-                    let Store::I16 { q: pq, scale: ps } = &pr[p] else { unreachable!() };
+                    let Store::I16 { q: pq, scale: ps } = &pr[p] else {
+                        unreachable!()
+                    };
                     unsafe {
-                        ps.write_at(node_idx as usize, crate::store::quantize_i16(&rbuf, pmax, pq.slice(off, n)));
+                        ps.write_at(
+                            node_idx as usize,
+                            crate::store::quantize_i16(&rbuf, pmax, pq.slice(off, n)),
+                        );
                     }
                 }
             }
@@ -269,7 +335,15 @@ impl MwSolver {
 
     /// Vector CFR traversal for traverser `p`; `out` must be zeroed.
     #[allow(clippy::too_many_arguments)]
-    fn cfr(&self, node_idx: u32, p: usize, reach: [&[f32]; NP], dealt: Dealt, disc: &Discounts, out: &mut [f32]) {
+    fn cfr(
+        &self,
+        node_idx: u32,
+        p: usize,
+        reach: [&[f32]; NP],
+        dealt: Dealt,
+        disc: &Discounts,
+        out: &mut [f32],
+    ) {
         let node = self.node(node_idx);
         let spot = &*self.spot;
         match node.kind {
@@ -280,7 +354,9 @@ impl MwSolver {
                 terminal_cfv(spot, node, dealt.as_slice(), p, reach, out);
             }
             KIND_CHANCE => {
-                self.chance_node(node, p, reach, dealt, out, &|s, c, r, d, o| s.cfr(c, p, r, d, disc, o));
+                self.chance_node(node, p, reach, dealt, out, &|s, c, r, d, o| {
+                    s.cfr(c, p, r, d, disc, o)
+                });
             }
             KIND_ACTION => {
                 let na = node.num_children as usize;
@@ -299,7 +375,14 @@ impl MwSolver {
                         }
                         let mut r = reach;
                         r[p] = &rbuf;
-                        self.cfr(spot.tree.child(node, a), p, r, dealt, disc, &mut vals[a * nh..(a + 1) * nh]);
+                        self.cfr(
+                            spot.tree.child(node, a),
+                            p,
+                            r,
+                            dealt,
+                            disc,
+                            &mut vals[a * nh..(a + 1) * nh],
+                        );
                     }
                     for a in 0..na {
                         let sig = &sigma[a * nh..(a + 1) * nh];
@@ -351,7 +434,10 @@ impl MwSolver {
         // 52 - board - 6 hole cards: turn 43, river 42.
         let divisor = (44 - node.street as i32) as f32;
         let cards: Vec<u8> = (0..52u8)
-            .filter(|&c| spot.tree.children[node.children_start as usize + c as usize] != SENTINEL && !dealt.contains(c))
+            .filter(|&c| {
+                spot.tree.children[node.children_start as usize + c as usize] != SENTINEL
+                    && !dealt.contains(c)
+            })
             .collect();
         let mut rep_of = [255u8; 52];
         let mut perm_of = [0usize; 52];
@@ -374,7 +460,11 @@ impl MwSolver {
                 rep_of[c as usize] = c;
             }
         }
-        let reps: Vec<u8> = cards.iter().copied().filter(|&c| rep_of[c as usize] == c).collect();
+        let reps: Vec<u8> = cards
+            .iter()
+            .copied()
+            .filter(|&c| rep_of[c as usize] == c)
+            .collect();
         let run = |c: u8| -> (u8, Buf) {
             let child = spot.tree.children[node.children_start as usize + c as usize];
             let cm = 1u64 << c;
@@ -386,7 +476,13 @@ impl MwSolver {
                 b
             });
             let mut co = Buf::zeroed(nh);
-            recurse(self, child, [&bufs[0], &bufs[1], &bufs[2]], dealt.push(c), &mut co);
+            recurse(
+                self,
+                child,
+                [&bufs[0], &bufs[1], &bufs[2]],
+                dealt.push(c),
+                &mut co,
+            );
             (c, co)
         };
         let results: Vec<(u8, Buf)> = reps.par_iter().map(|&c| run(c)).collect();
@@ -454,17 +550,27 @@ impl MwSolver {
 
     /// Read-only traversal: player `p` plays a best response (or the
     /// average strategy); the others play their average strategies.
-    fn eval_into(&self, node_idx: u32, p: usize, reach: [&[f32]; NP], dealt: Dealt, mode: EvalMode, out: &mut [f32]) {
+    fn eval_into(
+        &self,
+        node_idx: u32,
+        p: usize,
+        reach: [&[f32]; NP],
+        dealt: Dealt,
+        mode: EvalMode,
+        out: &mut [f32],
+    ) {
         if opponents_dead(p, &reach) {
             return;
         }
         let node = self.node(node_idx);
         let spot = &*self.spot;
         match node.kind {
-            KIND_TERM_FOLD | KIND_TERM_SHOWDOWN => terminal_cfv(spot, node, dealt.as_slice(), p, reach, out),
-            KIND_CHANCE => {
-                self.chance_node(node, p, reach, dealt, out, &|s, c, r, d, o| s.eval_into(c, p, r, d, mode, o))
+            KIND_TERM_FOLD | KIND_TERM_SHOWDOWN => {
+                terminal_cfv(spot, node, dealt.as_slice(), p, reach, out)
             }
+            KIND_CHANCE => self.chance_node(node, p, reach, dealt, out, &|s, c, r, d, o| {
+                s.eval_into(c, p, r, d, mode, o)
+            }),
             KIND_ACTION => {
                 let na = node.num_children as usize;
                 let actor = node.player as usize;
@@ -474,7 +580,8 @@ impl MwSolver {
                 self.average_strategy_into(node_idx, node, &mut sigma);
                 let mut vals = Buf::for_overwrite(nh);
                 if actor == p {
-                    let free = mode == EvalMode::BestResponse && !self.locks.contains_key(&node_idx);
+                    let free =
+                        mode == EvalMode::BestResponse && !self.locks.contains_key(&node_idx);
                     for a in 0..na {
                         vals.fill(0.0);
                         self.eval_into(spot.tree.child(node, a), p, reach, dealt, mode, &mut vals);
@@ -515,9 +622,20 @@ impl MwSolver {
     }
 
     /// Per-hand counterfactual values for `p` from `node_idx` given reaches.
-    pub fn node_values(&self, node_idx: u32, p: usize, reach: [&[f32]; NP], dealt: Dealt, best_response: bool) -> Vec<f32> {
+    pub fn node_values(
+        &self,
+        node_idx: u32,
+        p: usize,
+        reach: [&[f32]; NP],
+        dealt: Dealt,
+        best_response: bool,
+    ) -> Vec<f32> {
         let mut out = vec![0f32; self.spot.hands[p].len()];
-        let mode = if best_response { EvalMode::BestResponse } else { EvalMode::Average };
+        let mode = if best_response {
+            EvalMode::BestResponse
+        } else {
+            EvalMode::Average
+        };
         self.eval_into(node_idx, p, reach, dealt, mode, &mut out);
         out
     }
@@ -530,7 +648,13 @@ impl MwSolver {
         let mut evs = [0f64; NP];
         let mut gaps = [0f64; NP];
         for p in 0..NP {
-            let dot = |v: &[f32]| w[p].iter().zip(v).map(|(&a, &b)| a as f64 * b as f64).sum::<f64>() / denom;
+            let dot = |v: &[f32]| {
+                w[p].iter()
+                    .zip(v)
+                    .map(|(&a, &b)| a as f64 * b as f64)
+                    .sum::<f64>()
+                    / denom
+            };
             let br = dot(&self.node_values(0, p, reach, Dealt::default(), true));
             let ev = dot(&self.node_values(0, p, reach, Dealt::default(), false));
             evs[p] = ev;
@@ -552,12 +676,19 @@ impl MwSolver {
         }
     }
 
-    pub fn run(&mut self, opts: &RunOptions, stop: &AtomicBool, mut on_progress: impl FnMut(&MwProgress)) -> Option<MwProgress> {
+    pub fn run(
+        &mut self,
+        opts: &RunOptions,
+        stop: &AtomicBool,
+        mut on_progress: impl FnMut(&MwProgress),
+    ) -> Option<MwProgress> {
         let start = std::time::Instant::now();
         let mut last = None;
         while self.iteration < opts.max_iterations && !stop.load(Ordering::Relaxed) {
             self.iterate();
-            if self.iteration % opts.check_every.max(1) == 0 || self.iteration >= opts.max_iterations {
+            if self.iteration % opts.check_every.max(1) == 0
+                || self.iteration >= opts.max_iterations
+            {
                 let pr = self.progress(start.elapsed().as_secs_f64());
                 on_progress(&pr);
                 let done = pr.exploit_pct_pot <= opts.target_exploit_pct;
@@ -598,7 +729,9 @@ impl MwSolver {
                 let valid = spot.perms_fixing(dealt.as_slice());
                 let mut orbit = Vec::new();
                 for c in 0..52u8 {
-                    if spot.tree.children[node.children_start as usize + c as usize] == SENTINEL || dealt.contains(c) {
+                    if spot.tree.children[node.children_start as usize + c as usize] == SENTINEL
+                        || dealt.contains(c)
+                    {
                         continue;
                     }
                     let (mut rep, mut k_rep) = (c, 0);
@@ -613,7 +746,10 @@ impl MwSolver {
                 }
                 for &(c, rep, _) in &orbit {
                     if c == rep {
-                        self.symmetrize(spot.tree.children[node.children_start as usize + c as usize], dealt.push(c));
+                        self.symmetrize(
+                            spot.tree.children[node.children_start as usize + c as usize],
+                            dealt.push(c),
+                        );
                     }
                 }
                 for &(c, rep, k) in &orbit {

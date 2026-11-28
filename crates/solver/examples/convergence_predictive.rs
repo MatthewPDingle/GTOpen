@@ -1,9 +1,10 @@
 //! Registered predictive RM+ learning screen; registered quality gates.
+use std::{path::Path, sync::Arc, time::Instant};
+
 use serde_json::{json, Value};
 use solver::preflop::{
     convergence_research::Experiment, equity::EquityTable, gpu::PreflopGpu, PreflopSolver,
 };
-use std::{path::Path, sync::Arc, time::Instant};
 fn main() -> Result<(), String> {
     let a: Vec<_> = std::env::args().skip(1).collect();
     if a.len() != 6 {
@@ -11,13 +12,20 @@ fn main() -> Result<(), String> {
     }
     let samples: u32 = a[2].parse().map_err(|_| "samples")?;
     let seed: u64 = a[3].parse().map_err(|_| "seed")?;
-    if !([64,1024].contains(&samples)) || ![42, 314159].contains(&seed) || !["control", "zero", "predict"].contains(&a[4].as_str()) {
+    if !([64, 1024].contains(&samples))
+        || ![42, 314159].contains(&seed)
+        || !["control", "zero", "predict"].contains(&a[4].as_str())
+    {
         return Err("unregistered case".into());
     }
     let predictive = a[4] != "control";
     let prediction_enabled = a[4] == "predict";
-    if samples == 1024 && (!predictive || seed != 42) { return Err("unregistered full case".into()); }
-    if a[4] == "zero" && samples != 1024 { return Err("unregistered zero case".into()); }
+    if samples == 1024 && (!predictive || seed != 42) {
+        return Err("unregistered full case".into());
+    }
+    if a[4] == "zero" && samples != 1024 {
+        return Err("unregistered zero case".into());
+    }
     let pair = samples == 64;
     let normalized = !predictive;
     let out = Path::new(&a[5]);
@@ -73,8 +81,16 @@ fn main() -> Result<(), String> {
     g.configure_research(Experiment::new("gamma15", samples, 1000, seed)?)?;
     let pair_extra_bytes = if normalized {
         g.enable_research_normalized_pair_control(1024)?
-    } else if pair { g.enable_research_pair_control(1024)? } else { 0 };
-    let prediction_storage = if predictive { g.enable_research_predictive(prediction_enabled,1024)? } else { Value::Null };
+    } else if pair {
+        g.enable_research_pair_control(1024)?
+    } else {
+        0
+    };
+    let prediction_storage = if predictive {
+        g.enable_research_predictive(prediction_enabled, 1024)?
+    } else {
+        Value::Null
+    };
     let mut streak = 0;
     let mut checks = Vec::new();
     let mut solve_seconds = 0.;

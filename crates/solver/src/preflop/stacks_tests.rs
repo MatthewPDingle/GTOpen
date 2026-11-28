@@ -1,9 +1,12 @@
 //! Per-seat stacks: tree rules (all-in for less, raise caps, incomplete
 //! all-ins), uncalled returns, side-pot layering and side-pot payoffs.
 
-use super::equity::{class_index, class_prob, EquityTable, NUM_CLASSES};
-use super::*;
 use std::sync::{Arc, OnceLock};
+
+use super::{
+    equity::{class_index, class_prob, EquityTable, NUM_CLASSES},
+    *,
+};
 
 fn table() -> Arc<EquityTable> {
     static T: OnceLock<Arc<EquityTable>> = OnceLock::new();
@@ -26,14 +29,25 @@ fn three(stacks: [f64; 3], opens: &[f64]) -> PreflopConfig {
 /// The child reached by the action whose label starts with `label`.
 fn step(s: &PreflopSolver, node: usize, label: &str) -> usize {
     let nd = &s.nodes[node];
-    let a = nd.actions.iter().position(|a| a.label.starts_with(label)).unwrap_or_else(|| {
-        panic!("no {label:?} among {:?}", nd.actions.iter().map(|a| &a.label).collect::<Vec<_>>())
-    });
+    let a = nd
+        .actions
+        .iter()
+        .position(|a| a.label.starts_with(label))
+        .unwrap_or_else(|| {
+            panic!(
+                "no {label:?} among {:?}",
+                nd.actions.iter().map(|a| &a.label).collect::<Vec<_>>()
+            )
+        });
     s.child(node, a)
 }
 
 fn labels(s: &PreflopSolver, node: usize) -> Vec<String> {
-    s.nodes[node].actions.iter().map(|a| a.label.clone()).collect()
+    s.nodes[node]
+        .actions
+        .iter()
+        .map(|a| a.label.clone())
+        .collect()
 }
 
 fn walk(s: &PreflopSolver, path: &[&str]) -> usize {
@@ -71,7 +85,9 @@ fn validation_checks_each_seat() {
     c.stacks = Some(vec![20.0, 10.0]);
     assert!(validate(&c).unwrap_err().contains("one entry per seat"));
     c.stacks = Some(vec![20.0, 0.5, 30.0]);
-    assert!(validate(&c).unwrap_err().contains("must exceed its 0.5 bb post"));
+    assert!(validate(&c)
+        .unwrap_err()
+        .contains("must exceed its 0.5 bb post"));
     c.stacks = Some(vec![20.0, f64::NAN, 30.0]);
     assert!(validate(&c).unwrap_err().contains("finite"));
     // An open bigger than a short seat's stack is that seat's jam, not an error.
@@ -111,12 +127,16 @@ fn incomplete_all_in_does_not_reopen_raising() {
     // A full-raise shove (2.5 more) reopens it.
     let s = PreflopSolver::new(three([100.0, 100.0, 5.0], &[2.5]), table()).unwrap();
     let btn = walk(&s, &["Raise 2.5", "Call 2.5", "All-in 5"]);
-    assert!(labels(&s, btn).iter().any(|l| l.starts_with("4-bet") || l.starts_with("All-in")));
+    assert!(labels(&s, btn)
+        .iter()
+        .any(|l| l.starts_with("4-bet") || l.starts_with("All-in")));
     // A seat that has not acted yet keeps its raise after an incomplete shove:
     // SB shoves 3 over BTN's 2.5 open; BB never acted and may raise.
     let s = PreflopSolver::new(three([100.0, 3.0, 100.0], &[2.5]), table()).unwrap();
     let bb = walk(&s, &["Raise 2.5", "All-in 3"]);
-    assert!(labels(&s, bb).iter().any(|l| l.starts_with("All-in") || l.starts_with("3-bet")));
+    assert!(labels(&s, bb)
+        .iter()
+        .any(|l| l.starts_with("All-in") || l.starts_with("3-bet")));
 }
 
 #[test]
@@ -157,8 +177,16 @@ fn antes_and_heads_up_exports_use_effective_stacks() {
     for _ in 0..3 {
         s.iterate();
     }
-    let raise = s.nodes[0].actions.iter().position(|a| a.label == "Raise 2.5").unwrap();
-    let call = s.nodes[s.child(0, raise)].actions.iter().position(|a| a.label == "Call 2.5").unwrap();
+    let raise = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.label == "Raise 2.5")
+        .unwrap();
+    let call = s.nodes[s.child(0, raise)]
+        .actions
+        .iter()
+        .position(|a| a.label == "Call 2.5")
+        .unwrap();
     let ex = s.export_spot(&[raise, call]).unwrap();
     assert_eq!(ex.eff_stack_bb, 22.5);
     assert_eq!(ex.pot_bb, 5.4);
@@ -179,13 +207,24 @@ fn only(class: usize) -> Vec<f32> {
 fn side_pot_payoffs_pay_each_pot_by_its_own_showdown() {
     let s = PreflopSolver::new(three([30.0, 10.0, 30.0], &[2.5]), table()).unwrap();
     let t = walk(&s, &["All-in 30", "Call all-in 10", "Call 30"]);
-    let (aa, kk, qq) = (class_index(12, 12, false), class_index(11, 11, false), class_index(10, 10, false));
+    let (aa, kk, qq) = (
+        class_index(12, 12, false),
+        class_index(11, 11, false),
+        class_index(10, 10, false),
+    );
     // BTN QQ, SB (short) AA, BB KK.
     let reaches = vec![only(qq), only(aa), only(kk)];
     let prob = |p: usize| -> f64 {
-        (0..3).filter(|&q| q != p).map(|q| reaches[q].iter().sum::<f32>() as f64).product()
+        (0..3)
+            .filter(|&q| q != p)
+            .map(|q| reaches[q].iter().sum::<f32>() as f64)
+            .product()
     };
-    let norm = |c: usize| { let mut v = vec![0.0f32; NUM_CLASSES]; v[c] = 1.0; v };
+    let norm = |c: usize| {
+        let mut v = vec![0.0f32; NUM_CLASSES];
+        v[c] = 1.0;
+        v
+    };
     let model = s.multiway.clone().unwrap();
     let mut out = [0.0f32; NUM_CLASSES];
     // BB: main pot vs AA and QQ, side pot vs QQ alone.
@@ -193,7 +232,11 @@ fn side_pot_payoffs_pay_each_pot_by_its_own_showdown() {
     let main = model.equities(&[norm(qq), norm(aa)])[kk];
     let side = s.balanced_raw_equity(kk, qq) as f64;
     let want = prob(2) * (30.0 * main + 40.0 * side - 30.0);
-    assert!((out[kk] as f64 - want).abs() < 1e-4 * want.abs().max(1.0), "{} vs {want}", out[kk]);
+    assert!(
+        (out[kk] as f64 - want).abs() < 1e-4 * want.abs().max(1.0),
+        "{} vs {want}",
+        out[kk]
+    );
     // SB can only win the main pot.
     s.terminal_value(t, 1, &reaches, &mut out);
     let want = prob(1) * (30.0 * model.equities(&[norm(qq), norm(kk)])[aa] - 10.0);
@@ -211,7 +254,11 @@ fn side_pot_payoffs_conserve_chips_net_of_rake() {
     }));
     let mut s = PreflopSolver::new(c, table()).unwrap();
     let weights: Vec<Vec<f32>> = (0..4)
-        .map(|p| (0..NUM_CLASSES).map(|h| class_prob(h) * ((h + p * 17) % 23 + 1) as f32 / 25.0).collect())
+        .map(|p| {
+            (0..NUM_CLASSES)
+                .map(|h| class_prob(h) * ((h + p * 17) % 23 + 1) as f32 / 25.0)
+                .collect()
+        })
         .collect();
     let mut layered = 0;
     for (node, nd) in s.nodes.iter().enumerate() {
@@ -221,7 +268,11 @@ fn side_pot_payoffs_conserve_chips_net_of_rake() {
         let in_pots: f64 = nd.side_pots.iter().map(|p| p.0).sum();
         if !nd.side_pots.is_empty() {
             layered += 1;
-            assert!((in_pots - nd.pot).abs() < 1e-9, "pots {in_pots} vs {}", nd.pot);
+            assert!(
+                (in_pots - nd.pot).abs() < 1e-9,
+                "pots {in_pots} vs {}",
+                nd.pot
+            );
         }
         if nd.kind != KIND_POT_SHARE {
             continue;
@@ -230,14 +281,24 @@ fn side_pot_payoffs_conserve_chips_net_of_rake() {
         for p in 0..4 {
             let mut values = [0.0f32; NUM_CLASSES];
             s.terminal_value(node, p, &weights, &mut values);
-            total += values.iter().zip(&weights[p]).map(|(v, w)| *v as f64 * *w as f64).sum::<f64>();
+            total += values
+                .iter()
+                .zip(&weights[p])
+                .map(|(v, w)| *v as f64 * *w as f64)
+                .sum::<f64>();
         }
-        let probability: f64 = weights.iter().map(|w| w.iter().sum::<f32>() as f64).product();
+        let probability: f64 = weights
+            .iter()
+            .map(|w| w.iter().sum::<f32>() as f64)
+            .product();
         let expected = -probability * s.rake_of(nd.pot);
         // Two-way pots are exact; the static realization skew on non-all-in
         // multiway pots is the model's own (unchanged) approximation.
         if !nd.side_pots.is_empty() {
-            assert!((total - expected).abs() < 1e-5, "node {node}: {total} vs {expected}");
+            assert!(
+                (total - expected).abs() < 1e-5,
+                "node {node}: {total} vs {expected}"
+            );
         }
     }
     assert!(layered > 10, "only {layered} side-pot terminals");
@@ -261,7 +322,6 @@ fn estimate_matches_the_built_tree() {
     assert_eq!(est.nodes as usize, s.nodes.len());
 }
 
-
 #[test]
 fn unequal_stack_saves_use_v5_and_round_trip() {
     let mut s = PreflopSolver::new(three([30.0, 10.0, 30.0], &[2.5]), table()).unwrap();
@@ -284,6 +344,9 @@ fn unequal_stack_saves_use_v5_and_round_trip() {
     out.extend(serde_json::to_vec(&header).unwrap());
     out.extend_from_slice(&bytes[end..]);
     std::fs::write(path, out).unwrap();
-    assert!(PreflopSolver::load_game(path, table()).err().unwrap().contains("v5"));
+    assert!(PreflopSolver::load_game(path, table())
+        .err()
+        .unwrap()
+        .contains("v5"));
     std::fs::remove_file(path).unwrap();
 }

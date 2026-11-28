@@ -1,8 +1,10 @@
 //! Offline out-of-fixture tests for coherent deck-coupled class ranks.
 use rayon::prelude::*;
 use serde_json::json;
-use solver::evaluator::evaluate7;
-use solver::preflop::equity::{class_combos, class_index, class_parts};
+use solver::{
+    evaluator::evaluate7,
+    preflop::equity::{class_combos, class_index, class_parts},
+};
 struct Rng(u64);
 impl Rng {
     fn next(&mut self) -> u64 {

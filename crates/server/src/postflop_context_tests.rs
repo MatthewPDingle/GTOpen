@@ -22,14 +22,20 @@ fn contextual_evidence_survives_browse_and_report_requests() {
     });
     let browse: ProfileLocksRequest = serde_json::from_value(request.clone()).unwrap();
     assert!(browse.pot_type.is_some());
-    assert_eq!(serde_json::to_value(&browse.stats).unwrap()["contextual_betting"], stats["contextual_betting"]);
+    assert_eq!(
+        serde_json::to_value(&browse.stats).unwrap()["contextual_betting"],
+        stats["contextual_betting"]
+    );
 
     let mut report = request;
     report["name"] = "fixture".into();
     let villain: ReportVillain = serde_json::from_value(report.clone()).unwrap();
     let saved = serde_json::to_value(&villain).unwrap();
     assert_eq!(saved["pot_type"], "three_bet_plus");
-    assert_eq!(saved["stats"]["contextual_betting"], stats["contextual_betting"]);
+    assert_eq!(
+        saved["stats"]["contextual_betting"],
+        stats["contextual_betting"]
+    );
     let reloaded: ReportVillain = serde_json::from_value(saved).unwrap();
     assert!(reloaded.stats.contextual_betting.is_some());
 }

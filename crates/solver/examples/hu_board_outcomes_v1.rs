@@ -1,7 +1,8 @@
 //! Research-only showdown scores for supplied physical deals. No game mutation.
+use std::{collections::HashSet, fs, path::Path};
+
 use serde::Deserialize;
 use serde_json::json;
-use std::{collections::HashSet, fs, path::Path};
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -39,11 +40,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert!(!input.deals.is_empty() && input.deals.len() <= 65_536);
     assert!(input.deals.iter().all(valid));
     let scores: Vec<u8> = input.deals.iter().map(score).collect();
-    fs::write(&args[1], serde_json::to_vec(&json!({
-        "format": 1, "input_source": input_source,
-        "twice_bb_share": scores,
-        "scope": "Showdown only on supplied cards; no strategy or expected-value estimate"
-    }))?)?;
+    fs::write(
+        &args[1],
+        serde_json::to_vec(&json!({
+            "format": 1, "input_source": input_source,
+            "twice_bb_share": scores,
+            "scope": "Showdown only on supplied cards; no strategy or expected-value estimate"
+        }))?,
+    )?;
     Ok(())
 }
 

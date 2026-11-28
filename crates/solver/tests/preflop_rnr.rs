@@ -1,9 +1,9 @@
 //! "Trust the read" in Preflop Lab hero mode (preflop/rnr.rs): anchors,
 //! convergence and the readout.
 
-use solver::preflop::equity::EquityTable;
-use solver::preflop::{archetypes, PreflopConfig, PreflopSolver};
 use std::sync::{Arc, OnceLock};
+
+use solver::preflop::{archetypes, equity::EquityTable, PreflopConfig, PreflopSolver};
 
 fn table() -> Arc<EquityTable> {
     static T: OnceLock<Arc<EquityTable>> = OnceLock::new();
@@ -12,7 +12,14 @@ fn table() -> Arc<EquityTable> {
 
 /// 3-handed 20bb: BTN opens 2.5 or jams, one re-raise level.
 fn config() -> PreflopConfig {
-    PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    PreflopConfig {
+        bb_ante: 0.0,
+        leaf_net: None,
+        card_removal: false,
+        limper_extra: 0.0,
+        caller_extra: 0.0,
+        raise_mults_oop: None,
+        fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
         stack: 20.0,
@@ -47,7 +54,11 @@ fn hero_vs(ruled: &[(usize, &str)]) -> PreflopSolver {
     solve(&mut s, 300);
     let mut profiles = vec![None; 3];
     for &(seat, name) in ruled {
-        let stats = archetypes().into_iter().find(|(n, _)| *n == name).unwrap().1;
+        let stats = archetypes()
+            .into_iter()
+            .find(|(n, _)| *n == name)
+            .unwrap()
+            .1;
         profiles[seat] = Some(s.generate_profile(seat, &stats, name).unwrap().0);
     }
     s.set_table(vec![false; 3], profiles).unwrap();
@@ -64,7 +75,9 @@ fn solve(s: &mut PreflopSolver, iterations: u32) {
 }
 
 fn hero_nodes(s: &PreflopSolver) -> Vec<usize> {
-    (0..s.nodes.len()).filter(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == 0).collect()
+    (0..s.nodes.len())
+        .filter(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == 0)
+        .collect()
 }
 
 #[test]
@@ -76,19 +89,31 @@ fn full_trust_is_the_max_exploit_hero_mode_solves() {
     solve(&mut dial, 400);
     for node in hero_nodes(&plain) {
         let (a, b) = (plain.average_strategy(node), dial.average_strategy(node));
-        let d = a.iter().zip(&b).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max);
+        let d = a
+            .iter()
+            .zip(&b)
+            .map(|(x, y)| (x - y).abs())
+            .fold(0f32, f32::max);
         assert!(d < 1e-5, "node {node}: hero strategies differ by {d}");
     }
     let (ga, ea) = plain.gaps_and_evs();
     let (gb, eb) = dial.gaps_and_evs();
-    assert!((ea[0] - eb[0]).abs() < 1e-5, "hero EV {} vs {}", ea[0], eb[0]);
+    assert!(
+        (ea[0] - eb[0]).abs() < 1e-5,
+        "hero EV {} vs {}",
+        ea[0],
+        eb[0]
+    );
     assert!((ga[0] - gb[0]).abs() < 1e-5);
     // the free type learned a response of its own meanwhile
     let r = dial.trust_readout().unwrap();
     assert!((r.hero_ev_vs_read - r.hero_ev_vs_mixture).abs() < 1e-6);
     assert!(r.hero_ev_vs_adapting < r.hero_ev_vs_read - 0.01, "{r:?}");
     assert_eq!(r.seats, vec![2]);
-    assert!(dial.free_strategy(hero_nodes(&dial)[0]).is_none(), "the hero has no free type");
+    assert!(
+        dial.free_strategy(hero_nodes(&dial)[0]).is_none(),
+        "the hero has no free type"
+    );
 }
 
 #[test]
@@ -101,16 +126,30 @@ fn less_trust_trades_exploit_ev_for_safety_and_converges() {
         solve(&mut s, 600);
         let (gaps, _) = s.gaps_and_evs();
         let live = s.live_seats();
-        assert_eq!(live, vec![true, true, true], "the hero and both free types learn");
-        let total: f64 = gaps.iter().zip(&live).filter(|(_, l)| **l).map(|(g, _)| g).sum();
+        assert_eq!(
+            live,
+            vec![true, true, true],
+            "the hero and both free types learn"
+        );
+        let total: f64 = gaps
+            .iter()
+            .zip(&live)
+            .filter(|(_, l)| **l)
+            .map(|(g, _)| g)
+            .sum();
         assert!(total < 0.05, "trust {t}: summed gap {total} bb ({gaps:?})");
         readouts.push(s.trust_readout().unwrap());
     }
     let (full, mid, none) = (&readouts[0], &readouts[1], &readouts[2]);
-    assert!(full.hero_ev_vs_read > mid.hero_ev_vs_read && mid.hero_ev_vs_read > none.hero_ev_vs_read - 1e-3,
-        "EV vs the read should fall with trust: {readouts:?}");
-    assert!(none.hero_ev_vs_adapting > full.hero_ev_vs_adapting + 0.01,
-        "less trust should cost less against adapting seats: {readouts:?}");
+    assert!(
+        full.hero_ev_vs_read > mid.hero_ev_vs_read
+            && mid.hero_ev_vs_read > none.hero_ev_vs_read - 1e-3,
+        "EV vs the read should fall with trust: {readouts:?}"
+    );
+    assert!(
+        none.hero_ev_vs_adapting > full.hero_ev_vs_adapting + 0.01,
+        "less trust should cost less against adapting seats: {readouts:?}"
+    );
     // at trust 0 the hero faces only the free types
     assert!((none.hero_ev_vs_mixture - none.hero_ev_vs_adapting).abs() < 1e-6);
     println!("readouts: {readouts:?}");
@@ -131,7 +170,10 @@ fn mixed_reach_is_the_expectation_over_independent_types() {
             + (t * u) as f64 * (ev(1.0, 0.0) + ev(0.0, 1.0))
             + (u * u) as f64 * ev(0.0, 0.0);
         let got = ev(t, t);
-        assert!((got - expected).abs() < 1e-4, "trust {t}: mixture {got} vs expectation {expected}");
+        assert!(
+            (got - expected).abs() < 1e-4,
+            "trust {t}: mixture {got} vs expectation {expected}"
+        );
     }
 }
 
@@ -158,7 +200,10 @@ fn side_pot_and_icm_games_still_solve_with_the_dial() {
     short.stacks = Some(vec![20.0, 6.0, 14.0]);
     let mut icm = short.clone();
     icm.icm = Some(solver::preflop::IcmConfig {
-        payouts: vec![50.0, 30.0, 20.0], field: vec![], field_groups: vec![], stack_off: 1.0,
+        payouts: vec![50.0, 30.0, 20.0],
+        field: vec![],
+        field_groups: vec![],
+        stack_off: 1.0,
     });
     for (label, cfg) in [("side pots", short), ("ICM", icm)] {
         let mut s = PreflopSolver::new(cfg, table()).unwrap();
@@ -167,7 +212,11 @@ fn side_pot_and_icm_games_still_solve_with_the_dial() {
         solve(&mut s, 200);
         let mut profiles = vec![None; 3];
         for (seat, name) in [(1, "Maniac"), (2, "Calling station")] {
-            let stats = archetypes().into_iter().find(|(n, _)| *n == name).unwrap().1;
+            let stats = archetypes()
+                .into_iter()
+                .find(|(n, _)| *n == name)
+                .unwrap()
+                .1;
             profiles[seat] = Some(s.generate_profile(seat, &stats, name).unwrap().0);
         }
         s.set_table(vec![false; 3], profiles).unwrap();
@@ -181,8 +230,14 @@ fn side_pot_and_icm_games_still_solve_with_the_dial() {
         let r = s.trust_readout().unwrap();
         // the mixture sits between its pure cases (under ICM free seats that
         // adapt can help the hero: prize equity is shared three ways)
-        let (lo, hi) = (r.hero_ev_vs_read.min(r.hero_ev_vs_adapting), r.hero_ev_vs_read.max(r.hero_ev_vs_adapting));
-        assert!(r.hero_ev_vs_mixture > lo - 1e-3 && r.hero_ev_vs_mixture < hi + 1e-3, "{label}: {r:?}");
+        let (lo, hi) = (
+            r.hero_ev_vs_read.min(r.hero_ev_vs_adapting),
+            r.hero_ev_vs_read.max(r.hero_ev_vs_adapting),
+        );
+        assert!(
+            r.hero_ev_vs_mixture > lo - 1e-3 && r.hero_ev_vs_mixture < hi + 1e-3,
+            "{label}: {r:?}"
+        );
         println!("{label}: {r:?}");
     }
 }
