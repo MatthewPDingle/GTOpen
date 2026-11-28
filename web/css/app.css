@@ -1528,13 +1528,16 @@ button.lb-go:hover { background: var(--panel2); }
 .pfl-side .pfl-raises input[type="number"] { width:52px; }
 /* The ante starts a row of its own, with who pays it beside it. */
 .pfl-grid2 .pfl-newrow { grid-column:1; }
+/* The rake type names a rule, so it gets a row of its own above the amounts. */
+.pfl-grid2 .pfl-wide { grid-column:1 / -1; }
+.pfl-grid2 .pfl-wide select { flex:1; width:auto; min-width:0; }
 .pfl-side #pfl-ante-by { width:112px; }
 .pfl-grid2 .pfl-off { opacity:.45; }
 /* Rake boxes while tournament payouts are on (web/js/icm_rake.js): greyed out, the reason is in
    their tooltip. The box lets the pointer through to its label, because a disabled box does not
    show a tooltip in every browser. */
 label.icm-rake-off { color: var(--ink-faint); }
-label.icm-rake-off input { opacity: .45; pointer-events: none; }
+label.icm-rake-off input, label.icm-rake-off select { opacity: .45; pointer-events: none; }
 .pfl-straddle-post { opacity:.8; border-style:dashed; cursor:default; }
 
 /* Flag rare branches without adding a separate study workflow. */

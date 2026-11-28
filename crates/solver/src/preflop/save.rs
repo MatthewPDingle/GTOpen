@@ -40,6 +40,11 @@ pub(super) const MAGIC_SIZING: &[u8] = b"GTOPREFLOP7\n";
 // and continue them as a game without it, so it must refuse. A superset of
 // v7 (each earlier feature may be present or not).
 pub(super) const MAGIC_BB_ANTE: &[u8] = b"GTOPREFLOP8\n";
+// The 3-bet rake rule changes preflop fold-win payoffs but not the tree's
+// shape, so the arenas would fit an older binary's rebuilt tree: it would
+// drop `rake_threebet` and continue them as a no-flop-no-drop game, so it
+// must refuse. A superset of v8 (each earlier feature may be present or not).
+pub(super) const MAGIC_RAKE3BET: &[u8] = b"GTOPREFLOP9\n";
 
 fn legacy_multiway_equity_model() -> String {
     "legacy_product".into()
@@ -174,7 +179,9 @@ impl PreflopSolver {
     fn write_game(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        let magic = if self.cfg.bb_ante != 0.0 {
+        let magic = if self.cfg.rake_threebet {
+            MAGIC_RAKE3BET
+        } else if self.cfg.bb_ante != 0.0 {
             MAGIC_BB_ANTE
         } else if self.cfg.situational_sizing() {
             MAGIC_SIZING
@@ -241,10 +248,12 @@ impl PreflopSolver {
             && magic != MAGIC_ICM
             && magic != MAGIC_SIZING
             && magic != MAGIC_BB_ANTE
+            && magic != MAGIC_RAKE3BET
         {
             return Err("not a preflop game save".to_string());
         }
-        let bb_ante = magic == MAGIC_BB_ANTE;
+        let v9 = magic == MAGIC_RAKE3BET;
+        let bb_ante = magic == MAGIC_BB_ANTE || v9;
         // from v7 on, the earlier features are each present or not
         let sizing = magic == MAGIC_SIZING || bb_ante;
         let mut line = Vec::new();
@@ -279,7 +288,10 @@ impl PreflopSolver {
             return Err("preflop v4 save is missing its heads-up realization model".into());
         }
         let header: Header = serde_json::from_value(raw_header).map_err(|e| e.to_string())?;
-        if bb_ante != (header.config.bb_ante != 0.0) {
+        if v9 != header.config.rake_threebet {
+            return Err("3-bet rake saves require preflop v9 format and their rake setting".into());
+        }
+        if !v9 && bb_ante != (header.config.bb_ante != 0.0) {
             return Err("big blind ante saves require preflop v8 format and their ante".into());
         }
         if !bb_ante && sizing != header.config.situational_sizing() {
@@ -380,6 +392,7 @@ mod tests {
             rake_pct: 0.0,
             rake_cap: 0.0,
             no_flop_no_drop: true,
+            rake_threebet: false,
             realization: "raw".into(),
             call_only_seats: vec![],
             open_raises_by_seat: None,

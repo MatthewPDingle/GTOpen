@@ -5,7 +5,7 @@
 
 import { api } from './api.js';
 import { createPositionSizing, usesSituationalSizes } from './preflop_sizing.js';
-import { needsRestart } from './version.js';
+import { unsupportedPreflopFeatures } from './version.js';
 import { createSeatStacks } from './preflop_stacks.js';
 import { createIcmControls } from './preflop_icm.js';
 import { RARE_STEP, HOW_LABEL, frequencyText, frequencyDetail, lineStatus, lineNote, lineNoteText, segmentLevels } from './preflop_reach.js';
@@ -23,6 +23,7 @@ import { blockersConfig, blockersOf } from './preflop_blockers.js';
 import { anteBy, anteConfig, anteOf, sameAnte, usesBbAnte } from './preflop_ante.js';
 import { JAM_PCT_DEFAULT, jamConfig, jamPct, jamPctOf, sameJam, scenarioJamPct } from './preflop_jam.js';
 import { BRUSH_ACTIONS, DRAW_ORDER, pureBrush, setShare, brushParts, handBrush, brushText, rangeTotals } from './preflop_brush.js';
+import { RAKE_TYPE_TIPS, effectiveRakeType, rakeTypeConfig, rakeTypeOf, scenarioRakeType, sameRakeType, usesThreeBetRake } from './preflop_rake.js';
 import { estimateView } from './preflop_memory.js';
 import { statusChips as chipsFor, isStopping, runningLabel, endedLabel } from './preflop_status.js';
 
@@ -596,6 +597,8 @@ export function initPreflopLab({ els, onExport, onExport3, toast, gotoSetup }) {
     syncAnteBy();
     els.rakePct.value = p.rakePct;
     els.rakeCap.value = p.rakeCap;
+    els.rakeType.value = scenarioRakeType(p);
+    syncRakeTypeTip();
     // after the rake fields: ICM re-reads them as the numbers to restore
     icmControls.restore(p);
     // Scenarios configure fresh games and carry no model choice: picking one
@@ -615,6 +618,7 @@ export function initPreflopLab({ els, onExport, onExport3, toast, gotoSetup }) {
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
     jamPct: jamPct(els.jamPct.value) ?? '',
     ante: +els.ante.value, anteBy: anteBy(els.anteBy.value), rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
+    rakeType: els.rakeType.value,
     // ICM owns the rake fields while it is on (they show 0): last, so its
     // remembered numbers replace the zero the form is displaying
     ...icmControls.scenario(),
@@ -627,6 +631,7 @@ export function initPreflopLab({ els, onExport, onExport3, toast, gotoSetup }) {
       k === 'laterMult' || k === 'limperExtra' || k === 'multOop' || k === 'laterOop' ? String(s[k] || '') === String(v) :
       k === 'callerMoney' ? !!s[k] === v :
       k === 'jamPct' ? sameJam(s, cur) :
+      k === 'rakeType' ? sameRakeType(s, cur) :
       k === 'ante' || k === 'anteBy' ? sameAnte(s, cur) :
       k === 'straddle' ? Number(s.straddle || 0) === v :
       k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
@@ -770,6 +775,17 @@ export function initPreflopLab({ els, onExport, onExport3, toast, gotoSetup }) {
   }
   els.ante.addEventListener('input', syncAnteBy);
   syncAnteBy();
+  // The rake type's rule is the label's tooltip: one line, no extra form row.
+  function syncRakeTypeTip() {
+    const label = els.rakeType.closest('label');
+    const tip = RAKE_TYPE_TIPS[els.rakeType.value] || RAKE_TYPE_TIPS.noflop;
+    // While tournament payouts hold the rake controls the label explains
+    // that instead; the choice's rule is kept for release (icm_rake.js).
+    if (label.classList.contains('icm-rake-off')) label.dataset.rakeTip = tip;
+    else label.dataset.tip = tip;
+  }
+  els.rakeType.addEventListener('change', syncRakeTypeTip);
+  syncRakeTypeTip();
   [els.players, els.stack, els.smallBlind, els.bigBlind, els.straddleOn, els.straddle, els.opens, els.mult, els.maxRaises,
    els.ante, els.anteBy, els.limp, els.allin, els.jamPct].forEach(el => {
     el.addEventListener('input', estSoon);
@@ -782,6 +798,11 @@ export function initPreflopLab({ els, onExport, onExport3, toast, gotoSetup }) {
     const positions = positionsFor(n);
     const posts = blindPosts(positions, currentScenario());
     const nums = s => s.split(',').map(x => parseFloat(x)).filter(x => x > 0);
+    const rakePct = +els.rakePct.value || 0;
+    // With no rake nothing is charged, and ICM forces it to 0: the type has
+    // no effect, so the game is the plain no-rake one (an old program need not
+    // refuse a save that plays exactly the same game).
+    const rakeType = effectiveRakeType(els.rakeType.value, rakePct, !!icmControls.config().icm);
     return {
       positions,
       stack: +els.stack.value || 100,
@@ -797,9 +818,9 @@ export function initPreflopLab({ els, onExport, onExport3, toast, gotoSetup }) {
       max_raises: +els.maxRaises.value || 1,
       add_allin: els.allin.checked,
       ...jamConfig(els.jamPct.value),
-      rake_pct: +els.rakePct.value || 0,
+      rake_pct: rakePct,
       rake_cap: +els.rakeCap.value || 0,
-      no_flop_no_drop: true,
+      ...rakeTypeConfig(rakeType),
       ...model(),
     };
   }
@@ -868,13 +889,19 @@ export function initPreflopLab({ els, onExport, onExport3, toast, gotoSetup }) {
     }
     let cfg;
     try { cfg = config(); } catch (e) { toast(e.message, true); return false; }
-    // A GTOpen program from before these sizes would ignore them and quietly
-    // build the old game instead.
-    if (usesSituationalSizes(cfg) || usesBbAnte(cfg)) {
+    // A GTOpen program from before these settings would ignore them and
+    // quietly build the old game instead.
+    const requestedFeatures = {
+      sizing: usesSituationalSizes(cfg),
+      bbAnte: usesBbAnte(cfg),
+      threeBetRake: usesThreeBetRake(cfg),
+    };
+    if (Object.values(requestedFeatures).some(Boolean)) {
       let info = null;
       try { info = await api.version(); } catch { /* no reply: older still */ }
-      if (needsRestart(info)) {
-        toast(`Restart GTOpen to use ${usesBbAnte(cfg) ? 'a big blind ante' : 'the new raise sizes'}: the program that is running is older than this page.`, true);
+      const unsupported = unsupportedPreflopFeatures(info, requestedFeatures);
+      if (unsupported.length) {
+        toast(`Restart GTOpen to use ${unsupported.join(' and ')}: the program that is running is older than this page.`, true);
         return false;
       }
     }
@@ -1107,6 +1134,8 @@ export function initPreflopLab({ els, onExport, onExport3, toast, gotoSetup }) {
     syncAnteBy();
     els.rakePct.value = cfg.rake_pct || 0;
     els.rakeCap.value = cfg.rake_cap || 0;
+    els.rakeType.value = rakeTypeOf(cfg);
+    syncRakeTypeTip();
     // after the rake fields: ICM shows 0 there while it is on, and reads the
     // loaded numbers as the ones to give back when it is turned off
     icmControls.load(cfg);

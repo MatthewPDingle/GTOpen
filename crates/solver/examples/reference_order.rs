@@ -45,6 +45,7 @@ fn main() {
         rake_pct: 0.0,
         rake_cap: 0.0,
         no_flop_no_drop: true,
+        rake_threebet: false,
         realization: "calibrated".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
