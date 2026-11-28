@@ -118,13 +118,20 @@ pub struct PreflopConfig {
     #[serde(default = "default_allin_threshold")]
     pub allin_threshold: f64,
     /// Rake in percent (e.g. 5.0) with a cap in bb; taken from pots that see
-    /// a flop (and from preflop fold-outs too when no_flop_no_drop = false).
+    /// a flop, and from preflop fold-outs under the rules below.
     #[serde(default)]
     pub rake_pct: f64,
     #[serde(default)]
     pub rake_cap: f64,
+    /// The live-cash rule: a pot that ends before the flop is not raked.
+    /// False rakes every pot, including a preflop fold-out (the Lab's "Full").
     #[serde(default = "default_true")]
     pub no_flop_no_drop: bool,
+    /// GG Network's rule: while no_flop_no_drop is true, a preflop fold-out
+    /// is raked once the line had a 3-bet or more. Redundant (and
+    /// ignored) when no_flop_no_drop is false, since every pot is raked then.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub rake_threebet: bool,
     /// "raw" (R = 1), "static" (positional realization vs SPR), "balanced",
     /// "calibrated" (legacy) or "leafnet" (balanced plus the learned flop
     /// correction, see leaf_model.rs).
@@ -2260,12 +2267,13 @@ impl PreflopSolver {
         }
     }
 
-    /// Rake charged at a fold-win terminal: nothing under no-flop-no-drop,
+    /// Rake charged at a fold-win terminal: nothing under no-flop-no-drop
+    /// unless the 3-bet rule is on and the line had a 3-bet or more;
     /// otherwise the rake on the MATCHED pot only — the winner's uncalled
     /// chips are returned before the pot is raked (as the postflop fold
     /// terminal and every cardroom do), never raked as if they were called.
     pub fn fold_win_rake(&self, nd: &PNode) -> f64 {
-        if self.cfg.no_flop_no_drop {
+        if self.cfg.no_flop_no_drop && !(self.cfg.rake_threebet && nd.raises >= 2) {
             return 0.0;
         }
         let w = nd.winner as usize;
@@ -5176,6 +5184,8 @@ mod bb_ante_tests;
 mod checkpoint_tests;
 #[cfg(test)]
 mod equity_invariant_tests;
+#[cfg(test)]
+mod rake_tests;
 #[cfg(test)]
 mod removal_tests;
 #[cfg(test)]

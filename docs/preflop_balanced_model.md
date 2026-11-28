@@ -19,7 +19,7 @@ IP share = 1 - OOP share
 
 As the remaining stack approaches zero, these relative shares blend back toward raw equity using the existing SPR positional attenuation. All-in pots use raw equity. Equity sampling noise is symmetrized, including 50/50 equity for identical classes, so it cannot manufacture or remove chips. Range averages are taken over the same pairwise shares on CPU and GPU.
 
-Each player's gross value is their share of `pot - configured rake`; net EV subtracts their invested chips. A common scale in the old weights cancels. Rake is charged once on the starting continuation pot: `pot * rake_pct / 100`, capped when `rake_cap > 0`. A zero rate means zero rake; a zero cap with a positive rate means uncapped rake. The existing no-flop-no-drop rule still controls fold-win pots.
+Each player's gross value is their share of `pot - configured rake`; net EV subtracts their invested chips. A common scale in the old weights cancels. Rake is charged once on the starting continuation pot: `pot * rake_pct / 100`, capped when `rake_cap > 0`. A zero rate means zero rake; a zero cap with a positive rate means uncapped rake. The rake type controls fold-win pots: no-flop-no-drop exempts them, `rake_threebet` rakes them once the line had a 3-bet, and `no_flop_no_drop: false` rakes every one.
 
 ## What this does not establish
 

@@ -122,6 +122,18 @@ game). Config shape (see `PreflopConfig` in
   it faces as a note in brackets ("2.75x", or "3x + callers" when
   `caller_extra` added the callers' money); `web/js/preflop_actions.js`,
   `node tools/test_preflop_actions.mjs`.
+- Rake type (the form's "Rake type", `web/js/preflop_rake.js`,
+  `node tools/test_preflop_rake.mjs`): No Flop, No Drop is the default
+  (`no_flop_no_drop: true`); Full is `no_flop_no_drop: false` and rakes every
+  pot; GG Network is `no_flop_no_drop: true` plus `rake_threebet: true`, which
+  rakes a preflop fold-out once the line had a 3-bet or more (`PNode.raises
+  >= 2`, open = raise 1), on the matched pot only. Any raise counts, including
+  an all-in too small to reopen the betting. Postflop pots are raked the same
+  way under all three. GG games save as `GTOPREFLOP9`, which older binaries
+  refuse; the page asks for a restart (`SERVER_LEVEL` 9) before building one,
+  never sends `rake_threebet` with `no_flop_no_drop: false`, and with rake 0
+  (including ICM's forced zero) sends the plain No Flop, No Drop game, which
+  needs neither the restart nor the `GTOPREFLOP9` format.
 - `max_raises` counts ALL raises (open=1 … 5-bet=4). Re-raise TO = to_call ×
   mult, min-raise clamped; sizes ≥ `allin_threshold` of the stack become
   jams (API default 0.85). The form sets it with "Jam if a raise commits
